@@ -7,8 +7,8 @@
                 <option value="similar">Similar</option>
                 <option value="exact">Exact</option>
             </select>
-            <span class='input-group-btn'>
-                <input type="submit" class="btn btn-default" value="Find" id='search-model' ng-click="autocomplete()">Find</input>
+            <span class='input-group-append'>
+                <input type="submit" class="btn btn-secondary" value="Find" id='search-model' ng-click="autocomplete()">Find</input>
             </span>
         </form>
     </div>
@@ -21,9 +21,9 @@
                         <tr>
                             <th>
                                 <div class="btn-group">
-                                    <a href="" ng-disabled="page <= 1" ng-click="prevPage()" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-menu-left"></span></a>
-                                    <span class="btn btn-xs btn-default">Page {{ page }}</span>
-                                    <a href="" ng-click="nextPage()" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-menu-right"></span></a>
+                                    <a href="" ng-disabled="page <= 1" ng-click="prevPage()" class="btn btn-xs btn-secondary"><span class="fa fa-chevron-left"></span></a>
+                                    <span class="btn btn-xs btn-secondary">Page {{ page }}</span>
+                                    <a href="" ng-click="nextPage()" class="btn btn-xs btn-secondary"><span class="fa fa-chevron-right"></span></a>
                                 </div>
                             </th>
                             <th>ID</th>
@@ -37,14 +37,14 @@
                             <td colspan="5">{{ warning }}</td>
                         </tr>
                         <tr ng-repeat="s in suggestions track by $index">
-                            <td><a class='selectModel btn btn-default btn-xs' ng-click='selectSuggestion(s)'>Select</a></td>
+                            <td><a class='selectModel btn btn-secondary btn-xs' ng-click='selectSuggestion(s)'>Select</a></td>
                             <td>{{ s.id }}</td>
                             <td><a href="/{{ type }}s/{{ s.id }}" target="_blank" ng-class="{'text-danger' : s.problem}">{{ s.name }}</a>
                                 <span class="" ng-if="s.problem" sdbm-tooltip="problemModel"></span>   
                             </td>
                             <td class='text-center'>{{ s.entries_count }}</td>
                             <td class='text-right'>{{ s.reviewed ? "Yes" : "No" }}
-                                <!--<span class='glyphicon' ng-class="s.reviewed ? 'glyphicon-ok' : 'glyphicon-remove'"></span>-->
+                                <!--<span class='fa' ng-class="s.reviewed ? 'fa-check' : 'fa-times'"></span>-->
                             </td>
                         </tr>
                     </tbody>

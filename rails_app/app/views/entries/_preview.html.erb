@@ -2,21 +2,21 @@
     <% if entry.nil? %>
     <p>Error: couldn't retrieve model object from database.</p>
     <% else %>
-    <div class="panel-heading">
+    <div class="card-header">
         <strong class="h4"><%= link_to entry.public_id, entry_path(entry) %></strong>
         <% if !entry.approved %>
-              <span class="text-warning"><span class="glyphicon glyphicon-alert"></span> Unapproved</span>
+              <span class="text-warning"><span class="fa fa-exclamation-triangle"></span> Unapproved</span>
         <% end %>
         <% if entry.draft && can?(:edit, entry) %>
-          <%= link_to(entry_path(entry.id, draft: false, cumulative_updated_at: entry.cumulative_updated_at), :method => :patch, :title => "Publish Draft", :class => "btn btn-sm btn-default pull-right publish-btn", :data => {:confirm => "Are you sure you wish to publish this entry?  It will become publicly viewable from this point forward."}) do %>
-            <span class="glyphicon glyphicon-file"></span>
+          <%= link_to(entry_path(entry.id, draft: false, cumulative_updated_at: entry.cumulative_updated_at), :method => :patch, :title => "Publish Draft", :class => "btn btn-sm btn-secondary float-right publish-btn", :data => {:confirm => "Are you sure you wish to publish this entry?  It will become publicly viewable from this point forward."}) do %>
+            <span class="fa fa-file"></span>
           <% end %>
-          <%= link_to entry_path(entry), :format => :html, :method => :delete, :title => "Delete Draft", :class => "btn btn-sm btn-default pull-right delete-draft-btn", :data => {:confirm => "Are you sure you wish to delete this entry?  All data entered will be lost permanently."} do %>
-            <span class="glyphicon glyphicon-trash"></span>
+          <%= link_to entry_path(entry), :format => :html, :method => :delete, :title => "Delete Draft", :class => "btn btn-sm btn-secondary float-right delete-draft-btn", :data => {:confirm => "Are you sure you wish to delete this entry?  All data entered will be lost permanently."} do %>
+            <span class="fa fa-trash"></span>
           <% end %>
         <% end %>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
     <dl class="document-metadata">
         <% manuscripts_str = render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
         <% if manuscripts_str.present? %>
@@ -152,7 +152,7 @@
         <% end %>
     </dl>
     <div class="text-center text-muted">
-      <span class="glyphicon glyphicon-time"></span> Added On <%= entry.created_at.to_formatted_s(:long) %>
+      <span class="fa fa-clock-o"></span> Added On <%= entry.created_at.to_formatted_s(:long) %>
     </div>
     </div>
     <% end %>

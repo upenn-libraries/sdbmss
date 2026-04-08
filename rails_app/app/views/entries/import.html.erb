@@ -37,7 +37,7 @@
   </div>
   
   <div class="row" ng-if="!source">
-    <div class="col-sm-12 text-center"><a ng-click="selectSourceModal()" class="btn btn-default" id="select_source">Select/Create a Source</a></div>
+    <div class="col-sm-12 text-center"><a ng-click="selectSourceModal()" class="btn btn-secondary" id="select_source">Select/Create a Source</a></div>
   </div>
 
   <div class="source-info" ng-if="source">
@@ -59,7 +59,7 @@
       <div class="modal-content">
         <div class="modal-header text-center">
             <span class="h3">CSV Formatting Requirements</span>
-            <a href="#Welcome" id="dismiss-welcome" data-dismiss="modal" data-target="#Welcome" class='pull-right' style="color: #333;"><span class="glyphicon glyphicon-remove"></span></a>
+            <a href="#Welcome" id="dismiss-welcome" data-dismiss="modal" data-target="#Welcome" class='float-right' style="color: #333;"><span class="fa fa-times"></span></a>
         </div>
         <div class="modal-body">
           <h4>
@@ -87,9 +87,9 @@
       <p>This is the place to import data into the SDBM.  Once your file has been examined, it will be presented for your inspection.</p>
       <div class="input-group">
         <input type="file" class="form-control" id="file" accept=".csv" ng-upload-change="handleFile($event)" ng-disabled="!source"></input>
-        <span class="input-group-btn">
-          <a class="btn btn-default" data-toggle="modal" data-target="#csvInfo" href="#csvInfo" ng-disabled="!source">
-            <span class="glyphicon glyphicon-question-sign"></span>
+        <span class="input-group-append">
+          <a class="btn btn-secondary" data-toggle="modal" data-target="#csvInfo" href="#csvInfo" ng-disabled="!source">
+            <span class="fa fa-question-circle"></span>
           </a>
         </span>
       </div>
@@ -105,7 +105,7 @@
 
   <div class="row" ng-if="csv_parse_error">
     <div class="col-sm-12">
-      <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> There was an error parsing your CSV file! Make sure it conforms to the <a href="#csvInfo" data-toggle="modal" data-target="#csvInfo">formatting standards</a>.</div>
+      <div class="alert alert-danger"><span class="fa fa-exclamation-triangle"></span> There was an error parsing your CSV file! Make sure it conforms to the <a href="#csvInfo" data-toggle="modal" data-target="#csvInfo">formatting standards</a>.</div>
     </div>
   </div>
 
@@ -272,16 +272,16 @@
       </div>
     </div>
     <div class="col-sm-4">
-      <div class="panel panel-default">
-        <div class="panel-body">
+      <div class="card">
+        <div class="card-body">
           <p>
             Have you reviewed the entries and verified that your data has accurately translated to our data model?  In that case, feel free to begin your 
-            <a href="" class="btn btn-default btn-lg" ng-click="save(0)" ng-if="!checked && saving != true" style="width: 100%;">Check</a>
+            <a href="" class="btn btn-secondary btn-lg" ng-click="save(0)" ng-if="!checked && saving != true" style="width: 100%;">Check</a>
             <a href="" class="btn btn-primary btn-lg" ng-click="save(0)" ng-if="checked && saving != true" style="width: 100%;">Upload</a>
             <a href="" class="btn btn-danger btn-lg" ng-click="cancel()" ng-if="saved != true && saving == true" style="width: 100%;">Cancel</a>
           </p>
         </div>
-        <div class="panel-footer" ng-if="saving == true">
+        <div class="card-footer" ng-if="saving == true">
           <div class="progress">
             <div class="progress-bar" role="progressbar" style="width: {{ 100 * progress / entries.length }}%">
               <span>{{ percentage() }}% Complete</span>
@@ -291,11 +291,11 @@
           <p class="text-center text-muted" ng-if="saved == true">Upload Complete.  Thanks!</p>
         </div>
       </div>
-      <div class="panel panel-danger" ng-repeat="(index, error) in errors track by $index" ng-class="{'active' : index == entry_index }">
-        <div class="panel-heading">
+      <div class="card border-danger" ng-repeat="(index, error) in errors track by $index" ng-class="{'active' : index == entry_index }">
+        <div class="card-header">
           <h4><a href="" ng-click="jump(index)" style="color: #880000;">Row #{{ index }}</a></h4>
         </div>
-        <div class="panel-body">
+        <div class="card-body">
           <ul class="list-unstyled">
             <li ng-repeat="e in error track by $index">
               <span class="text-muted" ng-repeat="(key, value) in e track by $index"><strong>{{ key }}</strong> {{ value[0] }}</span>

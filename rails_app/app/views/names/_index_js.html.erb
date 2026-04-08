@@ -31,7 +31,7 @@ load_session = '<%= params[:last_search] %>' == 'true';
 
         return [
             {
-                //title: '<a href="#" class="btn btn-default btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
+                //title: '<a href="#" class="btn btn-secondary btn-xs fa fa-square-o hideIfReviewed" id="select-all"></a>',
                 title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',
                 orderable: false,
                 className: 'text-center unreviewed_only',
@@ -48,7 +48,7 @@ load_session = '<%= params[:last_search] %>' == 'true';
                 render: function (data, type, full, meta) {
                     var result = '<span class="btn-group options-btn-group">';
                     result += full[manageRecords.dataTable.getColumnIndex("BookmarkWatch")];
-                    //result += '<a onclick="addBookmark(' + data + ', \'Name\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/names/' + data + '"><span class="glyphicon glyphicon-bookmark"></span></a>';
+                    //result += '<a onclick="addBookmark(' + data + ', \'Name\');" class="btn btn-xs btn-secondary control-bookmark bookmark-link" in_bookmarks="/names/' + data + '"><span class="fa fa-bookmark"></span></a>';
                     result += '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>';
                     result += '<a class="btn btn-xs btn-danger delete-link" id="delete_' + data + '" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
                     if (canMerge) {

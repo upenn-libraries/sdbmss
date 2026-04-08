@@ -11,8 +11,8 @@
             <strong>RDF Dataset (.ttl)</strong> <span class="text-muted"><%= File.basename ttl %></span>
           </div>
           <div class="col-sm-6 text-right">
-            <%= link_to(ttl.sub(%r{^public/}, ''), class: 'btn btn-default btn-sm') do %>
-              <span class="glyphicon glyphicon-download"></span> Download
+            <%= link_to(ttl.sub(%r{^public/}, ''), class: 'btn btn-secondary btn-sm') do %>
+              <span class="fa fa-download"></span> Download
             <% end %>
           </div>
         </div>
@@ -25,8 +25,8 @@
             <strong>MYSQL DUMP</strong> <span class="text-muted">dump.sql.gz</span>
           </div>
           <div class="col-sm-6 text-right">
-            <%= link_to("static/docs/dump.sql.gz", class: 'btn btn-default btn-sm') do %>
-              <span class="glyphicon glyphicon-download"></span> Download
+            <%= link_to("static/docs/dump.sql.gz", class: 'btn btn-secondary btn-sm') do %>
+              <span class="fa fa-download"></span> Download
             <% end %>
           </div>
         </div>
@@ -38,8 +38,8 @@
         <div class="row">
         <div class="col-sm-6 text-left"><strong><%= model.humanize %></strong> <span class="text-muted"><%= File.mtime("public/static/docs/#{model}.csv.zip").to_formatted_s(:long) %> csv dump</span></div>
         <div class="col-sm-6 text-right">
-          <%= link_to("static/docs/#{model}.csv.zip", class: 'btn btn-default btn-sm') do %>
-            <span class="glyphicon glyphicon-download"></span> Download
+          <%= link_to("static/docs/#{model}.csv.zip", class: 'btn btn-secondary btn-sm') do %>
+            <span class="fa fa-download"></span> Download
           <% end %>
         </span>
         </div>
@@ -68,10 +68,10 @@
             <div class="col-sm-3">
               <span class="h4">
                 <%= link_to(download_path(d)) do %>
-                  <span class="glyphicon glyphicon-floppy-save"></span>
+                  <span class="fa fa-floppy-o"></span>
                 <% end %>
                 <%= link_to(delete_download_path(d), data: {:confirm => 'Are you sure?'}, class: "delete-download") do %>
-                  <span class="glyphicon glyphicon-trash"></span>
+                  <span class="fa fa-trash"></span>
                 <% end %>
               </span>
             </div>

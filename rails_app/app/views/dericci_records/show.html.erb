@@ -47,7 +47,7 @@
     <% if (s = Source.where(title: "De Ricci Digitized Archive").first) %>
       <li>
         <%= link_to new_entry_path(source_id: s.id, url: request.original_url ) do %>
-          <span class="glyphicon glyphicon-plus"></span> Add Entry Based on De Ricci Record
+          <span class="fa fa-plus"></span> Add Entry Based on De Ricci Record
         <% end %>
       </li>
     <% end %>
@@ -55,7 +55,7 @@
     <% if can? :manage, DericciRecord %>
     <li>
       <%= link_to(new_dericci_record_path) do %>
-        <span class="glyphicon glyphicon-plus"></span> New De Ricci Record
+        <span class="fa fa-plus"></span> New De Ricci Record
       <% end %>
     </li>
     <% end %>
@@ -69,7 +69,7 @@
   <% @record.dericci_record_flags.each do |flag| %>
     <div class="col-sm-12">
       <div class="alert <%= (DericciRecordFlag.reasons[0] == flag.reason ? 'alert-danger' : (DericciRecordFlag.reasons[1] == flag.reason) ? 'alert-success' : 'alert-warning') %>">
-        <strong><span class="glyphicon <%= DericciRecordFlag.reasons.include?(flag.reason) ? 'glyphicon-flag' : 'glyphicon-warning-sign' %>"></span> Flagged - </strong>
+        <strong><span class="fa <%= DericciRecordFlag.reasons.include?(flag.reason) ? 'fa-flag' : 'fa-exclamation-triangle' %>"></span> Flagged - </strong>
         <%= flag.reason %>
         <strong> - <%= link_to flag.created_by.to_s, profile_path(flag.created_by.username) %></strong>
       </div>
@@ -113,7 +113,7 @@
           <td>
             <% if @record.dericci_links.where(approved: true).group_by(&:name_id).each do |name_id, dericci_links| %>
               <% name = dericci_links.first.name %>
-              <a href="" class="btn btn-default btn-xs" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
+              <a href="" class="btn btn-secondary btn-xs" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
                 <%= name.name %> <span class="badge"><%= dericci_links.count %></span>
               </a>
 
@@ -121,12 +121,12 @@
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-body">
-                      <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
+                      <button type="button" class="close float-right" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
                       <p>This De Ricci record has been linked to <%= link_to name.name, name_path(name) %> by </p>
                         <% dericci_links.each do |dl| %>
-                            <span class='btn btn-xs btn-default'>
+                            <span class='btn btn-xs btn-secondary'>
                               <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
                             </span>
                             <% if dl.other_info.present? %>
@@ -140,7 +140,7 @@
                     <div class="modal-footer text-center">
                       <% if current_user && current_user.role == "admin" %>
                           <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id)), method: :delete, class: "btn btn-danger" %>
-                          <%= link_to "Unverify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: false), method: :put, class: "btn btn-default" %>
+                          <%= link_to "Unverify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: false), method: :put, class: "btn btn-secondary" %>
                       <% end %>
                     </div>
                   </div>
@@ -152,10 +152,10 @@
             <div ng-controller="DericciRecordCtrl">        
               <% if can? :edit, @record %>
                 <input type="hidden" id="user-id" value="<%= current_user.id %>">
-                <a id="verify" href="" ng-if="!name || !name.name" ng-click="findName(record)" class="btn btn-default btn-xs">Find Verified Name <span class="glyphicon glyphicon-plus"></span></a>
+                <a id="verify" href="" ng-if="!name || !name.name" ng-click="findName(record)" class="btn btn-secondary btn-xs">Find Verified Name <span class="fa fa-plus"></span></a>
                 <div class="btn-group" ng-if="name && name.name">
                   <a href="" class="btn btn-warning btn-xs">{{ name.name }}</a>
-                  <a href="" class="btn btn-default btn-xs" ng-click="remove()"><span class='glyphicon glyphicon-remove'></span></a>
+                  <a href="" class="btn btn-secondary btn-xs" ng-click="remove()"><span class='fa fa-times'></span></a>
                   <a href="" class="btn btn-success btn-xs" ng-click="save()">Save</a>
                 </div>
               <% end %>
@@ -176,12 +176,12 @@
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-body">
-                      <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
+                      <button type="button" class="close float-right" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
                       <p>This De Ricci record has been linked to <%= link_to name.name, name_path(name) %> by </p>
                         <% dericci_links.each do |dl| %>
-                            <span class='btn btn-xs btn-default'>
+                            <span class='btn btn-xs btn-secondary'>
                               <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
                             </span>
                             <% if dl.other_info.present? %>
@@ -195,7 +195,7 @@
                     <div class="modal-footer text-center">
                       <% if current_user && current_user.role == "admin" %>
                           <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id)), method: :delete, class: "btn btn-danger" %>
-                          <%= link_to "Verify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: true), method: :put, class: "btn btn-default" %>
+                          <%= link_to "Verify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: true), method: :put, class: "btn btn-secondary" %>
                       <% end %>
                     </div>
                   </div>

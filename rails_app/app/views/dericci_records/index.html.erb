@@ -2,7 +2,7 @@
   <% if can? :manage, DericciRecord %>
   <li>
     <%= link_to(new_dericci_record_path) do %>
-      <span class="glyphicon glyphicon-plus"></span> New De Ricci Record
+      <span class="fa fa-plus"></span> New De Ricci Record
     <% end %>
   </li>
   <% end %>
@@ -40,7 +40,7 @@
       <%= text_field_tag :term, params[:term], class: "form-control" %>
       <div class="input-group">
         <%= submit_tag "Search", :name => nil, class: "form-control", id: "search-dericci" %>
-        <div class="input-group-btn">
+        <div class="input-group-append">
           <%= link_to "Clear", dericci_records_path, class: "btn btn-warning" %>
         </div>
       </div>

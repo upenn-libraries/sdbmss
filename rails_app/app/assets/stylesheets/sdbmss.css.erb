@@ -540,7 +540,7 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
 /*.panel-home {
   border-color: #943f42;
 }
-.panel-home .panel-heading {
+.panel-home .card-header {
   background: #943f42;
   color: white;
 }*/
@@ -666,13 +666,13 @@ h1 { font-size: 30px; margin-top: 0; }
   color: #333333;
   border-color: #eee1be;
 }
-.facet_limit .panel-heading {
+.facet_limit .card-header {
   background-color: #eee1be;
   border-color: #cab98e;
 }
 
 /* customizing actual blacklight form (rather than content) is frustrating, sO I just hide it here... */
-#facets .top-panel-heading {
+#facets .top-card-header {
   display: none;
 }
 
@@ -1371,7 +1371,7 @@ fieldset[disabled=disabled] a {
 .remove-link-container a:hover {
   text-decoration: none;
 }
-.remove-link-container > a > span.glyphicon {
+.remove-link-container > a > i.fa {
   display: table-cell;
   vertical-align: middle;
 }
@@ -1450,51 +1450,51 @@ fieldset[disabled=disabled] a {
 
 .sdbmss-form .form-group { margin-bottom: 10px; }
 
-.sdbmss-form .col-xs-1,
+.sdbmss-form .col-1,
 .sdbmss-form .col-sm-1,
 .sdbmss-form .col-md-1,
 .sdbmss-form .col-lg-1,
-.sdbmss-form .col-xs-2,
+.sdbmss-form .col-2,
 .sdbmss-form .col-sm-2,
 .sdbmss-form .col-md-2,
 .sdbmss-form .col-lg-2,
-.sdbmss-form .col-xs-3,
+.sdbmss-form .col-3,
 .sdbmss-form .col-sm-3,
 .sdbmss-form .col-md-3,
 .sdbmss-form .col-lg-3,
-.sdbmss-form .col-xs-4,
+.sdbmss-form .col-4,
 .sdbmss-form .col-sm-4,
 .sdbmss-form .col-md-4,
 .sdbmss-form .col-lg-4,
-.sdbmss-form .col-xs-5,
+.sdbmss-form .col-5,
 .sdbmss-form .col-sm-5,
 .sdbmss-form .col-md-5,
 .sdbmss-form .col-lg-5,
-.sdbmss-form .col-xs-6,
+.sdbmss-form .col-6,
 .sdbmss-form .col-sm-6,
 .sdbmss-form .col-md-6,
 .sdbmss-form .col-lg-6,
-.sdbmss-form .col-xs-7,
+.sdbmss-form .col-7,
 .sdbmss-form .col-sm-7,
 .sdbmss-form .col-md-7,
 .sdbmss-form .col-lg-7,
-.sdbmss-form .col-xs-8,
+.sdbmss-form .col-8,
 .sdbmss-form .col-sm-8,
 .sdbmss-form .col-md-8,
 .sdbmss-form .col-lg-8,
-.sdbmss-form .col-xs-9,
+.sdbmss-form .col-9,
 .sdbmss-form .col-sm-9,
 .sdbmss-form .col-md-9,
 .sdbmss-form .col-lg-9,
-.sdbmss-form .col-xs-10,
+.sdbmss-form .col-10,
 .sdbmss-form .col-sm-10,
 .sdbmss-form .col-md-10,
 .sdbmss-form .col-lg-10,
-.sdbmss-form .col-xs-11,
+.sdbmss-form .col-11,
 .sdbmss-form .col-sm-11,
 .sdbmss-form .col-md-11,
 .sdbmss-form .col-lg-11,
-.sdbmss-form .col-xs-12,
+.sdbmss-form .col-12,
 .sdbmss-form .col-sm-12,
 .sdbmss-form .col-md-12,
 .sdbmss-form .col-lg-12 {
@@ -1646,10 +1646,10 @@ so that gray backdrop shvows up correctly */
     margin: 0px -40px;
     padding: 5px 0px;
   }
-  .panel-search .panel-body {
+  .panel-search .card-body {
     padding: 0px;
   }
-  .panel-search .col-xs-1 {
+  .panel-search .col-1 {
     margin-left: -17px;
   }
   .navbar-form {
@@ -1752,7 +1752,7 @@ so that gray backdrop shvows up correctly */
   .mobile-left {
     text-align: left;
   }
-  #facets .top-panel-heading {
+  #facets .top-card-header {
     display: block;
   }
   .name-authority-warning {
@@ -1853,7 +1853,7 @@ so that gray backdrop shvows up correctly */
     max-width: 100vw;
     min-width: 320px;
   }
-  .col-xs-1 {
+  .col-1 {
     padding: 0px;
   }
   .hide-mobile-sm {
@@ -1958,11 +1958,11 @@ so that gray backdrop shvows up correctly */
   left: 5px;
 }
 
-#activity-pane .panel-heading {
+#activity-pane .card-header {
   border: none;
   border-radius: 4px;
 }
-#activity-pane .panel, #activity-pane .panel-body {
+#activity-pane .panel, #activity-pane .card-body {
   border: none;
   border-radius: 0px;
   box-shadow: none;
@@ -2081,12 +2081,12 @@ so that gray backdrop shvows up correctly */
 }*/
 
 /* changes the direction of the chevron depending on collapsed[in/out] */
-#control-panel > .collapse + #control-panel-button .glyphicon-chevron-left,
-#control-panel > .collapse.in + #control-panel-button .glyphicon-chevron-right {
+#control-panel > .collapse + #control-panel-button .fa-chevron-left,
+#control-panel > .collapse.in + #control-panel-button .fa-chevron-right {
   display: none;
 }
-#control-panel > .collapse.in + #control-panel-button .glyphicon-chevron-left,
-#control-panel > .collapse + #control-panel-button .glyphicon-chevron-right {
+#control-panel > .collapse.in + #control-panel-button .fa-chevron-left,
+#control-panel > .collapse + #control-panel-button .fa-chevron-right {
   display: inline-block;
 }
 
@@ -2241,10 +2241,10 @@ Private Message Styling
 .sdbm-table .bookmark-text, .sdbm-table .watch-text {
   display: none;
 }
-.sdbm-table .btn-group .btn-default:first-child {
+.sdbm-table .btn-group .btn-secondary:first-child {
   margin-right: -3px;
 }
-.sdbm-table .btn-default a {
+.sdbm-table .btn-secondary a {
   color: #333;
 }
 .bookmark, .watch {
@@ -2320,7 +2320,7 @@ Private Message Styling
   box-shadow: none;
 }
 
-.panel-preview .panel-heading {
+.panel-preview .card-header {
   text-align: center;
   text-transform: lowercase;
   font-variant: small-caps;
@@ -2374,7 +2374,7 @@ Private Message Styling
 }
 
 /* control panel thoughts... */
-#control-panel .panel-default, #control-panel .panel-heading, #control-panel .panel-body {
+#control-panel .panel-default, #control-panel .card-header, #control-panel .card-body {
   background: none;
   box-shadow: none;
   border: none;
@@ -2393,17 +2393,17 @@ Private Message Styling
   padding: 0px;
   margin: 5px 0px 10px 0px;
 }
-#control-panel .panel-body {
+#control-panel .card-body {
   background: none;
   padding: 0px;
 }
-#control-panel .panel-heading {
+#control-panel .card-header {
   background: none;
   border-top: 2px solid white;
   padding-top: 20px;
   /*text-align: center;*/
 }
-#control-panel .panel-heading .h4 {
+#control-panel .card-header .h4 {
   color: white;
   font-weight: bold;
   text-transform: uppercase;
@@ -2627,7 +2627,7 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 .alert {
   margin-bottom: 10px;
 }
-.btn-primary, .panel-primary > .panel-heading {  
+.btn-primary, .panel-primary > .card-header {  
   background-color: #4e76b3;
   border-color: #4e76b3;
 }
@@ -2684,10 +2684,10 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 .pills-home a:hover, .pills-home a:focus, .pills-home a:active {
   background: #5374A6 !important;
 }
-.facet-values .remove .glyphicon {
+.facet-values .remove .fa {
   vertical-align: inherit;
 }
-.facet_limit-active .panel-heading {
+.facet_limit-active .card-header {
   background-color: #3c763d;
   border-color: #3c763d;
   color: white;
@@ -2698,7 +2698,7 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 .appliedFilter .filterName:after {
   padding: 0px 2px;
 }
-.panel-heading.collapse-toggle .panel-title:after {
+.card-header.collapse-toggle .card-title:after {
   color: inherit;
 }
 .user-info .dropdown-menu {

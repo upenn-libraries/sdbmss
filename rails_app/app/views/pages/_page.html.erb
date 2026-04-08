@@ -12,12 +12,12 @@
     <ul class="list-inline">
       <li>
         <%= link_to(edit_page_path(page.name)) do %>
-          <span class="glyphicon glyphicon-edit"></span> Edit
+          <span class="fa fa-pencil"></span> Edit
         <% end %>
       </li>
       <li>
         <%= link_to(page_path(page.name), :method => :delete, data: { confirm: "Are you sure you would like to permanently remove this file?" }) do %>
-          <span class="glyphicon glyphicon-remove"></span> Delete
+          <span class="fa fa-times"></span> Delete
         <% end %>
       </li>
     </ul>

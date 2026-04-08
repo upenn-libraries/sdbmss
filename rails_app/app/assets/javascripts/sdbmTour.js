@@ -8,8 +8,8 @@ $(document).ready( function (e) {
       "<h3 class='popover-title'></h3>" +
       "<div class='popover-content'></div>" +
       "<div class='popover-navigation'>" +
-        "<button class='btn btn-default' data-role='prev'>« Prev</button>" +
-        "<button class='btn btn-default' data-role='end'>End tour</button>" +
+        "<button class='btn btn-secondary' data-role='prev'>« Prev</button>" +
+        "<button class='btn btn-secondary' data-role='end'>End tour</button>" +
       "</div>" +
     "</div>"
   }

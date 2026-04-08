@@ -16,7 +16,7 @@
         </thead>
         <tbody>
           <tr ng-repeat="result in suggestions.data.results.bindings" ng-init="result.uri = result.Subject.value.split('/')[result.Subject.value.split('/').length - 1]">
-            <td><a ng-click="setGettyAuthorityId(result)" class='btn btn-xs btn-default'>Select {{ result.uri }}</a></td>
+            <td><a ng-click="setGettyAuthorityId(result)" class='btn btn-xs btn-secondary'>Select {{ result.uri }}</a></td>
             <td><a href="{{ result.Subject.value }}" target="_blank">{{ result.Label.value }}</a></td>
             <td><a href="{{ result.Parent.value }}" target="_blank">{{ result.Parents.value.split(", ")[0] }}</a>, {{ result.Parents.value.split(", ").slice(1,1000).join(", ") }}</td>
           </tr>
@@ -25,7 +25,7 @@
     </div>
 
     <div class="modal-footer text-right">
-      <a class="btn btn-default" ng-click="modal.close()">Cancel</a>
+      <a class="btn btn-secondary" ng-click="modal.close()">Cancel</a>
     </div>
 </script>
 <script type="text/ng-template" id="queryGeo.html">
@@ -46,7 +46,7 @@
         </thead>
         <tbody>
           <tr ng-repeat="result in suggestions.data.geonames">
-            <td><a ng-click="setGeoAuthorityId(result)" class='btn btn-xs btn-default'>Select {{ result.geonameId }}</a></td>
+            <td><a ng-click="setGeoAuthorityId(result)" class='btn btn-xs btn-secondary'>Select {{ result.geonameId }}</a></td>
             <td><a href="www.geonames.org/{{ result.geonameId }}" target="_blank">{{ result.name }}</a></td>
             <td>{{ result.lat }}</td>
             <td>{{ result.lng }}</td>
@@ -60,6 +60,6 @@
     </div>
 
     <div class="modal-footer text-right">
-      <a class="btn btn-default" ng-click="modal.close()">Cancel</a>
+      <a class="btn btn-secondary" ng-click="modal.close()">Cancel</a>
     </div>
 </script>

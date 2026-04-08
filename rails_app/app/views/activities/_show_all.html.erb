@@ -15,7 +15,7 @@
 <% @activities.each_with_index do |(date, activities), index| %>
   <div class="row">
     <div class="col-sm-10">
-      <div class="collapse in">
+      <div class="collapse show">
       <% activities.group_by { |a| a.user }.each do |user, user_activities| %>
         <h5 class='text-center'>
             <%= render partial: "shared/username_with_profile_link", locals: { user: user } %>
@@ -23,10 +23,10 @@
         </h5>
         <div class="collapse activity_date_<%= date %> <%= (collapsed && index > 0) ? '' : 'in' %>" id="activity_<%= date %>_<%= user.id %>">
         <% user_activities.each do |activity| %>
-          <div class="panel panel-default activity">
-            <div class="panel-heading">
+          <div class="card activity">
+            <div class="card-header">
               <div class="row">
-                <div class="col-xs-6">
+                <div class="col-6">
                   <%= activity.format_event %>
                   <% link_text = SDBMSS::IDS.get_public_id_for_model(activity.item_type, activity.item_id) %>
                   <% if !link_text %>
@@ -38,14 +38,14 @@
                     <span class="text-danger"><%= link_text %></span>
                   <% end %>
                 </div>
-                <div class="col-xs-6 text-right">
+                <div class="col-6 text-right">
                   <%= activity.created_at.strftime("%l:%M %P") %>
                 </div>
               </div>
             </div>
-            <div class="panel-body text-muted" style="overflow: hidden; text-overflow: ellipsis;">
+            <div class="card-body text-muted" style="overflow: hidden; text-overflow: ellipsis;">
               <div class="row">
-                <div class="col-xs-12">
+                <div class="col-12">
                   <% version = @versions.select{ |v| v.transaction_id == activity.transaction_id } %>
                   <% if version.count > 0 %>
                     <%= render partial: 'activities/version', locals: {version: EntryVersionFormatter.new(version)} %>

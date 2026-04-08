@@ -441,7 +441,7 @@ var load_session = false;
 
         return [
             {
-                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',//'<a href="#" class="btn btn-default btn-blank btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
+                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',//'<a href="#" class="btn btn-secondary btn-blank btn-xs fa fa-square-o hideIfReviewed" id="select-all"></a>',
                 orderable: false,
                 className: "text-center unreviewed_only",
                 render: function (data, type, full, meta) {
@@ -449,8 +449,8 @@ var load_session = false;
                         /*return  '' + 
                                 '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
                                 '<label for="checkbox_' + meta.row + '">' + 
-                                '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-unchecked unchecked"></a>' + 
-                                '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-check checked"></a>' + 
+                                '<a class="btn btn-secondary btn-xs btn-blank fa fa-square-o unchecked"></a>' + 
+                                '<a class="btn btn-secondary btn-xs btn-blank fa fa-check checked"></a>' + 
                                 '</label>' + '';*/
                         return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     //}

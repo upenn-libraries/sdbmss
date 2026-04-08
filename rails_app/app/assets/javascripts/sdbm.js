@@ -230,7 +230,7 @@ function bindRemoteAjaxCallback (){
                     url: '/static/tooltips/' + template + '.html',
                     type: 'GET'
                 },
-                title: '<div class="text-right"><a href="/pages/' + template + '/edit"><span class="glyphicon glyphicon-edit"></span> Edit Tooltip</a></div>'
+                title: '<div class="text-right"><a href="/pages/' + template + '/edit"><span class="fa fa-pencil"></span> Edit Tooltip</a></div>'
             },
             position: {
                 my: 'center',

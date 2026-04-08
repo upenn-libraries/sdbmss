@@ -436,11 +436,11 @@ var BOOKMARK_SCOPE;
       };
       // display based on status of record in game
       $scope.getClass = function (record) {
-        if ($scope.isLinked(record)) return 'glyphicon-check';
-        else if (record.skipped) return 'glyphicon-unchecked';
-        else if ($scope.needsWork(record)) return 'glyphicon-warning-sign';
-        else if (record.dericci_record_flags.length > 0) return 'glyphicon-flag';
-        else return 'glyphicon-search';
+        if ($scope.isLinked(record)) return 'fa-check';
+        else if (record.skipped) return 'fa-square-o';
+        else if ($scope.needsWork(record)) return 'fa-exclamation-triangle';
+        else if (record.dericci_record_flags.length > 0) return 'fa-flag';
+        else return 'fa-search';
       };
       $scope.cantFind = function () {
         $(".cantfind").toggleClass("in");
@@ -1260,7 +1260,7 @@ var BOOKMARK_SCOPE;
           containment: 'parent',
           forcePlaceholderSize: true,
           tolerance: 'pointer',
-          //handle: ".control-label, .panel-heading",
+          //handle: ".control-label, .card-header",
           start: function(e, ui){
            // ui.placeholder.height(ui.item.height());
           },
@@ -2129,7 +2129,7 @@ var BOOKMARK_SCOPE;
         var modelName = attrs.encourageNameAuthorityModel;
         var nameType = attrs.encourageNameAuthorityName;
         
-        $(element).html('<span class="glyphicon glyphicon-warning-sign"></span> <span class="show-hover">You have not selected an authority name. <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a></span>');
+        $(element).html('<span class="fa fa-exclamation-triangle"></span> <span class="show-hover">You have not selected an authority name. <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a></span>');
 
         scope.$watch(modelName, function(newValue, oldValue) {
           $(element).hide();
@@ -2513,11 +2513,11 @@ var BOOKMARK_SCOPE;
                 var uncertain_in_source = $parse(modelName + ".uncertain_in_source")(scope);
                 var supplied_by_data_entry = $parse(modelName + ".supplied_by_data_entry")(scope);
                 if(uncertain_in_source) {
-                    $(element).find("span").removeClass().addClass("glyphicon glyphicon-question-sign");
+                    $(element).find("span").removeClass().addClass("fa fa-question-circle");
                 } else if(supplied_by_data_entry) {
-                    $(element).find("span").removeClass().addClass("glyphicon glyphicon-asterisk");
+                    $(element).find("span").removeClass().addClass("fa fa-asterisk");
                 } else {
-                    $(element).find("span").removeClass().addClass("glyphicon glyphicon-ok");
+                    $(element).find("span").removeClass().addClass("fa fa-check");
                 }
             };
 

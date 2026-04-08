@@ -727,7 +727,7 @@ $(document).ready(function() {
 
 <div class="row">
     <div class="col-sm-12">
-        <p><a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_instructions" href="#"><span class="glyphicon glyphicon-info-sign"></span> Click here for instructions</a> on how to link entries to manuscript records</p>
+        <p><a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_instructions" href="#"><span class="fa fa-info-circle"></span> Click here for instructions</a> on how to link entries to manuscript records</p>
         <% if @mode == 'by_entry' %>
             <%= render partial: "pages/partial", locals: {page_name: "Linking Tool Entry Instructions"} %>
         <% else %>
@@ -739,13 +739,13 @@ $(document).ready(function() {
     <% if @entry %>
         <li>
             <%= link_to(new_source_path({create_entry: 1, new_manuscript: true, original_entry: @entry.id, source_type: 4})) do %>
-                <span class="glyphicon glyphicon-plus"></span> Create Linked Personal Observation
+                <span class="fa fa-plus"></span> Create Linked Personal Observation
             <% end %>
         </li>
     <% elsif @manuscript %>
         <li>
             <%= link_to(new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4})) do %>
-                <span class="glyphicon glyphicon-plus"></span> Create Linked Personal Observation
+                <span class="fa fa-plus"></span> Create Linked Personal Observation
             <% end %>
         </li>
     <% end %>
@@ -775,13 +775,13 @@ $(document).ready(function() {
         </div>
         <div class="col-sm-6 text-right">
             <div class="btn-group">
-                <a href="" class="btn btn-default" id="load-bookmarks">
-                    <span class="glyphicon glyphicon-bookmark"></span> Load Bookmarks
+                <a href="" class="btn btn-secondary" id="load-bookmarks">
+                    <span class="fa fa-bookmark"></span> Load Bookmarks
                 </a>
                 <% if @entry.present? %>
-                    <a class='btn btn-warning' title="IN DEVELOPMENT" href="" data-toggle="modal" data-target="#suggestions-modal"><span class="glyphicon glyphicon-exclamation-sign"></span> Find Suggested Links</a>
+                    <a class='btn btn-warning' title="IN DEVELOPMENT" href="" data-toggle="modal" data-target="#suggestions-modal"><span class="fa fa-exclamation-circle"></span> Find Suggested Links</a>
                 <% else %>
-                    <a href="" class="btn btn-default disabled">Find Suggested Links</a>
+                    <a href="" class="btn btn-secondary disabled">Find Suggested Links</a>
                 <% end %>
             </div>
         </div>
@@ -802,7 +802,7 @@ $(document).ready(function() {
             <div class="col-sm-12">
                 <ul class="nav navbar-nav navbar-left navbar-nav-search">
                      <li>
-                        <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_search_tips" href="#"><span class="glyphicon glyphicon-search"></span> Search Tips</a>
+                        <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_search_tips" href="#"><span class="fa fa-search"></span> Search Tips</a>
                     </li>
                 </ul>
                 <%= form_tag(request.path, method: :get, id: "link-search") do %>
@@ -834,7 +834,7 @@ $(document).ready(function() {
                     <div class="col-sm-12">
                         <p class="text-muted text-center">Select the fields that you wish to consider when searching for similar record.</p>
                     </div>
-                    <div class="col-xs-6 form-inline">
+                    <div class="col-6 form-inline">
                         <p class="text-info">
                             <b>Text fields</b>
                         </p>
@@ -850,7 +850,7 @@ $(document).ready(function() {
                         <% end %>
                         </ul>
                     </div>
-                    <div class="col-xs-6 form-inline">
+                    <div class="col-6 form-inline">
                         <p class="text-info"><b>Numerical fields</b> may provide more precise or less ambiguous results, but not all entries have values in all fields.</p>
                         <ul class="list-inline">
                             <% [:folios, :num_columns, :num_lines, :height, :width].each do |field, index| %>
@@ -868,7 +868,7 @@ $(document).ready(function() {
                             </input>
                         </label>
                     </div>                  
-                    <div class="col-xs-12 text-center" style="margin-top: 10px;">
+                    <div class="col-12 text-center" style="margin-top: 10px;">
                         <input type="submit" class="form-control" id="show-matches" value="Get Suggestions!"></input>
                     </div>
                 </div>
@@ -888,7 +888,7 @@ $(document).ready(function() {
                     <div class="col-sm-12">
                         <p class="text-muted text-center">Optional: Select a tag to limit the results:</p>
                     </div>
-                    <div class="col-xs-12 text-center form-inline">
+                    <div class="col-12 text-center form-inline">
                         <span class='control-label'>Tag: </span>
                         <div class="input-group">
                             <select name="" id="bookmark-tag" class='form-control'>

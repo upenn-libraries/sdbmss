@@ -1,11 +1,11 @@
 <% source = record %>
-<div class="panel-heading">
+<div class="card-header">
     <strong class="h4"><%= link_to source.public_id, source_path(source) %></strong>
     <% if !source.reviewed %>
-          <span class="text-warning"><span class="glyphicon glyphicon-alert"></span> Unapproved</span>
+          <span class="text-warning"><span class="fa fa-exclamation-triangle"></span> Unapproved</span>
     <% end %>
 </div>
-<div class="panel-body">
+<div class="card-body">
 <dl class="document-metadata">
 
         <dt>Type</dt>
@@ -108,6 +108,6 @@
 
 <% end %>
 <div class="text-center text-muted">
-  <span class="glyphicon glyphicon-time"></span> Added On <%= source.created_at.to_formatted_s(:long) %>
+  <span class="fa fa-clock-o"></span> Added On <%= source.created_at.to_formatted_s(:long) %>
 </div>
 </div>

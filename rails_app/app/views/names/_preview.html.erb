@@ -1,13 +1,13 @@
 <% name = record %>
-<div class="panel-heading">
+<div class="card-header">
     <strong class="h4"><%= link_to name.public_id, name_path(name) %></strong>
 </div>
-<div class="panel-body">
+<div class="card-body">
 <dl class="document-metadata">
 <% if name.confirmed %>
 <dt></dt>
 <dd>
-    <strong class="text-success">Confirmed <span class="glyphicon glyphicon-ok"></span></strong>
+    <strong class="text-success">Confirmed <span class="fa fa-check"></span></strong>
 </dd>
 <% end %>
 
@@ -18,7 +18,7 @@
 
 <% if name.viaf_id.present? %>
 <dt>
-    <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="glyphicon glyphicon-globe"></span> VIAF ID</a>
+    <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="fa fa-globe"></span> VIAF ID</a>
 </dt>
 <dd>
     <a href="http://viaf.org/viaf/<%= name.viaf_id %>/"><%= name.viaf_id %></a>

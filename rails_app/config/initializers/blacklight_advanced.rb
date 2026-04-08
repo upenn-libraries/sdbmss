@@ -126,7 +126,7 @@ module BlacklightAdvancedSearch
             content_tag(:span, facet_display_value(facet, val), :class => "selected")
           end +
           # remove link
-          link_to(content_tag(:span, '', :class => "glyphicon glyphicon-remove") + content_tag(:span, '[remove]', :class => 'sr-only'), search_action_path(search_state.remove_facet_params(facet, val)), :class=>"remove facet-count")
+          link_to(content_tag(:i, '', :class => "fa fa-times") + content_tag(:span, '[remove]', :class => 'sr-only'), search_action_path(search_state.remove_facet_params(facet, val)), :class=>"remove facet-count")
         end
 
       end, "\n")
@@ -157,7 +157,7 @@ module BlacklightAdvancedSearch
         if (advanced_query.keyword_op == "OR" &&
             numberOfQueries > 1)
           content.unshift content_tag(:span, "Any of:", class:'operator')
-          content_tag :span, class: "inclusive_or appliedFilter well" do
+          content_tag :span, class: "inclusive_or appliedFilter card card-body bg-light" do
             safe_join(content.flatten, "\n")
           end
         else

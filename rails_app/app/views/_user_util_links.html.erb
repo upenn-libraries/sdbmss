@@ -1,14 +1,14 @@
 <div class="navbar-right mobile-left">
   <ul class="nav navbar-nav">
     <!-- INTERACTIVE TUTORIAL -->
-    <!--<li><a href="" class="glyphicon glyphicon-question-sign" onclick="t.restart();"></a></li>-->
+    <!--<li><a href="" class="fa fa-question-circle" onclick="t.restart();"></a></li>-->
     <!--<li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">The New SDBM <span class="caret"></span></a>-->
     <!--</li>-->
 
     <li class="dropdown">
         <a href="" class='dropdown-toggle' data-toggle="dropdown">
-          <span class="glyphicon glyphicon-info-sign"></span> <span class="">About</span>
+          <span class="fa fa-info-circle"></span> <span class="">About</span>
           <span class="caret"></span>
         </a>
         <ul class="dropdown-menu" role="menu">
@@ -22,7 +22,7 @@
 
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-          <span class="glyphicon glyphicon-question-sign"></span>
+          <span class="fa fa-question-circle"></span>
           <span class="">Help</span>
           <span class="caret"></span>
         </a>
@@ -44,13 +44,13 @@
       <% if current_user && !current_user.to_s.blank? %>
       <li>
         <%= link_to(main_app.destroy_user_session_path, :onclick => "localStorage.clear();") do %>
-          <span class="glyphicon glyphicon-log-out"></span> <%= t('blacklight.header_links.logout') %>
+          <span class="fa fa-sign-out"></span> <%= t('blacklight.header_links.logout') %>
         <% end %>
       </li>
       <% else %>
       <li>
         <%= link_to(main_app.new_user_session_path) do %>
-          <span class="glyphicon glyphicon-log-in"></span> <%= t('blacklight.header_links.login') %>
+          <span class="fa fa-sign-in"></span> <%= t('blacklight.header_links.login') %>
         <% end %>
       </li>
       <% end %>

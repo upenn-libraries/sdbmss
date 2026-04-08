@@ -77,7 +77,7 @@
       font-weight: bold;
       min-width: 12%;
     }
-    .glyphicon-blank {
+    .fa-blank {
       width: 14px;
     }
     .game-linked {
@@ -102,7 +102,7 @@
       display: table-cell;
       white-space: normal;
     }
-    /*.my-btn-group .btn-default {
+    /*.my-btn-group .btn-secondary {
       border: none;
     }*/
     /*.my-btn-group .btn:last-child {
@@ -158,21 +158,21 @@
   </div>
   <div class="row">
     <div class="col-sm-4" style="">
-      <p class='text-center'>Select a <span class='lead'>Record</span> and click <span class="lead text-primary"><span class="glyphicon glyphicon-search"></span> Find</span></p>
+      <p class='text-center'>Select a <span class='lead'>Record</span> and click <span class="lead text-primary"><span class="fa fa-search"></span> Find</span></p>
       <ul class="game-nav nav nav-pills nav-stacked" style="margin-top: 15px;">
         <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }">
           <span class="btn-group my-btn-group">
-            <a href="" class="btn btn-default btn-sm one-line text-left view-name" ng-class="{'active': current_record == record}" ng-click="selectRecord(record)">
+            <a href="" class="btn btn-secondary btn-sm one-line text-left view-name" ng-class="{'active': current_record == record}" ng-click="selectRecord(record)">
               {{ record.name }}
             </a>
             <a href="" class="btn btn-sm find-name" ng-class="getButton(record)" ng-disabled="record != current_record" ng-click="record == current_record ? findName(record) : ''" style="width: 90px;">
-              <span class="glyphicon" ng-class="getClass(record)"></span> {{ getText(record) }}
+              <span class="fa" ng-class="getClass(record)"></span> {{ getText(record) }}
             </a>
           </span>
         </li>
       </ul>
-      <a href="" class="btn btn-default btn-lg btn-full" id='save-game' ng-class="{ 'disabled': !canSubmit() }" ng-click="save()">
-        <span class="glyphicon glyphicon-ok-sign"></span>
+      <a href="" class="btn btn-secondary btn-lg btn-full" id='save-game' ng-class="{ 'disabled': !canSubmit() }" ng-click="save()">
+        <span class="fa fa-check-sign"></span>
         Submit
       </a>
     </div>
@@ -180,10 +180,10 @@
       <p class="text-right text-danger">
         Is there a problem with this .pdf file?
         <a href="" class="btn btn-danger btn-xs" ng-click="flag_review(current_record)" ng-if="current_record && !needsWork(current_record)">
-          <span class="glyphicon glyphicon-warning-sign"></span> Flag For Review
+          <span class="fa fa-exclamation-triangle"></span> Flag For Review
         </a>
-        <a href="" class="btn btn-default btn-xs" ng-click="unflag(current_record)" ng-if="current_record && needsWork(current_record)">
-          <span class="glyphicon glyphicon-warning-sign"></span> Unflag Record
+        <a href="" class="btn btn-secondary btn-xs" ng-click="unflag(current_record)" ng-if="current_record && needsWork(current_record)">
+          <span class="fa fa-exclamation-triangle"></span> Unflag Record
         </a>        
       </p>
       <iframe id="current-card" ng-src="{{ current_url }}" frameborder="0" style="height: 400px; width: 100%; background: #525659; margin-bottom: -5px;">Hello!</iframe>
@@ -200,7 +200,7 @@
             <dd>{{ current_record.place || "Unknown" }}</dd>
        
             <dt>PDF</dt>
-            <dd><a href="{{ current_record.url }}" target="_blank" class='btn btn-xs btn-default'>Hosted at the UK Senate House Archives</a></dd>
+            <dd><a href="{{ current_record.url }}" target="_blank" class='btn btn-xs btn-secondary'>Hosted at the UK Senate House Archives</a></dd>
 
             <dt>Number of Cards</dt>
             <dd>{{ current_record.cards || "Unknown" }}</dd>
@@ -221,15 +221,15 @@
           </dl>
     
 
-          <div class="panel panel-default" ng-repeat="comment in current_record.comments">
-            <div class="panel-body comment" ng-bind-html="comment.comment">
+          <div class="card" ng-repeat="comment in current_record.comments">
+            <div class="card-body comment" ng-bind-html="comment.comment">
             </div>
-            <div class="panel-footer">
+            <div class="card-footer">
               <div class="row">
-                <div class="col-xs-6">
+                <div class="col-6">
                   {{ comment.created_by }}
                 </div>
-                <div class="col-xs-6 text-right">
+                <div class="col-6 text-right">
                   {{ comment.created_at }}
                 </div>
               </div>
@@ -246,7 +246,7 @@
                 SDBM_NAME_{{ dericci_link.name_id }}
               </a>
               <a href="" class="" ng-click="removeLink(current_record, dericci_link)">
-                <span class="glyphicon glyphicon-remove-circle"></span>
+                <span class="fa fa-times-circle"></span>
               </a>
             </span>
           </div>
@@ -265,8 +265,8 @@
           <div class="input-group">
             <input class="form-control" ng-model="current_flag.reason" >              
             </select>
-            <div class="input-group-btn">
-              <a href="" class="btn btn-default" ng-click="current_flag.reason.length > 0 ? flag_modal.close() : '';">Done</a>
+            <div class="input-group-append">
+              <a href="" class="btn btn-secondary" ng-click="current_flag.reason.length > 0 ? flag_modal.close() : '';">Done</a>
             </div>
           </div>
         </div>        

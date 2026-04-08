@@ -1,19 +1,19 @@
 <div class="row" style="padding-bottom: 20px;" ng-show="!entry.deprecated">
     <div class="col-sm-4">
         <button class="btn btn-primary save-button" ng-click="save(false)" ng-disabled="entryForm.$invalid || currentlySaving || !entry.source">Save</button>
-        <button ng-if="entry.draft || (!entry.id && !sdbmutil.getManuscriptId() && !sdbmutil.getNewManuscript())" ng-click="saveAsDraft()" class="btn btn-default save-button" ng-disabled="entryForm.$invalid || currentlySaving || !entry.source || (!entry.draft && num_drafts >= 10)" title="You may save up to 10 drafts at a time." >Save as Draft</button>
+        <button ng-if="entry.draft || (!entry.id && !sdbmutil.getManuscriptId() && !sdbmutil.getNewManuscript())" ng-click="saveAsDraft()" class="btn btn-secondary save-button" ng-disabled="entryForm.$invalid || currentlySaving || !entry.source || (!entry.draft && num_drafts >= 10)" title="You may save up to 10 drafts at a time." >Save as Draft</button>
         <a class="btn btn-warning" id='cancelEdit' href="{{ entry.id ? '/entries/' + entry.id : '/dashboard'}}">Cancel</a>
     </div>
     <div class="col-sm-8 text-right">
         <span ng-if="entry && draft" >
             <span class="text-info">An unsaved version from <b>{{ draft.updated_object.toLocaleDateString() }}</b>, <b>{{ draft.updated_object.toLocaleTimeString() }}</b> has been detected </span>
-            <a href="" class="btn btn-default" ng-click="loadDraft()">
-                <span class="glyphicon glyphicon-repeat"></span>
+            <a href="" class="btn btn-secondary" ng-click="loadDraft()">
+                <span class="fa fa-repeat"></span>
                 Restore
             </a>            
         </span>
-        <a href="" data-toggle="modal" data-target="#backupSettings" class="btn btn-default" ng-if="entry.id || entry.source">
-            <span class="glyphicon glyphicon-refresh"></span> Auto-backup {{ backup == 'enabled' ? 'enabled' : 'disabled' }}
+        <a href="" data-toggle="modal" data-target="#backupSettings" class="btn btn-secondary" ng-if="entry.id || entry.source">
+            <span class="fa fa-refresh"></span> Auto-backup {{ backup == 'enabled' ? 'enabled' : 'disabled' }}
         </a>
     </div>
     <div class="col-sm-12 label-alignment" ng-show="entryForm.$invalid">
@@ -28,7 +28,7 @@
         <div class="modal-content">
             <div class="modal-header text-center">
                 <span class="h3">Would you like the SDBM to auto-backup your work?</span>
-                <a href="#backupSettings" id="dismiss-welcome" data-dismiss="modal" data-target="#backupSettings" class='pull-right' style="color: #333;"><span class="glyphicon glyphicon-remove"></span></a>
+                <a href="#backupSettings" id="dismiss-welcome" data-dismiss="modal" data-target="#backupSettings" class='float-right' style="color: #333;"><span class="fa fa-times"></span></a>
             </div>
             <div class="modal-body">
                 <p>The SDBM allows you to auto-backup your work by saving in progress data in the browser's local storage.  In the event that your page is closed without saving, you may be able to recover your work.  However, you may also opt-out of this feature if you desire.</p>

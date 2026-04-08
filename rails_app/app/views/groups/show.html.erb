@@ -6,9 +6,9 @@
 <div class="row">
     <div class="col-sm-7" style="padding: 0px 15px;">
         <% if group_user and not group_user.confirmed %>
-            <div class="well">
+            <div class="card card-body bg-light">
                 <div class="row">
-                    <div class="col-xs-12 text-center">
+                    <div class="col-12 text-center">
                         <span class='h4'>
                             <% if group_user.created_by != current_user %>
                                 You have been invited to this group
@@ -20,10 +20,10 @@
                 </div>
                 <div class="row">
                     <% if group_user.created_by != current_user %>
-                    <div class="col-xs-6 text-left">
+                    <div class="col-6 text-left">
                         <%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put %><br>
                     </div>
-                    <div class="col-xs-6 text-right">
+                    <div class="col-6 text-right">
                         <%= link_to "Reject Invitation", group_user_path(group_user), :method => :delete, data: { confirm: "Are you sure you would like to reject this invitation?" } %>
                     </div>
                     <% else %>
@@ -33,13 +33,13 @@
             </div>
         <% end %>
         <h2>
-            <span class="glyphicon glyphicon-education"></span>
+            <span class="fa fa-graduation-cap"></span>
             <%= @model.name %>
         </h2>
         <% if not @model.users.include? current_user %>
             <p class='text-center'>
                 <%= link_to(add_to_group_accounts_path(ids: [current_user.id], group_id: @model.id), :method => :post) do %>
-                    <span class="glyphicon glyphicon-pencil"></span> Request Membership
+                    <span class="fa fa-pencil"></span> Request Membership
                 <% end %>
             </p>
         <% end %>
@@ -77,7 +77,7 @@
                 <span class="h4" style="margin-right: 10px;">Invite Users</span>
                 <%= hidden_field_tag :group_id, @model.id %>
                 <%= render partial: "shared/user_select_form", locals: {users: User.where.not(id: @model.users.map(&:id))} %>
-                <div class="input-group-btn">
+                <div class="input-group-append">
                   <input type='submit' class="form-control" value="Invite" />
                 </div>
               </div>
@@ -85,7 +85,7 @@
         <% end %>
         <% end %>
 
-        <h3 class='text-center'><span class="glyphicon glyphicon-comment"></span> Discussion</h3>
+        <h3 class='text-center'><span class="fa fa-comment"></span> Discussion</h3>
         <% if @model.public or @model.users.include? current_user %>
             <p class='text-muted text-center'>Leave a comment to contribute to the ongoing discussion.</p>
             <%= render partial: "comments/show_all", locals: {comments: @model.comments.where(public: true), record: @model} %>
@@ -98,7 +98,7 @@
     <div class="col-sm-5">
         <h4>
             Entries
-            <small class="pull-right"><%= link_to(entries_path) do %> <span class="glyphicon glyphicon-plus"></span> Add Entries <% end %></small> 
+            <small class="float-right"><%= link_to(entries_path) do %> <span class="fa fa-plus"></span> Add Entries <% end %></small> 
         </h4>
         <%= render partial: "entries", locals: {entries: @model.entries} %>       
         <% if @model.entries.count <= 0 %>

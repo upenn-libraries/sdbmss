@@ -21,14 +21,14 @@
   <% if (s = Source.where(title: "De Ricci Digitized Archive").first) %>
     <li>
       <%= link_to new_entry_path(source_id: s.id, url: request.original_url ) do %>
-        <span class="glyphicon glyphicon-plus"></span> Add Entry Based on De Ricci Record
+        <span class="fa fa-plus"></span> Add Entry Based on De Ricci Record
       <% end %>
     </li>
   <% end %>
   <% if can? :manage, DericciRecord %>
   <li>
     <%= link_to(new_dericci_record_path) do %>
-      <span class="glyphicon glyphicon-plus"></span> New De Ricci Record
+      <span class="fa fa-plus"></span> New De Ricci Record
     <% end %>
   </li>
   <% end %>
@@ -43,11 +43,11 @@
         <%= f.fields_for :dericci_record_flags do |ff| %>
     <div class="col-sm-12">
       <div class="alert alert-danger">
-          <strong><span class="glyphicon glyphicon-flag"></span> Flagged - </strong>
+          <strong><span class="fa fa-flag"></span> Flagged - </strong>
           <%= ff.object.reason %>
           <strong> - <%= link_to ff.object.created_by.to_s, profile_path(ff.object.created_by.username) %></strong>
           <%= ff.hidden_field :id %>
-          <label for="flag<%= ff.object.id %>" class="pull-right">Remove 
+          <label for="flag<%= ff.object.id %>" class="float-right">Remove 
             <%= ff.check_box :_destroy, {id: "flag#{ff.object.id}", class: ''} %>
           </label>
       </div>

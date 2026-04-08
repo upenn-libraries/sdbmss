@@ -96,7 +96,7 @@
 <% content_for :add_entry do %>
     <li>
         <%= link_to(new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4})) do %>
-            <span class="glyphicon glyphicon-plus"></span> Create Linked Personal Observation
+            <span class="fa fa-plus"></span> Create Linked Personal Observation
         <% end %>
     </li>
     <li class="divider"></li>
@@ -112,13 +112,13 @@
     <div class="col-sm-12">
         <%= render partial: "pages/partial", locals: {page_name: "Manuscript Instructions"} %>
         <p>
-            <a class="btn btn-default btn-xs" data-ajax-modal="trigger" rel="nofollow" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
+            <a class="btn btn-secondary btn-xs" data-blacklight-modal="trigger" rel="nofollow" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
         </p>
     </div>
     <% if @manuscript.location %>
     <div class='col-sm-5'> 
-            <div class="panel panel-default">
-                <div class="panel-body text-muted">
+            <div class="card">
+                <div class="card-body text-muted">
                     <span class='h3'>Last Known Location </span><br>
                     <p>This field existed in a previous version of the SDBM, but our new data model does not support it. When more recent data is available you will see a "Most Recent Observation" below.</p>
                     <p class='text-center'><b><%= @manuscript.location %></b></p>
@@ -128,11 +128,11 @@
     </div>
     <% end %>
     <div class="col-sm-7">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card">
+            <div class="card-header">
                 <span class="h4">Associated Title(s)</span>
             </div>
-            <div class="panel-body" style="height: 190px; overflow-y: scroll;">
+            <div class="card-body" style="height: 190px; overflow-y: scroll;">
                 <ul class="list-unstyled">
                 <% @manuscript_titles.each do |title| %>
                     <li class='associated_title' title="<%= title %>"><%= title %></li>
@@ -142,11 +142,11 @@
         </div>
     </div>
     <div class="col-sm-5">
-        <div class="panel panel-success">
-            <div class="panel-heading">
+        <div class="card border-success">
+            <div class="card-header">
                 <span class="h4">Most Recent Observation</span>
             </div>
-            <div class="panel-body" style="height: 190px; overflow-y: scroll">
+            <div class="card-body" style="height: 190px; overflow-y: scroll">
                 <dl class="document-metadata">
                     <% if @location %>
                         <dt class='text-success'>Entry</dt>
@@ -195,7 +195,7 @@
                             <br>                        
                             <% @entries.each_with_index do |entry, index| %>
                             <div class="panel panel-provenance <%= entry.source.source_type_id == 8 ? 'panel-warning' : 'panel-default' %>">
-                                <div class="panel-heading">
+                                <div class="card-header">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <span class="h4">
@@ -252,7 +252,7 @@
                                                             (No date entered)
                                                         <% end %>
                                                     </div>
-                                                    <span class="glyphicon glyphicon-remove provenance_remove"></span>
+                                                    <span class="fa fa-times provenance_remove"></span>
                                                 </div>
                                             </li>
                                         <% end %>
@@ -268,13 +268,13 @@
                             <%= hidden_field_tag "transaction_type", "no_transaction" %>
                             <%= hidden_field_tag "manuscript_id", @manuscript.id %>
                             <div class="collapse panel panel-warning panel-provenance" id="proposed-history">
-                                <div class="panel-heading mobile-center">
+                                <div class="card-header mobile-center">
                                     <span class="h4">
                                         <a href="" style='color: #222;'>
                                           <span class="glyphicon glyphicon-header"></span>
                                           Construct History<span sdbm-tooltip="manuscript_propose_history"></span>
                                         </a>
-                                        <span class="pull-right toggle-propose-history" href="#proposed-history" data-toggle="collapse">
+                                        <span class="float-right toggle-propose-history" href="#proposed-history" data-toggle="collapse">
                                             <span class="glyphicon glyphicon-minus"></span>
                                         </span>
                                     </span>
@@ -282,11 +282,11 @@
                                 <ul class="list-group" id="sortable-history">
                                     <li class="list-group-item placeholder">Drag provenance here to begin creating provenance list</li>
                                 </ul>
-                                <div class="panel-footer text-center">
+                                <div class="card-footer text-center">
                                     <div class="input-group">
                                         <%= submit_tag "Create", class: 'form-control btn-info', data: {confirm: "Are you sure you would like to create a new Observation?"} %>
                                         <span class="input-group-btn">
-                                            <a id="clearProvenance" class="btn btn-default">Clear</a>                    
+                                            <a id="clearProvenance" class="btn btn-secondary">Clear</a>                    
                                         </span>
                                     </div>
                                 </div>

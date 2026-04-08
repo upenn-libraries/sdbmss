@@ -25,7 +25,7 @@
 
   <div class="field form-group row">
     <label for="viaf_id" class="col-sm-2 control-label" sdbm-tooltip="edit_entry_viaf">
-        <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="glyphicon glyphicon-export"></span> VIAF ID</a>
+        <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="fa fa-upload"></span> VIAF ID</a>
     </label>
     <div class="col-sm-4">
       <input type="text" ng-model="name.viaf_id" class="form-control">
@@ -93,7 +93,7 @@
       <span sdbm-tooltip="edit_name_place">Places</span>
       <p class="add-link-container">
         <a a id="add_use" class="clickable" data-ng-click="addRecord(name.name_places)" title="Add">
-          <span class="glyphicon glyphicon-plus"></span>
+          <span class="fa fa-plus"></span>
           add new
         </a>
       </p>
@@ -102,7 +102,7 @@
       <div class="row input-block" data-ng-repeat="name_place in name.name_places | filter: activeRecords">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(name.name_places, name_place)" title="Remove">
-            <span class="glyphicon glyphicon-remove"></span>
+            <span class="fa fa-times"></span>
           </a>
         </div>
         <div class="form-inline row">
@@ -110,7 +110,7 @@
             <div class="btn-group name-authority-group" role="group" style="width: 100%; margin-left: 16px;">          
               <a id="find_place_name_authority_{{ $index }}" ng-if='name_place.place.id == undefined' ng-init="name_place.place = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('places', name_place.place, 'place', name_place.observed_name)">Find or Create Authority Name</a>
               <div ng-if='name_place.place != undefined && name_place.place.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
-                <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(name_place, 'place')"></a>
+                <a class="fa fa-times" ng-click="removeNameAuthority(name_place, 'place')"></a>
                 <a href="/places/{{ name_place.place.id }}" target="_blank">{{ name_place.place.name }}</a>
               </div>
             </div>
@@ -133,7 +133,7 @@
     <div class="col-sm-2"></div>
     <div class="col-sm-10">
       <a href="" class="btn btn-primary" ng-click="save()">Save</a>      
-      <a href="" ng-click="cancel()" class="btn btn-default">Cancel</a>
+      <a href="" ng-click="cancel()" class="btn btn-secondary">Cancel</a>
     </div>
   </div>
 </form>

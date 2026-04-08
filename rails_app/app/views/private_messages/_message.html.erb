@@ -3,7 +3,7 @@
   <div class="col-sm-9">
     <h4 class="list-group-item-heading">
       <% if unread %>
-          <strong class="glyphicon glyphicon-exclamation-sign text-success"></strong>
+          <strong class="fa fa-exclamation-circle text-success"></strong>
       <% end %>
       <%= message.title %>
     </h4>
@@ -30,8 +30,8 @@
     </p>
   </div>
   <div class="col-sm-3 text-right">
-    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="collapse" href="#reply_<%= message.id %>">
-      <span class="glyphicon glyphicon-share-alt"></span> Reply
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="collapse" href="#reply_<%= message.id %>">
+      <span class="fa fa-share-alt"></span> Reply
     </button>     
   </div>
 </div>

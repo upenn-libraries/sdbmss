@@ -5,14 +5,14 @@
 <p class="text-center">
   <% if params[:comment_sort] == "desc" %>
     <% comments = comments.reverse %>
-    <%= link_to "Sort by Oldest First", request.params.merge({:comment_sort => "asc"}), class: "btn btn-sm btn-default" %>
+    <%= link_to "Sort by Oldest First", request.params.merge({:comment_sort => "asc"}), class: "btn btn-sm btn-secondary" %>
   <% else %>
-    <%= link_to "Sort by Newest First", request.params.merge({:comment_sort => "desc"}), class: "btn btn-sm btn-default" %>
+    <%= link_to "Sort by Newest First", request.params.merge({:comment_sort => "desc"}), class: "btn btn-sm btn-secondary" %>
   <% end %>
 </p>
 <% comments.each do |comment| %>
   <div class="panel-default panel panel-comment" id="comment_<%= comment.id %>" name="comment_<%= comment.id %>">
-    <div class="panel-body comment">
+    <div class="card-body comment">
       <% if comment.deleted %>
         <div class="row">
           <div class="col-sm-12">
@@ -21,10 +21,10 @@
         </div>
       <% else %>
         <div class="row">
-          <div class="col-xs-5">
+          <div class="col-5">
             <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %><br/>
           </div>
-          <div class="col-xs-2 text-center">
+          <div class="col-2 text-center">
             <% if current_user %>
               <% if (r = current_user.ratings.where(ratable_type: "Comment", ratable_id: comment.id).first) %>
                 <%= render partial: "ratings/delete", locals: {rating: r } %>
@@ -33,7 +33,7 @@
               <% end %>
             <% end %>
           </div>
-          <div class="col-xs-5 text-right">
+          <div class="col-5 text-right">
             <%= comment.created_at.to_formatted_s(:date_and_time) %>
           </div>
           <div class="col-sm-12 comment-toggle">
@@ -42,10 +42,10 @@
           <div class="comment-controls">
             <% if can? :edit, comment %>
               <%= link_to(comment_path(comment, format: 'html'),  method: :delete, data: { confirm: 'Are you sure?' }) do %>
-                <span class="glyphicon glyphicon-remove"></span>
+                <span class="fa fa-times"></span>
               <% end %>
               <a onclick="$('#comment_<%= comment.id %> .comment-toggle').toggleClass('hide');" class='comment-toggle'>
-                <span class="glyphicon glyphicon-edit"></span>
+                <span class="fa fa-pencil"></span>
               </a><br>  
             <% end %>
           </div>
@@ -57,7 +57,7 @@
         </div>
       <% end %>
     </div>
-    <div class="panel-footer">
+    <div class="card-footer">
       <!-- can only reply to a non-deleted comment -->
       <% comment.replies.each do |reply| %>
         <div class="row panel-comment" id="reply_<%= reply.id %>" style="border-bottom: 1px solid #ddd; margin-bottom: 5px; padding-bottom: 5px;">
@@ -78,10 +78,10 @@
             <div class="comment-controls">
               <% if can? :edit, reply %>
               <%= link_to(reply_path(reply, format: 'html'),  method: :delete, format: 'json', data: { confirm: 'Are you sure?' }) do %>
-                <span class="glyphicon glyphicon-remove"></span>
+                <span class="fa fa-times"></span>
               <% end %>
               <a onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');">
-                <span class="glyphicon glyphicon-edit"></span></a>
+                <span class="fa fa-pencil"></span></a>
               <% end %>
             </div>
 
@@ -89,9 +89,9 @@
               <div class="col-sm-12 form form-inline">
                 <div class="input-group textarea-group">
                   <%= text_area_tag :reply, reply.reply, class: 'form-control', rows: 1, placeholder: "Begin your reply here..." %>            
-                  <div class="input-group-btn textarea-group-btn">
-                    <%= submit_tag 'Confirm', class: 'btn btn-default' %>
-                    <a onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');" href="" class='btn btn-default'>Cancel</a>
+                  <div class="input-group-append textarea-group-btn">
+                    <%= submit_tag 'Confirm', class: 'btn btn-secondary' %>
+                    <a onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');" href="" class='btn btn-secondary'>Cancel</a>
                   </div>
                 </div>
               </div>
@@ -109,9 +109,9 @@
             <div class="input-group textarea-group">
               <%= hidden_field_tag :comment_id, comment.id %>
               <%= text_area_tag :reply, '', class: 'form-control', rows: 1, placeholder: "Begin your reply here..." %>
-              <div class="input-group-btn textarea-group-btn">
-                <%= submit_tag 'Add Reply', class: 'btn btn-default textarea-btn' %>
-                <a href="#comment_<%= comment.id %> .add-reply-toggle" data-toggle="collapse" class='btn btn-default textarea-btn'>Cancel</a>            
+              <div class="input-group-append textarea-group-btn">
+                <%= submit_tag 'Add Reply', class: 'btn btn-secondary textarea-btn' %>
+                <a href="#comment_<%= comment.id %> .add-reply-toggle" data-toggle="collapse" class='btn btn-secondary textarea-btn'>Cancel</a>            
               </div>
             </div>
           <% end %>

@@ -9,10 +9,10 @@
   <div class="col-sm-5">
 
     <div class="panel <%= @target ? 'panel-danger' : 'panel-default' %>">
-      <div class="panel-heading">
+      <div class="card-header">
         <h4 class="text-center"><%= link_to @model.public_id, place_path(@model) %></h4>
       </div>
-      <div class="panel-body">
+      <div class="card-body">
         <dl class="document-metadata dl-horizontal dl-invert">
           <dt>Name</dt>
           <dd>
@@ -32,7 +32,7 @@
     <% if @target %>
       <%= form_tag merge_place_path(@model) do %>
       <div class="">
-          <div class="panel-body text-center">
+          <div class="card-body text-center">
               <div><span class='h3'>Confirm</span></div>
               <p>Are you sure? <strong><%= @model.public_id %></strong> will be <strong class="text-danger">deleted.</strong></p>
                   <input type="hidden" name="confirm" value="yes"/>
@@ -42,9 +42,9 @@
               <a class="btn btn-warning" href="<%= merge_place_path(@model) %>">Cancel</a>
           </div>
       </div>
-      <span class="glyphicon glyphicon-arrow-right chevron"></span>
+      <span class="fa fa-arrow-right chevron"></span>
       <div class="">
-          <div class="panel-body text-center">
+          <div class="card-body text-center">
               <%= link_to "Swap Places", merge_place_path(@target, :target_id => @model.id), class: 'btn btn-info' %>
           </div>
       </div>
@@ -55,11 +55,11 @@
   <div class="col-sm-5">
     <% if @target %>
 
-      <div class="panel panel-success">
-        <div class="panel-heading">
+      <div class="card border-success">
+        <div class="card-header">
           <h4 class="text-center"><%= link_to @target.public_id, place_path(@target) %></h4>
         </div>
-        <div class="panel-body">
+        <div class="card-body">
           <dl class="document-metadata dl-horizontal dl-invert">
             <dt>Name</dt>
             <dd>
@@ -78,19 +78,19 @@
       <%= form_tag merge_place_path(@model) do %>
         <div class="input-group">
           <input type="text" class="form-control" name="target_id" placeholder="Enter the target record ID">
-          <span class="input-group-btn">
-            <input type="submit" value="Select" class="btn btn-default">Select</input>
+          <span class="input-group-append">
+            <input type="submit" value="Select" class="btn btn-secondary">Select</input>
           </span>
         </div>
       <% end %>
 
       <br>
 
-      <div class="panel panel-primary">
-        <div class="panel-heading">
+      <div class="card border-primary">
+        <div class="card-header">
           <h4 class="text-center">Suggestions</h4>
         </div>
-        <div class="panel-body">
+        <div class="card-body">
           <table class="table">
             <tbody>
               <% @suggestions.each do |suggestion| %>

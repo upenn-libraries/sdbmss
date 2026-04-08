@@ -31,7 +31,7 @@
         </div>
         <div class="row search-info" ng-show="searchAttempted">
             <div class="col-sm-12 form-inline text-right">
-                <span class='pull-left' style='line-height: 34px;'>Showing {{ sources.length }}
+                <span class='float-left' style='line-height: 34px;'>Showing {{ sources.length }}
                 of {{ total || 0 }} results.</span>
                 Sort by
                 <select name="" id="find_order" class="form-control" ng-model="order" ng-change="findSourceCandidates()">
@@ -64,7 +64,7 @@
     <tbody>
         <tr ng-repeat="source in sources track by $index">
                 <td>
-                    <a id="create-entry-link-{{ source.id }}" class='btn btn-default' ng-click="setSource(source)">Select</a>
+                    <a id="create-entry-link-{{ source.id }}" class='btn btn-secondary' ng-click="setSource(source)">Select</a>
                 </td>
                 <td>
                     <% if true %>

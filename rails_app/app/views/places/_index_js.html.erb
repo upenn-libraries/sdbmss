@@ -39,7 +39,7 @@
  $(document).ready(function() {
     //$("#spinner").hide();
 
-    $("#search_submit").after($("<a id='open-map' title='Map display' class='btn btn-default'><span class='glyphicon glyphicon-map-marker'></span></a>"));
+    $("#search_submit").after($("<a id='open-map' title='Map display' class='btn btn-secondary'><span class='fa fa-map-marker'></span></a>"));
 
     $("#search_results").after($("<div id='map'><button id='close-map' type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>"));
 
@@ -150,7 +150,7 @@
 
         return [
             {
-                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',//'<a href="#" class="btn btn-default btn-blank btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
+                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',//'<a href="#" class="btn btn-secondary btn-blank btn-xs fa fa-square-o hideIfReviewed" id="select-all"></a>',
                 orderable: false,
                 className: "text-center unreviewed_only",
                 render: function (data, type, full, meta) {
@@ -158,8 +158,8 @@
                         /*return  '' +
                                 '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' +
                                 '<label for="checkbox_' + meta.row + '">' +
-                                '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-unchecked unchecked"></a>' +
-                                '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-check checked"></a>' +
+                                '<a class="btn btn-secondary btn-xs btn-blank fa fa-square-o unchecked"></a>' +
+                                '<a class="btn btn-secondary btn-xs btn-blank fa fa-check checked"></a>' +
                                 '</label>' + '';*/
                         return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     //}

@@ -15,7 +15,7 @@
 <% end %>
 <% content_for :breadcrumbs do %>
   <li class="active"><%= link_to "Manage Notifications", notifications_path %></li>
-  <li><%= link_to main_app.edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> Notification Settings <% end %></li>
+  <li><%= link_to main_app.edit_user_registration_path do %> <span class="fa fa-cog"></span> Notification Settings <% end %></li>
 <% end %>
 <div class="row">
   <div class="col-sm-12 text-center">
@@ -32,11 +32,11 @@
   </div>
   <div class="col-sm-6 text-right">
     <div class="btn-group">
-      <%= link_to read_many_notifications_path(ids: @notifications.map(&:id), active: false, page: @page), class: 'btn btn-default' do %>
-        <span class="glyphicon glyphicon-ok-circle"></span> Mark All On Page As Read
+      <%= link_to read_many_notifications_path(ids: @notifications.map(&:id), active: false, page: @page), class: 'btn btn-secondary' do %>
+        <span class="fa fa-check-circle"></span> Mark All On Page As Read
       <% end %>
       <%= link_to delete_many_notifications_path(ids: @notifications.map(&:id), page: @page), :method => :delete, class: 'btn btn-danger' do %>
-        <span class="glyphicon glyphicon-remove"></span> Delete All On Page
+        <span class="fa fa-times"></span> Delete All On Page
       <% end %>      
     </div>
   </div>
@@ -47,7 +47,7 @@
 <% @notifications.each do |notification| %>
   <div class="btn-group notification-btn">
     <% if notification.title %>
-      <div class="btn-default btn one-line text-left">
+      <div class="btn-secondary btn one-line text-left">
         <% if notification.notified %>
           <% 
             if notification.notified.class == User
@@ -58,26 +58,26 @@
           %>
           <%= link_to url, :title => notification.title do %>
             <% if notification.active %>
-              <span class="glyphicon glyphicon-exclamation-sign"></span>
+              <span class="fa fa-exclamation-circle"></span>
               <span class="title"><%= notification.title %></span>
             <% else %>
               <span class="title"><%= notification.title %></span>
             <% end %>
           <% end %>
         <% else %>
-          <span class="title text-muted"><span class="glyphicon glyphicon-warning-sign text-warning"></span> <%= notification.title %></span>
+          <span class="title text-muted"><span class="fa fa-exclamation-triangle text-warning"></span> <%= notification.title %></span>
         <% end %>
         <%= notification.created_at.to_formatted_s(:long) %>
       </div>
       <% if notification.active %>
-        <%= link_to notification_path(notification, active: false), method: :put, class: 'btn btn-default' do %>
-          <span class="glyphicon glyphicon-ok-circle"></span> Mark as Read
+        <%= link_to notification_path(notification, active: false), method: :put, class: 'btn btn-secondary' do %>
+          <span class="fa fa-check-circle"></span> Mark as Read
         <% end %>
       <% else %>
-        <a class="btn btn-default disabled"><span class="glyphicon glyphicon-ok-circle"></span> Mark as Read</a>
+        <a class="btn btn-secondary disabled"><span class="fa fa-check-circle"></span> Mark as Read</a>
       <% end %>
       <%= link_to(notification_path(notification, format: 'html'), method: :delete, class: "btn btn-danger") do %>
-        <span class="glyphicon glyphicon-remove"></span> Delete
+        <span class="fa fa-times"></span> Delete
       <% end %>
     <% end %>
   </div>

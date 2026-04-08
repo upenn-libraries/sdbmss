@@ -6,7 +6,7 @@
       </h4>
       <% users.each do |user_id, details| %>
 
-      <div class="collapse in">
+      <div class="collapse show">
         <h5 class='text-center'>
             <% user = @users.select{ |u| u.id == user_id.to_i }.first %>
             <!-- using partials makes this take longer?? -->
@@ -17,11 +17,11 @@
                   <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><em style="padding: 20px;" class='text-muted'><span class="glyphicon glyphicon-briefcase"></span> <%= user.role %></em></li>
-                  <li><a href="<%= main_app.profile_path(username: user.username) %>"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-                  <li><a href="<%= main_app.new_private_message_path(user_id: [user.id]) %>"><span class="glyphicon glyphicon-envelope"></span> Send Message</a></li>
+                  <li><em style="padding: 20px;" class='text-muted'><span class="fa fa-briefcase"></span> <%= user.role %></em></li>
+                  <li><a href="<%= main_app.profile_path(username: user.username) %>"><span class="fa fa-user"></span> Profile</a></li>
+                  <li><a href="<%= main_app.new_private_message_path(user_id: [user.id]) %>"><span class="fa fa-envelope"></span> Send Message</a></li>
                   <% if current_user == user %>
-                  <li><%= link_to main_app.edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> My Settings <% end %></li>
+                  <li><%= link_to main_app.edit_user_registration_path do %> <span class="fa fa-cog"></span> My Settings <% end %></li>
                   <% end %>
                 </ul>
               </span>
@@ -35,13 +35,13 @@
         
         <div class="">
           <% details.reverse_each do |transaction_id, detail| %>
-          <div class="panel panel-default activity">
-            <div class="panel-heading">
+          <div class="card activity">
+            <div class="card-header">
               <%= Activity.where(transaction_id: transaction_id).first.created_at.to_formatted_s(:long) %>
             </div>
-            <div class="panel-body text-muted" style="overflow: hidden; text-overflow: ellipsis;">
+            <div class="card-body text-muted" style="overflow: hidden; text-overflow: ellipsis;">
               <div class="row">
-                <div class="col-xs-12">
+                <div class="col-12">
                   <%= sanitize simple_format detail[:details] %>
                 </div>                
               </div>

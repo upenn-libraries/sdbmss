@@ -1,11 +1,11 @@
 <% manuscript = record %>
-<div class="panel-heading">
+<div class="card-header">
     <strong class="h4"><%= link_to manuscript.public_id, manuscript_path(manuscript) %></strong>
     <% if !manuscript.reviewed %>
-          <span class="alert alert-warning alert-sm"><span class="glyphicon glyphicon-alert"></span> Unapproved</span>
+          <span class="alert alert-warning alert-sm"><span class="fa fa-exclamation-triangle"></span> Unapproved</span>
     <% end %>
 </div>
-<div class="panel-body">
+<div class="card-body">
 <dl class="document-metadata">
   <dt>Title(s)</dt>
   <dd>
@@ -15,6 +15,6 @@
   <dd>This Manuscript is linked to <%= manuscript.entries.count %> entries.</dd>
 </dl>
 <div class="text-center text-muted">
-  <span class="glyphicon glyphicon-time"></span> Added On <%= manuscript.created_at.to_formatted_s(:long) %>
+  <span class="fa fa-clock-o"></span> Added On <%= manuscript.created_at.to_formatted_s(:long) %>
 </div>
 </div>

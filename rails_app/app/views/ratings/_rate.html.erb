@@ -2,26 +2,26 @@
 <span class="btn-group">
     <% if (r = ratable.ratings.where(user: current_user).first) %>
         <% if r.qualifier == "confirm" %>
-            <%= link_to rating_path(r), :method => :delete, class: 'ratings rated btn btn-default btn-sm' do %>
-              <span class="glyphicon glyphicon-thumbs-up"></span>
+            <%= link_to rating_path(r), :method => :delete, class: 'ratings rated btn btn-secondary btn-sm' do %>
+              <span class="fa fa-thumbs-up"></span>
             <% end %>
-            <a class="ratings btn btn-default btn-sm" data-toggle="modal" data-target="#dispute_<%= ratable.class.name %>_<%= ratable.id %>">
-                <span class="glyphicon glyphicon-thumbs-down"></span>
+            <a class="ratings btn btn-secondary btn-sm" data-toggle="modal" data-target="#dispute_<%= ratable.class.name %>_<%= ratable.id %>">
+                <span class="fa fa-thumbs-down"></span>
             </a>
         <% else %>
-            <%= link_to rating_path(r, qualifier: "confirm", reason: ""), :method => :put, class: 'ratings btn btn-default btn-sm' do %>
-              <span class="glyphicon glyphicon-thumbs-up"></span>
+            <%= link_to rating_path(r, qualifier: "confirm", reason: ""), :method => :put, class: 'ratings btn btn-secondary btn-sm' do %>
+              <span class="fa fa-thumbs-up"></span>
             <% end %>
-            <%= link_to rating_path(r), :method => :delete, class: 'ratings rated disputed btn btn-default btn-sm' do %>
-              <span class="glyphicon glyphicon-thumbs-down"></span>
+            <%= link_to rating_path(r), :method => :delete, class: 'ratings rated disputed btn btn-secondary btn-sm' do %>
+              <span class="fa fa-thumbs-down"></span>
             <% end %>
         <% end %>
     <% else %>
-        <%= link_to(ratings_path(ratable_id: ratable.id, ratable_type: ratable.class.name, qualifier: "confirm"), method: :post, class: "btn btn-default btn-sm ratings") do %>
-            <span class="glyphicon glyphicon-thumbs-up"></span>
+        <%= link_to(ratings_path(ratable_id: ratable.id, ratable_type: ratable.class.name, qualifier: "confirm"), method: :post, class: "btn btn-secondary btn-sm ratings") do %>
+            <span class="fa fa-thumbs-up"></span>
         <% end %>
-        <a class='ratings btn btn-default btn-sm' data-toggle="modal" data-target="#dispute_<%= ratable.class.name %>_<%= ratable.id %>">
-            <span class="glyphicon glyphicon-thumbs-down"></span>
+        <a class='ratings btn btn-secondary btn-sm' data-toggle="modal" data-target="#dispute_<%= ratable.class.name %>_<%= ratable.id %>">
+            <span class="fa fa-thumbs-down"></span>
         </a>
     <% end %>
 <% end %>

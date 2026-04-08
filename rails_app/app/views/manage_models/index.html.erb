@@ -11,24 +11,24 @@
     <% if can? :manage, model_class %>
     <li>
         <% if resource_name == "entries" %>
-            <a href="" id="mark-as-approved"><span class="glyphicon glyphicon-ok"></span> Mark as approved</a>                            
+            <a href="" id="mark-as-approved"><span class="fa fa-check"></span> Mark as approved</a>                            
         <% elsif resource_name == "names" %>
-            <a href="" id="mark-as-reviewed"><span class="glyphicon glyphicon-ok"></span> Mark as approved</a>                            
+            <a href="" id="mark-as-reviewed"><span class="fa fa-check"></span> Mark as approved</a>                            
         <% else %>
-            <a href="" id="mark-as-reviewed"><span class="glyphicon glyphicon-ok"></span> Mark as approved</a>
+            <a href="" id="mark-as-reviewed"><span class="fa fa-check"></span> Mark as approved</a>
         <% end %>
     </li>
     <% end %>
     <% if resource_name == "entries" %>
     <li>
         <a href="#group_modal" data-toggle="modal" data-target="#group_modal">
-            <span class="glyphicon glyphicon-globe"></span> Add/Remove Groups
+            <span class="fa fa-globe"></span> Add/Remove Groups
         </a>
     </li>
     <% end %>
 <% end %>
 
-<div id="manage_records_info" class="modal fade panel-body" role="dialog">
+<div id="manage_records_info" class="modal fade card-body" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -64,7 +64,7 @@
             Manage <%= resource_name.capitalize %>
         <% end %>
     <% end %>                    
-        <span class="glyphicon glyphicon-info-sign"></span>
+        <span class="fa fa-info-circle"></span>
     </a>
     <!---->
     <%= render partial: "search_form" %>

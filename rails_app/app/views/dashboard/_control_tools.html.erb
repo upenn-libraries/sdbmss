@@ -1,66 +1,66 @@
     </ul>
   </div>
 </div>
-<div class="panel panel-default show-tools">
-  <div class="panel-heading">
+<div class="card show-tools">
+  <div class="card-header">
     <span class='h4'>Manage</span>
   </div>
-  <div class="panel-body">
+  <div class="card-body">
     <ul class="nav">
       <li>
         <%= link_to(main_app.entries_path) do %>
-        <span class="glyphicon glyphicon-th"></span> Entries
+        <span class="fa fa-th"></span> Entries
         <% end %>
       </li>
       <li>
         <%= link_to(main_app.sources_path) do %>
-        <span class="glyphicon glyphicon-th-large"></span> <%= can?(:index, Source) ? '' : 'My ' %>Sources
+        <span class="fa fa-th-large"></span> <%= can?(:index, Source) ? '' : 'My ' %>Sources
         <% end %>
       </li>
       <li>
         <%= link_to(main_app.manuscripts_path) do %>
-        <span class="glyphicon glyphicon-th"></span> <%= can?(:index, Manuscript) ? '' : 'My ' %>Manuscript Records
+        <span class="fa fa-th"></span> <%= can?(:index, Manuscript) ? '' : 'My ' %>Manuscript Records
         <% end %>
       </li>
       <% if can? :manage, Comment %>
       <li>
         <%= link_to(main_app.comments_path) do %>
-        <span class="glyphicon glyphicon-th-large"></span> <%= can?(:index, Comment) ? '' : 'My ' %>Comments
+        <span class="fa fa-th-large"></span> <%= can?(:index, Comment) ? '' : 'My ' %>Comments
         <% end %>
       </li>
       <% end %>
       <% if can? :manage, Name %>
       <li>
         <%= link_to(main_app.names_path) do %>
-        <span class="glyphicon glyphicon-th"></span> Names
+        <span class="fa fa-th"></span> Names
         <% end %>
       </li>
       <% end %>      
       <% if can? :manage, Place %>
       <li>
         <%= link_to(main_app.places_path) do %>
-        <span class="glyphicon glyphicon-th-large"></span> Places
+        <span class="fa fa-th-large"></span> Places
         <% end %>
       </li>
       <% end %>
       <% if can? :manage, Language %>      
       <li>
         <%= link_to(main_app.languages_path) do %>
-        <span class="glyphicon glyphicon-th"></span> Languages
+        <span class="fa fa-th"></span> Languages
         <% end %>
       </li>
       <% end %>
       <% if can? :manage, User %> 
       <li>
         <%= link_to(main_app.accounts_path) do %>
-        <span class="glyphicon glyphicon-th-large"></span> Users
+        <span class="fa fa-th-large"></span> Users
         <% end %>
       </li>
       <% end %>
       <% if can? :manage, Page %> 
       <li>
         <%= link_to(main_app.pages_path) do %>
-        <span class="glyphicon glyphicon-tasks"></span> Pages & Tooltips
+        <span class="fa fa-tasks"></span> Pages & Tooltips
         <% end %>
       </li>
       <% end %>

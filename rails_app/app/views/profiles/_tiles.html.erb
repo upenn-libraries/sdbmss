@@ -29,7 +29,7 @@
 
 <div class="grid">
   <% records.each do |record| %>
-    <div class="grid-item panel panel-default panel-preview">
+    <div class="grid-item card panel-preview">
       <%= render partial: "#{record.class.name.underscore.pluralize}/preview", locals: {record: record} %>
     </div>
   <% end %>

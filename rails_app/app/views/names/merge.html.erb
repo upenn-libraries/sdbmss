@@ -10,7 +10,7 @@
 
 <div class="col-sm-5">
     <div class='panel <%= @target.present? ? "panel-danger input-warning" : "panel-default" %>'>
-        <div class='panel-heading'>
+        <div class='card-header'>
             <span class='h3'>
                 <%= link_to @model.public_id, name_path(@model) %>
                 <% if @target.present? %>
@@ -19,11 +19,11 @@
             </span>
         </div>
         <% if @target.present? %>
-            <div class="panel-body to-delete to-delete-small">
+            <div class="card-body to-delete to-delete-small">
                 <%= render partial: "merge_form", locals: { name: @model } %>
             </div>
         <% else %>
-            <div class="panel-body">
+            <div class="card-body">
                 <table class="table">
                     <%= render partial: "main", locals: {name: @model} %>
                 </table>
@@ -36,7 +36,7 @@
 <div class='col-sm-2 text-center'>
     <% if @target %>
     <div class="">
-        <div class="panel-body text-center">
+        <div class="card-body text-center">
             <div><span class='h3'>Confirm</span></div>
             <p>Are you sure? <strong><%= @model.public_id %></strong> will be <strong class="text-danger">deleted.</strong></p>
                 <input type="hidden" name="confirm" value="yes"/>
@@ -46,10 +46,10 @@
             <a class="btn btn-warning" href="<%= merge_name_path(@model) %>">Cancel</a>
         </div>
     </div>
-    <span class="glyphicon glyphicon-arrow-right chevron"></span>
+    <span class="fa fa-arrow-right chevron"></span>
     <!--<%= image_tag 'right-arrow.png', class: 'img img-responsive chevron' %>-->
     <div class="">
-        <div class="panel-body text-center">
+        <div class="card-body text-center">
             <%= link_to "Swap Names", merge_name_path(@target, :target_id => @model.id), class: 'btn btn-info' %>
         </div>
     </div>
@@ -58,29 +58,29 @@
 <div class="col-sm-5">
     <% if @target_id.present? && @target.present? %>
             <div class='panel <%= @target.present? ? "panel-success" : "panel-default" %>'>
-                <div class='panel-heading'>
+                <div class='card-header'>
                     <span class='h3'>
                         <%= link_to @target.public_id, name_path(@target) %>
-                        <small class="pull-right" style="margin-top: -5px;">
+                        <small class="float-right" style="margin-top: -5px;">
                             <span id="editNameMerge" class="btn btn-success">Edit</span>
                             <span id="controlEditNameMerge" style="display: none;">
-                                <span id="confirmEditNameMerge" class="btn btn-default">Save</span>
+                                <span id="confirmEditNameMerge" class="btn btn-secondary">Save</span>
                                 <span id="cancelEditNameMerge" class="btn btn-warning">Cancel</span>
                             </span>
                         </small>
                     </span>
                 </div>
-                <div class="panel-body" id="mergeNameInto">
+                <div class="card-body" id="mergeNameInto">
                     <%= render partial: "merge_form", locals: { name: @target } %>
                 </div>
             </div>
     <% else %>
         <% if @target_id.present? %>
-            <div class='panel panel-danger'>
+            <div class='card border-danger'>
             <% if @warning.present? %>
-                <div class="panel-heading"><%= @warning %></div>
+                <div class="card-header"><%= @warning %></div>
             <% else %>
-                <div class="panel-heading">Could not find record #<%= @target_id %></div>
+                <div class="card-header">Could not find record #<%= @target_id %></div>
             <% end %>
             </div>
         <% end %>
@@ -95,10 +95,10 @@
                 </div>
             </div>
         <% end %>
-        <div class='panel panel-default'>
+        <div class='card'>
             <% if @similar.present? %>
-                <div class='panel-heading'><b>Suggestions</b></div>
-                <div class="panel-body" style="overflow-x: scroll;">
+                <div class='card-header'><b>Suggestions</b></div>
+                <div class="card-body" style="overflow-x: scroll;">
                 <table class='table table-striped table-responsive'>
                     <thead>
                         <tr>

@@ -26,17 +26,17 @@
         <div class="btn-group">
         <% if can?(:edit, group) %>
             <%= link_to(group_path(group, format: 'html'),  method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-xs') do %>
-              <span class="glyphicon glyphicon-remove"></span> Delete
+              <span class="fa fa-times"></span> Delete
             <% end %>
             <%= link_to(edit_group_path(group), class: 'btn btn-success btn-xs') do %>
-              <span class="glyphicon glyphicon-edit"></span> Manage
+              <span class="fa fa-pencil"></span> Manage
             <% end %>
         <% end %>
 
         <% if not group.users.include? current_user %>
             <p class='text-center'>
                 <%= link_to(add_to_group_accounts_path(ids: [current_user.id], group_id: group.id), :method => :post) do %>
-                    <span class="glyphicon glyphicon-pencil"></span> Request Membership
+                    <span class="fa fa-pencil"></span> Request Membership
                 <% end %>
             </p>
         <% end %>
@@ -49,10 +49,10 @@
               <% destroy_group_word = "Cancel Request" %>
             <% else %>
               <% destroy_group_word = "Reject Invitation" %>
-              <%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put, class: "btn btn-default btn-xs" %></li>
+              <%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put, class: "btn btn-secondary btn-xs" %></li>
             <% end %>
           <% end %>
-          <%= link_to destroy_group_word, group_user_path(group_user), :method => :delete, data: { confirm: "Are you sure you would like to leave this group?" }, class: "btn btn-xs btn-default" %>
+          <%= link_to destroy_group_word, group_user_path(group_user), :method => :delete, data: { confirm: "Are you sure you would like to leave this group?" }, class: "btn btn-xs btn-secondary" %>
         <% end %>
         </div>
       </td>

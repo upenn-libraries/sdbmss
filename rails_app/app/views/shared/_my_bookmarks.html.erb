@@ -1,5 +1,5 @@
 <% if current_user %>
-  <div class="panel panel-default dl-inline" id="my_bookmarks">
+  <div class="card dl-inline" id="my_bookmarks">
       <ul class="nav nav-tabs">
         <li ng-repeat="(name, bookmarks) in all_bookmarks" class="bookmark-nav-button" ng-class="{active: (name == active) }">
           <a ng-click="addTabToStorage(name);">{{ name }}
@@ -11,7 +11,7 @@
         <ul class="list-group bookmarks">
           <li class="list-group-item text-center" ng-if="search_tag.length > 0 && (bookmarks | filter:hasTag).length <= 0">
             <b class="text-primary">SEARCH: {{ search_tag }}</b> ... no results ...<br>
-            <a class='' ng-click="searchTag('')">Clear Search <span class="glyphicon glyphicon-remove"></span></a>
+            <a class='' ng-click="searchTag('')">Clear Search <span class="fa fa-times"></span></a>
           </li>
           <li class="list-group-item" ng-if="bookmarks.length <= 0">
             No records of this type have been bookmarked yet.
@@ -21,8 +21,8 @@
                   <dt class='h4'>
                     <strong><a href="{{ bookmark.link }}"> {{ bookmark.public_id }}</a></strong>
                     <span ng-bind-html="actionButton(bookmark)"></span> 
-                    <a href="" class='remove-bookmark control-bookmark pull-right' ng-click="removeBookmark(name, bookmark)">
-                      <span class="glyphicon glyphicon-remove"></span>
+                    <a href="" class='remove-bookmark control-bookmark float-right' ng-click="removeBookmark(name, bookmark)">
+                      <span class="fa fa-times"></span>
                     </a>
                   </dt>
               </dl>
@@ -37,15 +37,15 @@
                     <li ng-if="bookmark.tags.length <= 0" class='text-warning'>This bookmark has no tags.</li>
                     <li ng-repeat="tag in bookmark.tags" class="bookmark-tag" ng-class="{'btn-info btn-lg' : tag == search_tag, 'bg-primary' : tag != search_tag}">
                         <a href="" ng-click="searchTag(tag);">{{ tag }}</a>
-                        <a href="" class='remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="glyphicon glyphicon-remove"></span></a>
+                        <a href="" class='remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="fa fa-times"></span></a>
                     </li>
                   </ul>
                 </dd>
-                <a ng-show="!bookmark.showAddTag" href="" class="btn btn-sm btn-success" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Add Tag <span class="glyphicon glyphicon-tag"></span></a>
+                <a ng-show="!bookmark.showAddTag" href="" class="btn btn-sm btn-success" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Add Tag <span class="fa fa-tag"></span></a>
                 <div class="form-inline">
                   <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
                     <input type='text' class='form-control' placeholder="add tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
-                    <a href="" class="input-group-addon add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="glyphicon glyphicon-plus"></span></a>
+                    <a href="" class="input-group-addon add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="fa fa-plus"></span></a>
                     <a href="" class="input-group-addon add-bookmark-tag-confirm" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Cancel</a>
                   </div>
                 </div> 
@@ -60,7 +60,7 @@
         <input type="text" class="form-control" name="tag-search" placeholder="Filter By Tag..." size=12 ng-model="tagSearch" ng-keyup="$event.keyCode == 13 && searchTag(tagSearch)">
         <a href="" class="input-group-addon" ng-click="searchTag('')"><span>Clear</span></a>
       </div>
-      <a href='/bookmarks' class="pull-right text-right text-invert">Manage<br>Bookmarks</a>
+      <a href='/bookmarks' class="float-right text-right text-invert">Manage<br>Bookmarks</a>
     </div>
   </div>
 <% end %>

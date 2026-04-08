@@ -14,18 +14,18 @@
 
 
 <div class="navbar-right">
-    <ul class="nav pull-left navbar-nav">
+    <ul class="nav float-left navbar-nav">
         <li>
             <a href="" class="" id="addSearch">
-                <span class="glyphicon glyphicon-plus"></span> add term
+                <span class="fa fa-plus"></span> add term
             </a>
         </li>
     </ul>
     
-    <div class="search-form form-inline search-fieldset pull-left navbar-form">
+    <div class="search-form form-inline search-fieldset float-left navbar-form">
         <div class="input-group search-block">
-            <div class="input-group-btn">
-                <button type='button' class="btn btn-warning search-remove"> <span class="glyphicon glyphicon-remove"></span> </button>
+            <div class="input-group-append">
+                <button type='button' class="btn btn-warning search-remove"> <span class="fa fa-times"></span> </button>
             </div>
             <%= text_field_tag :search_value, params[:search_value], size: 18, placeholder: "Enter your search term...", class: "form-control" %>
             <select class="form-control" name="search_field">
@@ -55,16 +55,16 @@
         </div>
     </div>
 
-    <div class="navbar-form pull-left form-inline">
+    <div class="navbar-form float-left form-inline">
         <div class="input-group form-submission">
             <select name="op" id="search_op" class="form-control">
                 <option value="AND">All</option>
                 <option value="OR">Any</option>
             </select>
-            <div class="input-group-btn">
+            <div class="input-group-append">
                 <button id="search_submit" type="submit" class="btn btn-primary">
                     <span class="hide-mobile">Search</span>
-                    <span class="glyphicon glyphicon-search"></span>
+                    <span class="fa fa-search"></span>
                 </button>
             </div>
         </div>
