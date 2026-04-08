@@ -663,7 +663,6 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
 }
 .search-form .input-group {
   float: right;
-  clear: both;
   margin-top: 2px;
 }
 .add-search-term {
@@ -904,14 +903,15 @@ div.dataTables_paginate {
   display: inline-block;
 }
 div.dataTables_info {
-    padding-top: 8px;
     white-space: nowrap;
     display: inline-block;
-    padding: 10px;
+    padding: 6px 10px;
     background: #DFF0FF;
     border-radius: 4px;
     margin-left: 10px;
     float: none;
+    font-size: 13px;
+    vertical-align: middle;
 }
 div#search_results_length {
     display: inline-block;
@@ -927,6 +927,7 @@ div#search_results_length {
   overflow-y: scroll;
   margin: 0px;
   padding: 0px;
+  min-width: 147px;
 }
 
 .inline-right {
@@ -2336,8 +2337,17 @@ Private Message Styling
 .sdbm-table .bookmark-text, .sdbm-table .watch-text {
   display: none;
 }
-.sdbm-table .btn-group .btn-secondary:first-child {
-  margin-right: -3px;
+
+.sdbm-table .options-btn-group > .btn.btn-secondary {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  color: #6c757d;
+  padding: 4px 8px;
+  text-align: center;
+}
+.sdbm-table .options-btn-group > .btn.btn-secondary:hover {
+  background-color: #e9ecef;
+  color: #495057;
 }
 .sdbm-table .btn-secondary a {
   color: #333;
@@ -2871,4 +2881,218 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 }
 small.document-disclaimer {
   margin-left: 10px;
+}
+
+/* ===== Manage Entries (entries index) BS4 fixes ===== */
+
+/* 1. Search form: force inline (row) layout instead of stacked column */
+nav.navbar.navbar-light .search-form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+}
+nav.navbar.navbar-light .search-form > .navbar-left {
+  margin-right: auto;
+}
+nav.navbar.navbar-light .search-form .navbar-right {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+nav.navbar.navbar-light .search-form .navbar-right .search-fieldset {
+  float: none;
+}
+nav.navbar.navbar-light .search-form .navbar-right .search-fieldset .search-block {
+  flex-wrap: nowrap;
+}
+nav.navbar.navbar-light .search-form .navbar-right > .form-inline {
+  flex-wrap: nowrap;
+}
+nav.navbar.navbar-light .search-form .search-block .form-control {
+  width: auto;
+  min-width: 0;
+}
+nav.navbar.navbar-light .search-form .search-block select.form-control {
+  max-width: 130px;
+}
+
+/* 2. Manage Entries navbar-brand: grey like staging */
+nav.navbar.navbar-light .navbar-brand {
+  color: #777;
+  font-size: 18px;
+}
+nav.navbar.navbar-light .navbar-brand:hover {
+  color: #555;
+}
+
+/* 3 & 4. Search-remove (X) and Search button: match form-control height */
+.search-form .btn.search-remove,
+.search-form .btn#search_submit {
+  font-size: 12px;
+  padding: 0.375rem 0.75rem;
+  line-height: 1.5;
+}
+
+/* 2. X button: rounded on left side (prepend position — HTML uses input-group-append but visually it's a prepend) */
+.search-form .input-group-append:first-child .btn.search-remove {
+  border-top-left-radius: 0.25rem !important;
+  border-bottom-left-radius: 0.25rem !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+/* 3. search_op (All/Any) select: give it enough width to show text, inline with Search */
+#search_op {
+  min-width: 68px;
+  width: auto !important;
+}
+/* 4. All dropdown + Search button must be inline, not stacked */
+.search-form .form-submission {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+.search-form .form-submission .input-group-append {
+  flex-shrink: 0;
+}
+
+/* "add term" link: keep on one line */
+#addSearch {
+  white-space: nowrap;
+}
+
+/* 5. Show [50] entries: spacing between label text and dropdown, compact select */
+div.dataTables_length label {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  white-space: nowrap;
+  font-size: 13px;
+}
+div.dataTables_length select {
+  margin: 0 0.25em;
+  padding: 0.25rem 0.5rem;
+  font-size: 13px;
+  height: auto;
+  line-height: 1.5;
+}
+
+/* 6. col-sm-5 mobile-center row: all elements inline */
+.dataTables_wrapper > .row > .col-sm-5.mobile-center {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  padding: 0px;
+}
+.dataTables_wrapper > .row > .col-sm-7.mobile-center {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: right;
+  padding: 0px;
+}
+.dataTables_wrapper > .row > .col-sm-7.text-right {
+  justify-content: flex-end;
+}
+
+/* 7. Pagination: BS4 requires .page-item on <li> and .page-link on <a> — handled via CSS fallback */
+div.dataTables_paginate .pagination > li {
+  position: relative;
+  display: block;
+}
+div.dataTables_paginate .pagination > li > a {
+  position: relative;
+  display: block;
+  padding: 0.375rem 0.6rem;
+  margin-left: -1px;
+  line-height: 1.25;
+  color: #4e76b3;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  font-size: 13px;
+  text-decoration: none;
+}
+div.dataTables_paginate .pagination > li > a:hover {
+  color: #286090;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+div.dataTables_paginate .pagination > li.active > a {
+  z-index: 1;
+  color: #fff;
+  background-color: #4e76b3;
+  border-color: #4e76b3;
+}
+div.dataTables_paginate .pagination > li.disabled > a {
+  color: #6c757d;
+  pointer-events: none;
+  background-color: #fff;
+  border-color: #dee2e6;
+}
+div.dataTables_paginate .pagination > li:first-child > a {
+  margin-left: 0;
+  border-top-left-radius: 0.25rem;
+  border-bottom-left-radius: 0.25rem;
+}
+div.dataTables_paginate .pagination > li:last-child > a {
+  border-top-right-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+}
+
+/* 8. Column dropdown: ensure proper toggle behavior */
+.btn-table-tool .dropdown-menu {
+  display: none;
+}
+.btn-table-tool .dropdown-menu.show {
+  display: block;
+}
+
+/* 5. btn-table-tool: match pagination height, outline style with borders */
+.btn-table-tool {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+.btn-table-tool .btn {
+  padding: 0.375rem 0.6rem;
+  font-size: 13px;
+  line-height: 1.25;
+  border: 1px solid #dee2e6;
+  background-color: #fff;
+  color: #333;
+}
+.btn-table-tool .btn:hover {
+  background-color: #e9ecef;
+  color: #000;
+}
+.btn-table-tool .btn + .btn,
+.btn-table-tool .btn-group + .btn,
+.btn-table-tool .btn-group + .btn-group,
+.btn-table-tool .btn + .btn-group {
+  margin-left: -1px;
+}
+
+/* 9. DataTable horizontal scrolling */
+div.dataTables_scroll {
+  overflow-x: auto;
+  width: 100%;
+  margin-top: 4px;
+}
+div.dataTables_wrapper {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* 10. Bottom margin on manage page + full-width rows */
+.dataTables_wrapper {
+  margin-bottom: 30px;
+}
+.dataTables_wrapper > .row {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
 }

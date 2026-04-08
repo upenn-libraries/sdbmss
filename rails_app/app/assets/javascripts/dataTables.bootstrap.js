@@ -101,7 +101,7 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 
 				if ( btnDisplay ) {
 					node = $('<li>', {
-							'class': classes.sPageButton+' '+btnClass,
+							'class': classes.sPageButton+' page-item '+btnClass,
 							'aria-controls': settings.sTableId,
 							'tabindex': settings.iTabIndex,
 							'id': idx === 0 && typeof button === 'string' ?
@@ -109,7 +109,8 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 								null
 						} )
 						.append( $('<a>', {
-								'href': '#'
+								'href': '#',
+								'class': 'page-link'
 							} )
 							.html( btnDisplay )
 						)

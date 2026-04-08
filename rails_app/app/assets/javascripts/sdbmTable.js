@@ -233,6 +233,7 @@ function relation (type) {
                     option.addClass('disabled');
                 }
                 option.click( function (e) {
+                    e.stopPropagation(); // prevent BS4 dropdown from closing on item click
                     var n = Number($(this).attr('index'));
                     the_table.columns([n]).visible(!the_table.columns( [n]).visible()[0]);
                     $(this).toggleClass('disabled');
