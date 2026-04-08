@@ -155,8 +155,9 @@ describe "Data entry", :js => true do
 
     it "should NOT find source by title on Select Source page", :known_failure, :flaky do
       visit new_entry_path
-      find('#select_source').click
-      expect(page).to have_content('Search for Existing Source')
+      expect(page).to have_selector('#select_source')
+      find('#select_source').trigger('click')
+      expect(page).to have_selector('.modal-title', text: 'Search for Existing Source', visible: true)
       expect(page).to have_field('title')
       fill_in 'title', :with => 'nonexistentjunk'
       expect(page).to have_content "No source found matching your criteria."

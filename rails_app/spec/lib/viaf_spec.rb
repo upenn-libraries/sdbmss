@@ -4,6 +4,7 @@ require 'viaf'
 describe "VIAF" do
   def stub_viaf_response(body)
     response = double('viaf response', code: '200', body: body)
+    allow(response).to receive(:[]).with("location").and_return(nil)
     allow(VIAF).to receive(:make_viaf_request).and_return(response)
     response
   end
