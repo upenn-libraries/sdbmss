@@ -115,8 +115,9 @@ describe "Data entry", :js => true do
 
     it "should find source by date on Select Source page", :known_failure, :flaky do
       visit new_entry_path
-      find('#select_source').click
-      expect(page).to have_content('Search for Existing Source')
+      expect(page).to have_selector('#select_source')
+      find('#select_source').trigger('click')
+      expect(page).to have_selector('.modal-title', text: 'Search for Existing Source', visible: true)
       expect(page).to have_field('date')
       fill_in 'date', :with => '2013'
       expect(page).to have_content @source.title

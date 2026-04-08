@@ -3,6 +3,14 @@ require 'json'
 require "rails_helper"
 
 describe "Browse Dericci Records", :js => true do
+  def open_verified_name_modal
+    3.times do
+      find("#verify", visible: true).trigger("click")
+      return if page.has_selector?("#searchNameAuthority", visible: true, wait: 2)
+    end
+
+    raise Capybara::ElementNotFound, "Verified-name modal did not open"
+  end
 
   before :each do
     @user = User.where(role: "admin").first
@@ -100,15 +108,15 @@ describe "Browse Dericci Records", :js => true do
   it "should allow an admin to add a verified link", :known_failure, :flaky do
     visit dericci_record_path(@d)
     expect(page).to have_content("Find Verified Name")
-    click_link("verify")
-    expect(page).to have_content("in Name Authority")
-    expect(page).to have_content("Select")
+    open_verified_name_modal
+    expect(page).to have_selector("#searchNameAuthority", visible: true)
+    expect(page).to have_selector("#select-name-table", visible: true)
     expect(page).to have_content("Camillo")
-    find(".selectName", match: :first).click
-    expect(page).not_to have_content("in Name Authority")
+    find("#select_name_0", visible: true).click
+    expect(page).not_to have_selector("#searchNameAuthority", visible: true)
     expect(page).to have_content("Camillo")
-    expect(page).to have_content "Save"
-    click_link("Save")
+    expect(page).to have_selector("a.btn.btn-success.btn-xs", text: "Save")
+    find("a.btn.btn-success.btn-xs", text: "Save").click
     expect(page).to have_content("Camillo")
   end
 
