@@ -51,7 +51,7 @@ a {
 }
 .thredded--main-container {
   max-width: none;
-  padding: 0;  
+  padding: 0;
   font-family: Sarala, Ubuntu, sans-serif;
   font-size: inherit;
   color: inherit;
@@ -60,11 +60,11 @@ a {
   background: #337ab7;
   border-color: #2e6da4;
 }
-.thredded--button:active, 
+.thredded--button:active,
 .thredded--button:focus,
 .thredded--button:hover,
-.thredded--form--submit:active, 
-.thredded--form--submit:focus, 
+.thredded--form--submit:active,
+.thredded--form--submit:focus,
 .thredded--form--submit:hover {
   background: #286090;
   border-color: #204d74;
@@ -212,7 +212,7 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
   padding: 15px 10px;
 }
 #header-navbar img {
-  max-height: 50px; 
+  max-height: 50px;
   padding-top: 3px;
   display: inline-block;
 }
@@ -255,7 +255,7 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
 }
 
 /* There's some tweaky stuff in "#header-navbar .navbar-brand" rule that we're overriding here, probably fragile */
-#header-navbar .navbar-brand { 
+#header-navbar .navbar-brand {
   background: none;
   overflow: visible;
   text-indent: 0;
@@ -357,10 +357,12 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
     text-align: left;
     padding-right: 10px;
 }
-.panel.document {
+.panel.document,
+.card.document {
   margin-top: 0px !important;
   padding-top: 0px !important;
-  border-bottom-style: solid !important;
+  border: 1px solid #ddd;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 .dl-inline .document-show-heading {
   padding: 0px !important;
@@ -380,8 +382,19 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
   border-bottom: 1px solid #ddd;
   margin: 0px 0px 6px 0px;
 }
+.dl-horizontal dt {
+  float: left;
+  width: 160px;
+  clear: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .dl-horizontal dd {
-  margin-left: 0px;
+  margin-left: 180px;
+}
+.document-metadata.dl-horizontal dd {
+  margin-left: 0;
   padding-left: 180px;
 }
 
@@ -524,7 +537,7 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
 }
 
 /* Development link */
-#header-navbar .development { 
+#header-navbar .development {
   display: none;
   padding-top: 15px;
   color: red;
@@ -533,12 +546,34 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
   right: 40px;*/
 }
 
-#search-navbar { 
+#search-navbar {
   background-color: #eee1be;
   border: 1px solid #e0d1a8;
   box-shadow: none;
   margin-bottom: 10px;
   z-index: 10;
+}
+#search-navbar > .container {
+  width: 100%;
+}
+#search-navbar .catalog-search-form {
+  flex: 1;
+}
+#search-navbar .catalog-search-info {
+  flex: none;
+  flex-wrap: nowrap;
+}
+#search-navbar .catalog-search-info .navbar-nav {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+#search-navbar .catalog-search-info .nav > li {
+  white-space: nowrap;
+}
+#search-navbar .catalog-search-info .nav > li > a {
+  padding: 15px 10px;
+  white-space: nowrap;
 }
 .navbar .nav > li > a, .navbar li > label {
   padding: 15px 10px;
@@ -572,6 +607,12 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
 
 .catalog-search-form {
   width: 60%;
+}
+.catalog-search-form .row {
+  width: 100%;
+}
+.catalog-search-form .row > div {
+  padding-left: 30px;
 }
 .search-form label {
   margin: 0px;
@@ -607,7 +648,7 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
 .search-form .form-control { font-size: 12px; }
 
 /* invalid input */
-.form-control.ng-invalid { 
+.form-control.ng-invalid {
   background-color: #f2dede !important;
   border: 1px red solid !important;
 }
@@ -794,7 +835,7 @@ h1 { font-size: 30px; margin-top: 0; }
 .faq .checkbox + label {
   background: #eee;
   line-height: 50px;
-  margin: 0px; 
+  margin: 0px;
   color: white;
   border-radius: 4px;
   padding: 2px;
@@ -839,6 +880,16 @@ h1 { font-size: 30px; margin-top: 0; }
 }
 .pagination {
   margin: 5px 0px;
+}
+.page-item.active .page-link {
+  background-color: #4e76b3;
+  border-color: #4e76b3;
+}
+.page-link {
+  color: #4e76b3;
+}
+.page-link:hover {
+  color: #286090;
 }
 td.dataTables_empty {
   text-indent: 400px;
@@ -1067,7 +1118,7 @@ li.provenance:hover, li.provenance:focus {
   border-color: #ddedff;
 }
 
-.disabled .btn-add-name, 
+.disabled .btn-add-name,
 .disabled .btn-add-name:hover {
   border-color: #ddd;
   color: #ddd;
@@ -1220,9 +1271,9 @@ div[ui-sortable] {
 .input-block.provenance-block:before {
   line-height: 36px;
 }
-fieldset[disabled=disabled] a, 
-fieldset[disabled=disabled] .form-control, 
-fieldset[disabled=disabled] .h4, 
+fieldset[disabled=disabled] a,
+fieldset[disabled=disabled] .form-control,
+fieldset[disabled=disabled] .h4,
 fieldset[disabled=disabled] .control-label,
 fieldset[disabled=disabled] legend {
   color: #999 !important;
@@ -1451,10 +1502,10 @@ fieldset[disabled=disabled] a {
 /* put on A elements without hrefs */
 .sdbmss-form .clickable { cursor: pointer; }
 
-.sdbmss-form .add-link-container { 
-  min-width: 15px; 
-  min-height: 1px; 
-  padding-right: 10px; 
+.sdbmss-form .add-link-container {
+  min-width: 15px;
+  min-height: 1px;
+  padding-right: 10px;
 }
 .edit-label .affix-top {
   position: relative;
@@ -1649,7 +1700,7 @@ so that gray backdrop shvows up correctly */
   }
 }/**/
 
-@media (max-width: 1255px) {  
+@media (max-width: 1255px) {
   div.show-mobile-lg {
     display: block;
   }
@@ -2315,6 +2366,13 @@ Private Message Styling
     border: none;
     box-shadow: none;
 }
+.constraints-container .catalog_startOverLink {
+    float: right;
+}
+.constraints-container .text-muted,
+#sortAndPerPage .text-muted {
+    color: #333 !important;
+}
 .searches span.constraint {
   text-decoration: underline;
   margin: 0px 3px;
@@ -2356,7 +2414,7 @@ Private Message Styling
     border-radius: 12px;
     top: 4px;
     position: relative;
-    transition: all 0.5s;    
+    transition: all 0.5s;
     left: -13px;
 }
 .toggle-container input:focus, .toggle-container input:active {
@@ -2379,7 +2437,7 @@ Private Message Styling
 
 .breadcrumb li.active a {
     font-weight: bold;
-} 
+}
 
 .navbar-toggle {
   float: none;
@@ -2399,10 +2457,6 @@ Private Message Styling
 }
 .btn-header-hamburger:hover, .btn-header-hamburger:active, .btn-header-hamburger:focus {
   background: transparent !important;;
-}
-
-.navbar-collapse {
-  padding: 0px;
 }
 
 #proposed-history .provenance_remove {
@@ -2480,11 +2534,11 @@ Private Message Styling
   margin: 0px;
   padding: 0px;
 }
-#control-panel .dropdown a:hover, 
-#control-panel .dropdown a:focus, 
-#control-panel .dropdown a:active, 
-#control-panel .dropdown-menu a:hover, 
-#control-panel .dropdown-menu a:focus,  
+#control-panel .dropdown a:hover,
+#control-panel .dropdown a:focus,
+#control-panel .dropdown a:active,
+#control-panel .dropdown-menu a:hover,
+#control-panel .dropdown-menu a:focus,
 #control-panel .dropdown-menu a:active {
   text-decoration: none;
   background-color: #5879ab !important;
@@ -2705,7 +2759,7 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
   border-color: #122b40;
 }
 .panel-primary {
-   border-color: #4e76b3; 
+   border-color: #4e76b3;
 }
 .bg-primary {
   background: #4E76B4;
@@ -2726,13 +2780,13 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 .comment-toggle {
   overflow: hidden;
   text-overflow: ellipsis;
-  border-top: 1px solid #eee; 
-  margin-top: 5px; 
+  border-top: 1px solid #eee;
+  margin-top: 5px;
   padding-top: 5px;
 }
 .reply-toggle {
-  border-top: 1px solid #ddd; 
-  margin-top: 5px; 
+  border-top: 1px solid #ddd;
+  margin-top: 5px;
   padding-top: 5px;
 }
 /* ...comment out if need be */
@@ -2792,7 +2846,7 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 }
 .btn-tag {
   background-color: #4d6b98;
-  border-color: #4d6b98;          
+  border-color: #4d6b98;
 }
 .btn-tag:hover, .btn-tag:active, .btn-tag:focus {
   background: #999;

@@ -107,7 +107,9 @@ Rails.application.routes.draw do
   resources :solr_document, only: [:show], path: "catalog", controller: "catalog" do
     member { post "track" }
   end
-  resources :catalog, only: [:show]
+  resources :catalog, only: [:show] do
+    member { post "track" }
+  end
 
   get "/advanced/", to: 'advanced#index', as: 'advanced_search'
 

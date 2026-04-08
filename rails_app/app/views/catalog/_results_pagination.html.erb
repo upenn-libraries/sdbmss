@@ -10,7 +10,7 @@
   <div class="col-md-3">
     <% if !@response.empty? && current_user %>
       <div style="margin: 0px 0px 10px 0px;">
-        <a class="btn btn-secondary export-csv" onclick="exportCSV('<%= search_results_as_csv_path %>')">Download results as CSV</a>
+        <a class="btn btn-outline-secondary export-csv" style="white-space: nowrap;" onclick="exportCSV('<%= search_results_as_csv_path %>')">Download results as CSV</a>
       </div>
     <% end %>
   </div>
