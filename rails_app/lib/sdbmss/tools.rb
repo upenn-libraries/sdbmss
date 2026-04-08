@@ -29,7 +29,7 @@ module SDBMSS
       # @param interval_seconds [Integer] seconds to sleep between attempts
       # @param out [IO] output stream for error messages
       # @return [Boolean] true if the app responded 200 within the timeout, false otherwise
-      def sdbm_available?(host, timeout_seconds: 180, interval_seconds: 2, out: $stdout)
+      def sdbm_available?(host, timeout_seconds: 240, interval_seconds: 2, out: $stdout)
         uri = URI.parse("http://#{host}")
         started_at = Time.now
 
@@ -313,12 +313,14 @@ module SDBMSS
     private
 
     # Polls until the app returns HTTP 200, raising if it does not within the timeout.
+    # Reads +TOOLS_START_TIMEOUT+ from the environment to override the default timeout.
     def wait_for_sdbm_availability!
       host = app_host
       raise 'SDBMSS_APP_HOST is required in .env' if host.nil? || host.empty?
 
-      log("Waiting for app availability at http://#{host}")
-      return if self.class.sdbm_available?(host, out: @out)
+      timeout = env('TOOLS_START_TIMEOUT', nil)&.to_i || 240
+      log("Waiting for app availability at http://#{host} (timeout: #{timeout}s)")
+      return if self.class.sdbm_available?(host, timeout_seconds: timeout, out: @out)
 
       raise "Application is not reachable at http://#{host}"
     end
