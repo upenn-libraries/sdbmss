@@ -17,8 +17,10 @@ describe "Sign up / Edit Profile", :js => true do
     fill_in 'user_password_confirmation', :with => 'somethingunguessable'
     click_link 'User Agreement'
     click_button 'OK'
+    expect(page).to have_unchecked_field('Agreement', disabled: false)
     find("input[name=Agreement]").set true
-    sleep 12
+    expect(page).to have_button('Sign up', disabled: false)
+    sleep 4.1
     click_button 'Sign up'
     expect(page).to have_content 'Welcome! You have signed up successfully.'
 
