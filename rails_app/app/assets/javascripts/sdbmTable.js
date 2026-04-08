@@ -665,9 +665,9 @@ function relation (type) {
             sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
                 var data = sdbmTable.dataTable.row(row).data();
                 if (data[sdbmTable.getColumnIndex("Draft")]) {
-                    $(row).addClass('info draft');
+                    $(row).addClass('table-info draft');
                 } else if(!data[sdbmTable.getColumnIndex("Is Approved")]) {
-                    $(row).addClass('warning unapproved');
+                    $(row).addClass('table-warning unapproved');
                 }
 
                 $(row).children().each(function (idx, td) {
