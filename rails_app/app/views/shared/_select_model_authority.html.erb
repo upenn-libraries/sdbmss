@@ -1,15 +1,15 @@
 <script type="text/ng-template" id="selectModelAuthority.html">
-    <div class="modal-header">
-        <h3 class="modal-title text-center">Find {{ type | humanize }} in Name Authority</h3>
-        <form class='input-group'>
-            <input autofocus type="text" id="searchModelAuthority" class="search-form form-control" ng-model="nameSearchString" style="width: calc(100% - 120px)">
-            <select name="" id="" class="form-control" ng-model="method" style="width: 120px;">
-                <option value="similar">Similar</option>
-                <option value="exact">Exact</option>
-            </select>
-            <span class='input-group-append'>
-                <input type="submit" class="btn btn-secondary" value="Find" id='search-model' ng-click="autocomplete()">Find</input>
-            </span>
+    <div class="modal-header flex-column">
+        <h3 class="modal-title text-center w-100">Find {{ type | humanize }} in Name Authority</h3>
+        <form class='input-group w-100'>
+            <input autofocus type="text" id="searchModelAuthority" class="search-form form-control" ng-model="nameSearchString">
+            <div class="input-group-append">
+                <select class="custom-select" ng-model="method">
+                    <option value="similar">Similar</option>
+                    <option value="exact">Exact</option>
+                </select>
+                <button type="submit" class="btn btn-secondary" id='search-model' ng-click="autocomplete()">Find</button>
+            </div>
         </form>
     </div>
     <div class="modal-body form-horizontal compress-whitespace fit-screen">
@@ -55,14 +55,10 @@
         </div>
 
     </div>
-    <div class="modal-footer">
-        <div class='row'>
-            <div class="col-sm-8 text-left">
-                Can't find the {{ type | humanize }} you are looking for? <a href="" class="btn btn-primary one-line" style="max-width: 100%"  ng-click="createName()" id='propose-model'><strong>Propose</strong> '{{ searchTerm || "New " + (type | humanize) }}'</a>
-            </div>
-            <div class="col-sm-4 text-right">
-                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-            </div>
+    <div class="modal-footer justify-content-between">
+        <div>
+            Can't find the {{ type | humanize }} you are looking for? <a href="" class="btn btn-primary one-line" ng-click="createName()" id='propose-model'><strong>Propose</strong> '{{ searchTerm || "New " + (type | humanize) }}'</a>
         </div>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>

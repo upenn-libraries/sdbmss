@@ -1,11 +1,11 @@
 <script type="text/ng-template" id="selectNameAuthority.html">
-    <div class="modal-header">
-        <h3 class="modal-title text-center">Find {{ type | humanize }} in Name Authority</h3>
-        <form class='input-group' ng-submit="autocomplete()">
+    <div class="modal-header flex-column">
+        <h3 class="modal-title text-center w-100">Find {{ type | humanize }} in Name Authority</h3>
+        <form class='input-group w-100' ng-submit="autocomplete()">
             <input autofocus type="text" id="searchNameAuthority" class="form-control search-form" ng-model="nameSearchString">
-            <span class='input-group-append'>
-                <input type='submit' class='btn btn-secondary' value='Search' id='search-name'>Search</a>
-            </span>
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-secondary" id='search-name'>Search</button>
+            </div>
         </form>
     </div>
     <div class="modal-body form-horizontal compress-whitespace fit-screen">
@@ -64,14 +64,10 @@
     </div>
 
     </div>
-    <div class="modal-footer">
-        <div class='row'>
-            <div class='col-sm-8 text-left'>
-                Can't find the {{ type | humanize }} you are looking for? <button href="" class="btn btn-primary one-line" style="max-width: 100%" id='propose-name' ng-click="createName()"><strong>Propose</strong> '{{ searchTerm || ("New " + type | humanize ) }}'</button>
-            </div>
-            <div class='col-sm-4'>
-                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-            </div>
+    <div class="modal-footer justify-content-between">
+        <div>
+            Can't find the {{ type | humanize }} you are looking for? <button href="" class="btn btn-primary one-line" id='propose-name' ng-click="createName()"><strong>Propose</strong> '{{ searchTerm || ("New " + type | humanize ) }}'</button>
         </div>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
