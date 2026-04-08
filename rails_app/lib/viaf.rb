@@ -1,5 +1,6 @@
 
 require 'cgi'
+require 'logger'
 require 'net/http'
 require 'openssl'
 
@@ -89,24 +90,24 @@ module VIAF
   def self.get_viaf_response(host, path, query_string: nil, httpAccept: 'application/xml')
     full_path = query_string && !query_string.empty? ? "#{path}?#{query_string.sub(/^\?/, '')}" : path
     url = "https://#{host}#{full_path}"
-    viaf_logger.debug "URL is '#{url}'" if viaf_logger
+    viaf_logger.debug "URL is '#{url}'"
     uri = URI.parse(url)
     resp = make_viaf_request(uri)
 
     count = 0
     while %w{ 301 302 307 }.include? resp.code
-      viaf_logger.warn "VIAF response code: #{resp.code} and location: #{resp['location']}" if viaf_logger
+      viaf_logger.warn "VIAF response code: #{resp.code} and location: #{resp['location']}"
       url = resp['location'].starts_with?('/') ? "#{host}#{resp['location']}" : resp['location']
       uri = URI.parse(url)
       resp = make_viaf_request(uri)
 
       count += 1
       if count > 5
-        viaf_logger.warn "Redirected more than 5 times!" if viaf_logger
+        viaf_logger.warn "Redirected more than 5 times!"
         break
       end
     end
-    viaf_logger.debug "VIAF response code: #{resp.code} and location: #{resp['location']}" if viaf_logger
+    viaf_logger.debug "VIAF response code: #{resp.code} and location: #{resp['location']}"
     resp
   end
 
@@ -119,7 +120,11 @@ module VIAF
   end
 
   def self.viaf_logger
-    defined?(Rails) && Rails.respond_to?(:logger) ? Rails.logger : nil
+    if defined?(Rails) && Rails.respond_to?(:logger) && Rails.logger
+      Rails.logger
+    else
+      @viaf_logger ||= Logger.new(IO::NULL)
+    end
   end
 
 end

@@ -62,18 +62,7 @@ module DataEntryHelpers
   end
 
   def create_edit_test_source
-    source = Source.create!(
-      date: "2013-11-12",
-      title: "A Sample Test Source With a Highly Unique Name",
-      source_type: SourceType.auction_catalog,
-      created_by: @user,
-    )
-    SourceAgent.create!(
-      source: source,
-      role: SourceAgent::ROLE_SELLING_AGENT,
-      agent: Name.find_or_create_agent("Sotheby's")
-    )
-    source
+    create(:edit_test_source, created_by: @user)
   end
 
   def create_edit_entry(source: nil)
@@ -177,27 +166,14 @@ module DataEntryHelpers
   end
 
   def create_edit_entry_with_titles(titles, include_author: true, catalog_or_lot_number: "123", source: nil)
-    source ||= create_edit_test_source
-    entry = Entry.create!(
-      source: source,
+    create(
+      :edit_entry_with_titles,
+      source: (source || create_edit_test_source),
       created_by: @user,
-      approved: false,
       catalog_or_lot_number: catalog_or_lot_number,
+      titles: titles,
+      include_author: include_author,
     )
-
-    titles.each_with_index do |title, index|
-      entry.entry_titles.create!(title: title, order: index)
-    end
-
-    if include_author
-      entry.entry_authors.create!(
-        author: Name.find_or_create_agent("Schmoe, Joe"),
-        observed_name: "Joe Schmoe",
-        order: 0,
-      )
-    end
-
-    entry
   end
 
 
