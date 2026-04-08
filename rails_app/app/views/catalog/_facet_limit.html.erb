@@ -1,6 +1,7 @@
 <%#
-  OVERRIDE Blacklight v6.9.0: facet "more" link is full-page navigation (no ajax-modal class).
+  OVERRIDE Blacklight 7.11: facet "more" link is full-page navigation (no blacklight-modal trigger).
     Uses search_facet_path and explicit prefix for A–Z facet browsing on the app's facet page.
+    Stock partial delegates to Blacklight::FacetFieldListComponent with modal trigger.
 %>
 <ul class="facet-values list-unstyled">
   <% paginator = facet_paginator(facet_field, display_facet) %>
@@ -8,7 +9,7 @@
 
   <% unless paginator.last_page? || params[:action] == "facet" %>
     <li class="more_facets_link">
-      <%= link_to t("more_#{field_name}_html", scope: 'blacklight.search.facets', default: :more_html, field_name: facet_field.label), 
+      <%= link_to t("more_#{field_name}_html", scope: 'blacklight.search.facets', default: :more_html, field_name: facet_field.label),
         search_facet_path(id: field_name, prefix: nil) %>
     </li>
   <% end %>

@@ -1,6 +1,6 @@
 <%#
-  OVERRIDE Blacklight v6.9.0: full-page facet browse (not modal): constraints, pagination, custom A–Z
-    prefix strip, and render_facet_limit. Stock facet.html.erb is modal header/body/footer layout.
+  OVERRIDE Blacklight 7.11: full-page facet browse (not modal): constraints, pagination, custom A–Z
+    prefix strip, and render_facet_limit. Stock facet.html.erb uses Blacklight::System::ModalComponent.
 %>
 
 <%= render 'constraints' %>
@@ -9,7 +9,7 @@
   <%= render :partial=>'facet_pagination' %>
 </div>
 
-<button type="button" class="ajax-modal-close close" data-dismiss="modal" aria-hidden="true">×</button>
+<button type="button" class="blacklight-modal-close close" data-dismiss="modal" aria-hidden="true">×</button>
 <h3>Browsing facet: <%= facet_field_label(@facet.key) %></h3>
 
 <% if params[:"facet.sort"] == 'index' %>

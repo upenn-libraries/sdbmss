@@ -1,14 +1,14 @@
 <%#
-  OVERRIDE Blacklight v6.9.0: start-over link resets to search_field=all_fields (and utf8) so simple
-    search matches the app's default field; stock partial uses start_over_path without those params.
+  OVERRIDE Blacklight 7.11: uses Deprecation.silence wrapper for query_has_constraints? and
+    renders _start_over (which SDBM overrides to add search_field=all_fields).
+    SDBM customization: render_constraints receives search_state directly (matches BL7 pattern).
 %>
-<% if query_has_constraints? %>
+<% if Deprecation.silence(Blacklight::RenderConstraintsHelperBehavior) { query_has_constraints? } %>
+  <div id="appliedParams" class="clearfix constraints-container">
+    <h2 class="sr-only"><%= t('blacklight.search.search_constraints_header') %></h2>
 
-      <div id="appliedParams" class="clearfix constraints-container">
-        <div class="pull-right">
-          <%=link_to t('blacklight.search.start_over'), start_over_path + "?search_field=all_fields&utf8=%E2%9C%93", :class => "catalog_startOverLink btn btn-primary btn-text", :id=>"startOverLink" %>
-        </div>
-        <span class="constraints-label"><%= t('blacklight.search.filters.title') %></span>
-        <%= render_constraints(search_state.to_h) %>
-      </div>
+    <%= render 'start_over' %>
+    <span class="constraints-label sr-only"><%= t('blacklight.search.filters.title') %></span>
+    <%= render_constraints(controller.params != params ? params : search_state) %>
+  </div>
 <% end %>

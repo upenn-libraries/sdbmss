@@ -1,5 +1,5 @@
 <%#
-  OVERRIDE Blacklight v6.9.0: wraps BL document partials with content_for :breadcrumbs, :add_entry,
+  OVERRIDE Blacklight 7.11: wraps BL document partials with content_for :breadcrumbs, :add_entry,
     :control_tools for Entry-specific nav and toolbar; stock is content + sidebar columns only.
 %>
 <%= render_document_main_content_partial %>
@@ -16,13 +16,13 @@
         <% if @entry.manuscript %>
           <li>
             <%= link_to(new_source_path({create_entry: 1, manuscript_id: @entry.manuscript.id, source_type: 4})) do %>
-              <span class="glyphicon glyphicon-plus"></span> Create Linked Personal Observation
+              <span class="fa fa-plus"></span> Create Linked Personal Observation
             <% end %>
           </li>
         <% else %>
           <li>
             <%= link_to(new_source_path({create_entry: 1, new_manuscript: true, original_entry: @entry.id, source_type: 4})) do %>
-              <span class="glyphicon glyphicon-plus"></span> Create Linked Personal Observation
+              <span class="fa fa-plus"></span> Create Linked Personal Observation
             <% end %>
           </li>
           <li class='divider'></li>
@@ -39,7 +39,7 @@
       <li class='divider'></li>
       <li>
         <%= link_to (new_entry_path(source_id: @entry.source)) do %>
-          <span class="glyphicon glyphicon-plus"></span> Add Entry From <%= @entry.source.public_id %>
+          <span class="fa fa-plus"></span> Add Entry From <%= @entry.source.public_id %>
         <% end %>
       </li>
     <% end %>

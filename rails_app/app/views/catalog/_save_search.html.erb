@@ -5,5 +5,5 @@
 %>
 
 <% if current_user && current_search_is_saveable? %>
-  <%= button_to "Save Search", blacklight.save_search_path(search_session["id"]), :method => :put, :class => 'btn btn-default pull-right' %>
+  <%= button_to "Save Search", blacklight.save_search_path(search_session["id"]), :method => :put, :class => 'btn btn-secondary float-right' %>
 <% end %>

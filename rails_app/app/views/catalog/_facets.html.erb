@@ -1,19 +1,20 @@
 <%#
-  OVERRIDE Blacklight v6.9.0: selected-filters panel (BAS render_constraints_filters_side), homepage
+  OVERRIDE Blacklight 7.11: selected-filters card (BAS render_constraints_filters_side), homepage
     facet columns via render_facet_partials_home + show-more, else render_facet_partials.
+    Stock partial delegates to facet_group_names.each + render 'facet_group'.
 %>
 <% # main container for facets/limits menu -%>
 <div id="facets" class="facets sidenav">
     <!-- New Facet Display (above/in sidebar) -->
   <% if params[:f] and params[:f].keys.count > 0 %>
-  <div class="panel panel-default facet_limit facet_limit-active">
-    <div class="collapse-toggle panel-heading" data-toggle="collapse" data-target="#selected-facets">
-      <h5 class="panel-title facet-field-heading">
+  <div class="card facet_limit facet_limit-active">
+    <div class="collapse-toggle card-header" data-toggle="collapse" data-target="#selected-facets">
+      <h5 class="card-title facet-field-heading mb-0">
         Selected Filters
       </h5>
     </div>
-    <div id="selected-facets" class="panel-collapse facet-content collapse in">
-      <div class="panel-body">
+    <div id="selected-facets" class="facet-content collapse show">
+      <div class="card-body">
         <ul class="list-unstyled facet-values">
           <%= render_constraints_filters_side(params) %>
         </ul>
@@ -23,8 +24,8 @@
   <% end %>
 <% if has_facet_values?  %>
 
-  <div class="top-panel-heading panel-heading">
-    <button type="button" class="facets-toggle" data-toggle="collapse" data-target="#facet-panel-collapse">
+  <div class="top-card-header card-header">
+    <button type="button" class="facets-toggle" data-toggle="collapse" data-target="#facet-collapse">
       <span class="sr-only">Toggle facets</span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
@@ -32,19 +33,18 @@
     </button>
 
     <h4 class='facets-heading'>
-
     	<%= t('blacklight.search.facets.title') %>
     </h4>
   </div>
 
-  <div id="facet-panel-collapse" class="collapse panel-group">
+  <div id="facet-collapse" class="collapse">
     <% if request.fullpath == "/" %>
         <%= render_facet_partials_home(4, :before) %>
       <div style="margin-top: 5px;" class="more-facets collapse">
         <%= render_facet_partials_home(4, :after) %>
       </div>
-      <a style="margin-top: 5px;" data-toggle='collapse' data-target='.more-facets' class='btn btn-default collapse in more-facets'>Show More...</a>
-      <a style="margin-top: 5px;" data-toggle='collapse' data-target='.more-facets' class='btn btn-default collapse more-facets'>Hide...</a>
+      <a style="margin-top: 5px;" data-toggle='collapse' data-target='.more-facets' class='btn btn-secondary collapse show more-facets'>Show More...</a>
+      <a style="margin-top: 5px;" data-toggle='collapse' data-target='.more-facets' class='btn btn-secondary collapse more-facets'>Hide...</a>
     <% else %>
       <%= render_facet_partials %>
     <% end %>

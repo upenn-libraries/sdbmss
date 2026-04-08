@@ -1,0 +1,17 @@
+<%#
+  OVERRIDE Blacklight 7.11: heading shows entry public_id; email/SMS/cite use Solr Entry id strings.
+    Stock partial uses render_document_heading only.
+%>
+<% entry = document.model_object %>
+<div class="row">
+  <div class="col-sm-6">
+    <h1 itemprop="name">
+      <%= entry.public_id %>
+    </h1>
+  </div>
+  <div class="col-sm-6 text-right">
+    <a class='btn btn-secondary' id="emailLink" data-blacklight-modal="trigger" href="/catalog/email?id=Entry <%= entry.id %>">Email</a>
+    <a class='btn btn-secondary' id="smsLink" data-blacklight-modal="trigger" href="/catalog/sms?id=Entry <%= entry.id %>">SMS</a>
+    <a class='btn btn-secondary' id="citationLink" data-blacklight-modal="trigger" href="/catalog/citation?id=Entry <%= entry.id %>">Cite</a>
+  </div>
+</div>

@@ -1,19 +1,18 @@
 <%#
-  OVERRIDE Blacklight v6.9.0: paginate next to a signed-in-only CSV export control; stock partial is
-    pagination only in a single full-width column.
+  OVERRIDE Blacklight 7.11: adds signed-in-only CSV export button next to pagination;
+    stock partial is pagination only in a single full-width column.
 %>
-<div class="row record-padding">
-    <div class="col-md-9 mobile-center">
-        <% if show_pagination? and @response.total_pages > 1 %>
-            <%= paginate @response, :outer_window => 2, :theme => 'blacklight' %>
-        <% end %>
-    </div>
-    <div class="col-md-3 mobile-center">
-        <% if !@response.empty? && current_user %>
-        <!-- line up this text with pagination -->
-        <div style="margin: 0px 0px 10px 0px;">
-            <a class="btn btn-default export-csv" onclick="exportCSV('<%= search_results_as_csv_path %>')">Download results as CSV</a>
-        </div>
-        <% end %>
-    </div>
-</div>
+<% if show_pagination? and @response.total_pages > 1 %>
+ <div class="row record-padding">
+  <div class="col-md-9">
+    <%= render Blacklight::Response::PaginationComponent.new(response: @response) %>
+  </div>
+  <div class="col-md-3">
+    <% if !@response.empty? && current_user %>
+      <div style="margin: 0px 0px 10px 0px;">
+        <a class="btn btn-secondary export-csv" onclick="exportCSV('<%= search_results_as_csv_path %>')">Download results as CSV</a>
+      </div>
+    <% end %>
+  </div>
+ </div>
+<% end %>

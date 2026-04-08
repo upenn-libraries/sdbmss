@@ -1,6 +1,6 @@
 <%#
-  OVERRIDE Blacklight v6.9.0: SDBM home (meta tags, CMS snippet, search panel, survey modal, recent
-    Thredded posts); replaces the gem's generic welcome / getting-started content.
+  OVERRIDE Blacklight 7.11: SDBM home (meta tags, CMS snippet, search card, survey modal);
+    replaces the gem's generic welcome / getting-started content.
 %>
 <% content_for :head do %>
 <meta name="twitter:card" content="summary" />
@@ -41,8 +41,8 @@
             Search the Database
             <br><small>Everyone is invited to search the database.  Use the search bar below, or click the <b>facets</b> to the right.</small>
         </h3>
-        <div class="panel panel-search">
-            <div class="panel-body">
+        <div class="card card-search">
+            <div class="card-body">
                 <%= render partial: "search_form" %>
             </div>
         </div>
@@ -63,7 +63,7 @@
         <div class="modal-content">
             <div class="modal-header text-center">
                 <span class="h3">Recent Changes to the New SDBM</span>
-                <a href="#Welcome" id="dismiss-welcome" data-dismiss="modal" data-target="#Welcome" class='pull-right' style="color: #333;"><span class="glyphicon glyphicon-remove"></span></a>
+                <a href="#Welcome" id="dismiss-welcome" data-dismiss="modal" data-target="#Welcome" class='float-right' style="color: #333;"><i class="fa fa-times"></i></a>
             </div>
             <div class="modal-body">
                 <p>
