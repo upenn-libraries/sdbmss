@@ -21,6 +21,10 @@ module CatalogControllerConfiguration
 
       config.search_builder_class = SDBMSS::Blacklight::SearchBuilder
 
+      # BL7 collection tools (sort dropdown, per-page dropdown)
+      config.add_results_collection_tool(:sort_widget)
+      config.add_results_collection_tool(:per_page_widget)
+
         ## Default parameters to send to solr for all search-like requests. See also SolrHelper#solr_search_params
       config.default_solr_params = {
         # use dismax query parser
@@ -424,7 +428,6 @@ module CatalogControllerConfiguration
 
       config.add_results_collection_tool(:bookmark_all)
 #      config.add_results_collection_tool(:save_current_search)
-      config.add_results_collection_tool(:save_search)
 
       config.show.document_actions.delete(:email)
       config.show.document_actions.delete(:sms)

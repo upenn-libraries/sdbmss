@@ -12,7 +12,7 @@
     <%= message.created_at.to_formatted_s(:long) %>
   </div>
 </div>
-<div class="row collapse <%= (unread or last) ? 'in' : 'text-muted' %>" id="message_<%= message.id %>">
+<div class="row collapse <%= (unread or last) ? 'show' : 'text-muted' %>" id="message_<%= message.id %>">
   <div class="col-sm-9">
       <% if message.sent_to %>
           To: <% message.sent_to.each do |sent_to| %>

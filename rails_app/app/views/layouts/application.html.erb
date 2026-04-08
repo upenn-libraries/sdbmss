@@ -45,7 +45,7 @@
         .modal-backdrop, .fade {
           display: none !important;
         }
-        .fade.in {
+        .fade.show {
           display: block !important;
         }
         .control-panel {
@@ -95,7 +95,7 @@
     <![endif]-->
 
   </head>
-  <body data-offset="50" class="<%= render_body_class %>">
+  <body data-offset="54" class="<%= render_body_class %>">
   <!-- control panel - or 'login' panel, when logged out -->  
   <%= render :partial => 'shared/header_navbar' %>
 
@@ -114,6 +114,8 @@
       <%= render partial: 'shared/modal' %>
 
       <div id="main-container" class="container">
+
+        <%= content_for(:container_header) %>
 
         <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
         <!--  breadcrumbs -->

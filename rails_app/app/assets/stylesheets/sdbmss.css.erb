@@ -13,7 +13,7 @@ body {
   /*display: flex;*/
   font-family: Sarala, Ubuntu, sans-serif;
   overflow: hidden;
-  padding-top: 50px;
+  padding-top: 54px;
 }
 
 textarea { resize:vertical ; }
@@ -185,7 +185,7 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
   margin-right: -388px;
   display: block;
 }
-.sidebar.collapse.in {
+.sidebar.collapse.show {
   margin-right: 0px;
 }
 .transition {
@@ -194,7 +194,7 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
   transition: all .5s !important;
 }
 
-#header-navbar { 
+#header-navbar {
   background-color: #374f73;
   border: none;
   box-shadow: 0px 1px 5px -3px #374f73;
@@ -203,6 +203,13 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
   top: 0;
   left: 0;
   min-width: 320px;
+  z-index: 1030;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+#header-navbar .nav-link {
+  line-height: 1.5;
+  padding: 15px 10px;
 }
 #header-navbar img {
   max-height: 50px; 
@@ -216,6 +223,17 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
 #header-navbar .dropdown-menu {
   background: #374f73;
   border: none;
+  line-height: 1.42857;
+  padding: 5px 0;
+}
+#header-navbar .dropdown-item {
+  padding: 3px 20px;
+  color: white;
+}
+#header-navbar .dropdown-item:hover,
+#header-navbar .dropdown-item:focus {
+  background-color: #5879ab;
+  color: white;
 }
 .navbar-title, .navbar-title li {
   width: 100%;
@@ -559,12 +577,19 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
   margin: 0px;
   line-height: 0px;
 }
-.panel-search .catalog-search-form {
+.panel-search .catalog-search-form,
+.card-search .catalog-search-form {
   width: 100%;
 }
-.panel-search {
+.card-search .form-inline .row {
+  width: 100%;
+  flex: 1;
+}
+.panel-search,
+.card-search {
   margin-bottom: 0px;
   background: #eee1be;
+  border-color: transparent;
 }
 .catalog-search-info {
   max-width: 40%;
@@ -662,13 +687,29 @@ h1 { font-size: 30px; margin-top: 0; }
 
 .facet_extended_list .facet-values li:nth-child(odd) { background: #f9f9f9 }
 
-.facet_limit {
+.facet_limit,
+.facet-limit {
   color: #333333;
   border-color: #eee1be;
 }
-.facet_limit .card-header {
+.facet_limit .card-header,
+.facet-limit .card-header {
   background-color: #eee1be;
   border-color: #cab98e;
+  padding: 10px 15px;
+}
+.home-emphasis small {
+  font-size: 65%;
+  color: #777;
+}
+.more-facets.btn {
+  margin-top: 5px;
+  background-color: white;
+  color: #333;
+  border: 1px solid #ccc;
+}
+.more-facets.btn:hover {
+  background-color: #e6e6e6;
 }
 
 /* customizing actual blacklight form (rather than content) is frustrating, sO I just hide it here... */
@@ -1641,15 +1682,18 @@ so that gray backdrop shvows up correctly */
     height: 100%;
     padding: 0px 10px;
   }
-  .panel-search {
+  .panel-search,
+  .card-search {
     width: calc(100% + 80px);
     margin: 0px -40px;
     padding: 5px 0px;
   }
-  .panel-search .card-body {
+  .panel-search .card-body,
+  .card-search .card-body {
     padding: 0px;
   }
-  .panel-search .col-1 {
+  .panel-search .col-1,
+  .card-search .col-1 {
     margin-left: -17px;
   }
   .navbar-form {
@@ -1730,7 +1774,7 @@ so that gray backdrop shvows up correctly */
   #search-navbar .navbar-nav > li > a, #header-navbar .navbar-nav > li > a {
     padding: 10px;
   }
-  .navbar-default .navbar-collapse {
+  .navbar .navbar-collapse {
     margin: 0px -15px;
   }
   #sortAndPerPage {
@@ -2025,7 +2069,7 @@ so that gray backdrop shvows up correctly */
   width: 0px;
   display: none;
 }
-#control-panel.collapse.in {
+#control-panel.collapse.show {
   width: 240px !important;
   display: table-cell;
 }
@@ -2082,10 +2126,10 @@ so that gray backdrop shvows up correctly */
 
 /* changes the direction of the chevron depending on collapsed[in/out] */
 #control-panel > .collapse + #control-panel-button .fa-chevron-left,
-#control-panel > .collapse.in + #control-panel-button .fa-chevron-right {
+#control-panel > .collapse.show + #control-panel-button .fa-chevron-right {
   display: none;
 }
-#control-panel > .collapse.in + #control-panel-button .fa-chevron-left,
+#control-panel > .collapse.show + #control-panel-button .fa-chevron-left,
 #control-panel > .collapse + #control-panel-button .fa-chevron-right {
   display: inline-block;
 }
@@ -2374,7 +2418,7 @@ Private Message Styling
 }
 
 /* control panel thoughts... */
-#control-panel .panel-default, #control-panel .card-header, #control-panel .card-body {
+#control-panel .card, #control-panel .card-header, #control-panel .card-body {
   background: none;
   box-shadow: none;
   border: none;
@@ -2400,7 +2444,7 @@ Private Message Styling
 #control-panel .card-header {
   background: none;
   border-top: 2px solid white;
-  padding-top: 20px;
+  padding: 20px 15px 10px;
   /*text-align: center;*/
 }
 #control-panel .card-header .h4 {
@@ -2413,12 +2457,18 @@ Private Message Styling
   width: 100%;
   background-color: #374f73;
   border-radius: 0px;
-  position: relative;
   border: none;
+}
+#control-panel .nav .dropdown-menu {
+  position: relative !important;
+  transform: none !important;
+  top: auto !important;
+  left: auto !important;
 }
 #control-panel .dropdown-menu a {
   padding: 8px 15px;
   color: white;
+  display: block;
 }
 #control-panel a {
   color: white;
@@ -2440,15 +2490,23 @@ Private Message Styling
   background-color: #5879ab !important;
   color: white !important;
 }
+#control-panel .nav {
+  flex-direction: column;
+}
 #control-panel .nav > li > a {
   padding: 8px 15px;
+  display: block;
+}
+#control-panel .fa {
+  width: 1.28571em;
+  text-align: center;
 }
 #control-panel .nav > li > a:hover, #control-panel .nav > li > a:focus {
     text-decoration: none;
     background-color: #5879ab;
 }
 #control-panel .text-muted {
-  color: #ddd;
+  color: #ddd !important;
 }
 #control-panel li.disabled a {
   color: #999;
@@ -2483,7 +2541,7 @@ Private Message Styling
   height: 100%;
 }
 
-.navbar-default .navbar-collapse {
+.navbar .navbar-collapse {
   border: none;
   box-shadow: none;
 }
@@ -2627,9 +2685,24 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 .alert {
   margin-bottom: 10px;
 }
-.btn-primary, .panel-primary > .card-header {  
+.btn-primary, .panel-primary > .card-header {
   background-color: #4e76b3;
   border-color: #4e76b3;
+}
+.btn-primary:hover {
+  background-color: #286090;
+  border-color: #204d74;
+}
+.btn-primary:focus,
+.btn-primary.focus {
+  background-color: #286090;
+  border-color: #204d74;
+  box-shadow: 0 0 0 0.2rem rgba(78, 118, 179, 0.5);
+}
+.btn-primary:active,
+.btn-primary.active {
+  background-color: #204d74;
+  border-color: #122b40;
 }
 .panel-primary {
    border-color: #4e76b3; 
@@ -2687,13 +2760,15 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 .facet-values .remove .fa {
   vertical-align: inherit;
 }
-.facet_limit-active .card-header {
+.facet_limit-active .card-header,
+.facet-limit-active .card-header {
   background-color: #3c763d;
   border-color: #3c763d;
   color: white;
 }
-.facet_limit-active {
-  border-color: #3c763d; 
+.facet_limit-active,
+.facet-limit-active {
+  border-color: #3c763d;
 }
 .appliedFilter .filterName:after {
   padding: 0px 2px;

@@ -47,7 +47,7 @@
 
 <span id="spinner-src" src="<%= asset_path "spinner.gif" %>" style="display: none;"></span>
 
-<nav class="navbar navbar-default" style="margin: 0px 0px 9px 0px;">
+<nav class="navbar navbar-light bg-light" style="margin: 0px 0px 9px 0px;">
     <%= form_tag(request.path, method: :get, class: 'search-form') do %>
     <a class='navbar-brand' href="#manage_records_info" data-toggle="modal" data-target="#manage_records_info">
     <% if @page_title %>

@@ -1,4 +1,4 @@
-<div id="control-panel" class="collapse width in">
+<div id="control-panel" class="collapse width show">
   <div class="scroll-box">
     <% if current_user %>
     <div class="card">
@@ -8,9 +8,8 @@
             </div>
             <div class="user-info">
               <span class="dropdown">
-                <a href="" class="dropdown-toggle" data-toggle="dropdown" style="color: white;">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="color: white;">
                   <%= current_user.to_s %>
-                  <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                   <li><a href="<%= main_app.profile_path(username: current_user.username) %>"><span class="fa fa-user"></span> My Profile</a></li>
@@ -47,7 +46,7 @@
                 <a href="/watches"><span class="fa fa-eye"></span> Watched Records</a>
             </li>
             <li class='dropdown'>
-              <a href="" data-toggle="dropdown"><span class="fa fa-inbox"></span> Projects <span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-inbox"></span> Projects</a>
               <ul class="dropdown-menu" role="menu">
                 <li>
                   <a href="/dericci_games"><span class="fa fa-building"></span> De Ricci Name Game</a>
@@ -77,7 +76,7 @@
               <%= yield :add_entry %>
             <% else %>
             <li class="dropdown">
-              <a href="" data-toggle="dropdown"><span class="fa fa-plus"></span> Add New Entry <span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-plus"></span> Add New Entry</a>
               <ul class="dropdown-menu" role="menu">
                 <li>
                   <a href="/entries/new">From a Source</a>
@@ -130,7 +129,7 @@
       <div class="card-body">
         <ul class="nav">
           <li class='dropdown'>
-            <a href="" data-toggle="dropdown"><span class="fa fa-inbox"></span> Projects <span class="caret"></span></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-inbox"></span> Projects</a>
             <ul class="dropdown-menu" role="menu">
               <li>
                 <a href="/dericci_games"><span class="fa fa-building"></span> De Ricci Name Game</a>

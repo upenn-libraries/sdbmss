@@ -27,12 +27,8 @@
         <span class="col-sm-10"><%= link_to_previous_search(search.query_params) %></span>
         <%- if has_user_authentication_provider? -%>
           <span class="actions col-sm-2 text-right">
-            <%- if current_or_guest_user && search.saved? -%>
-              <!--<%= button_to t('blacklight.search_history.forget'), forget_search_path(search.id), :class => 'btn btn-secondary' %>-->
-              <%= button_to 'Delete', blacklight.forget_search_path(search.id), :class => 'btn btn-secondary' %>
-            <%- else -%>
-              <%= button_to t('blacklight.search_history.save'), blacklight.save_search_path(search.id), :method => :put, :class => 'btn btn-secondary' %>
-            <%- end -%>
+            <!--<%= button_to t('blacklight.search_history.forget'), forget_search_path(search.id), :class => 'btn btn-secondary' %>-->
+            <%= button_to 'Delete', blacklight.forget_search_path(search.id), :class => 'btn btn-secondary' %>
           </span>
         <%- end -%>
       </div>

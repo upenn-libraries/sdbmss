@@ -44,7 +44,7 @@
           </span>
         </h5>
         
-        <div class="collapse activity_date_<%= date %> <%= collapsed ? '' : 'in' %>" id="activity_<%= date %>_<%= user_id %>">
+        <div class="collapse activity_date_<%= date %> <%= collapsed ? '' : 'show' %>" id="activity_<%= date %>_<%= user_id %>">
           <% details.each do |transaction_id, detail| %>
           <div class="card activity">
             <div class="card-header">
