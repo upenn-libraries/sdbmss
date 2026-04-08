@@ -28,10 +28,10 @@ describe "De Ricci Game", :js => true do
       find('.play-game', match: :first).click
       expect(page).to have_content('Select a Record and click')
 
-      views = all('.view-name')
-      all('.find-name').each_with_index  do |n, index|
-        views[index].click
-        n.click
+      all('.game-nav li').each_with_index do |_, index|
+        row = all('.game-nav li')[index]
+        row.find('.view-name').click
+        row.find('.find-name').click
         expect(page).to have_content("in SDBM Name Authority")
         expect(page).to have_content("Link")
         expect(page).not_to have_content("No results found")
@@ -53,7 +53,7 @@ describe "De Ricci Game", :js => true do
         end        
         expect(page).not_to have_content("in SDBM Name Authority")
       end
-      views[0].click
+      all('.game-nav li').first.find('.view-name').click
       expect(page).to have_content("SDBM_NAME_")
       fill_in 'other-info', with: 'Some other things to consider are...'
       fill_in 'comment', with: 'This is a very interesting card!!!'
