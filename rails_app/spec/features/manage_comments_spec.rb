@@ -5,7 +5,7 @@ describe "Manage Comments", :js => true do
   before :all do
 #    SDBMSS::ReferenceData.create_all
 
-    @user = User.where(role: "admin").first
+    @user = User.find_by(role: "admin")
   end
 
   before :each do
