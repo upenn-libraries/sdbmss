@@ -7,8 +7,8 @@ require "rails_helper"
 describe "Manage Private Messages", :js => true do
 
   before :all do
-    @user = User.where(role: "admin").first
-    @user2 = User.where(role: "contributor").first
+    @user = User.find_by(role: "admin")
+    @user2 = User.find_by(role: "contributor")
   end
 
   before :each do
