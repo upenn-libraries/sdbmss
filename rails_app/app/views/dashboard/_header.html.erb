@@ -42,18 +42,18 @@
         <%= image_tag "https://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(current_user.email.downcase)}?s=128&d=mm", class: 'img img-fluid dashboard-profile-picture' %>
         <span class='h1 dashboard-header text-muted'><%= current_user.to_s %>'s Dashboard</span>
         <ul class="list-inline" style="margin-bottom: 0px;">
-            <li>
+            <li class="list-inline-item">
                 <span class="btn btn-info btn-sm btn-tag">
                     <span class="fa fa-tag"></span>
                 </span> Tags:
             </li>
             <% if current_user.tags.count <= 0 %>
-                <li>
+                <li class="list-inline-item">
                     <span class="text-muted">You do not have any tags yet.</span>
                 </li>
             <% end %>
         <% current_user.tags.each do |tag| %>
-            <li>
+            <li class="list-inline-item">
                 <div class="btn-group">
                 <%= link_to(main_app.bookmarks_path(tag: tag[0]), class: "btn btn-sm btn-secondary") do %>
                     <%= "#{tag[0]}" %>
@@ -71,11 +71,11 @@
 <div class="row">
     <div class="col-sm-12">
         <ul id='dashboard-tabs' class="nav nav-tabs dashboard-tabs">
-            <li class="<%= request.original_fullpath == main_app.dashboard_contributions_path ? 'active' : ''%>">
-                <a href="<%= main_app.dashboard_contributions_path %>"><span class="fa fa-gift"></span> Contributions</a>
+            <li class="nav-item">
+                <a class="nav-link <%= request.original_fullpath == main_app.dashboard_contributions_path ? 'active' : ''%>" href="<%= main_app.dashboard_contributions_path %>"><span class="fa fa-gift"></span> Contributions</a>
             </li>
-            <li class="<%= request.original_fullpath == main_app.dashboard_activity_path ? 'active' : ''%>">
-                <a href="<%= main_app.dashboard_activity_path %>"><span class="fa fa-eye"></span> Activity</a>
+            <li class="nav-item">
+                <a class="nav-link <%= request.original_fullpath == main_app.dashboard_activity_path ? 'active' : ''%>" href="<%= main_app.dashboard_activity_path %>"><span class="fa fa-eye"></span> Activity</a>
             </li>
             <!--<li><a data-toggle='tab' href="#groups" data-url="/groups/show_all">Groups</a></li>
             <li><a data-toggle='tab' href="#notifications">Notifications</a></li>-->

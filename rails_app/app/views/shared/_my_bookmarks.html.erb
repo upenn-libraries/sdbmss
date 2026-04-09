@@ -3,7 +3,7 @@
       <ul class="nav nav-tabs">
         <li ng-repeat="(name, bookmarks) in all_bookmarks" class="bookmark-nav-button" ng-class="{active: (name == active) }">
           <a ng-click="addTabToStorage(name);">{{ name }}
-          <span class="badge">{{ (bookmarks | filter:hasTag).length }}</span></a>
+          <span class="badge badge-secondary">{{ (bookmarks | filter:hasTag).length }}</span></a>
         </li>
       </ul>
     <div class="tab-content bookmark-panes">

@@ -2,7 +2,7 @@ json.activities @details do |(date, users)|
   
   json.date date
   json.activities users.map { |u, list| 
-    [User.find(u).username, list.map { |transaction_id, version|
+    [(@users.select { |user| user.id == u.to_i }.first&.username || "Unknown"), list.map { |transaction_id, version|
       activity = @activities.select { |a| a.transaction_id == transaction_id }.first
       link_text = SDBMSS::IDS.get_public_id_for_model(activity.item_type, activity.item_id)
       if !link_text
@@ -13,7 +13,7 @@ json.activities @details do |(date, users)|
       else
         link_text = "<span class='text-danger'>#{link_text}</span>"
       end
-      link_text += "<small class='pull-right'>#{activity.created_at.to_formatted_s(:long)}</small>"
+      link_text += "<small class='float-right'>#{activity.created_at.to_formatted_s(:long)}</small>"
 
       ["#{activity.format_event} #{link_text}", version[:details]] 
     }.to_h] 

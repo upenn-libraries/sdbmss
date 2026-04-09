@@ -46,7 +46,10 @@ class ActivitiesController < ApplicationController
     @versions = PaperTrail::Version.where(transaction_id: @activities.map(&:transaction_id).flatten.uniq).includes(:item).order("created_at DESC")
     @users = User.where(id: @versions.map(&:whodunnit).uniq)
     @details = EntryVersionFormatter.new(@versions).details
-    render partial: "activities/list"
+    respond_to do |format|
+      format.html { render partial: "activities/list" }
+      format.json { render partial: "activities/list" }
+    end
     #render partial: "activities/show_all"
   end
 

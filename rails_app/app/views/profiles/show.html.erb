@@ -42,17 +42,16 @@
         </div>
         <div class="user-info">
             <span class="dropdown">
-                <a href="" class="dropdown-toggle" data-toggle="dropdown" >
+                <a href="" class="dropdown-toggle" data-toggle="dropdown">
                   <%= @user.to_s %>
-                  <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu" style="background: white !important;">
-                  <li><em style="padding: 20px;" class='text-muted'><span class="fa fa-briefcase"></span> <%= @user.role %></em></li>
-                  <li><a href="<%= new_private_message_path(user_id: [@user.id]) %>"><span class="fa fa-envelope"></span> Send Message</a></li>
+                <div class="dropdown-menu">
+                  <span class="dropdown-item-text text-muted"><span class="fa fa-briefcase"></span> <%= @user.role %></span>
+                  <a class="dropdown-item" href="<%= new_private_message_path(user_id: [@user.id]) %>"><span class="fa fa-envelope"></span> Send Message</a>
                   <% if current_user == @user %>
-                  <li><%= link_to edit_user_registration_path do %> <span class="fa fa-cog"></span> My Settings <% end %></li>
-                  <% end %>                  
-                </ul>
+                  <%= link_to edit_user_registration_path, class: "dropdown-item" do %><span class="fa fa-cog"></span> My Settings<% end %>
+                  <% end %>
+                </div>
             </span>
             <p class="text-muted" sdbm-tooltip="user_levels">User Level: <em><%= @user.role %></em></p>
             <p class="text-info"><%= @display[:email] %></p>

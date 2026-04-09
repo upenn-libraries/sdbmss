@@ -114,7 +114,7 @@
             <% if @record.dericci_links.where(approved: true).group_by(&:name_id).each do |name_id, dericci_links| %>
               <% name = dericci_links.first.name %>
               <a href="" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
-                <%= name.name %> <span class="badge"><%= dericci_links.count %></span>
+                <%= name.name %> <span class="badge badge-light"><%= dericci_links.count %></span>
               </a>
 
               <div class="modal fade" id="<%= name.public_id %>">
@@ -169,7 +169,7 @@
           <% if @record.dericci_links.where(approved: [false, nil]).group_by(&:name_id).each do |name_id, dericci_links| %>
               <% name = dericci_links.first.name %>
               <a href="" class="btn btn-info btn-sm" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
-                <%= name.name %> <span class="badge"><%= dericci_links.count %></span>
+                <%= name.name %> <span class="badge badge-light"><%= dericci_links.count %></span>
               </a>
 
               <div class="modal fade" id="<%= name.public_id %>">

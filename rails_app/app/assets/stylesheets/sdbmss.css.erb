@@ -2064,14 +2064,14 @@ so that gray backdrop shvows up correctly */
   border-radius: 0px;
   box-shadow: none;
 }
-#activity_tabs li.active a {
+#activity_tabs .nav-link.active {
   background: none;
   color: black;
   font-weight: bold;
   border-radius: 0px;
   font-size: 1.1em;
 }
-#activity_tabs li a, #activity_tabs li a:hover, #activity_tabs li a:focus {
+#activity_tabs .nav-link, #activity_tabs .nav-link:hover, #activity_tabs .nav-link:focus {
   outline: none !important;
   background: none !important;
 }
@@ -2187,8 +2187,20 @@ so that gray backdrop shvows up correctly */
   display: inline-block;
 }
 
-/* general */
+/* general - BS4 dropped .caret, restore it */
+.caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 2px;
+  vertical-align: middle;
+  border-top: 4px dashed;
+  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
+}
+
 .collapsed .caret {
+  border-top: 0;
   border-left: 4px dashed;
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
@@ -2866,7 +2878,7 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 .list-inline .btn-group {
   margin: 1px;
 }
-.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+.nav-pills .nav-link.active, .nav-pills .nav-link.active:hover, .nav-pills .nav-link.active:focus {
   background-color: #4d6b98;
   color: white;
 }
@@ -3129,4 +3141,7 @@ pre {
   background-color: #f5f5f5;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+.text-warning {
+    color: #8a6d3b !important;
 }

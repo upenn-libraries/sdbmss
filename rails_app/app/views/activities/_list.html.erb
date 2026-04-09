@@ -25,16 +25,15 @@
               <span class="<%= defined?(up) ? 'dropup' : 'dropdown' %>">
                 <a href="" class="dropdown-toggle" data-toggle="dropdown">
                   <%= user.to_s %>
-                  <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu">
-                  <li><em style="padding: 20px;" class='text-muted'><span class="fa fa-briefcase"></span> <%= user.role %></em></li>
-                  <li><a href="<%= main_app.profile_path(username: user.username) %>"><span class="fa fa-user"></span> Profile</a></li>
-                  <li><a href="<%= main_app.new_private_message_path(user_id: [user.id]) %>"><span class="fa fa-envelope"></span> Send Message</a></li>
+                <div class="dropdown-menu">
+                  <span class="dropdown-item-text text-muted"><span class="fa fa-briefcase"></span> <%= user.role %></span>
+                  <a class="dropdown-item" href="<%= main_app.profile_path(username: user.username) %>"><span class="fa fa-user"></span> Profile</a>
+                  <a class="dropdown-item" href="<%= main_app.new_private_message_path(user_id: [user.id]) %>"><span class="fa fa-envelope"></span> Send Message</a>
                   <% if current_user == user %>
-                  <li><%= link_to main_app.edit_user_registration_path do %> <span class="fa fa-cog"></span> My Settings <% end %></li>
+                  <%= link_to main_app.edit_user_registration_path, class: "dropdown-item" do %><span class="fa fa-cog"></span> My Settings<% end %>
                   <% end %>
-                </ul>
+                </div>
               </span>
             <% else %>
               Unknown

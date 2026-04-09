@@ -1,13 +1,13 @@
  <nav>
-  <ul class="nav nav-pills nav-stacked ajax-tabs" id="activity_tabs">
-    <li><a href="#activity-pane" data-url="/activities/show_all.json">All Activity</a></li>
-    <li><a href="#activity-pane" data-url="/activities/show_all.json?user=<%= current_user.id %>">My Activity</a></li>
-    <li class='active'><a href="#activity-pane" data-url="/activities/show_all.json?watched=true">My Watched Records</a></li>
+  <ul class="nav nav-pills flex-column ajax-tabs" id="activity_tabs">
+    <li class="nav-item"><a class="nav-link" href="#activity-pane" data-url="/activities/show_all.json">All Activity</a></li>
+    <li class="nav-item"><a class="nav-link" href="#activity-pane" data-url="/activities/show_all.json?user=<%= current_user.id %>">My Activity</a></li>
+    <li class="nav-item"><a class="nav-link active" href="#activity-pane" data-url="/activities/show_all.json?watched=true">My Watched Records</a></li>
   </ul>
-  <ul class="nav nav-stacked" style="border-top: 1px dashed #ddd; margin-top: 5px;">
-    <li><a href="/watches">Manage My Watched Records</a></li>
+  <ul class="nav flex-column" style="border-top: 1px dashed #ddd; margin-top: 5px;">
+    <li class="nav-item"><a class="nav-link" href="/watches">Manage My Watched Records</a></li>
     <% if can? :manage, Activity %>
-      <li><%= link_to "Manage Activity", activities_path %></li>
+      <li class="nav-item"><%= link_to "Manage Activity", activities_path, class: "nav-link" %></li>
     <% end %>
   </ul>
 </nav>

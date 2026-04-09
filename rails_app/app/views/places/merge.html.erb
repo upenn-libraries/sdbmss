@@ -20,7 +20,7 @@
           </dd>
           <dt># Entries</dt>
           <dd>
-              This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
+              This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge badge-secondary"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
           </dd>
         </dl>
       </div>
@@ -67,7 +67,7 @@
             </dd>
             <dt># Entries</dt>
             <dd>
-                This <%= @target.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@target.class.to_s.underscore, @target.name) %>" class="badge"><%= SDBMSS::Util.to_many(@target.entries_count, "entry") %></a>
+                This <%= @target.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@target.class.to_s.underscore, @target.name) %>" class="badge badge-secondary"><%= SDBMSS::Util.to_many(@target.entries_count, "entry") %></a>
             </dd>
           </dl>
         </div>

@@ -10,7 +10,7 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="tab-content">
-            <div id="my_activity" class="tab-pane fade in active">
+            <div id="my_activity" class="tab-pane fade show active">
                 <% if (drafts = current_user.entries.where(draft: true)).count > 0 %>
                     <%= render partial: "drafts", locals: {drafts: drafts} %>
                 <% end %>

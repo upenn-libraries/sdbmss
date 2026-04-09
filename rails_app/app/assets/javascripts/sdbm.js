@@ -19,11 +19,11 @@ if (Math.log10 === undefined) Math.log10 = function (n) {
 function addNotification (message, type, permanent) {
   var notification = $('<div><a class="close" data-dismiss="alert" aria-label="close">&times;</a>' + message + "</div>");
   notification.addClass('alert').addClass('alert-' + type).addClass('alert-absolute');
-  
+
   notification.hide();
   $('.alerts-absolute').append(notification);
   notification.fadeIn();
-  
+
   if (!permanent) {
     setTimeout(function () {
       notification.fadeOut('slow', function () {
@@ -36,20 +36,20 @@ function addNotification (message, type, permanent) {
 function load_activity (url, day) {
   $("#loader").show();
   loading = true;
-  $.get(url, {day: day}, function(result){      
+  $.get(url, {day: day}, function(result){
       //var loaded = JSON.parse(result);
       var loaded = result;
       if (loaded.activities && loaded.activities[0]) {
 
           var date = loaded.activities[0].date;
-          var date_header = $("<h4 class='text-center'><a class='float-right' data-toggle='collapse' data-target='.activity-" + date + "'>" + date + " <span class='caret'></span></a></h4>");
-          var date_body = $("<div class='collapse collapse in'></div>");
+          var date_header = $("<h4 class='text-center'><a data-toggle='collapse' data-target='.activity-" + date + "'>" + date + " <span class='caret'></span></a></h4>");
+          var date_body = $("<div class='collapse show mb-3'></div>");
           $("#activity-content").append(date_header);
           $("#activity-content").append(date_body);
 
           for (var user in loaded.activities[0].activities) {
               var user_header = $("<p class='text-center' data-toggle='collapse' data-target='#activity-" + date + "-" + user + "'</p>");
-              var user_body = $("<div class='list-group collapse collapse in activity-" + date + "' id='activity-" + date + "-" + user + "'></div>");
+              var user_body = $("<div class='list-group collapse show activity-" + date + "' id='activity-" + date + "-" + user + "'></div>");
 
               date_body.append(user_header);
               date_body.append(user_body);
@@ -65,7 +65,7 @@ function load_activity (url, day) {
                   else if (title.indexOf('deleted') === 0) cl += 'danger';
                   else cl = '';
 
-                  user_body.append($("<div class='list-group-item " + cl + "'><h4 class='list-group-item-heading'>" + title + "</h4> <p class='list-group-item-text'>" + details[user][title] + "</p></div>"));                    
+                  user_body.append($("<div class='list-group-item " + cl + "'><h4 class='list-group-item-heading'>" + title + "</h4> <p class='list-group-item-text'>" + details[user][title] + "</p></div>"));
               }
               user_header.html('<a href="/profiles/' + user + '" target="_blank">' + user + '</a> modified ' + count + ' record' + (count > 1 ? 's' : '') + ' <span class="caret"></span>');
           }
@@ -81,7 +81,7 @@ function load_activity (url, day) {
           load_activity(url, ++day);
       } else {
           loading = false;
-          $("#loader").hide();        
+          $("#loader").hide();
       }
 
   });
@@ -142,7 +142,7 @@ $(document).ready(bindRemoteAjaxCallback);
 
 
 function bindRemoteAjaxCallback (){
-  //selector = selector === undefined ? 
+  //selector = selector === undefined ?
   $('a[data-remote]').on('ajax:success', function (event, xhr, status, result) {
       var errors = [];
       if (result.responseJSON.button) {
@@ -151,13 +151,13 @@ function bindRemoteAjaxCallback (){
       else {
         for (var key in result.responseJSON.results) {
           if (result.responseJSON.results[key].button_html) {
-            $("." + key).replaceWith(result.responseJSON.results[key].button_html);          
+            $("." + key).replaceWith(result.responseJSON.results[key].button_html);
           } else if (result.responseJSON.results[key].error) {
             errors.push(result.responseJSON.results[key].error);
           }
         }
         if (errors.length > 0) {
-          console.log("ERRORS: ", errors);        
+          console.log("ERRORS: ", errors);
         }
       }
       $('a[data-remote]').unbind('ajax:success');
@@ -331,7 +331,7 @@ $(document).ready( function (e) {
 
     // disable site-wide autocomplete
     $('input').attr('autocomplete','off');
-    //$('[data-toggle="popover"]').popover(); 
+    //$('[data-toggle="popover"]').popover();
 
     // remember control panel display from last set (localstorage memory)
     if (localStorage.getItem('sdbm_hide_panel') == "true") {
