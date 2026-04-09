@@ -101,6 +101,7 @@ services:
       {% else %}
       - sdbm_assets:/home/app/public/assets
       - sdbm_docs:/home/app/public/static
+      - sdbm_downloads:/home/app/tmp
       {% endif %}
 
 networks:
@@ -120,4 +121,7 @@ secrets:
 volumes:
   sdbm_assets:
   sdbm_docs:
+  sdbm_downloads:
+    external: true
+    name: sdbm_downloads
 {% endif %}
