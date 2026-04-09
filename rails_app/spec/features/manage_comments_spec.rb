@@ -69,8 +69,4 @@ describe "Manage Comments", :js => true do
     expect(page).not_to have_content('This is an interesting observation!')
   end
 
-  it "should properly notify the owner of the commented record" do
-    skip "not yet!"
-  end
-
 end

@@ -197,23 +197,23 @@ describe "Manage entries", :js => true do
   end
 
   it "should allow a user to upload entries from a flat csv file" do
-    skip "not implemented yet"
+    skip "bulk flat-CSV entry import is not implemented for the current manage-entries workflow"
   end
 
   it "should try to download a search result from manage entries table" do
-    skip "not implemented yet"
+    skip "manage-entries export uses async download plumbing that should be covered below the JS feature-spec level"
   end
 
   it "should allow a user to create an entry from composite provenance on a manuscript record" do
-    skip "not implemented yet"
+    skip "composite-provenance entry creation is not covered in the current UI workflow and needs a dedicated product-level test path"
   end
 
   it "should show suggestions of similar records in the linking tool" do
-    skip "not implemented yet"
+    skip "linking suggestions remain deferred until the matching algorithm is stable enough for deterministic coverage"
   end  
 
   it "should verify a legacy entry" do
-    skip "not implemented yet"
+    skip "legacy-entry verification still needs a dedicated workflow spec; this manage-entries path is not implemented"
   end
 
 end

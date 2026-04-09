@@ -93,7 +93,7 @@ describe "Manage Bookmarks", :js => true do
   end
 
   it "should allow a user to export their bookmarks" do
-    skip "Asynch CSV export method untested at the moment"
+    skip "bookmark CSV export still exists, but async download polling belongs in lower-level coverage instead of this feature spec"
   end
 
   it "should allow a user to delete a bookmark" do
