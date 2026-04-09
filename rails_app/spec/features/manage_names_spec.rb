@@ -29,7 +29,7 @@ describe "Manage Names", :js => true do
     expect(page).to have_content(author.name)
   end
 
-  it "should show the merge page for an existing duplicate name", :known_failure do
+  it "should show the merge page for an existing duplicate name" do
     author = Name.author
     author.name = "Joe Zchmoe"
     author.save!

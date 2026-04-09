@@ -26,7 +26,7 @@ describe "Manage places", :js => true do
     end
 
     # poltergeist has trouble loading JSON, so we don't use it
-    it "should do search for Place", :known_failure, js: false do
+    it "should do search for Place", js: false do
       Place.create!(name: "Something new")
       Place.create!(name: "Something old")
       Place.create!(name: "Something else")

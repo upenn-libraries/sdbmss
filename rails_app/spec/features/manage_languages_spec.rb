@@ -21,13 +21,13 @@ describe "Manage languages", :js => true do
       login(@user, 'somethingunguessable')
     end
 
-    it "should show list of Languages", :known_failure do
+    it "should show list of Languages" do
       visit languages_path
       expect(page).to have_content @language.name
     end
 
     # poltergeist has trouble loading JSON, so we don't use it
-    it "should do search for Language", :known_failure, js: false do
+    it "should do search for Language", js: false do
       Language.create!(name: "Something new")
       Language.create!(name: "Something old")
       Language.create!(name: "Something else")
@@ -118,7 +118,7 @@ describe "Manage languages", :js => true do
       login(@admin, 'somethingunguessable')
     end
 
-    it "should show list of Languages", :known_failure do
+    it "should show list of Languages" do
       visit languages_path
       expect(page).to have_content @language.name
     end

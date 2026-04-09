@@ -141,7 +141,7 @@ describe "Data entry", :js => true do
       expect(page).to have_content "by #{entry.created_by.username}"
     end
 
-    it "should preserve entry on Edit page when saving without making any changes", :known_failure do
+    it "should preserve entry on Edit page when saving without making any changes" do
       entry = create_edit_entry
 
       visit edit_entry_path :id => entry.id
@@ -153,7 +153,7 @@ describe "Data entry", :js => true do
       verify_entry(entry)
     end
 
-    it "should remove a title on Edit page", :known_failure do
+    it "should remove a title on Edit page" do
       entry = create_edit_entry_with_titles(["Book of Hours", "Bible"], include_author: false)
 
       visit edit_entry_path :id => entry.id
@@ -180,7 +180,7 @@ describe "Data entry", :js => true do
 
     end
 
-    it "should clear out a title on Edit Page", :known_failure do
+    it "should clear out a title on Edit Page" do
       entry = create_edit_entry_with_titles(["Bible"])
 
       visit edit_entry_path :id => entry.id
@@ -200,7 +200,7 @@ describe "Data entry", :js => true do
       #expect(entry.entry_titles.first.title).to eq("Bible")
     end
 
-    it "should clear out a Name Authority (autocomplete) field", :known_failure do
+    it "should clear out a Name Authority (autocomplete) field" do
       entry = create_edit_entry_with_titles(["Book of Hours"])
 
       visit edit_entry_path :id => entry.id
@@ -230,17 +230,15 @@ describe "Data entry", :js => true do
 
       visit edit_entry_path :id => entry.id
       fill_in 'cat_lot_no', with: "123"
-      find_by_id('add_title').click
-      find_by_id('title_0').click
+      find_by_id('cat_lot_no').trigger('focusout')
 
-      expect(page).to have_content "Warning! An entry with that catalog number may already exist"
+      expect(page).to have_css('#cat_lot_no_warning', text: /Warning! An entry with that catalog number may already exist/)
 
       # change it back to a new number so msg goes away
       fill_in 'cat_lot_no', with: "124"
-      find_by_id('add_title').click
-      find_by_id('title_0').click
+      find_by_id('cat_lot_no').trigger('focusout')
 
-      expect(page).not_to have_content "Warning! An entry with that catalog number may already exist"
+      expect(page).to have_no_css('#cat_lot_no_warning', text: /Warning! An entry with that catalog number may already exist/)
     end
 
     it "should disallow saving on Edit Page when another change was made" do
