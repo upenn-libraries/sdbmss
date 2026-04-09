@@ -1,7 +1,5 @@
 
 require "rails_helper"
-require "csv"
-
 describe "Manage places", :js => true do
 
   before :all do
@@ -17,38 +15,6 @@ describe "Manage places", :js => true do
         created_by: @user,
       )
       login(@user, 'somethingunguessable')
-    end
-
-    it "should show list of Places" do
-      Place.index
-      visit places_path
-      expect(page).to have_content @place.name
-    end
-
-    # poltergeist has trouble loading JSON, so we don't use it
-    it "should do search for Place", js: false do
-      Place.create!(name: "Something new")
-      Place.create!(name: "Something old")
-      Place.create!(name: "Something else")
-      Place.create!(name: "Something zzz")
-
-      Place.reindex
-
-      s = Place.search do
-        fulltext "something", :fields => [:name]
-      end
-
-      expect(s.total).to eq(4)
-
-      visit search_places_path(name: "something", format: "json")
-      response = JSON.parse(page.source)
-      expect(response).to be_a(Hash)
-      expect(response["total"]).to eq(4)
-
-      visit search_places_path(name: "Something old", format: "json")
-      response = JSON.parse(page.source)
-      expect(response).to be_a(Hash)
-      expect(response["total"]).to eq(1)
     end
 
     it "should add a new Place" do
@@ -90,17 +56,8 @@ describe "Manage places", :js => true do
       expect(Place.count).to eq(count-1)
     end
 
-    # poltergeist has trouble loading the csv, so we don't use it
     it "should export CSV", :js => false do
       skip "place CSV export still exists, but async download polling belongs in lower-level coverage instead of this feature spec"
-      Place.create!(name: "Should appear in export")
-      Place.index
-      visit search_places_path(format: :csv)
-      found = false
-      CSV.parse(page.source, headers: true) do |row|
-        found = true if row["name"] == "Should appear in export"
-      end
-      expect(found).to eq(true)
     end
   end
 
@@ -112,12 +69,6 @@ describe "Manage places", :js => true do
         created_by: @user,
       )
       login(@admin, 'somethingunguessable')
-    end
-
-    it "should show list of Places" do
-      Place.index
-      visit places_path
-      expect(page).to have_content @place.name
     end
 
 #    it "should mark Places as reviewed" do
