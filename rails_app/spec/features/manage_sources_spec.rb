@@ -75,16 +75,14 @@ describe "Manage sources", :js => true do
 
   it "should delete a Source" do
     # this is a very rough test!
-    skip "so anything with a confirmation popup is untestable for the time being :("
     count = Source.count
 
-    # mock out the confirm dialogue
-    page.evaluate_script('window.confirm = function() { return true; }')
-
     visit sources_path
-    find(".delete-link", match: :first).click
-    sleep(1)
+    accept_data_confirm_modal_from do
+      find(".delete-link", match: :first).trigger('click')
+    end
 
+    expect(page).to have_no_content(@source.title)
     expect(Source.count).to eq(count-1)
   end
 

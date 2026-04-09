@@ -96,12 +96,16 @@ describe "Manage Pages", :js => true do
   end
 
   it "should allow a user to delete a page" do
-    skip "because poltergeist can't handle a modal popup"
+    filename = "test_delete_tooltip_#{Time.now.to_i}_#{rand(1000)}.html"
+    page_to_delete = Page.create!(name: "Test Delete Tooltip", filename: filename, category: "tooltip")
+    File.open(Rails.root.join("public", page_to_delete.location, page_to_delete.filename), "wb") do |file|
+      file.write("Delete me")
+    end
     n = Page.count
     visit pages_path  
-    find("a[data-method='delete']", match: :first).click
-    expect(page).to have_content("Confirm")
-    click_button("Confirm")
+    accept_data_confirm_modal_from do
+      find("a[href='#{page_path(page_to_delete.name)}'][data-method='delete']", match: :first).click
+    end
 
     expect(page).to have_content("successfully deleted.")
     expect(Page.count).to eq(n - 1)

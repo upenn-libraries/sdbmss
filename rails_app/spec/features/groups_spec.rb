@@ -102,15 +102,12 @@ describe "Groups", :js => true do
     end
 
     it "should allow a group manager to remove a user from their group" do
-      skip "Poltergeist won't let me click on the 'confirm' modal, so......."
+      GroupUser.create!(group: @group, user: @contributor, role: 'Member', confirmed: true, created_by: @admin)
       visit edit_group_path(Group.first)
       expect(page).to have_content(@contributor.to_s)
-      click_link 'Delete'
-      expect(page).to have_content('Are you sure you want to remove this user?')
-      
-      expect(page).to have_content('Confirm')
-      click_button 'Confirm'
-      #find('.btn-danger', match: :first).click
+      accept_data_confirm_modal_from do
+        click_link 'Delete'
+      end
       expect(page).not_to have_content(@contributor.to_s)
     end
 
@@ -143,12 +140,13 @@ describe "Groups", :js => true do
     end
 
     it "should allow a user to destroy a group" do
-      skip "again, the confirm modal... god"
       visit groups_path
-      find('.btn-danger', match: :first).click
-      expect(page).to have_content 'Are you sure'
-      #click_button 'Confirm'
-      expect(page).to have_content 'The Society of the Friends of the Constitution was deleted successfully.'
+      accept_data_confirm_modal_from do
+        within(all("tr", text: @group.name, visible: true).first) do
+          click_link "Delete"
+        end
+      end
+      expect(Group.where(id: @group.id)).to be_empty
       visit groups_path
       expect(page).not_to have_content 'The Society of the Friends of the Constitution'
     end

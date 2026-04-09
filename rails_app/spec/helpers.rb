@@ -43,6 +43,16 @@ module SDBMSS
         page.evaluate_script "window.#{name}Msg;"
       end
 
+      def accept_data_confirm_modal_from(&block)
+        block.call
+
+        within(".modal.in", visible: true) do
+          find(".commit", match: :first).click
+        end
+
+        expect(page).to have_no_css(".modal.in", visible: true)
+      end
+
       private
 
       def handle_js_modal name, return_val, wait_for_call = false, &block
