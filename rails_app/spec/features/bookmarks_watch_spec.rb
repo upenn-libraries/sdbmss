@@ -183,7 +183,7 @@ describe "Bookmark", :js => true do
     end
 
     it "should allow the user to export their bookmarks" do
-      skip "Is this still/should this still be an option?"
+      skip "bookmark CSV export still exists, but this belongs in lower-level coverage instead of a JS download spec"
     end
 
   end
