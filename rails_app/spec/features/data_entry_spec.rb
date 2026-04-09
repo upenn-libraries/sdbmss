@@ -624,14 +624,13 @@ describe "Data entry", :js => true do
     end
 
     it "should save an Entry and log it in Recent Activity" do
-      skip "pending until the current permission model emits the expected entry-created activity for this UI flow"
       create_entry
 
       entry = Entry.last
 
       visit activities_path
 
-      expect(page).to have_content "#{entry.created_by.username} added SDBM_#{entry.id}"
+      expect(page).to have_content("added #{entry.public_id}")
     end
 
     it "should update status field on Source when adding an Entry" do

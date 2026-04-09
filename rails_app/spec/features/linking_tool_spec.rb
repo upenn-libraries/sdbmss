@@ -288,7 +288,7 @@ describe "Linking Tool", :js => true do
   end
 
   it "should warn the user that there are unsaved changes before leaving page" do
-    expect(pending("test not created yet")).to fail
+    skip "unsaved-change navigation warning still needs a stable browser-level assertion strategy for this Angular workflow"
   end
 
   it "should show error message when overwriting changes" do
