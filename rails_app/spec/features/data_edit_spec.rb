@@ -223,10 +223,12 @@ describe "Data entry", :js => true do
       expect(entry.entry_authors.first.author_id).to eq(nil)
     end
 
-    it "should warn when editing Entry to have same catalog number as existing Entry", :known_failure do
+    it "should warn when editing Entry to have same catalog number as existing Entry" do
       source = create_edit_test_source
-      create_edit_entry_with_titles(["Book of Hours"], include_author: false, catalog_or_lot_number: "123", source: source)
+      existing_entry = create_edit_entry_with_titles(["Book of Hours"], include_author: false, catalog_or_lot_number: "123", source: source)
       entry = create_edit_entry_with_titles(["Book of Hours"], include_author: false, catalog_or_lot_number: "124", source: source)
+      [existing_entry, entry].each(&:index!)
+      Sunspot.commit
 
       visit edit_entry_path :id => entry.id
       fill_in 'cat_lot_no', with: "123"
