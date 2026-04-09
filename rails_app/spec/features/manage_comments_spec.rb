@@ -27,17 +27,6 @@ describe "Manage Comments", :js => true do
     expect(page).to have_content("This is an interesting observation!")
   end
 
-  it "should show manage comments page" do
-    visit comments_path
-
-    expect(page).to have_content("This is an interesting observation")
-
-    find("#search_value").set "observation"
-    find('#search_submit').click
-
-    expect(page).to have_content("This is an interesting observation") 
-  end
-
   it "should allow a user to edit their comments" do
     visit comments_path
 

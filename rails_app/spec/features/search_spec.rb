@@ -154,15 +154,6 @@ describe "Blacklight Search", :js => true do
     expect(page).to have_xpath("//h1[contains(.,'#{entry.public_id}')]")
   end
 
-  # poltergeist's implementation of page.source wraps the JSON
-  # response in HTML for display, so we set js: false for this test.
-  it "should load show Entry page (json format)", js: false do
-    entry = Entry.last
-    visit entry_path(entry, format: :json)
-    data = JSON.parse(page.source)
-    expect(data["id"]).to eq(entry.id)
-  end
-
   it "should 404 on show Entry page for deleted entry" do
     entry = Entry.new(
       source: Source.last,

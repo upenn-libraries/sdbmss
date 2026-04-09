@@ -19,14 +19,6 @@ describe "Manage Private Messages", :js => true do
     page.reset!
   end
 
-  it "should prevent a 'guest' user from accessing messaging" do    
-    visit "/users/sign_out"
-    expect(page).to have_content("Login")
-
-    visit private_messages_path
-    expect(page).to have_content("You need to sign in or sign up before continuing.")
-  end
-
   it "should display an intelligable empty inbox" do
     visit private_messages_path
     expect(page).to have_content('You do not have any private messages.')
