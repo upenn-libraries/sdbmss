@@ -45,7 +45,7 @@ describe "Groups", :js => true do
       expect(page).to have_content('Invitations sent!')
     end
 
-    it "should allow users to accept group invitations", :known_failure do
+    it "should allow users to accept group invitations" do
       GroupUser.create!(group: @group, user: @contributor, role: 'Member', confirmed: false, created_by: @admin)
       page.reset!
       login(@contributor, 'somethingunguessable')
@@ -78,7 +78,7 @@ describe "Groups", :js => true do
       expect(page).to have_content('Records Added To Group')
     end
 
-    it "should confer/restrict editing privileges on all members of a group as appropriate", :known_failure do
+    it "should confer/restrict editing privileges on all members of a group as appropriate" do
       GroupUser.create!(group: @group, user: @contributor, role: 'Member', confirmed: true, created_by: @admin)
       GroupRecord.create!(group: @group, record: Entry.first, editable: true)
       page.reset!
