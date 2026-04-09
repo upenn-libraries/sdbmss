@@ -19,7 +19,7 @@ describe "Login", :js => true do
     login(@user_active, 'somethingunguessable')
   end
 
-  it "should disallow login", :known_failure do
+  it "should disallow login" do
     visit root_path
     #find('#dismiss-welcome').click
     fill_in 'user_login', :with => @user_inactive.username

@@ -49,7 +49,7 @@ describe "User Activity", :js => true do
     expect(page).to have_content("Book of Ours")
   end
 
-  it "should create a new name and show it in the activity", :known_failure do
+  it "should create a new name and show it in the activity" do
     visit new_name_path
     fill_in 'name_name', with: 'Stacker Pentecost'
     find_by_id('name_is_artist').click

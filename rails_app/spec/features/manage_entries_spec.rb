@@ -27,7 +27,7 @@ describe "Manage entries", :js => true do
     end
   end
 
-  it "should return JSON results successfully", :known_failure, js: false do
+  it "should return JSON results successfully", js: false do
     visit entries_path(format: :json)
     data = JSON.parse(page.source)
     expect(data['error']).to be_nil
@@ -109,7 +109,7 @@ describe "Manage entries", :js => true do
     expect(page.find('#search_results_info')).to have_content(ActiveSupport::NumberHelper::number_to_delimited(Entry.all.count))
   end
 
-  it "should perform a search on any field without error", :known_failure do
+  it "should perform a search on any field without error" do
     visit entries_path
 
     search_field = page.find("select[name='search_field']", visible: :all, match: :first)

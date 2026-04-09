@@ -3,7 +3,7 @@ require "rails_helper"
 
 describe "Sign up / Edit Profile", :js => true do
 
-  it "should allow sign up", :known_failure do
+  it "should allow sign up" do
     visit new_user_registration_path
     unique_suffix = Time.now.to_i.to_s
     
