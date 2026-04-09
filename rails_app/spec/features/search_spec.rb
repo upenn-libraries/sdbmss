@@ -76,7 +76,7 @@ describe "Blacklight Search", :js => true do
     click_button('search')
     expect(page).to have_selector("#documents")
 
-    find(:css, "#facet-author .facet_select", match: :first).click
+    find(:css, "#facet-author .facet-values a", match: :first).click
     expect(page).to have_selector("#documents")
   end
 
@@ -181,13 +181,6 @@ describe "Blacklight Search", :js => true do
     expect(page).to have_xpath("//dd[contains(.,'#{source.public_id}')]")
   end
 
-  it "should load show Agent page" do
-    skip "separate Agent page and display is deprecated"
-    agent = Name.where(is_provenance_agent: true).last
-    visit name_path(agent)
-    expect(page).to have_xpath("//dd[contains(.,'#{agent.public_id}')]")
-  end
-
   it "should load show Name page", :known_failure, :flaky do
     name = Name.last
     visit name_path(name)
@@ -209,64 +202,10 @@ describe "Blacklight Search", :js => true do
     expect(page).to have_content(ms.public_id)
   end
 
-  it "should bookmark an Entry and remove it" do
-    skip "New bookmark method implemented"
-    login(@user, 'somethingunguessable')
-
-    visit root_path
-    find('#dismiss-welcome').click
-
-    fill_in "q", with: "Tomkinson"
-    click_button('search')
-    expect(page).to have_selector("#documents")
-
-    entry_one = get_hill_entry_by_cat_num 1
-    find_by_id("bookmark_toggle_" + entry_one.id.to_s).click
-
-    # page does ajax call; wait for toggle to be checked
-    expect(page).to have_selector("#bookmark_toggle_" + entry_one.id.to_s + "[value='Remove Bookmark']")
-
-    visit bookmarks_path
-    expect(page).to have_link(entry_one.public_id)
-    find_by_id("bookmark_toggle_" + entry_one.id.to_s).click
-
-    # page does ajax call; wait for toggle to be checked
-    expect(page).not_to have_selector("#bookmark_toggle_" + entry_one.id.to_s + "[value='Remove Bookmark']")
-
-    visit bookmarks_path
-    expect(page).not_to have_link(entry_one.public_id)
-  end
-
-  # poltergeist has trouble loading the csv, so we don't use it
-  it "should export bookmarks as CSV", :js => false do
-    skip "New bookmark method implemented"
-    entry = Entry.first
-
-    Bookmark.create!(
-      user_id: @user.id,
-      user_type: 'User',
-      document_id: entry.id,
-      document_type: "SolrDocument"
-    )
-
-    login(@user, 'somethingunguessable')
-
-    visit bookmarks_path
-    expect(page).to have_link(entry.public_id)
-
-    click_link("Download as CSV")
-
-    found = false
-    CSV.parse(page.source, headers: true) do |row|
-      found = true if row["id"] == entry.id.to_s
-    end
-    expect(found).to eq(true)
-  end
-
   it "should add search to History" do
-    skip "Search History only saved when logged in"
+    login(@user, 'somethingunguessable')
     visit root_path
-    find('#dismiss-welcome').click
+    find('#dismiss-welcome').click if page.has_css?('#dismiss-welcome')
 
     fill_in "q", with: "My Unique Search"
     click_button('search')

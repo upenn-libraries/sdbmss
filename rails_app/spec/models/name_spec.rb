@@ -66,6 +66,34 @@ describe Name do
       expect(author1.deleted).to eq(true)
     end
 
+    it "should update counters appropriately when records are merged" do
+      admin = User.where(role: "admin").first
+
+      author = Name.create!(is_author: true, name: "Merge Counter Author", created_by: admin)
+      artist = Name.create!(is_artist: true, name: "Merge Counter Artist", created_by: admin)
+
+      source = Source.create!(source_type: SourceType.auction_catalog, created_by: admin)
+      entry1 = Entry.create!(source: source, created_by: admin, approved: true)
+      entry2 = Entry.create!(source: source, created_by: admin, approved: true)
+
+      EntryAuthor.create!(entry: entry1, author: author)
+      EntryAuthor.create!(entry: entry1, author: artist)
+      EntryArtist.create!(entry: entry2, artist: artist)
+
+      author.reload
+      artist.reload
+
+      expect(author.authors_count).to eq(author.author_entries.where(deprecated: false, draft: false).count)
+      expect(artist.authors_count).to eq(artist.author_entries.where(deprecated: false, draft: false).count)
+      expect(artist.artists_count).to eq(artist.artist_entries.where(deprecated: false, draft: false).count)
+
+      artist.merge_into(author)
+
+      author.reload
+      expect(author.authors_count).to eq(author.author_entries.where(deprecated: false, draft: false).count)
+      expect(author.artists_count).to eq(author.artist_entries.where(deprecated: false, draft: false).count)
+    end
+
     it "should save an extremely large viaf_id" do
       nm = Name.author
       nm.name = "Roger Zelazny"
