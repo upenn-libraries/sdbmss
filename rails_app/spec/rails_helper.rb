@@ -24,6 +24,7 @@ require 'warden/test/helpers'
 require 'capybara-screenshot/rspec'
 
 require_relative './helpers'
+Dir[Rails.root.join('spec/lib/**/*.rb')].sort.each { |f| require f }
 
 module TestSuiteSetupHelpers
   extend self

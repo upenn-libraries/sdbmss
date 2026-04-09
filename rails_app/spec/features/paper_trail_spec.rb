@@ -3,7 +3,6 @@
 require "rails_helper"
 
 describe "Paper trail", :js => true do
-  require "lib/paper_trail_helpers"
   include PaperTrailHelpers
 
 
@@ -26,6 +25,8 @@ describe "Paper trail", :js => true do
 
   context "when user is logged in" do
 
+    let(:entry) { Entry.last }
+
     before :each do
       login(@user, 'somethingunguessable')
     end
@@ -37,47 +38,39 @@ describe "Paper trail", :js => true do
     describe '(for simple changes)' do
 
       it 'should load the history page successfully' do
-        e = Entry.last
+        visit history_entry_path(entry)
 
-        visit history_entry_path(e)
-
-        expect(page).to have_content("History of changes to #{e.public_id}")
+        expect(page).to have_content("History of changes to #{entry.public_id}")
       end
 
       it "should register changes in the entry basic fields" do
-        e = Entry.last
-
-        visit edit_entry_path (e)
+        visit edit_entry_path(entry)
 
         fill_in 'folios', with: 10000
         find(".save-button", match: :first).click
 
-        expect(page).to have_content(e.public_id)
+        expect(page).to have_content(entry.public_id)
 
-        visit history_entry_path (e)
+        visit history_entry_path(entry)
 
         expect(page).to have_content('Folios')
         expect(page).to have_content('10000')
       end
 
       it "should present the option to revert simple changes" do
-        e = Entry.last
-
-        update_entry_folios(e, 10000)
-        visit history_entry_path (e)
+        update_entry_folios(entry, 10000)
+        visit history_entry_path(entry)
 
         open_history_revert('10000')
         
         expect(page).to have_content('Revert to Old Version')
         expect(page).to have_content('212')
-        expect(page).to have_content(e.public_id)
+        expect(page).to have_content(entry.public_id)
       end
 
       it "should successfully restore the previous version" do
-        e = Entry.last
-
-        update_entry_folios(e, 10000)
-        visit history_entry_path (e)
+        update_entry_folios(entry, 10000)
+        visit history_entry_path(entry)
 
         open_history_revert('10000')
         
@@ -85,8 +78,8 @@ describe "Paper trail", :js => true do
 
         sleep(1.1)
 
-        visit entry_path(e)
-        expect(page).to have_content(e.public_id)
+        visit entry_path(entry)
+        expect(page).to have_content(entry.public_id)
         expect(page).to have_content(212)
         expect(page).not_to have_content(10000)
       end
@@ -95,61 +88,53 @@ describe "Paper trail", :js => true do
     describe '(for changes to associations)' do
       
       it "should show a change to an association in change history" do
-        e = Entry.last
-
-        visit edit_entry_path (e)
+        visit edit_entry_path(entry)
         fill_in 'title_0', with: 'Hiiipower'
 
         find('.save-button', match: :first).click
         sleep(1.5)
 
-        visit entry_path (e)
+        visit entry_path(entry)
 
         expect(page).to have_content('Hiiipower')
 
-        visit history_entry_path (e)
+        visit history_entry_path(entry)
         expect(page).to have_content('Opera minora')
         expect(page).to have_content('Hiiipower')
 
       end
 
       it "should show options to revert an 'association' change" do
-        e = Entry.last
-
-        update_entry_title(e, 'Hiiipower')
-        visit history_entry_path (e)
+        update_entry_title(entry, 'Hiiipower')
+        visit history_entry_path(entry)
 
         open_history_revert('Hiiipower')
 
-        expect(page).to have_content(e.public_id)
+        expect(page).to have_content(entry.public_id)
         expect(page).to have_content('Hiiipower')
         expect(page).to have_content('Opera minora')
       end
 
       it "should successfully restore the previous association by overwriting the new field" do
-        e = Entry.last
+        update_entry_title(entry, 'Hiiipower')
+        old_count = entry.entry_titles.count
 
-        update_entry_title(e, 'Hiiipower')
-        old_count = e.entry_titles.count
-
-        visit history_entry_path (e)
+        visit history_entry_path(entry)
 
         open_history_revert('Hiiipower')
 
         click_button('Restore')
         sleep(1.1)
 
-        visit entry_path(e)
+        visit entry_path(entry)
         expect(page).to have_content('Opera minora')
         expect(page).not_to have_content('Hiiipower')
-        expect(old_count).to eq(e.entry_titles.count)      
+        expect(old_count).to eq(entry.entry_titles.count)      
       end
 
       it "should save a 'revert' change in the record history" do
-        e = Entry.last
-
-        update_entry_title(e, 'Hiiipower')
-        visit history_entry_path (e)
+        update_entry_title(entry, 'Hiiipower')
+        visit history_entry_path(entry)
 
         open_history_revert('Hiiipower')
         expect(page).to have_content('Hiiipower')
@@ -157,10 +142,9 @@ describe "Paper trail", :js => true do
       end
 
       it "should recreate an associated field that was deleted" do
-        e = Entry.last
-        old_count = e.entry_titles.count
+        old_count = entry.entry_titles.count
 
-        visit edit_entry_path (e)
+        visit edit_entry_path(entry)
 
         t = find('#title_0').value
 
@@ -172,10 +156,10 @@ describe "Paper trail", :js => true do
         
         sleep(1.1)
 
-        new_count = e.entry_titles.count
+        new_count = entry.entry_titles.count
         expect(old_count).to eq(new_count + 1)
 
-        visit history_entry_path (e)
+        visit history_entry_path(entry)
         open_history_revert('deleted Title')
 
         expect(page).to have_content(t)
@@ -185,16 +169,15 @@ describe "Paper trail", :js => true do
         sleep(1.1)
 
         expect(page).to have_content(t)
-        expect(e.entry_titles.count).to eq(old_count)
-        expect(e.entry_titles.count).not_to eq(new_count)
+        expect(entry.entry_titles.count).to eq(old_count)
+        expect(entry.entry_titles.count).not_to eq(new_count)
       end
 
       it "should remove an associated field that was created" do
-        e = Entry.last
-        old_count = e.entry_titles.count
+        old_count = entry.entry_titles.count
 
-        add_entry_title(e, 'Paper Trail Title')
-        visit history_entry_path e
+        add_entry_title(entry, 'Paper Trail Title')
+        visit history_entry_path(entry)
         
         open_history_revert('added Title')
 
@@ -205,7 +188,7 @@ describe "Paper trail", :js => true do
         sleep(1.1)
 
         #expect(page).not_to have_content('Book of Hours')
-        expect(e.entry_titles.count).to eq(old_count)
+        expect(entry.entry_titles.count).to eq(old_count)
       end
       # revert successfully, add, and combine
     end

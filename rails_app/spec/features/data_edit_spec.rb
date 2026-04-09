@@ -1,6 +1,8 @@
 require "rails_helper"
 
 describe "Data entry", :js => true do
+  include DataEntryHelpers
+
   # Fill an autocomplete field using value in :with option. If a
   # block is given, yields to it to allow for selection.
   def fill_autocomplete(field, options = {})
@@ -98,9 +100,6 @@ describe "Data entry", :js => true do
       login(@user, 'somethingunguessable')
     end
 
-    require "lib/data_entry_helpers"
-    include DataEntryHelpers
-
     after :each do
       page.reset!
     end
@@ -125,7 +124,7 @@ describe "Data entry", :js => true do
 
 #      expect(page).to have_content(entry.public_id)
 
-      source = Source.last
+      source.reload
       expect(source.source_type).to eq(SourceType.auction_catalog)
       expect(source.date).to eq('20141215')
       expect(source.title).to eq('my existing source')
@@ -133,7 +132,7 @@ describe "Data entry", :js => true do
 
 
     it "should show creator on Edit page" do
-      entry = Entry.last
+      entry = create_edit_entry
 
       visit edit_entry_path :id => entry.id
 
@@ -217,8 +216,6 @@ describe "Data entry", :js => true do
 
       entry.reload
 
-      entry = Entry.last
-
       expect(entry.entry_authors.count).to eq(1)
       expect(entry.entry_authors.first.author_id).to eq(nil)
     end
@@ -244,14 +241,11 @@ describe "Data entry", :js => true do
     end
 
     it "should disallow saving on Edit Page when another change was made" do
-      #create_entry
-
       entry = Entry.last
 
       visit edit_entry_path :id => entry.id
 
-      # wait for AJAX to finish
-      expect(find(".source-name").text.length).to be > 0
+      wait_for_data_edit_page_to_load
 
       # change folios and try to modify folios
 
@@ -267,14 +261,11 @@ describe "Data entry", :js => true do
     end
 
     it "should disallow saving on Edit Page when another change was made (variation 1)" do
-      #create_entry
-
       entry = Entry.last
 
       visit edit_entry_path :id => entry.id
 
-      # wait for AJAX to finish
-      expect(find(".source-name").text.length).to be > 0
+      wait_for_data_edit_page_to_load
 
       # change folios and try to modify title association record
 
@@ -291,14 +282,11 @@ describe "Data entry", :js => true do
     end
 
     it "should disallow saving on Edit Page when another change was made (variation 2)" do
-      #create_entry
-
       entry = Entry.last
 
       visit edit_entry_path :id => entry.id
 
-      # wait for AJAX to finish
-      expect(find(".source-name").text.length).to be > 0
+      wait_for_data_edit_page_to_load
 
       # change title association record and try to modify folios
 
@@ -322,7 +310,7 @@ describe "Data entry", :js => true do
     end
 
     it "should disallow creating Entries if not logged in" do
-      visit new_entry_path :source_id => Source.last.id
+      visit new_entry_path :source_id => create_edit_test_source.id
       expect(page).to have_content("You need to sign in")
     end
 

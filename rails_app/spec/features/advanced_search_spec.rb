@@ -1,50 +1,40 @@
 
-require 'json'
 require "rails_helper"
-require 'net/http'
 
 # There's JS on most of these pages. Not all features use JS, but
 # there's no good reason NOT to use the js driver, so we do.
 describe "Blacklight Advanced Search", :js => true do
+  include SearchHelpers
 
   before :each do
     @user = User.where(role: "admin").first
-    e = Entry.create!({source: Source.last, created_by: @user})
+    e = Entry.create!({source: latest_seeded_source, created_by: @user})
     e.index!
   end
 
-  def doSearch ()
-    visit advanced_search_path
+  def perform_two_author_search
+    open_blacklight_advanced_search
 
-    search_fields = page.all(".advanced-search-field input[type=text]")
+    search_fields = advanced_search_text_fields
     search_fields[0].set "Augustine"
     search_fields[1].set "Hippo"
 
     select 'Author', from: "text_field_0"
     select 'Author', from: "text_field_1"
 
-    find_by_id('advanced-search-submit').click()
-  end
-
-  def countEntries ()
-  	ct = find(".page_entries").text.match(/of\s(\d+)/)
-  	if ct
-  		return ct[1].to_i
-  	else
-  		return 0
-  	end
+    submit_blacklight_advanced_search
   end
 
   it "should perform an empty search" do
-  	visit advanced_search_path
+    open_blacklight_advanced_search
 
-  	find_by_id('advanced-search-submit').click()
+    submit_blacklight_advanced_search
 
-  	expect(page).to have_content("You searched for:")
+    expect(page).to have_content("You searched for:")
   end
 
   it "should do an advanced search using two Authors (ALL)" do
-  	doSearch()
+    perform_two_author_search
 
     filters = page.all('.appliedFilter')
 
@@ -53,93 +43,93 @@ describe "Blacklight Advanced Search", :js => true do
     expect(filters[1].find('.filterValue')).to have_content("Hippo")
 
     #check the count of results for this search against an AND search in a single field
-   	count = countEntries
+    count = search_result_count
 
-   	visit advanced_search_path
+    open_blacklight_advanced_search
 
-    search_fields = page.all(".advanced-search-field input[type=text]")
-	search_fields[0].set "Augustine AND Hippo"
+    search_fields = advanced_search_text_fields
+    search_fields[0].set "Augustine AND Hippo"
 
     select 'Author', from: "text_field_0"
 
-    find_by_id('advanced-search-submit').click()
+    submit_blacklight_advanced_search
 
     expect(page.find('.filterValue')).to have_content("Augustine AND Hippo")
-	count2 = countEntries
+    count2 = search_result_count
 
-   	expect(count).to eq(count2)
+    expect(count).to eq(count2)
   end
 
 
   it "should display list of Entries created by a given user" do
-    visit advanced_search_path
+    open_blacklight_advanced_search
 
-    search_fields = page.all(".advanced-search-field input[type=text]")
+    search_fields = advanced_search_text_fields
     search_fields[0].set @user.username
     select 'Added By', from: "text_field_0"
 
-    find_by_id('advanced-search-submit').click()
+    submit_blacklight_advanced_search
 
     expect(page).to have_content(@user.entries.last.public_id)
   end
 
   it "should do an advanced search using Title + Author (ANY)" do
-  	visit advanced_search_path
+    open_blacklight_advanced_search
 
-  	search_fields = page.all(".advanced-search-field input[type=text]")
-  	search_fields[0].set "Cicero"
-  	search_fields[1].set "Evil"
+    search_fields = advanced_search_text_fields
+    search_fields[0].set "Cicero"
+    search_fields[1].set "Evil"
 
-  	select 'Author', from: "text_field_0"
-  	select 'Title', from: "text_field_1"
+    select 'Author', from: "text_field_0"
+    select 'Title', from: "text_field_1"
 
-  	select 'any', from: 'op'
+    select 'any', from: 'op'
 
-  	find_by_id('advanced-search-submit').click()
+    submit_blacklight_advanced_search
 
-  	# constraints are ordered by fieldname, not by how they were entered into search form
+    # constraints are ordered by fieldname, not by how they were entered into search form
 
-  	filters = all('.appliedFilter')
+    filters = all('.appliedFilter')
 
-  	expect(filters[0]).to have_content('Any')
-  	expect(filters[1]).to have_content('Evil')
-  	expect(filters[2]).to have_content('Cicero')
-  end	
+    expect(filters[0]).to have_content('Any')
+    expect(filters[1]).to have_content('Evil')
+    expect(filters[2]).to have_content('Cicero')
+  end
 
   it "should do an advanced search using two Authors (ANY)" do
-  	visit advanced_search_path
+    open_blacklight_advanced_search
 
-  	search_fields = page.all(".advanced-search-field input[type=text]")
-  	search_fields[0].set "Augustine"
-  	search_fields[1].set "Cicero"
+    search_fields = advanced_search_text_fields
+    search_fields[0].set "Augustine"
+    search_fields[1].set "Cicero"
 
-  	select 'Author', from: "text_field_0"
-  	select 'Author', from: "text_field_1"
+    select 'Author', from: "text_field_0"
+    select 'Author', from: "text_field_1"
 
-  	select 'any', from: 'op'
+    select 'any', from: 'op'
 
-  	find_by_id('advanced-search-submit').click()
+    submit_blacklight_advanced_search
 
-  	expect(find('.appliedFilter', match: :first)).to have_content('Any')
+    expect(find('.appliedFilter', match: :first)).to have_content('Any')
 
-  	count = countEntries
+    count = search_result_count
 
-	visit advanced_search_path
+    open_blacklight_advanced_search
 
-  	search_fields = page.all(".advanced-search-field input[type=text]")
-  	search_fields[0].set "Augustine OR Cicero"
-  	
-  	select 'Author', from: "text_field_0"
+    search_fields = advanced_search_text_fields
+    search_fields[0].set "Augustine OR Cicero"
 
-	find_by_id('advanced-search-submit').click()
+    select 'Author', from: "text_field_0"
 
-	count2 = countEntries
+    submit_blacklight_advanced_search
 
-	expect(count).to eq(count2)
+    count2 = search_result_count
+
+    expect(count).to eq(count2)
   end
 
   it "should successfully remove a constraint" do
-  	doSearch()
+    perform_two_author_search
 
     filters = page.all('.appliedFilter')
 
@@ -155,69 +145,69 @@ describe "Blacklight Advanced Search", :js => true do
   end
 
   it "should repopulate the advanced search fields with selected constraints" do
-  	doSearch()
+    perform_two_author_search
 
-  	page.find('a.advanced_search').click()
+    page.find('a.advanced_search').click()
 
-  	search_fields = page.all(".advanced-search-field input[type=text]")
+    search_fields = advanced_search_text_fields
 
-  	expect(search_fields[0].value).to eq("Augustine")
-  	expect(search_fields[1].value).to eq("Hippo")
+    expect(search_fields[0].value).to eq("Augustine")
+    expect(search_fields[1].value).to eq("Hippo")
   end
 
   it "should search for date range with single constraint" do
-  	visit advanced_search_path
+    open_blacklight_advanced_search
 
-  	fill_in "numeric_start_0", with: 100
-  	fill_in "numeric_end_0", with: 1800
-  	select "Manuscript Date", from: "numeric_field_0"
+    fill_in "numeric_start_0", with: 100
+    fill_in "numeric_end_0", with: 1800
+    select "Manuscript Date", from: "numeric_field_0"
 
-  	find_by_id('advanced-search-submit').click()
+    submit_blacklight_advanced_search
 
-  	filters = page.all('.appliedFilter')
+    filters = page.all('.appliedFilter')
 
-  	expect(filters.length).to eq(1)
-  	expect(filters[0].find('.filterValue')).to have_content("[100 TO 1800]")
+    expect(filters.length).to eq(1)
+    expect(filters[0].find('.filterValue')).to have_content("[100 TO 1800]")
   end
 
   it "should search for overlapping (ALL) numerical constraints" do
-  	visit advanced_search_path
+    open_blacklight_advanced_search
 
-  	fill_in "numeric_start_0", with: 100
-  	fill_in "numeric_end_0", with: 1800
-  	select "Manuscript Date", from: "numeric_field_0"
+    fill_in "numeric_start_0", with: 100
+    fill_in "numeric_end_0", with: 1800
+    select "Manuscript Date", from: "numeric_field_0"
 
-  	fill_in "numeric_start_1", with: 1000
-  	fill_in "numeric_end_1", with: 2000
-  	select "Manuscript Date", from: "numeric_field_1" 
+    fill_in "numeric_start_1", with: 1000
+    fill_in "numeric_end_1", with: 2000
+    select "Manuscript Date", from: "numeric_field_1"
 
-  	find_by_id('advanced-search-submit').click()
+    submit_blacklight_advanced_search
 
-  	filters = page.all('.appliedFilter')
+    filters = page.all('.appliedFilter')
 
-  	expect(filters.length).to eq(2)
-  	expect(filters[0].find('.filterValue')).to have_content("[100 TO 1800]")
-  	expect(filters[1].find('.filterValue')).to have_content("[1000 TO 2000]")
+    expect(filters.length).to eq(2)
+    expect(filters[0].find('.filterValue')).to have_content("[100 TO 1800]")
+    expect(filters[1].find('.filterValue')).to have_content("[1000 TO 2000]")
 
-  	# the results for overlapping dates should be the interior range
+    # the results for overlapping dates should be the interior range
 
-  	count = countEntries
+    count = search_result_count
 
-  	visit advanced_search_path
+    open_blacklight_advanced_search
 
-  	fill_in "numeric_start_0", with: 1000
-  	fill_in "numeric_end_0", with: 1800
-  	select "Manuscript Date", from: "numeric_field_0"
+    fill_in "numeric_start_0", with: 1000
+    fill_in "numeric_end_0", with: 1800
+    select "Manuscript Date", from: "numeric_field_0"
 
-  	find_by_id('advanced-search-submit').click()
+    submit_blacklight_advanced_search
 
-  	count2 = countEntries
+    count2 = search_result_count
 
-  	expect(count).to eq(count2)
+    expect(count).to eq(count2)
   end
 
   it "should search over ANY numerical constraints" do
-    visit advanced_search_path
+    open_blacklight_advanced_search
 
     fill_in "numeric_start_0", with: 0
     fill_in "numeric_end_0", with: 1
@@ -227,58 +217,58 @@ describe "Blacklight Advanced Search", :js => true do
     select "Folios", from: "numeric_field_1"
     select 'any', from: 'op'
 
-    find_by_id('advanced-search-submit').click()
+    submit_blacklight_advanced_search
 
     filters = page.all('.appliedFilter')
 
     expect(filters[0]).to have_content("Any")
 
-    count = countEntries
+    count = search_result_count
 
-    visit advanced_search_path
+    open_blacklight_advanced_search
 
     fill_in "numeric_start_0", with: 0
     fill_in "numeric_end_0", with: 3
     select "Folios", from: "numeric_field_0"
-    find_by_id('advanced-search-submit').click()
+    submit_blacklight_advanced_search
 
-    count2 = countEntries
+    count2 = search_result_count
 
     expect(count).to eq(count2)
   end
 
   it "should find source date by complete Date string (YYYY-MM-DD)" do
-    visit advanced_search_path
+    open_blacklight_advanced_search
 
-    search_fields = page.all(".advanced-search-field input[type=text]")
+    search_fields = advanced_search_text_fields
     search_fields[0].set "2015-01-01"
     select 'Source Date', from: "text_field_0"
-    find_by_id('advanced-search-submit').click()
+    submit_blacklight_advanced_search
 
-    count = countEntries
+    count = search_result_count
 
     expect(count).not_to eq(0)
   end
 
   it "should find source date by incomplete Date strings (YYYY-MM), (YYYY)" do
-    visit advanced_search_path
+    open_blacklight_advanced_search
 
-    search_fields = page.all(".advanced-search-field input[type=text]")
+    search_fields = advanced_search_text_fields
     search_fields[0].set "2015-01"
     select 'Source Date', from: "text_field_0"
-    find_by_id('advanced-search-submit').click()
+    submit_blacklight_advanced_search
 
-    count = countEntries
+    count = search_result_count
     expect(count).not_to eq(0)
 
-    visit advanced_search_path
+    open_blacklight_advanced_search
 
-    search_fields = page.all(".advanced-search-field input[type=text]")
+    search_fields = advanced_search_text_fields
     search_fields[0].set "2015"
     select 'Source Date', from: "text_field_0"
-    find_by_id('advanced-search-submit').click()
+    submit_blacklight_advanced_search
 
-    count2 = countEntries
+    count2 = search_result_count
 
     expect(count).to be <= count2
   end

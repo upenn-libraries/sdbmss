@@ -1,11 +1,10 @@
 
-require 'json'
 require "rails_helper"
-require 'net/http'
 
 # There's JS on most of these pages. Not all features use JS, but
 # there's no good reason NOT to use the js driver, so we do.
 describe "Blacklight Search", :js => true do
+  include SearchHelpers
 
   before :all do
     # since we already have a set of reference data, we use that here
@@ -22,18 +21,8 @@ describe "Blacklight Search", :js => true do
     @user = User.where(role: "admin").first
   end
 
-  # Returns a record from Hill catalog
-  def get_hill_entry_by_cat_num cat_num
-    Entry
-      .joins(:source => [:source_agents => :agent])
-      .where(:names => { :name => "Jonathan A. Hill" },
-             :catalog_or_lot_number => cat_num)
-      .first
-  end
-
   it "should load main landing page" do
     visit root_path
-    #find('#dismiss-welcome').click
     expect(page).to have_selector("input#q")
   end
 
@@ -55,13 +44,9 @@ describe "Blacklight Search", :js => true do
   end
 
   it "should display all entries" do
-    visit root_path
-    #find('#dismiss-welcome').click
+    open_blacklight_search
 
-    click_button('search')
-    expect(page).to have_selector("#documents")
-
-    Entry.all.order(id: :desc).limit(5).each do |entry|
+    latest_seeded_entries(5).each do |entry|
       expect(page).to have_link(entry.public_id)
     end
 
@@ -70,22 +55,14 @@ describe "Blacklight Search", :js => true do
   end
 
   it "should display results for an Author facet" do
-    visit root_path
-    #find('#dismiss-welcome').click
-
-    click_button('search')
-    expect(page).to have_selector("#documents")
+    open_blacklight_search
 
     find(:css, "#facet-author .facet-values a", match: :first).click
     expect(page).to have_selector("#documents")
   end
 
   it "should display list of Author facet values" do
-    visit root_path
-    #find('#dismiss-welcome').click
-
-    click_button('search')
-    expect(page).to have_selector("#documents")
+    open_blacklight_search
 
     find(:css, ".more_facets_link a", match: :first).click
 
@@ -118,7 +95,7 @@ describe "Blacklight Search", :js => true do
   # end
 
   it "should load advanced search page" do
-    visit advanced_search_path
+    open_blacklight_advanced_search
 
     search_fields = CatalogController.blacklight_config.search_fields.values
 
@@ -133,13 +110,13 @@ describe "Blacklight Search", :js => true do
   end
 
   it "should do advanced search using numeric range on Height" do
-    visit advanced_search_path
+    open_blacklight_advanced_search
 
     fill_in "numeric_start_0", with: 250
     fill_in "numeric_end_0", with: 260
     select "Height", from: "numeric_field_0"
 
-    find_by_id('advanced-search-submit').click
+    submit_blacklight_advanced_search
 
     entry_one = Entry.where("height > 250").where("height < 260").first
     entry_nine = Entry.where("height > 250").where("height < 260").last
@@ -149,14 +126,14 @@ describe "Blacklight Search", :js => true do
   end
 
   it "should load show Entry page" do
-    entry = Entry.last
+    entry = latest_seeded_entry
     visit entry_path(entry)
     expect(page).to have_xpath("//h1[contains(.,'#{entry.public_id}')]")
   end
 
   it "should 404 on show Entry page for deleted entry" do
     entry = Entry.new(
-      source: Source.last,
+      source: latest_seeded_source,
       deleted: true
     )
     entry.save!
@@ -167,20 +144,20 @@ describe "Blacklight Search", :js => true do
   end
 
   it "should load show Source page" do
-    source = Source.last
+    source = latest_seeded_source
     visit source_path(source)
     expect(page).to have_xpath("//dd[contains(.,'#{source.public_id}')]")
   end
 
   it "should load show Name page", :flaky do
-    name = Name.last
+    name = latest_seeded_name
     visit name_path(name)
     expect(page).to have_content("#{name.public_id}")
   end
 
   it "should load show Manuscript page" do
     # randomly link 2 entries together in a MS
-    entries = Entry.last(2)
+    entries = latest_seeded_entries
     ms = Manuscript.create!(
       entry_manuscripts_attributes: [
         { entry_id: entries[0].id, relation_type: EntryManuscript::TYPE_RELATION_IS },

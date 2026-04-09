@@ -61,6 +61,16 @@ module DataEntryHelpers
     expect(page).to have_selector("#source_type", visible: true)
   end
 
+  def open_source_search_modal
+    expect(page).to have_selector("#select_source")
+    find_by_id("select_source").trigger("click")
+    expect(page).to have_selector(".modal-title", text: "Search for Existing Source", visible: true)
+  end
+
+  def wait_for_data_edit_page_to_load
+    expect(find(".source-name").text.length).to be > 0
+  end
+
   def create_edit_test_source
     create(:edit_test_source, created_by: @user)
   end
