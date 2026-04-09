@@ -12,11 +12,11 @@
   </div>
   <div class="col-sm-12">
     <ul class="nav nav-tabs">
-      <li class="active"><a href="#Entry" data-toggle="tab">Entries <span class="badge badge-secondary">{{ all_bookmarks_display["Entry"].length }}</span></a></li>
-      <li><a href="#Manuscript" data-toggle="tab">Manuscript Records <span class="badge badge-secondary">{{ all_bookmarks_display["Manuscript"].length }}</span></a></li>
-      <li><a href="#Source" data-toggle="tab">Sources <span class="badge badge-secondary">{{ all_bookmarks_display["Source"].length }}</span></a></li>
-      <li><a href="#Name" data-toggle="tab">Names <span class="badge badge-secondary">{{ all_bookmarks_display["Name"].length }}</span></a></li>
-      <li><a href="#DericciRecord" data-toggle="tab">De Ricci Record <span class="badge badge-secondary">{{ all_bookmarks_display["DericciRecord"].length }}</span></a></li>
+      <li class="nav-item"><a class="nav-link active" href="#Entry" data-toggle="tab">Entries <span class="badge badge-secondary">{{ all_bookmarks_display["Entry"].length }}</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#Manuscript" data-toggle="tab">Manuscript Records <span class="badge badge-secondary">{{ all_bookmarks_display["Manuscript"].length }}</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#Source" data-toggle="tab">Sources <span class="badge badge-secondary">{{ all_bookmarks_display["Source"].length }}</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#Name" data-toggle="tab">Names <span class="badge badge-secondary">{{ all_bookmarks_display["Name"].length }}</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#DericciRecord" data-toggle="tab">De Ricci Record <span class="badge badge-secondary">{{ all_bookmarks_display["DericciRecord"].length }}</span></a></li>
       <li class="float-right" style="max-width: 30%;">
         <span class="input-group">
           <input type="text" class="form-control" name="tag-search" placeholder="Filter By Tag..." size=32 ng-model="search_term" ng-keyup="$event.keyCode == 13 && searchTag(search_term)">
@@ -30,7 +30,7 @@
   </div>
   <div class="col-sm-12">
     <div class="tab-content">
-      <div class="tab-pane fade" ng-class="{'in active' : name == 'Entry'}" id="{{ name }}" ng-repeat="(name, bookmarks) in all_bookmarks_display" style="padding-top: 10px;">
+      <div class="tab-pane fade" ng-class="{'show active' : name == 'Entry'}" id="{{ name }}" ng-repeat="(name, bookmarks) in all_bookmarks_display" style="padding-top: 10px;">
 
         <p class="text-muted text-center">You have {{ bookmarks.length }} bookmark{{ bookmarks.length == 1 ? '' : 's' }} of this type
           <span ng-if="tagSearch && tagSearch.length > 0"> with the tag <span class="btn btn-primary btn-sm" ng-click="searchTag(tagSearch)">{{ tagSearch }}</span></span>

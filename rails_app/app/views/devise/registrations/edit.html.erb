@@ -29,14 +29,14 @@
   </div>
   <div class="col-sm-12 text-center">
     <ul class="nav nav-tabs">
-      <li class="active"><a data-toggle="tab" href="#profile-settings">Profile</a></li>
-      <li><a data-toggle="tab" href="#account-settings">Password</a></li>
-      <li><a data-toggle="tab" href="#notification-settings">Notifications</a></li>
+      <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#profile-settings">Profile</a></li>
+      <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#account-settings">Password</a></li>
+      <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#notification-settings">Notifications</a></li>
     </ul>
   </div>
   <div class="col-sm-12">
-    <div class="tab-content">
-      <div class="tab-pane fade active in" id='profile-settings'>
+    <div class="tab-content mt-3">
+      <div class="tab-pane fade show active" id='profile-settings'>
         <div class="field form-group">
             <%= f.label :email %>
             <%= f.email_field :email, autofocus: true, class: "form-control" %>
@@ -83,11 +83,11 @@
       </div>
       <div class="tab-pane fade" id='notification-settings'>
         <div class="form-inline">
-        <div class='h3 text-center'>Notification Settings</div>
+        <div class='h3 text-center w-100'>Notification Settings</div>
         <%= f.fields_for :notification_setting do |notification_f| %>
             <%= notification_f.hidden_field :user_id %>
             <table class="table table-hover text-center">
-              <thead class="bg-info">
+              <thead style="background-color: #d9edf7;">
                 <tr>
                   <th></th>
                   <th class='text-center text-info'>Notify Me</th>
@@ -97,7 +97,7 @@
               <tbody>
                 <tr>
                   <td>
-                    <label class='control-label'>On Update To My Watched Records</label><br>
+                    <label class='control-label'>On Update To My Watched Records</label>
                     <span class="text-muted">Note: Records you create are 'watched' by default</span>
                   </td>
                   <td class=''>
@@ -109,7 +109,7 @@
                 </tr>
                 <tr>
                   <td>
-                    <label class='control-label'>On Comment To My Watched Records</label><br>
+                    <label class='control-label'>On Comment To My Watched Records</label>
                     <span class="text-muted">Note: Records you create are 'watched' by default</span>                    
                   </td>
                   <td class=''>
@@ -121,7 +121,7 @@
                 </tr>
                 <tr>
                   <td>
-                    <label class='control-label'>On Reply To My Comments</label><br>
+                    <label class='control-label'>On Reply To My Comments</label>
                   </td>
                   <td class=''>
                     <%= notification_f.check_box :on_reply, class: 'form-control'  %>
@@ -132,7 +132,7 @@
                 </tr>
                 <tr>
                   <td>
-                    <label class='control-label'>On Private Message</label><br>
+                    <label class='control-label'>On Private Message</label>
                   </td>
                   <td class=''>
                     <%= notification_f.check_box :on_message, class: 'form-control'  %>
@@ -143,7 +143,7 @@
                 </tr>
                 <tr>
                   <td>
-                    <label class='control-label'>On Group Invite</label><br>
+                    <label class='control-label'>On Group Invite</label>
                   </td>
                   <td class=''>
                     <%= notification_f.check_box :on_group, class: 'form-control'  %>
@@ -155,7 +155,7 @@
                 <% if resource.role == 'admin' %>
                 <tr>
                   <td>
-                    <label class='control-label'>On New User Registration</label><br>
+                    <label class='control-label'>On New User Registration</label>
                   </td>
                   <td class=''>
                     <%= notification_f.check_box :on_new_user, class: 'form-control'  %>
@@ -166,7 +166,7 @@
                 </tr>
                 <tr>
                   <td>
-                    <label class='control-label'>On Any Comment</label><br>
+                    <label class='control-label'>On Any Comment</label>
                   </td>
                   <td class=''>
                     <%= notification_f.check_box :on_all_comment, class: 'form-control'  %>
@@ -177,7 +177,7 @@
                 </tr>
                 <tr>
                   <td>
-                    <label class='control-label'>On Forum Post</label><br>
+                    <label class='control-label'>On Forum Post</label>
                     <span class="text-muted">When someone posts to a forum topic you are following.</span>
                   </td>
                   <td class=''>
@@ -206,8 +206,7 @@
 
   
 <div class="col-sm-12 text-center">
-  <div class="form-inline">
-  <div class="field form-group">
+  <div class="field form-group d-flex justify-content-center">
     <%= f.submit "Confirm Changes", class: "btn btn-primary" %>
   </div>
 </div>

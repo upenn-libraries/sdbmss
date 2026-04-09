@@ -46,10 +46,10 @@
                   <%= @user.to_s %>
                 </a>
                 <div class="dropdown-menu">
-                  <span class="dropdown-item-text text-muted"><span class="fa fa-briefcase"></span> <%= @user.role %></span>
-                  <a class="dropdown-item" href="<%= new_private_message_path(user_id: [@user.id]) %>"><span class="fa fa-envelope"></span> Send Message</a>
+                  <span class="dropdown-item-text text-muted"><em><span class="fa fa-fw fa-briefcase"></span> <%= @user.role %></em></span>
+                  <a class="dropdown-item" href="<%= new_private_message_path(user_id: [@user.id]) %>"><span class="fa fa-fw fa-envelope"></span> Send Message</a>
                   <% if current_user == @user %>
-                  <%= link_to edit_user_registration_path, class: "dropdown-item" do %><span class="fa fa-cog"></span> My Settings<% end %>
+                  <%= link_to edit_user_registration_path, class: "dropdown-item" do %><span class="fa fa-fw fa-cog"></span> My Settings<% end %>
                   <% end %>
                 </div>
             </span>
@@ -69,10 +69,10 @@
     </div>
     <div class="col-sm-8">
         <ul class="ajax-tabs nav nav-tabs custom-tabs">
-            <li class='active'><a data-toggle='tab' href="#contributions">Contributions</a></li>
-            <li><a data-toggle='tab' href="#activity" href="">Activity</a></li>
+            <li class="nav-item"><a class="nav-link active" data-toggle='tab' href="#contributions">Contributions</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle='tab' href="#activity" href="">Activity</a></li>
             <% if can? :edit, @user %>
-                <li><a data-toggle='tab' href="#analytics" href="">Analytics</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle='tab' href="#analytics" href="">Analytics</a></li>
             <% end %>
         </ul>
 
@@ -82,9 +82,9 @@
                 </div>
                 <%# render partial: "activities/list", locals: {collapsed: true} %>
             </div>
-            <div class="tab-pane fade in active" id="contributions">
+            <div class="tab-pane fade show active" id="contributions">
                 <%= render partial: "tiles", locals: {records: @user.entries.where(draft: false).last(10).reverse } %>
-            </div>            
+            </div>
             <div class="tab-pane fade" id="analytics">
                 <%= render partial: "analytics" %>
             </div>
@@ -99,7 +99,7 @@ $(document).ready( function () {
 
     load_activity("/activities/show_all.json?user=<%= @user.id %>", 0);
     /*$("#activity-pane").load("/activities/show_all?watched=true",function(result){
-        loading = false;    
+        loading = false;
     });*/
 });
 </script>

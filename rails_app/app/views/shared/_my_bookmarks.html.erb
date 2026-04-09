@@ -1,13 +1,13 @@
 <% if current_user %>
   <div class="card dl-inline" id="my_bookmarks">
       <ul class="nav nav-tabs">
-        <li ng-repeat="(name, bookmarks) in all_bookmarks" class="bookmark-nav-button" ng-class="{active: (name == active) }">
-          <a ng-click="addTabToStorage(name);">{{ name }}
+        <li ng-repeat="(name, bookmarks) in all_bookmarks" class="nav-item bookmark-nav-button" ng-class="{active: (name == active) }">
+          <a class="nav-link" ng-class="{active: (name == active) }" ng-click="addTabToStorage(name);">{{ name }}
           <span class="badge badge-secondary">{{ (bookmarks | filter:hasTag).length }}</span></a>
         </li>
       </ul>
     <div class="tab-content bookmark-panes">
-      <div ng-repeat="(name, bookmarks) in all_bookmarks" class="tab-pane fade" id="bookmark-tab-{{ name }}" ng-class="{active: (name == active), in: (name == active)}">
+      <div ng-repeat="(name, bookmarks) in all_bookmarks" class="tab-pane fade" id="bookmark-tab-{{ name }}" ng-class="{active: (name == active), show: (name == active)}">
         <ul class="list-group bookmarks">
           <li class="list-group-item text-center" ng-if="search_tag.length > 0 && (bookmarks | filter:hasTag).length <= 0">
             <b class="text-primary">SEARCH: {{ search_tag }}</b> ... no results ...<br>

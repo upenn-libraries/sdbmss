@@ -2199,6 +2199,7 @@ so that gray backdrop shvows up correctly */
   border-left: 4px solid transparent;
 }
 
+
 .collapsed .caret {
   border-top: 0;
   border-left: 4px dashed;
@@ -2330,6 +2331,13 @@ Private Message Styling
 .multiselect-container {
   max-height: 50vh;
   overflow-y: scroll;
+}
+.multiselect-item.multiselect-filter > .input-group {
+  margin: 0px;
+  padding: 5px;
+}
+.multiselect-container > li > a >label {
+  padding-left: 20px;
 }
 
 .text-default {
@@ -2855,7 +2863,6 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 }
 .user-info .dropdown-menu {
   position: absolute !important;
-  background: #4d6b98 !important;
 }
 .dashboard-header {
   font-size: 46px;

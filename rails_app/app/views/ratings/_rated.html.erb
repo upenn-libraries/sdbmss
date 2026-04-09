@@ -3,7 +3,6 @@
         <a data-toggle="dropdown" data-placement="bottom" class="btn btn-sm btn-secondary dropdown-toggle">
             Confirmed by <%= confirms.count %> <%= "user".pluralize(confirms.count) %>
         <% if confirms.count > 0 %>
-                <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
                 <% confirms.each do |rating| %>
@@ -20,10 +19,9 @@
 </span>
 <span class="<%= defined?(up) ? 'dropup' : 'dropdown' %>">
     <% disputes = ratable.ratings.where(qualifier: "dispute") %>
-        <a data-toggle="dropdown" data-placement="bottom" class="btn btn-sm btn-secondary">
+        <a data-toggle="dropdown" data-placement="bottom" class="btn btn-sm btn-secondary dropdown-toggle">
             Disputed by <%= disputes.count %> <%= "user".pluralize(disputes.count) %>
         <% if disputes.count > 0 %>
-            <span class="caret"></span>
         </a>
         <ul class="dropdown-menu">
             <% disputes.group_by(&:reason).each do |reason, ratings| %>
