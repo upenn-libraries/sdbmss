@@ -1,8 +1,4 @@
 module PaperTrailHelpers
-  def click_certainty_flag(field)
-    find_by_id(field).click
-  end
-
   def update_entry_folios(entry, folios)
     visit edit_entry_path(entry)
     fill_in 'folios', with: folios
@@ -26,6 +22,9 @@ module PaperTrailHelpers
   end
 
   def open_history_revert(item_text)
+    # The history carousel renders duplicate/hidden DOM fragments, so this
+    # keeps the helper deterministic without coupling the spec to carousel
+    # internals anywhere else.
     item = page.evaluate_script(<<~JS)
       (function() {
         var items = Array.prototype.slice.call(document.querySelectorAll('.carousel-inner .item'));

@@ -1,8 +1,7 @@
-require "lib/data_entry_helpers"
-include DataEntryHelpers
 require "rails_helper"
 
 describe "Manage sources", :js => true do
+  include DataEntryHelpers
 
   before :each do
     @user = User.where(role: "admin").first
