@@ -3,6 +3,22 @@ require 'json'
 require "rails_helper"
 
 describe "Browse Dericci Records", :js => true do
+  let(:admin_user) { User.find_by(role: "admin") }
+
+  def create_dericci_record(name, place:, dates:)
+    DericciRecord.find_or_create_by(name: name) do |record|
+      record.place = place
+      record.dates = dates
+      record.senate_house = "[Senate House MS901/3/11]"
+    end
+  end
+
+  def expect_record_names(records)
+    records.each do |record|
+      expect(page).to have_content(record.name)
+    end
+  end
+
   def open_verified_name_modal
     3.times do
       find("#verify", visible: true).trigger("click")
@@ -13,25 +29,12 @@ describe "Browse Dericci Records", :js => true do
   end
 
   before :each do
-    @user = User.where(role: "admin").first
-    @user2 = User.where(role: "contributor").first
+    @d = create_dericci_record("Camille Desmoulins", place: "Paris", dates: "1794")
 
-    @d = DericciRecord.find_or_create_by(name: "Camille Desmoulins") do |r|
-      r.place = "Paris"; r.dates = "1794"; r.senate_house = "[Senate House MS901/3/11]"
-    end
     # Reset mutable state: sibling tests may have added links/flags or set verified_id.
     @d.update!(verified_id: nil)
     @d.dericci_links.destroy_all
     @d.dericci_record_flags.destroy_all
-    DericciRecord.find_or_create_by(name: "Georges Danton") do |r|
-      r.place = "Marseilles"; r.dates = "1795"; r.senate_house = "[Senate House MS901/3/11]"
-    end
-    DericciRecord.find_or_create_by(name: "Maximilien Robespierre") do |r|
-      r.place = "Toulons"; r.dates = "1796"; r.senate_house = "[Senate House MS901/3/11]"
-    end
-    DericciRecord.find_or_create_by(name: "Jean-Paul Marat") do |r|
-      r.place = "Nantes"; r.dates = "1793"; r.senate_house = "[Senate House MS901/3/11]"
-    end
 
     Name.find_or_create_by(name: "Camillo") { |n| n.is_author = true }.index
     Name.find_or_create_by(name: "George Danton") { |n| n.is_author = true }.index
@@ -39,7 +42,7 @@ describe "Browse Dericci Records", :js => true do
   end
 
   before :each do
-      login(@user, 'somethingunguessable')
+    login(admin_user, "somethingunguessable")
   end
 
   after :each do
@@ -49,20 +52,14 @@ describe "Browse Dericci Records", :js => true do
   it "should display an empty search of collectors/repositories" do
     visit dericci_records_path
 
-    DericciRecord.first(15).each do |record|
-      expect(page).to have_content(record.name)
-    end
+    expect_record_names(DericciRecord.order(:id).limit(15))
   end
 
   it "should display the results for the correct alphabatized letter page" do
-
     visit dericci_records_path
     click_link "G"
 
-    DericciRecord.where("name like ?", "G%").first(15).each do |record|
-      expect(page).to have_content(record.name)
-    end
-
+    expect_record_names(DericciRecord.where("name like ?", "G%").order(:id).limit(15))
   end
 
   it "should return results for each kind of search" do
@@ -91,11 +88,13 @@ describe "Browse Dericci Records", :js => true do
   end
 
   it "should display a dericci record" do
+    first_record = DericciRecord.order(:id).first
+
     visit dericci_records_path
     within ".sdbm-table" do
-      find("a", match: :first).click
+      first("a").click
     end
-    expect(page).to have_content(DericciRecord.first.name)
+    expect(page).to have_content(first_record.name)
   end
 
   it "should allow the user to create a new dericci record" do
@@ -132,7 +131,7 @@ describe "Browse Dericci Records", :js => true do
 
   it "should allow an admin to remove verified link", :flaky do
     name = Name.find_by(name: "Camillo")
-    DericciLink.create!(name: name, dericci_record: @d, approved: true, created_by: @user)
+    DericciLink.create!(name: name, dericci_record: @d, approved: true, created_by: admin_user)
 
     visit dericci_record_path(@d)
     expect(page).to have_content("Camillo")
