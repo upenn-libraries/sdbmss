@@ -153,36 +153,6 @@ describe "Data entry", :js => true do
       verify_entry(entry)
     end
 
-    it "should create history when updating an Entry" do
-      skip "(Test is out of date with new change history implementation" do
-      end
-      #count = Entry.count
-
-      #create_entry
-
-      #expect(Entry.count).to eq(count + 1)
-
-      entry = Entry.last
-
-      old_title = entry.entry_titles.first.title
-
-      visit edit_entry_path :id => entry.id
-
-      fill_in 'title_0', with: 'Changed Book'
-
-      find(".save-button", match: :first).click
-
-      expect(page).to have_content(entry.public_id)
-
-      entry.reload
-
-      visit history_entry_path :id => entry.id
-
-      # should display in 3rd row
-      expect(all(:xpath, "//tr")[2].all(:xpath, ".//td")[2].text).to eq("changed Title")
-      expect(all(:xpath, "//tr")[2].all(:xpath, ".//td")[3].text).to eq("Title: from #{old_title} to Changed Book")
-    end
-
     it "should remove a title on Edit page", :known_failure do
       entry = create_edit_entry_with_titles(["Book of Hours", "Bible"], include_author: false)
 
