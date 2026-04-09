@@ -95,13 +95,13 @@ label.col-sm-2-and-half {
 
 <% content_for :breadcrumbs do %>
   <% if @source_id && Source.find(@source_id).source_type.to_s == "Personal Observation" %>
-        <li>
+        <li class="breadcrumb-item">
           <%= link_to "Cancel", dashboard_contributions_path %>
         </li>
-        <li>
+        <li class="breadcrumb-item">
             <a class="disabled">Step 1: Personal Observation Source</a>
         </li>
-        <li class='active'><a>Step 2: Personal Observation Entry</a></li>
+        <li class="breadcrumb-item active"><a>Step 2: Personal Observation Entry</a></li>
   <% else %>
     <%= render partial: "catalog/breadcrumbs", locals: {edit: true} %>
   <% end %>

@@ -3,27 +3,27 @@
     and edit/history links for the integrated Entry workflow.
 %>
 <% if current_search_session || !current_user %>
-  <li class=" ">
+  <li class="breadcrumb-item">
     <%= link_back_to_catalog %>
   </li>
 <% else %>
-  <li class=" ">
+  <li class="breadcrumb-item">
     <a href="/entries">Manage Entries</a>
   </li>
 <% end %>
 <% if @entry && !@entry.id %>
-  <li class="  active"><a href="">New Entry</a></li>
+  <li class="breadcrumb-item active"><a href="">New Entry</a></li>
 <% elsif @entry %>
-  <li class="  <%= current_page?(entry_path(@entry)) ? 'active' : '' %>">
+  <li class="breadcrumb-item <%= current_page?(entry_path(@entry)) ? 'active' : '' %>">
     <a href="/entries/<%= @entry.id %>"><%= @entry.public_id %></a>
   </li>
   <% if can? :edit, @entry %>
-  <li class="  <%= current_page?(controller: 'entries', action: 'edit') ? 'active' : '' %>">
+  <li class="breadcrumb-item <%= current_page?(controller: 'entries', action: 'edit') ? 'active' : '' %>">
     <a href="/entries/<%= @entry.id %>/edit">Edit <%= @entry.public_id %></a>
   </li>
   <% end %>
   <% if current_page?(controller: 'entries', action: 'history') %>
-  <li class="  active">
+  <li class="breadcrumb-item active">
     <a href="/entries/<%= @entry.id %>/history">Change History for <%= @entry.public_id %></a>
   </li>
   <% end %>

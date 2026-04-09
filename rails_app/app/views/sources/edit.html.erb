@@ -8,13 +8,13 @@
         <% @model = @source %>
         <%= render partial: "manage_models/breadcrumbs", locals: {edit: true} %>
     <% else %>
-        <li>
+        <li class="breadcrumb-item">
           <%= link_to "Cancel", dashboard_contributions_path %>
         </li>
-        <li class='active'>
+        <li class="breadcrumb-item active">
             <a href="">Step 1: Personal Observation Source</a>
         </li>
-        <li><a class="disabled">Step 2: Personal Observation Entry</a></li>
+        <li class="breadcrumb-item"><a class="disabled">Step 2: Personal Observation Entry</a></li>
     <% end %>
 <% end %>
 

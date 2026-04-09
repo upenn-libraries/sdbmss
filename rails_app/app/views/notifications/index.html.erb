@@ -14,8 +14,8 @@
   </style>
 <% end %>
 <% content_for :breadcrumbs do %>
-  <li class="active"><%= link_to "Manage Notifications", notifications_path %></li>
-  <li><%= link_to main_app.edit_user_registration_path do %> <span class="fa fa-cog"></span> Notification Settings <% end %></li>
+  <li class="breadcrumb-item active"><%= link_to "Manage Notifications", notifications_path %></li>
+  <li class="breadcrumb-item"><%= link_to main_app.edit_user_registration_path do %> <span class="fa fa-cog"></span> Notification Settings <% end %></li>
 <% end %>
 <div class="row">
   <div class="col-sm-12 text-center">

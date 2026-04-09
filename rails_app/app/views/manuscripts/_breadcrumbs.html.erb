@@ -1,10 +1,10 @@
-<li>
+<li class="breadcrumb-item">
   <a href="<%= polymorphic_path(@model.class) %>">Manage <%= @model.class.name.pluralize %>
   </a>
 </li>
-<li class="  <%= current_page?(polymorphic_path(@model)) ? 'active' : '' %>">
+<li class="breadcrumb-item <%= current_page?(polymorphic_path(@model)) ? 'active' : '' %>">
   <a href="<%= polymorphic_path(@model) %>"><%= @model. public_id %></a>
 </li>
-<li class="  <%= current_page?(table_manuscript_path(@model)) ? 'active' : '' %>">
+<li class="breadcrumb-item <%= current_page?(table_manuscript_path(@model)) ? 'active' : '' %>">
   <a href="<%= table_manuscript_path(@model) %>">Table View</a>
 </li>

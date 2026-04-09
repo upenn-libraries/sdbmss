@@ -2,21 +2,21 @@
 
 <% content_for :breadcrumbs do %>
     <% if can? :manage, User %>
-        <li class=" ">
+        <li class="breadcrumb-item">
             <a href="/accounts">Manage Accounts</a>
         </li>
     <% else %>
-        <li class="">
+        <li class="breadcrumb-item">
             <a href="/community">Community</a>
         </li>
     <% end %>
-        <li class="  active"><a href=""><%= @user %></a></li>
+        <li class="breadcrumb-item active"><a href=""><%= @user %></a></li>
     <% if @user == current_user %>
-      <li><%= link_to main_app.edit_user_registration_path do %>My Settings <% end %></li>
+      <li class="breadcrumb-item"><%= link_to main_app.edit_user_registration_path do %>My Settings <% end %></li>
     <% elsif can?(:edit, @user) %>
-        <li class="edit_name">
+        <li class="breadcrumb-item edit_name">
             <a href="<%= edit_account_path(@user) %>">
-                Edit User: <%= @user.username %>                
+                Edit User: <%= @user.username %>
             </a>
         </li>
     <% end %>
