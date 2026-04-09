@@ -3,7 +3,7 @@
     <style>
         circle {
             stroke: #000;
-            transition: all 0.3s;        
+            transition: all 0.3s;
         }
         circle:hover {
             opacity: 0.9;
@@ -17,11 +17,11 @@
         }
         .loading {
             position: absolute;
-            left: calc(50% - 32px); 
-            top: 160px;          
+            left: calc(50% - 32px);
+            top: 160px;
         }
     </style>
-    <script>        
+    <script>
 
         var ENTRY_COLORS = {
             admin: "#6A9E98",
@@ -46,26 +46,26 @@
             $.get("/community/stats.json", {quantity: $("#quantity").val(), measure: $("#measure").val()}, function (result) {
                 var entries = result.entries; // username, count, role
                 var activity = result.activity; // usernmae, count, role
-                
+
                 var entry_users = entries.map(function (e) { return e[0] + ": " + e[1]; });
                 var entry_counts = entries.map(function (e) { return Math.log10(e[1]); });
                 var entry_colors = entries.map(function (e) { return ENTRY_COLORS[e[2]]; });
-                
+
                 var activity_users = activity.map(function (e) { return e[0] + ": " + e[1]; });
                 var activity_counts = activity.map(function (e) { return Math.log10(e[1]); });
                 var activity_colors = activity.map(function (e) { return ACTIVITY_COLORS[e[2]]; });
-                
+
 
                 //$("#done").html("Thank you for supporting the SDBM community!")
-            
-                
+
+
                 entry_chart = new Chart(document.getElementById('entries-chart').getContext('2d'), {
                     data: {
                         labels: entry_users,
                         datasets: [{
                             label: "Contributions",
                             data: entry_counts,
-                            backgroundColor: entry_colors                        
+                            backgroundColor: entry_colors
                         }]
                     },
                     type: 'polarArea',
@@ -104,7 +104,7 @@
                         datasets: [{
                             label: "Contributions",
                             data: activity_counts,
-                            backgroundColor: activity_colors                        
+                            backgroundColor: activity_colors
                         }]
                     },
                     type: 'polarArea',
@@ -135,15 +135,15 @@
                             }
                         }
                     }
-                });                
+                });
 
                 $("#spinner").hide();
-                        
+
             });
         }
 
         $(document).ready(function () {
-            $("#submit").click(doChart); 
+            $("#submit").click(doChart);
             doChart();
         });
 
@@ -184,17 +184,17 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row mt-3">
     <div class="loading"><img id="spinner" src="<%= asset_path "spinner.gif" %>" alt=""> loading...</div>
     <div class="col-sm-6" id="body1">
         <h3 class="text-muted text-center">New Entries Added</h3>
         <canvas height="400" width="400" id="entries-chart"></canvas>
     </div>
     <div class="col-sm-6" id="body2">
-        <h3 class="text-muted text-center">Changes Made</h3> 
+        <h3 class="text-muted text-center">Changes Made</h3>
         <canvas height="400" width="400" id="activities-chart"></canvas>
     </div>
     <div class="col-sm-12 text-center text-muted" id="done">
-        
+
     </div>
 </div>
