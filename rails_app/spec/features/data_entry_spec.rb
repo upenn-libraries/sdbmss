@@ -624,7 +624,7 @@ describe "Data entry", :js => true do
     end
 
     it "should save an Entry and log it in Recent Activity" do
-      skip 'changed user permissions'
+      skip "pending until the current permission model emits the expected entry-created activity for this UI flow"
       create_entry
 
       entry = Entry.last
@@ -710,51 +710,6 @@ describe "Data entry", :js => true do
       expect(Entry.count).to eq(count + 1)
       visit edit_entry_path(Entry.last)
       expect(page).to have_content(src.source_type.to_s)
-    end
-
-    it "should let user create an Entry for an existing Manuscript" do
-      skip
-      entry1 = Entry.create!(
-        source: Source.first,
-        created_by_id: @user.id,
-        approved: true
-      )
-      entry2 = Entry.create!(
-        source: Source.first,
-        created_by_id: @user.id,
-        approved: true
-      )
-      manuscript = Manuscript.create!
-      manuscript_id = manuscript.id
-      EntryManuscript.create!(entry: entry1, manuscript: manuscript, relation_type: EntryManuscript::TYPE_RELATION_IS)
-      EntryManuscript.create!(entry: entry2, manuscript: manuscript, relation_type: EntryManuscript::TYPE_RELATION_IS)
-
-      visit manuscript_path(manuscript)
-
-      click_link "Create your own personal observation"
-
-      click_link "Click here to CREATE A NEW SOURCE"
-
-      select 'Auction/Dealer Catalog', from: 'source_type'
-      fill_in 'source_date', with: '2015-02-28'
-      find('#title').set 'Sample Catalog'
-      find('#savesource').click
-
-      expect(page).to have_content("SDBM_SOURCE")
-
-#      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
-
-      click_link "Add entries for this source"
-
-      fill_in 'cat_lot_no', with: '9090'
-
-      find(".save-button", match: :first).click
-
-      expect(page).to have_content("Warning: This entry has not been approved yet.")
-      expect(page).to have_content(Entry.last.public_id)
-
-      manuscript = Manuscript.find(manuscript_id)
-      expect(manuscript.entries.order(id: :desc).first.catalog_or_lot_number).to eq("9090")
     end
 
     it "should pre-populate transaction_type on Entry page" do

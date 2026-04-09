@@ -48,18 +48,6 @@ describe "Manage entries", :js => true do
     expect(all("#search_results tbody tr").count).to eq(2)
   end
 
-  it "should jump to ID" do
-    skip
-    # jump to removed for being irrelevant...
-    visit entries_path
-
-    fill_in 'jump_to', :with => "10"
-    click_button "Go"
-    expect(page).not_to have_selector("#spinner", visible: true)
-
-    expect(all("#search_results tbody tr").count).to eq(Entry.all.count)
-  end
-
   it "should mark entry as approved" do
 
     visit entries_path

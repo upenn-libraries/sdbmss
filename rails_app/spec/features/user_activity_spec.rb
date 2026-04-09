@@ -28,15 +28,6 @@ describe "User Activity", :js => true do
     return old
   end
 
-  it "should show empty user activity" do
-    skip "no such thing as empty user activity, since reference data persists for all tests"
-    visit activities_path
-
-    expect(page).not_to have_content('edited')
-    expect(page).not_to have_content('added')
-    expect(page).not_to have_content('deleted')
-  end
-
   it "should show appropriate recent activity" do
     v = doActivity(10)
     visit activities_path
@@ -80,7 +71,7 @@ describe "User Activity", :js => true do
     
     expect(page).to have_content("Delete")
     
-    find("#delete_#{Name.last.id}", match: :first).trigger('click')
+    find("#delete_#{name.id}", match: :first).trigger('click')
     expect(page).to have_content("Are you sure you want to delete this record?")
     click_button "Yes"
     expect(page).not_to have_content('Stacker Pentecost')
