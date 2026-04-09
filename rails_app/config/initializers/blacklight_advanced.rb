@@ -13,6 +13,8 @@
 # RoutingError when a facet field doesn't exist in the config.
 # (BL7 default raises ActionController::RoutingError, 'Not Found')
 Rails.application.config.to_prepare do
+  SearchHistoryController.helper BlacklightAdvancedSearch::RenderConstraintsOverride
+
   Blacklight::Catalog.module_eval do
     def facet
       @facet = blacklight_config.facet_fields[params[:id]]

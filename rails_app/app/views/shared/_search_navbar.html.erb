@@ -4,11 +4,8 @@
     <div class="navbar-collapse catalog-search-info col-4" id="myNavbar">
       <ul class="nav navbar-nav ml-auto">
         <% if user_signed_in? %>
-          <li class="dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Searches</a>
-              <div class="dropdown-menu" role="menu">
-                <%= link_to t('blacklight.header_links.search_history'), blacklight.search_history_path, class: "dropdown-item" %>
-            </div>
+          <li>
+            <%= link_to t('blacklight.header_links.search_history'), blacklight.search_history_path, class: "nav-link" %>
           </li>
         <% end %>
         <li>
