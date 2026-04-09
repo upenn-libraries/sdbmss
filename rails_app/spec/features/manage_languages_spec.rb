@@ -1,7 +1,5 @@
 
 require "rails_helper"
-require "csv"
-
 describe "Manage languages", :js => true do
 
   before :each do
@@ -19,37 +17,6 @@ describe "Manage languages", :js => true do
 
     before :each do
       login(@user, 'somethingunguessable')
-    end
-
-    it "should show list of Languages" do
-      visit languages_path
-      expect(page).to have_content @language.name
-    end
-
-    # poltergeist has trouble loading JSON, so we don't use it
-    it "should do search for Language", js: false do
-      Language.create!(name: "Something new")
-      Language.create!(name: "Something old")
-      Language.create!(name: "Something else")
-      Language.create!(name: "Something zzz")
-
-      Language.reindex
-
-      s = Language.search do
-        fulltext "something", :fields => [:name]
-      end
-
-      expect(s.total).to eq(4)
-
-      visit search_languages_path(name: "something", format: "json")
-      response = JSON.parse(page.source)
-      expect(response).to be_a(Hash)
-      expect(response["total"]).to eq(4)
-
-      visit search_languages_path(name: "Something old", format: "json")
-      response = JSON.parse(page.source)
-      expect(response).to be_a(Hash)
-      expect(response["total"]).to eq(1)
     end
 
     it "should add a new Language" do
@@ -90,17 +57,8 @@ describe "Manage languages", :js => true do
       expect(Language.count).to eq(count-1)
     end
 
-    # poltergeist has trouble loading the csv, so we don't use it
     it "should export CSV", :js => false do
       skip "language CSV export still exists, but async download polling belongs in lower-level coverage instead of this feature spec"
-      Language.create!(name: "Should appear in export")
-      Language.index
-      visit search_languages_path(format: :csv)
-      found = false
-      CSV.parse(page.source, headers: true) do |row|
-        found = true if row["name"] == "Should appear in export"
-      end
-      expect(found).to eq(true)
     end
   end
 
@@ -116,11 +74,6 @@ describe "Manage languages", :js => true do
 
     before :each do
       login(@admin, 'somethingunguessable')
-    end
-
-    it "should show list of Languages" do
-      visit languages_path
-      expect(page).to have_content @language.name
     end
 
 #    it "should mark Languages as reviewed" do

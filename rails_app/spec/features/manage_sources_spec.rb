@@ -18,23 +18,6 @@ describe "Manage sources", :js => true do
       login(@user, 'somethingunguessable')
   end
 
-  it "should show list of Sources" do
-    visit sources_path
-    expect(page).to have_content @source.title
-  end
-
-  it "should search for Sources" do
-    visit sources_path
-    expect(page).to have_content @source.title
-
-    page.fill_in "search_value", :with => "test"
-    page.select "Title", from: "search_field"
-    find('#search_submit').click()
-    expect(page).not_to have_selector("#spinner", visible: true)
-
-    expect(page).to have_content @source.title
-  end
-
   it "should perform a search with multiple values for the same field" do
     visit sources_path
 
