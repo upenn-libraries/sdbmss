@@ -18,6 +18,10 @@ module SDBMSS
         click_button 'Log in'
         expect(page).to have_content 'Signed in successfully'
       end
+
+      def fast_login(user)
+        login_as(user, scope: :user)
+      end
     end
 
     module AlertConfirmer

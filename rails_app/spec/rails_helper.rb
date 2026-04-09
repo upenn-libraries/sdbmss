@@ -19,6 +19,7 @@ require 'rspec/rails'
 
 require 'capybara/rails'
 require 'factory_girl_rails'
+require 'warden/test/helpers'
 
 require 'capybara-screenshot/rspec'
 
@@ -161,6 +162,7 @@ RSpec.configure do |config|
   # FactoryGirl support
   config.include FactoryGirl::Syntax::Methods
 
+  config.include Warden::Test::Helpers
   config.include SDBMSS::Capybara::AlertConfirmer
   config.include SDBMSS::Capybara::Login
 
@@ -235,6 +237,8 @@ RSpec.configure do |config|
       end
       TestSuiteSetupHelpers.flush_and_reindex_solr_after_js!
     end
+
+    Warden.test_reset!
   end
 
   # This is commented out b/c it seems the browser doesn't always hang
