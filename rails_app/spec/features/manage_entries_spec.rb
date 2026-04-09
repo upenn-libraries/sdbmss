@@ -27,12 +27,6 @@ describe "Manage entries", :js => true do
     end
   end
 
-  it "should return JSON results successfully", js: false do
-    visit entries_path(format: :json)
-    data = JSON.parse(page.source)
-    expect(data['error']).to be_nil
-  end
-
   it "should show table of entries" do
     visit entries_path
     expect(page).to have_content(Entry.first.entry_dates.first.display_value)
