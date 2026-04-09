@@ -55,22 +55,18 @@ describe "Manage Comments", :js => true do
   end
 
   it "should allow a user to delete their comments" do
-    skip "right, we can't click on modals because that would be useful!"
     visit comments_path
 
     find('#search_results a', match: :first).click
 
-    expect(page).to have_content('That\'s ridiculous.')
+    expect(page).to have_content('This is an interesting observation!')
 
-    find('a[data-method="delete"]', match: :first).click
-    
-    expect(page).to have_content('Are you sure?')
-    
-    #find('button.btn.btn-danger.commit', match: :first).click
-    click_button "Confirm"
+    accept_data_confirm_modal_from do
+      find('a[data-method="delete"]', match: :first).click
+    end
 
     expect(page).to have_content('This comment has been deleted.')
-    expect(page).not_to have_content('That\'s ridiculous.')
+    expect(page).not_to have_content('This is an interesting observation!')
   end
 
   it "should properly notify the owner of the commented record" do

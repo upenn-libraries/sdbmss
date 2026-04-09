@@ -92,7 +92,7 @@ describe "Manage places", :js => true do
 
     # poltergeist has trouble loading the csv, so we don't use it
     it "should export CSV", :js => false do
-      skip "csv export uses more complicated ajax polling, disabled test for now"
+      skip "place CSV export still exists, but async download polling belongs in lower-level coverage instead of this feature spec"
       Place.create!(name: "Should appear in export")
       Place.index
       visit search_places_path(format: :csv)
