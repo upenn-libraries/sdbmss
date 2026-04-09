@@ -105,7 +105,7 @@ describe "Browse Dericci Records", :js => true do
     expect(page).to have_content("Touissant L'Ouverture")
   end
 
-  it "should allow an admin to add a verified link", :known_failure, :flaky do
+  it "should allow an admin to add a verified link", :flaky do
     visit dericci_record_path(@d)
     expect(page).to have_content("Find Verified Name")
     open_verified_name_modal
@@ -130,7 +130,7 @@ describe "Browse Dericci Records", :js => true do
     expect(page).to have_content('No matching records found.')
   end
 
-  it "should allow an admin to remove verified link", :known_failure, :flaky do
+  it "should allow an admin to remove verified link", :flaky do
     name = Name.find_by(name: "Camillo")
     DericciLink.create!(name: name, dericci_record: @d, approved: true, created_by: @user)
 

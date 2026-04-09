@@ -44,7 +44,7 @@ describe "Paper trail", :js => true do
         expect(page).to have_content("History of changes to #{e.public_id}")
       end
 
-      it "should register changes in the entry basic fields", :known_failure do
+      it "should register changes in the entry basic fields" do
         e = Entry.last
 
         visit edit_entry_path (e)
@@ -60,7 +60,7 @@ describe "Paper trail", :js => true do
         expect(page).to have_content('10000')
       end
 
-      it "should present the option to revert simple changes", :known_failure do
+      it "should present the option to revert simple changes" do
         e = Entry.last
 
         update_entry_folios(e, 10000)
@@ -73,7 +73,7 @@ describe "Paper trail", :js => true do
         expect(page).to have_content(e.public_id)
       end
 
-      it "should successfully restore the previous version", :known_failure do
+      it "should successfully restore the previous version" do
         e = Entry.last
 
         update_entry_folios(e, 10000)
@@ -94,7 +94,7 @@ describe "Paper trail", :js => true do
 
     describe '(for changes to associations)' do
       
-      it "should show a change to an association in change history", :known_failure do
+      it "should show a change to an association in change history" do
         e = Entry.last
 
         visit edit_entry_path (e)
@@ -113,7 +113,7 @@ describe "Paper trail", :js => true do
 
       end
 
-      it "should show options to revert an 'association' change", :known_failure do
+      it "should show options to revert an 'association' change" do
         e = Entry.last
 
         update_entry_title(e, 'Hiiipower')
@@ -126,7 +126,7 @@ describe "Paper trail", :js => true do
         expect(page).to have_content('Opera minora')
       end
 
-      it "should successfully restore the previous association by overwriting the new field", :known_failure do
+      it "should successfully restore the previous association by overwriting the new field" do
         e = Entry.last
 
         update_entry_title(e, 'Hiiipower')
@@ -145,7 +145,7 @@ describe "Paper trail", :js => true do
         expect(old_count).to eq(e.entry_titles.count)      
       end
 
-      it "should save a 'revert' change in the record history", :known_failure do
+      it "should save a 'revert' change in the record history" do
         e = Entry.last
 
         update_entry_title(e, 'Hiiipower')
@@ -156,7 +156,7 @@ describe "Paper trail", :js => true do
         expect(page).to have_content('Opera minora')
       end
 
-      it "should recreate an associated field that was deleted", :known_failure do
+      it "should recreate an associated field that was deleted" do
         e = Entry.last
         old_count = e.entry_titles.count
 
@@ -189,7 +189,7 @@ describe "Paper trail", :js => true do
         expect(e.entry_titles.count).not_to eq(new_count)
       end
 
-      it "should remove an associated field that was created", :known_failure do
+      it "should remove an associated field that was created" do
         e = Entry.last
         old_count = e.entry_titles.count
 
