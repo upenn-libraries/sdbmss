@@ -72,7 +72,7 @@
   background-color: pink;
   border-color: #d18995;
 }
- 
+
 legend {
   font-variant: small-caps;
 }
@@ -88,7 +88,7 @@ label.col-sm-2-and-half {
   margin-top: 1px;
   margin-bottom: 1px;
 }
- 
+
 </style>
 
 <% end %>
@@ -118,7 +118,7 @@ label.col-sm-2-and-half {
       <% if @entry.source && can?(:edit, @entry.source) %>
         <li role="presentation">
           <a role="menuitem" tabindex="-1" href="/sources/<%= @entry.source.id %>/edit" target="_blank">
-            <span class="fa fa-pencil"></span>
+            <span class="fa fa-edit"></span>
             Edit source <%= @entry.source.public_id %>
           </a>
         </li>
@@ -126,7 +126,7 @@ label.col-sm-2-and-half {
         <!-- disabled -->
         <li role="presentation" class='disabled'>
           <a role="menuitem" tabindex="-1" href="" target="">
-            <span class="fa fa-pencil"></span>
+            <span class="fa fa-edit"></span>
             Edit Source
           </a>
         </li>
@@ -134,7 +134,7 @@ label.col-sm-2-and-half {
       <% if @entry.id %>
         <li role="presentation">
           <a role="menuitem" tabindex="-1" href="/entries/<%= @entry.id %>/history" target="_blank">
-            <span class="fa fa-list-alt"></span> 
+            <span class="fa fa-list-alt"></span>
             View history
           </a>
         </li>
@@ -148,7 +148,7 @@ label.col-sm-2-and-half {
         <!-- disabled -->
         <li role="presentation" class='disabled'>
           <a role="menuitem" tabindex="-1" href="">
-            <span class="fa fa-list-alt"></span> 
+            <span class="fa fa-list-alt"></span>
             View history
           </a>
         </li>
@@ -210,13 +210,13 @@ label.col-sm-2-and-half {
         <%= render partial: "pages/partial", locals: {page_name: "Entry Instructions"} %>
       </div>
     </div>
-    
+
     <div ng-show="entry.deprecated" style="color:red; font-weight: bold;">
         This entry has been deprecated; you cannot make changes to it. <span ng-show="entry.superceded_by_id">SDBM_{{ entry.superceded_by_id }} supercedes this entry.</span>
     </div>
 
     <div ng-show="badData.length > 0" style="color:red; font-weight: bold;">
-        WARNING: Bad data found in fields that can't be displayed in dropdowns: 
+        WARNING: Bad data found in fields that can't be displayed in dropdowns:
         <span ng-repeat="badDataItem in badData">{{ badDataItem }}</span>. Saving the record on this page may cause data loss.
     </div>
 
@@ -228,7 +228,7 @@ label.col-sm-2-and-half {
         <legend>Source</legend>
       </div>
     </div>
-    
+
     <div class="row" ng-if="!entry.source">
       <div class="col-sm-12 text-center"><a ng-click="selectSourceModal(entry, null)" class="btn btn-secondary" id="select_source">Select/Create a Source</a></div>
     </div>
@@ -309,7 +309,7 @@ label.col-sm-2-and-half {
                       </div>
                   </div>
               </div>
-              
+
               <div class="form-group row">
                   <label for="price" class="col-sm-2 control-label"><span sdbm-tooltip="entry_price">Price</span></label>
                   <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['sale_price'].$valid }">
@@ -331,7 +331,7 @@ label.col-sm-2-and-half {
 
 
           <div ng-show="entry.transaction_type == 'sale' || entry.transaction_type == 'gift'">
-          
+
               <div class="form-inline row section">
                   <div class="col-sm-12">
                     <span class='h4'>Sale Agent(s)</span>
@@ -339,7 +339,7 @@ label.col-sm-2-and-half {
                       <a a id="add_sale_agent" class="clickable" data-ng-click="addRecord(entry.sale.sale_agents)" title="Add">
                         Add new <span class="fa fa-plus"></span>
                       </a>
-                    </span>                  
+                    </span>
                   </div>
                   <div ui-sortable="sortableOptions" ng-model="entry.sale.sale_agents" class='col-sm-12'>
                     <div class="row input-block" data-ng-repeat="sale_agent in entry.sale.sale_agents | filter: activeRecords">
@@ -357,7 +357,7 @@ label.col-sm-2-and-half {
                         </span>
 
                         <span class='control-label' sdbm-tooltip="entry_sale_agent">Authority Name</span>
-                        
+
                         <div class="btn-group name-authority-group" role="group">
                           <a id='find_sale_agent_name_authority_{{ $index }}' ng-if='sale_agent.agent.id == undefined' ng-init="sale_agent.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', sale_agent.agent, 'is_provenance_agent', sale_agent.observed_name)">Find or Create Authority Name</a>
                           <div id='show_selling_agent_name_authority_0' ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
@@ -366,7 +366,7 @@ label.col-sm-2-and-half {
                           </div>
                           <span id="sale_selling_agent_certainty_flags" ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="btn btn-secondary certainty-flag clickable" sdbm-certainty-flags="sale_agent"><span class="fa"></span></span>
                         </div>
-                        
+
                         <span class='control-label' sdbm-tooltip="entry_sale_agent_role">Role</span>
                         <select id="sale_agent_role_{{ $index }}" name="sale_agent_role" class="form-control" ng-model="sale_agent.role" ng-options="option[0] as option[1] for option in optionsSaleAgentRole" required='required'>
                           <option value=""></option>
@@ -377,7 +377,7 @@ label.col-sm-2-and-half {
                 </div>
 
           </div>
-          
+
       </div>
     </fieldset>
 
@@ -449,7 +449,7 @@ label.col-sm-2-and-half {
                 <input input maxlength="255" id="author_observed_name_{{ $index }}" type="text" class="form-control author-as-recorded" data-ng-model="entry_author.observed_name" ng-focus="expand($event)" ng-blur="reduce($event)">
               </span>
             </span>
-            
+
             <span class='control-label' sdbm-tooltip="entry_author">Authority Name
             </span>
             <div class="btn-group name-authority-group" role="group">
@@ -461,7 +461,7 @@ label.col-sm-2-and-half {
               <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_author" encourage-name-authority-name="author"></span>
               <span ng-if='entry_author.author != undefined && entry_author.author.id != undefined' id="author_certainty_flags_{{ $index }}" class="btn btn-secondary certainty-flag clickable" sdbm-certainty-flags="entry_author"><span class="fa"></span></span>
             </div>
-            
+
             <span class='control-label'><span sdbm-tooltip="entry_author_role">Role</span>
               <select id="author_role_{{ $index }}" name="author_role" class="form-control" ng-model="entry_author.role" ng-options="option[0] as option[1] for option in optionsAuthorRole">
                 <option value=""></option>
@@ -537,7 +537,7 @@ label.col-sm-2-and-half {
               <input input maxlength="255" id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name" ng-focus="expand($event)" ng-blur="reduce($event)">
             </span>
           </span>
-          
+
           <span class='control-label' sdbm-tooltip="entry_artist">Authority Name</span>
           <div class="btn-group name-authority-group" role="group">
             <a id="find_artist_name_authority_{{ $index }}" ng-if='entry_artist.artist.id == undefined' ng-init="entry_artist.artist = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_artist.artist, 'is_artist', entry_artist.observed_name)">Find or Create Authority Name</a>
@@ -547,8 +547,8 @@ label.col-sm-2-and-half {
             </div>
             <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_artist" encourage-name-authority-name="artist"></span>
             <span ng-if='entry_artist.artist != undefined && entry_artist.artist.id != undefined' id="artist_certainty_flags_{{ $index }}" class="btn btn-secondary certainty-flag clickable" sdbm-certainty-flags="entry_artist"><span class="fa"></span></span>
-          </div>   
-          
+          </div>
+
           <span class='control-label'><span sdbm-tooltip="entry_artist_role">Role</span>
             <select id="artist_role_{{ $index }}" name="artist_role" class="form-control" ng-model="entry_artist.role" ng-options="option[0] as option[1] for option in optionsArtistRole">
               <option value=""></option>
@@ -623,9 +623,9 @@ label.col-sm-2-and-half {
                 <input input maxlength="255" id="place_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_place.observed_name" ng-focus="expand($event)" ng-blur="reduce($event)">
               </span>
             </span>
-            
+
             <span class='control-label' sdbm-tooltip="entry_place">Authority Name</span>
-            <div class="btn-group name-authority-group" role="group">          
+            <div class="btn-group name-authority-group" role="group">
               <a id="find_place_name_authority_{{ $index }}" ng-if='entry_place.place.id == undefined' ng-init="entry_place.place = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('places', entry_place.place, 'place', entry_place.observed_name)">Find or Create Authority Name</a>
               <div ng-if='entry_place.place != undefined && entry_place.place.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
                 <a class="fa fa-times" ng-click="removeNameAuthority(entry_place, 'place')"></a>
@@ -648,7 +648,7 @@ label.col-sm-2-and-half {
           add new
         </a>
       </span>
-    </div>        
+    </div>
     <div ui-sortable="sortableOptions" ng-model="entry.entry_languages" class='col-sm-12'>
       <div class="row input-block" data-ng-repeat="entry_language in entry.entry_languages | filter: activeRecords">
         <div class="remove-link-container">
@@ -665,7 +665,7 @@ label.col-sm-2-and-half {
           </span>
 
           <span class='control-label' sdbm-tooltip="entry_language">Authority Name</span>
-          <div class="btn-group name-authority-group" role="group">                    
+          <div class="btn-group name-authority-group" role="group">
             <a id="find_language_name_authority_{{ $index }}" ng-if='entry_language.language.id == undefined' ng-init="entry_language.language = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('languages', entry_language.language, 'language', entry_language.observed_name)">Find or Create Authority Name</a>
             <div ng-if='entry_language.language != undefined && entry_language.language.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
               <a class="fa fa-times" ng-click="removeNameAuthority(entry_language, 'language')"></a>
@@ -703,7 +703,7 @@ label.col-sm-2-and-half {
               <input maxlength="255" id="use_{{ $index }}" type="text" class="form-control" data-ng-model="entry_use.use" ng-focus="expand($event)" ng-blur="reduce($event)">
             </span>
           </span>
-        </div>              
+        </div>
       </div>
     </div>
   </div>
@@ -749,7 +749,7 @@ label.col-sm-2-and-half {
     <!-- numerical fields, in half-width column -->
 
   <div class="row section numerical-fields">
-    
+
     <div class="col-md-4">
 
       <div class="row">
@@ -763,7 +763,7 @@ label.col-sm-2-and-half {
           <input ng-class="{ 'has-error': !entryForm['initials_decorated'].$valid }" type="text" class="form-control" id="initials_decorated" name="initials_decorated" ng-pattern="/^[0-9]*$/" data-ng-model="entry.initials_decorated">
         </div>
       </div>
-        
+
       <div class="row">
         <label for="min_fl" class="control-label col-6 one-line"><span sdbm-tooltip="entry_min_fl">Full-Page Miniatures</span></label>
         <div class="col-6">
@@ -793,17 +793,17 @@ label.col-sm-2-and-half {
         <div class="col-6">
           <input ng-class="{ 'has-error': !entryForm['folios'].$valid }" type="text" class="form-control" id="folios" name="folios" ng-pattern="/^[0-9]*$/" data-ng-model="entry.folios">
         </div>
-        
+
         <label for="lines" class="control-label col-6"><span sdbm-tooltip="entry_lines">Lines</span></label>
         <div class="col-6">
           <input  ng-class="{ 'has-error': !entryForm['num_lines'].$valid }" type="text" class="form-control" id="num_lines" name="num_lines" ng-pattern="/^[0-9]*$/" data-ng-model="entry.num_lines">
         </div>
-        
+
         <label for="columns" class="control-label col-6"><span sdbm-tooltip="entry_columns">Columns</span></label>
         <div class="col-6">
           <input ng-class="{ 'has-error': !entryForm['num_columns'].$valid }" type="text" class="form-control" id="num_columns" name="num_columns" ng-pattern="/^[0-9]*$/" data-ng-model="entry.num_columns">
         </div>
-        
+
         <label for="height" class="control-label col-6"><span sdbm-tooltip="entry_height">Height (mm)</span></label>
         <div class="col-6">
           <div class="input-group">
@@ -823,11 +823,11 @@ label.col-sm-2-and-half {
             </span>
           </div>
         </div>
-        
+
         <label for="alt_size" class="control-label col-6"><span sdbm-tooltip="entry_alt_size">Alt Size</span></label>
         <div class="col-6">
           <select name="alt_size" id="alt_size" class="form-control" data-ng-model="entry.alt_size" ng-options="option[0] as option[1] for option in optionsAltSize">
-              <option value=""></option>                
+              <option value=""></option>
           </select>
         </div>
       </div>
@@ -858,11 +858,11 @@ label.col-sm-2-and-half {
         <div class="col-3">
           <label for="other_info" class="control-label" style="text-align: left;">
               <span sdbm-tooltip="entry_other_info">Other Info</span>
-          </label>          
+          </label>
         </div>
         <div class="col-9">
           <textarea class="form-control" id="other_info" rows="2" data-ng-model="entry.other_info"></textarea>
-        </div>        
+        </div>
       </div>
     </div>
   </div>
@@ -888,7 +888,7 @@ label.col-sm-2-and-half {
         </a>
       </span>
     </div>
-    
+
     <div ui-sortable="sortableOptions" ng-model="entry.provenance" class='col-sm-12'>
       <div class="input-block provenance-block row" data-ng-repeat="prov in entry.provenance | filter: activeRecords">
         <div class="remove-link-container">
@@ -900,7 +900,7 @@ label.col-sm-2-and-half {
           <div class="row provenance-row">
             <div class="col-sm-2">
               <div class="control-label">
-                <span sdbm-tooltip="entry_provenance_agent_as_recorded">Name As Recorded</span>              
+                <span sdbm-tooltip="entry_provenance_agent_as_recorded">Name As Recorded</span>
               </div>
             </div>
             <div class="col-sm-4 expandable">
@@ -943,8 +943,8 @@ label.col-sm-2-and-half {
             <div class="col-sm-5 text-right form-inline prov-date-range">
               <span class='control-label'><span sdbm-tooltip="entry_provenance_date_range_for_search">Suggested Range</span>
                 <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date_normalized_start" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">
-                to  
-                <input id="provenance_end_date_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date_normalized_end" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">              
+                to
+                <input id="provenance_end_date_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date_normalized_end" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">
               </span>
             </div>
           </div>
@@ -988,7 +988,7 @@ label.col-sm-2-and-half {
             <legend>About This Entry Record</legend>
         </div>
     </div>
-    
+
     <div class="form-group row" ng-show="entry.created_by">
         <label for="link" class="col-sm-12 text-muted">
             Created by {{ entry.created_by }} on {{ entry.created_at }}
@@ -1008,29 +1008,29 @@ label.col-sm-2-and-half {
         <a class="clickable" data-ng-click="removeRecord(entry.group_records, group_record)" title="Remove">
           <span class="fa fa-times"></span>
         </a>
-      </div>          
+      </div>
       <div class="col-sm-12">
         <div class="input-group" style='width: 100%;'>
           <p ng-if="groups.length <= 0">You have no user groups yet.</p>
-          <select style="width: 45%" class='form-control' id="group-select" ng-if="groups.length > 0" ng-model="group_record.group.id" ng-options="group.id as group.name for group in groups">            
+          <select style="width: 45%" class='form-control' id="group-select" ng-if="groups.length > 0" ng-model="group_record.group.id" ng-options="group.id as group.name for group in groups">
           </select>
         </div>
       </div>
-    </div>        
+    </div>
 
     <div class="row input-block" ng-repeat="group_record in entry.group_records | filter: {permission: false}">
       <div class="remove-link-container">
         <a class="disabled" disabled="disabled">
           <span class="fa fa-times"></span>
         </a>
-      </div>          
+      </div>
       <div class="col-sm-12">
         <div class="input-group" style='width: 100%;'>
-          <select style="width: 45%" class='form-control disabled' disabled="disabled" id="group-select" ng-model="group_record.group.id" ng-options="group.id as group.name for group in [group_record.group]">            
+          <select style="width: 45%" class='form-control disabled' disabled="disabled" id="group-select" ng-model="group_record.group.id" ng-options="group.id as group.name for group in [group_record.group]">
           </select>
         </div>
       </div>
-    </div>  -->      
+    </div>  -->
 
 </fieldset>
 

@@ -39,7 +39,7 @@
         <% if not @model.users.include? current_user %>
             <p class='text-center'>
                 <%= link_to(add_to_group_accounts_path(ids: [current_user.id], group_id: @model.id), :method => :post) do %>
-                    <span class="fa fa-pencil"></span> Request Membership
+                    <span class="fa fa-edit"></span> Request Membership
                 <% end %>
             </p>
         <% end %>
@@ -98,9 +98,9 @@
     <div class="col-sm-5">
         <h4>
             Entries
-            <small class="float-right"><%= link_to(entries_path) do %> <span class="fa fa-plus"></span> Add Entries <% end %></small> 
+            <small class="float-right"><%= link_to(entries_path) do %> <span class="fa fa-plus"></span> Add Entries <% end %></small>
         </h4>
-        <%= render partial: "entries", locals: {entries: @model.entries} %>       
+        <%= render partial: "entries", locals: {entries: @model.entries} %>
         <% if @model.entries.count <= 0 %>
             <p class='text-muted'>This group does not have permission to edit any entries at the moment.</p>
         <% end %>

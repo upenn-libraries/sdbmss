@@ -1,7 +1,7 @@
 <% if (page = Page.find_by(name: page_name)) %>
   <% if can? :edit, page %>
     <%= link_to(edit_page_path(page.name), class: 'edit-page btn btn-success btn-sm') do %>
-      <span class="fa fa-pencil"></span> Edit Page
+      <span class="fa fa-edit"></span> Edit Page
     <% end %>
   <% end %>
   <div class="page-partial">

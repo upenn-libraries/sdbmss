@@ -119,7 +119,7 @@ function relation (type) {
             // state in the 1st row, really) in the table from rendering
             // properly.
             // https://datatables.net/forums/discussion/24675/radio-button-checked-problem
-            // 
+            //
             // saves things like sorting, column visibility, etc. in localstorage
             stateSave: true,
             autoWidth: false,
@@ -163,12 +163,12 @@ function relation (type) {
                     if(opts.sdbmssMinWidthImportant) {
                         $(e).css("min-width", opts.sdbmssMinWidthImportant);  //DISABLED sdbmssMinWidth
                     } else if (opts.sdbmssMinWidth) {
-                        $(e).css("min-width", opts.sdbmssMinWidth);  //DISABLED sdbmssMinWidth                        
+                        $(e).css("min-width", opts.sdbmssMinWidth);  //DISABLED sdbmssMinWidth
                     }
                     if(opts.sdbmssMaxWidthImportant) {
                         $(e).css("max-width", opts.sdbmssMaxWidthImportant);  //DISABLED sdbmssMaxWidth
                     } else if (opts.sdbmssMaxWidth) {
-                        $(e).css("max-width", opts.sdbmssMaxWidth);  //DISABLED sdbmssMinWidth                        
+                        $(e).css("max-width", opts.sdbmssMaxWidth);  //DISABLED sdbmssMinWidth
                     }
                 });
             },
@@ -191,7 +191,7 @@ function relation (type) {
             dom: this.options.dom,
             serverSide: true
         });
-    
+
         var the_table = this.dataTable;
         $('.wide').replaceWith('<a id="widescreen" class="btn btn-secondary" title="Widescreen View"><span class="fa fa-expand"></span></a>');
         $('#widescreen').click( function () {
@@ -200,7 +200,7 @@ function relation (type) {
             if ($('#main-container').hasClass('container-fluid')) {
                 $('.redundant-container').addClass('container');
             } else {
-                $('.redundant-container').removeClass('container'); 
+                $('.redundant-container').removeClass('container');
             }
             //$('.dataTables_scrollHeadInner').toggleClass('full-width');
             //$('.sdbm-table').toggleClass('full-width');
@@ -208,11 +208,11 @@ function relation (type) {
         });
 
         //$(".mapmode").replaceWith($("<a href='' class='btn btn-secondary'><span class='fa fa-image'></span></a>"));
-        
+
         $('.spinner').replaceWith('<span id="spinner" style="display: none;"><img alt="working..." src="' + $("#spinner-src").attr('src') + '"> loading...</span>');
         $('.csv').replaceWith('<a id="export-csv" class="btn btn-secondary" title="Export to CSV"><span class="fa fa-floppy-o"></span></a>');
-        $('.columns').replaceWith('<div class="btn-group">' + 
-            '<a class="btn btn-secondary dropdown-toggle" title="Show/Hide Columns" data-toggle="dropdown"><span class="fa fa-pencil"></span></a>' +
+        $('.columns').replaceWith('<div class="btn-group">' +
+            '<a class="btn btn-secondary dropdown-toggle" title="Show/Hide Columns" data-toggle="dropdown"><span class="fa fa-edit"></span></a>' +
             '<div id="column-control" class="dropdown-menu list-group">' +
             '</div>' +
             '</div>'
@@ -765,7 +765,7 @@ function relation (type) {
                             result.bookmarkwatch
                         ];
                     });
-                    
+
                     data.recordsTotal = data.total;
                     data.recordsFiltered = data.total;
 
