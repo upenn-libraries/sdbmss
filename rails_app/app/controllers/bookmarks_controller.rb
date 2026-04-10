@@ -8,6 +8,7 @@
 # For individual bookmark 'buttons', see the '_bookmark_watch.html.erb' partial
 
 class BookmarksController < ApplicationController
+  include Blacklight::TokenBasedUser
 
   before_action :authenticate_user!, only: [:index, :new, :create, :edit, :show, :update, :destroy]
 

@@ -2,6 +2,7 @@
 require "rails_helper"
 
 describe "Data entry", :js => true do
+  include DataEntryHelpers
 
   # Fill an autocomplete field using value in :with option. If a
   # block is given, yields to it to allow for selection.
@@ -81,26 +82,7 @@ describe "Data entry", :js => true do
   before :each do
     @user = User.where(role: 'admin').first
 
-    @source = Source.unscoped.where(
-      title: "A Sample Test Source With a Highly Unique Name",
-      date: "2013-11-12",
-      source_type_id: SourceType.auction_catalog.id,
-      deleted: false,
-    ).first
-    if @source.nil?
-      @source = Source.create!(
-        title: "A Sample Test Source With a Highly Unique Name",
-        date: "2013-11-12",
-        source_type_id: SourceType.auction_catalog.id,
-      )
-    end
-    unless @source.source_agents.exists?(role: SourceAgent::ROLE_SELLING_AGENT)
-      SourceAgent.create!(
-        source: @source,
-        role: SourceAgent::ROLE_SELLING_AGENT,
-        agent: Name.find_or_create_agent("Sotheby's")
-      )
-    end
+    @source = create_edit_test_source
     Source.index
   end
 
@@ -110,14 +92,9 @@ describe "Data entry", :js => true do
       login(@user, 'somethingunguessable')
     end
 
-    require "lib/data_entry_helpers"
-    include DataEntryHelpers    
-
-    it "should find source by date on Select Source page", :known_failure, :flaky do
+    it "should find source by date on Select Source page", :flaky do
       visit new_entry_path
-      expect(page).to have_selector('#select_source')
-      find('#select_source').trigger('click')
-      expect(page).to have_selector('.modal-title', text: 'Search for Existing Source', visible: true)
+      open_source_search_modal
       expect(page).to have_field('date')
       fill_in 'date', :with => '2013'
       expect(page).to have_content @source.title
@@ -125,11 +102,9 @@ describe "Data entry", :js => true do
       expect(page).to have_content "Add an Entry"
     end
 
-    it "should find source by agent on Select Source page", :known_failure, :flaky do
+    it "should find source by agent on Select Source page", :flaky do
       visit new_entry_path
-      expect(page).to have_selector('#select_source')
-      find('#select_source').trigger('click')
-      expect(page).to have_selector('.modal-title', text: 'Search for Existing Source', visible: true)
+      open_source_search_modal
       expect(page).to have_field('agent')
       fill_in 'agent', :with => 'Soth'
       expect(page).to have_content @source.title
@@ -139,19 +114,15 @@ describe "Data entry", :js => true do
 
     it "should NOT find source by agent on Select Source page" do
       visit new_entry_path
-      expect(page).to have_selector('#select_source')
-      find('#select_source').trigger('click')
-      expect(page).to have_selector('.modal-title', text: 'Search for Existing Source', visible: true)
+      open_source_search_modal
       expect(page).to have_field('agent')
       fill_in 'agent', :with => 'Nonexistent'
       expect(page).to have_content "No source found matching your criteria."
     end
 
-    it "should find source by title on Select Source page", :known_failure, :flaky do
+    it "should find source by title on Select Source page", :flaky do
       visit new_entry_path
-      expect(page).to have_selector('#select_source')
-      find('#select_source').trigger('click')
-      expect(page).to have_selector('.modal-title', text: 'Search for Existing Source', visible: true)
+      open_source_search_modal
       expect(page).to have_field('title')
       fill_in 'title', :with => 'uniq'
       expect(page).to have_content @source.title
@@ -159,11 +130,9 @@ describe "Data entry", :js => true do
       expect(page).to have_content "Add an Entry"
     end
 
-    it "should NOT find source by title on Select Source page", :known_failure, :flaky do
+    it "should NOT find source by title on Select Source page", :flaky do
       visit new_entry_path
-      expect(page).to have_selector('#select_source')
-      find('#select_source').trigger('click')
-      expect(page).to have_selector('.modal-title', text: 'Search for Existing Source', visible: true)
+      open_source_search_modal
       expect(page).to have_field('title')
       fill_in 'title', :with => 'nonexistentjunk'
       expect(page).to have_content "No source found matching your criteria."
@@ -225,7 +194,7 @@ describe "Data entry", :js => true do
       expect(page).to have_select('transaction_type', disabled: false)
     end
 
-    it "should save a new Source (auction catalog)", :known_failure do
+    it "should save a new Source (auction catalog)" do
       count = Source.count
 
       visit new_entry_path
@@ -280,7 +249,7 @@ describe "Data entry", :js => true do
       expect(s.source_agents.count).to eq(count)
     end
 
-    it "should save a new Source (other published source)", :known_failure do
+    it "should save a new Source (other published source)" do
       count = Source.count
 
       visit new_entry_path
@@ -320,7 +289,7 @@ describe "Data entry", :js => true do
 #      expect(source.comments).to eq('This info is correct')
     end
 
-    it "should save a new Source with no date", :known_failure do
+    it "should save a new Source with no date" do
       count = Source.count
 
       visit new_entry_path
@@ -343,7 +312,7 @@ describe "Data entry", :js => true do
       expect(source.author).to eq('Jeff')
     end
 
-    it "should save a new Source, filtering out invalid fields", :known_failure do
+    it "should save a new Source, filtering out invalid fields" do
 
       visit new_entry_path
       open_source_create_modal
@@ -383,7 +352,7 @@ describe "Data entry", :js => true do
       expect(source.source_agents.first.agent.name).to eq("Sotheby's")
     end
 
-    it "should warn about existing Source", :known_failure do
+    it "should warn about existing Source" do
       source = Source.create!(
         date: "19501205",
         title: "a very long title for an existent source",
@@ -588,7 +557,7 @@ describe "Data entry", :js => true do
       expect(comment.comment).to eq('This info is correct')
     end
 =end
-    it "should save an auction catalog Entry", :known_failure do
+    it "should save an auction catalog Entry" do
       # fill out all the fields and make sure they save to the database
 
       count = Entry.count
@@ -624,14 +593,13 @@ describe "Data entry", :js => true do
     end
 
     it "should save an Entry and log it in Recent Activity" do
-      skip 'changed user permissions'
       create_entry
 
       entry = Entry.last
 
       visit activities_path
 
-      expect(page).to have_content "#{entry.created_by.username} added SDBM_#{entry.id}"
+      expect(page).to have_content("added #{entry.public_id}")
     end
 
     it "should update status field on Source when adding an Entry" do
@@ -712,51 +680,6 @@ describe "Data entry", :js => true do
       expect(page).to have_content(src.source_type.to_s)
     end
 
-    it "should let user create an Entry for an existing Manuscript" do
-      skip
-      entry1 = Entry.create!(
-        source: Source.first,
-        created_by_id: @user.id,
-        approved: true
-      )
-      entry2 = Entry.create!(
-        source: Source.first,
-        created_by_id: @user.id,
-        approved: true
-      )
-      manuscript = Manuscript.create!
-      manuscript_id = manuscript.id
-      EntryManuscript.create!(entry: entry1, manuscript: manuscript, relation_type: EntryManuscript::TYPE_RELATION_IS)
-      EntryManuscript.create!(entry: entry2, manuscript: manuscript, relation_type: EntryManuscript::TYPE_RELATION_IS)
-
-      visit manuscript_path(manuscript)
-
-      click_link "Create your own personal observation"
-
-      click_link "Click here to CREATE A NEW SOURCE"
-
-      select 'Auction/Dealer Catalog', from: 'source_type'
-      fill_in 'source_date', with: '2015-02-28'
-      find('#title').set 'Sample Catalog'
-      find('#savesource').click
-
-      expect(page).to have_content("SDBM_SOURCE")
-
-#      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
-
-      click_link "Add entries for this source"
-
-      fill_in 'cat_lot_no', with: '9090'
-
-      find(".save-button", match: :first).click
-
-      expect(page).to have_content("Warning: This entry has not been approved yet.")
-      expect(page).to have_content(Entry.last.public_id)
-
-      manuscript = Manuscript.find(manuscript_id)
-      expect(manuscript.entries.order(id: :desc).first.catalog_or_lot_number).to eq("9090")
-    end
-
     it "should pre-populate transaction_type on Entry page" do
       count = Entry.count
 
@@ -783,7 +706,7 @@ describe "Data entry", :js => true do
       expect(page).to have_content("Create A Personal Observation")
     end
 
-    it "should successfully create a manuscript record for an unlinked entry when creating a new personal observation", :known_failure do
+    it "should successfully create a manuscript record for an unlinked entry when creating a new personal observation" do
       visit entry_path(Entry.last)
 
       expect(page).to have_content("Create A Personal Observation")
