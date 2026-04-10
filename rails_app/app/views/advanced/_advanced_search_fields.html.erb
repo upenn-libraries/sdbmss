@@ -44,13 +44,13 @@ $(document).ready(function() {
     if fieldstruct.value.kind_of? Array
         fieldstruct.value.each do |val|
     %>
-    <div class="form-group advanced-search-field">
+    <div class="form-group row advanced-search-field">
         <div class="col-sm-7">
             <input class="form-control" name="" type="text" value="<%= val %>"/>
         </div>
         <div class="col-sm-1 label-alignment">in</div>
         <div class="col-sm-4">
-            <select class="form-control col-sm-3" id="text_field_<%= limit %>">
+            <select class="form-control" id="text_field_<%= limit %>">
                 <%- fieldstruct.fields.each do |key, field_def| -%>
                 <option value="<%= key %>" <% if fieldstruct.selected_field == key %>selected="selected"<% end %>><%= field_def.label %></option>
                 <%- end -%>
@@ -63,13 +63,13 @@ $(document).ready(function() {
         end
     else
     %>
-    <div class="form-group advanced-search-field">
+    <div class="form-group row advanced-search-field">
         <div class="col-sm-7">
             <input class="form-control" name="" type="text" value="<%= fieldstruct.value %>"/>
         </div>
         <div class="col-sm-1 label-alignment">in</div>
         <div class="col-sm-4">
-            <select class="form-control col-sm-3" id="text_field_<%= limit %>">
+            <select class="form-control" id="text_field_<%= limit %>">
                 <%- fieldstruct.fields.each do |key, field_def| -%>
                 <option value="<%= key %>" <% if fieldstruct.selected_field == key %>selected="selected"<% end %>><%= field_def.label %></option>
                 <%- end -%>
@@ -86,7 +86,7 @@ end
 <h3 class="query-criteria-heading">Numeric Fields:</h3>
     
 <% prepopulated_search_fields_for_advanced_search(5, is_numeric: true).each do |fieldstruct| %>
-<div class="form-group advanced-search-field">
+<div class="form-group row advanced-search-field">
     <input type="hidden" name="" value=""/>
     <div class="col-sm-3">
         <input class="form-control start" id="numeric_start_<%= fieldstruct.index %>" type="text" value="<%= fieldstruct.value %>"/>
@@ -97,7 +97,7 @@ end
     </div>
     <div class="col-sm-1 label-alignment">in</div>
     <div class="col-sm-4">
-        <select class="form-control col-sm-3" id="numeric_field_<%= fieldstruct.index %>">
+        <select class="form-control" id="numeric_field_<%= fieldstruct.index %>">
             <%- fieldstruct.fields.each do |key, field_def| -%>
             <option value="<%= key %>" <% if fieldstruct.selected_field == key %>selected="selected"<% end %>><%= field_def.label %></option>
             <%- end -%>
