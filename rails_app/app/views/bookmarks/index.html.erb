@@ -17,12 +17,12 @@
       <li class="nav-item"><a class="nav-link" href="#Source" data-toggle="tab">Sources <span class="badge badge-secondary">{{ all_bookmarks_display["Source"].length }}</span></a></li>
       <li class="nav-item"><a class="nav-link" href="#Name" data-toggle="tab">Names <span class="badge badge-secondary">{{ all_bookmarks_display["Name"].length }}</span></a></li>
       <li class="nav-item"><a class="nav-link" href="#DericciRecord" data-toggle="tab">De Ricci Record <span class="badge badge-secondary">{{ all_bookmarks_display["DericciRecord"].length }}</span></a></li>
-      <li class="float-right" style="max-width: 30%;">
+      <li class="ml-auto" style="max-width: 30%;">
         <span class="input-group">
           <input type="text" class="form-control" name="tag-search" placeholder="Filter By Tag..." size=32 ng-model="search_term" ng-keyup="$event.keyCode == 13 && searchTag(search_term)">
           <span class="input-group-append">
             <a href="" class="btn btn-primary bookmark-search" ng-click="searchTag(search_term)"><span class="fa fa-tag"></span> Filter</a>
-            <a href="" class="btn btn-secondary" ng-click="searchTag('')"><span>Clear</span></a>
+            <a href="" class="btn btn-outline-secondary" ng-click="searchTag('')"><span>Clear</span></a>
           </span>
         </span>
       </li>
@@ -37,7 +37,7 @@
         </p>
 
         <div class="row">
-          <div class="col-sm-12" ng-repeat="bookmark in bookmarks">
+          <div class="col-sm-12 mb-4" ng-repeat="bookmark in bookmarks">
           <div class="card">
             <div class="card-header">
               <strong><a href="{{ bookmark.link }}">{{ bookmark.public_id }}</a></strong>
@@ -58,19 +58,19 @@
                     <li class="list-inline-item"><span class="btn btn-sm"><span class="fa fa-tag"></span> Tags</span> </li>
                     <li ng-if="bookmark.tags.length <= 0" class="list-inline-item text-muted">This bookmark has no tags.</li>
                     <li ng-repeat="tag in bookmark.tags" class="list-inline-item btn-group">
-                      <a class="btn btn-secondary btn-sm" ng-class="{'btn-primary' : tag == tagSearch}" href="" ng-click="searchTag(tag);">{{ tag }}</a>
-                      <a href="" class='btn btn-secondary btn-sm remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)" title="Remove tag '{{ tag }}'"><span class="fa fa-times"></span></a>
+                      <a class="btn btn-outline-secondary btn-sm" ng-class="{'btn-primary' : tag == tagSearch}" href="" ng-click="searchTag(tag);">{{ tag }}</a>
+                      <a href="" class='btn btn-outline-secondary btn-sm remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)" title="Remove tag '{{ tag }}'"><span class="fa fa-times"></span></a>
                     </li>
                   </ul>
                 </div>
                 <div class="col-sm-5 text-right">
-                  <a ng-show="!bookmark.showAddTag" href="" class="btn btn-sm btn-secondary btn-add-tag" ng-click="bookmark.showAddTag = !bookmark.showAddTag">
+                  <a ng-show="!bookmark.showAddTag" href="" class="btn btn-sm btn-outline-secondary btn-add-tag" ng-click="bookmark.showAddTag = !bookmark.showAddTag">
                     <span class="fa fa-plus"></span> Add Tag
                   </a>
                   <div class="form-inline" style="position: absolute; right: 10px; top: -6px;">
                     <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
-                      <div class="input-group-addon">
-                        <span class="text-muted">Tag:</span>
+                      <div class="input-group-prepend">
+                        <span class="input-group-text text-muted">Tag:</span>
                       </div>
                       <input type='text' class='form-control new-bookmark-tag' placeholder="New tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
                       <div class="input-group-append">
