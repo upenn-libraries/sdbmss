@@ -36,7 +36,7 @@
         <% if not group.users.include? current_user %>
             <p class='text-center'>
                 <%= link_to(add_to_group_accounts_path(ids: [current_user.id], group_id: group.id), :method => :post) do %>
-                    <span class="fa fa-edit"></span> Request Membership
+                    <span class="fa fa-pencil"></span> Request Membership
                 <% end %>
             </p>
         <% end %>
