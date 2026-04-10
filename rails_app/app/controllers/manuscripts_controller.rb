@@ -17,18 +17,18 @@ class ManuscriptsController < SearchableAuthorityController
   def table
     @model = @manuscript
     @entries = @manuscript.entries.preload(
-      :created_by, :updated_by, :contributors, :groups, :institution, 
-      {:sales => [{:sale_agents => :agent}]}, 
-      {:entry_authors => [:author]}, 
-      :entry_titles, 
-      :entry_dates, 
-      {:entry_artists => [:artist]}, 
-      {:entry_scribes => [:scribe]}, 
-      {:entry_languages => [:language]}, 
-      {:entry_places => [:place]}, 
+      :created_by, :updated_by, :contributors, :groups, :institution,
+      {:sales => [{:sale_agents => :agent}]},
+      {:entry_authors => [:author]},
+      :entry_titles,
+      :entry_dates,
+      {:entry_artists => [:artist]},
+      {:entry_scribes => [:scribe]},
+      {:entry_languages => [:language]},
+      {:entry_places => [:place]},
       {:provenance => [:provenance_agent]},
-      :entry_uses, :entry_materials, 
-      {:entry_manuscripts => [:manuscript]}, 
+      :entry_uses, :entry_materials,
+      {:entry_manuscripts => [:manuscript]},
       {:source => [{:source_agents => :agent}, :source_type]}, :bookmarks, :watches,
     ).sort do |a, b|
       a_date = a.source.date.present? ? a.source.date.to_i : a.source.date_accessed.to_i
@@ -65,7 +65,7 @@ class ManuscriptsController < SearchableAuthorityController
           @location_name = e.sale_agent('buyer').first
         elsif e.sale_agent('seller_or_holder').count > 0
           @location_name = e.sale_agent('seller_or_holder').first
-        else 
+        else
           @location_name = e.sale_agent('selling_agent').first
         end
         return

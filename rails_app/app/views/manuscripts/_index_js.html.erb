@@ -133,6 +133,10 @@
         bindRemoteAjaxCallback();
      });
 
+     // default to wide view
+     $("#main-container").removeClass('container').addClass('container-fluid');
+     $("#widescreen > span").toggleClass('fa-compress').toggleClass('fa-expand');
+
  });
 
 </script>

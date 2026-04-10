@@ -30,7 +30,7 @@ table.dataTable.compact tbody td {
  */
 table.sdbm-table { margin-top: 0px !important; }
 
-.sdbm-table { font-size: 12px; }
+.sdbm-table { font-size: 12px; width: 100% !important; }
 
 .sdbm-table tbody tr.selected { background-color: #b0bed9; }
 

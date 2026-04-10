@@ -218,6 +218,10 @@ load_session = '<%= params[:last_search] %>' == 'true';
 
      //manageNames.dataTable.reload();
 
+     // default to wide view
+     $("#main-container").removeClass('container').addClass('container-fluid');
+     $("#widescreen > span").toggleClass('fa-compress').toggleClass('fa-expand');
+
  });
 
 </script>
