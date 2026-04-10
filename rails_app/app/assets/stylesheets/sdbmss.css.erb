@@ -2687,7 +2687,6 @@ a.ratings.disputed {
 }
 .linking-tool-change-info {
   padding: 2px 10px;
-  margin: 0px 10px;
 }
 tr.linking-tool-deleted {
   background: #f2dede !important;
@@ -2923,8 +2922,10 @@ nav.navbar.navbar-light .search-form {
   align-items: center;
   width: 100%;
 }
-nav.navbar.navbar-light .search-form > .navbar-left {
+nav.navbar.navbar-light .search-form > .navbar-left,
+nav.navbar.navbar-light .search-form > .navbar-brand {
   margin-right: auto;
+  align-self: flex-start;
 }
 nav.navbar.navbar-light .search-form .navbar-right {
   display: flex;

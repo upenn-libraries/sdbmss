@@ -9,14 +9,14 @@
 </ul>
 
 
-<div class="search-form form-inline search-fieldset float-left navbar-form">
+<div class="search-form form-inline search-fieldset float-left navbar-form" id="table-search-form">
     <div class="search-block input-group">
         <div class="input-group-append">
             <button type='button' class="btn btn-warning search-remove"> <span class="fa fa-times"></span> </button>
         </div>
         <%= text_field_tag :search_value, params[:search_value], size: 18, placeholder: "Enter your search term...", class: "form-control" %>
         <select class="form-control" name="search_field">
-        <% Array(@search_fields).each do |field| %>            
+        <% Array(@search_fields).each do |field| %>
             <option value="<%= field[1] %>" type="<%= @fields.include?(field) ? 'field' : (@filters.include?(field) ? 'filter' : 'date') %>"><%= field[0] %></option>
         <% end -%>
         </select>
@@ -35,7 +35,7 @@
         <% Array(@field_options).each do |option| %>
             <option value="<%= option %>" class="option field_option"><%= option.humanize %></option>
         <% end %>
-        <% Array(@date_options).each do |option| %>                
+        <% Array(@date_options).each do |option| %>
             <option value="<%= option %>" class="option date_option"><%= option.humanize %></option>
         <% end %>
         </select>

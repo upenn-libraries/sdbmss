@@ -753,13 +753,13 @@ $(document).ready(function() {
 
 <% content_for :breadcrumbs do %>
     <% if @entry %>
-        <li class=" "><%= link_to "Manage Entries", entries_path %></li>
-        <li class=" "><%= link_to @entry.public_id, entry_path(@entry) %></li>
-        <li class="  active"><a href="">Linking tool for <%= @entry.public_id %></a></li>
+        <li class="breadcrumb-item"><%= link_to "Manage Entries", entries_path %></li>
+        <li class="breadcrumb-item"><%= link_to @entry.public_id, entry_path(@entry) %></li>
+        <li class="breadcrumb-item active"><a href="">Linking tool for <%= @entry.public_id %></a></li>
     <% elsif @manuscript %>
-        <li class=" "><%= link_to "Manage Manuscripts", manuscripts_path %></li>
-        <li class=" "><%= link_to @manuscript.public_id, manuscript_path(@manuscript) %></li>
-        <li class="  active"><a href="">Linking tool for <%= @manuscript.public_id %></a></li>
+        <li class="breadcrumb-item"><%= link_to "Manage Manuscripts", manuscripts_path %></li>
+        <li class="breadcrumb-item"><%= link_to @manuscript.public_id, manuscript_path(@manuscript) %></li>
+        <li class="breadcrumb-item active"><a href="">Linking tool for <%= @manuscript.public_id %></a></li>
     <% end %>
 <% end %>
 <div id="linking-tool">
@@ -768,9 +768,11 @@ $(document).ready(function() {
             <!--<span style="font-size: 14px; font-weight: bold;"><span id="workspace-table-title"></span></span>-->
             <div class="input-group">
                 <button id="persist-entries-manuscript-link" class="form-control"></button>
-                <span class="input-group-addon input-group-addon-success linking-tool-change-info" id="additions">0 added</span>
-                <span class="input-group-addon input-group-addon-danger linking-tool-change-info" id="deletes">0 deleted</span>
-                <span class="input-group-addon input-group-addon-info linking-tool-change-info" id="changes">0 changed</span>
+                <div class="input-group-append">
+                    <span class="input-group-text input-group-addon-success linking-tool-change-info" id="additions">0 added</span>
+                    <span class="input-group-text input-group-addon-danger linking-tool-change-info" id="deletes">0 deleted</span>
+                    <span class="input-group-text input-group-addon-info linking-tool-change-info" id="changes">0 changed</span>
+                </div>
             </div>
         </div>
         <div class="col-sm-6 text-right">
@@ -798,18 +800,14 @@ $(document).ready(function() {
     </table>
 
     <nav class="navbar navbar-light bg-light" style="margin: 10px 0px 9px 0px;">
-        <div class="row">
-            <div class="col-sm-12">
-                <ul class="nav navbar-nav navbar-left navbar-nav-search">
-                     <li>
-                        <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_search_tips" href="#"><span class="fa fa-search"></span> Search Tips</a>
-                    </li>
-                </ul>
-                <%= form_tag(request.path, method: :get, id: "link-search") do %>
-                <%= render partial: "linking_tool/show_form" %>
-                <% end %>
-            </div>
-        </div>
+        <%= form_tag(request.path, method: :get, id: "link-search", class: "search-form") do %>
+        <ul class="nav navbar-nav navbar-left">
+             <li>
+                <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_search_tips" href="#"><span class="fa fa-search"></span> Search Tips</a>
+            </li>
+        </ul>
+        <%= render partial: "linking_tool/show_form" %>
+        <% end %>
     </nav>
     <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">
         <thead>
