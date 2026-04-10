@@ -1,6 +1,8 @@
 en:
   blacklight:
     application_name: 'Schoenberg Database of Manuscripts'
+    header_links:
+      search_history: 'Search History'
     search:
       form:
         search_field:
