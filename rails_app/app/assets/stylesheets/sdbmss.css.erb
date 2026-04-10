@@ -1023,7 +1023,7 @@ li.provenance:hover, li.provenance:focus {
 }
 .label-entry {
   margin-left: 10px;
-  background: #3c763d;
+  background: #28a745;
 }
 #source-form .well-name-authority {
   max-width: calc(100% - 40px);
@@ -2200,6 +2200,11 @@ so that gray backdrop shvows up correctly */
 }
 
 
+/* BS4 .dropdown-toggle adds its own caret via ::after, hide manual ones */
+.dropdown-toggle .caret {
+  display: none;
+}
+
 .collapsed .caret {
   border-top: 0;
   border-left: 4px dashed;
@@ -2746,8 +2751,8 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
   color: white;
 }
 .alert-success {
-  background-color: #3c763d;
-  border-color: #3c763d;
+  background-color: #28a745;
+  border-color: #28a745;
   color: white;
 }
 .alert-warning {
@@ -2847,15 +2852,16 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 }
 .facet_limit-active .card-header,
 .facet-limit-active .card-header {
-  background-color: #3c763d;
-  border-color: #3c763d;
-  color: white;
+  background-color: #28a745;
+  border-color: #28a745;
 }
 .facet_limit-active,
 .facet-limit-active {
-  border-color: #3c763d;
+  border-color: #28a745;
+  margin-bottom: 1rem;
 }
 .appliedFilter .filterName:after {
+  content: " ❯ ";
   padding: 0px 2px;
 }
 .card-header.collapse-toggle .card-title:after {

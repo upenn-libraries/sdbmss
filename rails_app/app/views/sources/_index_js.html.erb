@@ -58,8 +58,8 @@ $(document).ready(function() {
              {
                  title: 'Options',
                  orderable: false,
-                 sdbmssMinWidth: "300px",
-                 sdbmssMaxWidth: "300px",
+                 sdbmssMinWidth: "328px",
+                 sdbmssMaxWidth: "328px",
                  render: function (data, type, full, meta) {
                     var created_by = full[manageRecords.dataTable.getColumnIndex("Created By")];
                     var result = '<span class="btn-group options-btn-group">';
@@ -330,9 +330,9 @@ $(document).ready(function() {
         searchNameField: "name"
     }
 
-     if (window.screen.width > 640) {
-        config.fixedColumns = 3
-     }
+     //if (window.screen.width > 640) {
+     //   config.fixedColumns = 3
+     //}
 
      var manageSources = new ManageSources(config);
      manageSources.setFormStateFromURL();
