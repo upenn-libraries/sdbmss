@@ -7,14 +7,6 @@ module SearchHelpers
     expect(page).to have_selector("#documents")
   end
 
-  def open_blacklight_advanced_search
-    visit advanced_search_path
-  end
-
-  def submit_blacklight_advanced_search
-    find_by_id('advanced-search-submit').click
-  end
-
   def advanced_search_text_fields
     page.all(".advanced-search-field input[type=text]")
   end

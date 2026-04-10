@@ -68,9 +68,6 @@ describe "Manage entries", :js => true do
     entry_to_delete = Entry.last
     count = Entry.all.count
 
-    # mock out the confirm dialogue
-    page.evaluate_script('window.confirm = function() { return true; }')
-
     visit entries_path
     find("#delete_#{entry_to_delete.id}", match: :first).trigger("click")
     #all(".entry-delete-link").last.trigger('click')
