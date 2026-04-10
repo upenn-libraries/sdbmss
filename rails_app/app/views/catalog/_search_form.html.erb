@@ -1,6 +1,11 @@
+<%#
+  OVERRIDE Blacklight v6.9.0: SDBM search action URL, hidden search_field=all_fields, advanced search
+    button, and responsive navbar layout. Preserves current search via search_state.params_for_search
+    for hidden fields (Blacklight 6 SearchState API).
+%>
 <div class="navbar-header catalog-search-form">
   <%= form_tag sdbmss_search_action_path, :method => :get, :class => 'form-inline clearfix navbar-form', :style => 'width: 100%;' do %>
-    <%= render_hash_as_hidden_fields(params_for_search().except(:q, :search_field, :qt, :page, :utf8)) %>
+    <%= render_hash_as_hidden_fields(search_state.params_for_search.except(:q, :search_field, :qt, :page, :utf8)) %>
 
     <% unless search_fields.empty? %>
       <!--<label for="q" style="margin-right: 10px;"><%= t('blacklight.search.form.search_field.label') %> </label>-->
@@ -21,7 +26,7 @@
               <span class="submit-search-text"><%=t('blacklight.search.form.submit')%></span>
               <span class="glyphicon glyphicon-search"></span>
             </button>
-            <a type="button navbar-toggle" href="<%= main_app.advanced_search_path(params_for_search) %>" class="btn btn-default advanced_search">Advanced</a>
+            <a type="button navbar-toggle" href="<%= main_app.advanced_search_path(search_state.params_for_search) %>" class="btn btn-default advanced_search">Advanced</a>
           </span>
         </div>
       </div>

@@ -1,4 +1,4 @@
-class UpdateSqlEngineForThredded < ActiveRecord::Migration
+class UpdateSqlEngineForThredded < ActiveRecord::Migration[4.2]
   def change
     def up
       execute "ALTER TABLE `thredded_posts` ENGINE = MyISAM"

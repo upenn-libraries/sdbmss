@@ -1,4 +1,4 @@
-class CreateNameComments < ActiveRecord::Migration
+class CreateNameComments < ActiveRecord::Migration[4.2]
   def change
     create_table :name_comments do |t|
     end

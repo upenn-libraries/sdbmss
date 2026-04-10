@@ -1,4 +1,4 @@
-class CreateActivity < ActiveRecord::Migration
+class CreateActivity < ActiveRecord::Migration[4.2]
   def change
     create_table :activities do |t|
       t.string :item_type, limit: 255, null: false

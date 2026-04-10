@@ -1,4 +1,4 @@
-class AddConfirmedColumnsToNamesAndEntries < ActiveRecord::Migration
+class AddConfirmedColumnsToNamesAndEntries < ActiveRecord::Migration[4.2]
   def change
     add_column :entries, :confirmed, :boolean, :default => false
     add_column :names, :confirmed, :boolean, :default => false

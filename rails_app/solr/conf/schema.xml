@@ -73,7 +73,7 @@
     <fieldType name="text" class="solr.TextField" omitNorms="false">
       <analyzer type="index">
         <tokenizer class="solr.StandardTokenizerFactory"/>
-        <filter class="solr.StandardFilterFactory"/>
+
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.NGramFilterFactory" minGramSize="2" maxGramSize="30"/>        
         <filter class="solr.ASCIIFoldingFilterFactory" /> 
@@ -81,7 +81,7 @@
       </analyzer>
       <analyzer type="query">
         <tokenizer class="solr.StandardTokenizerFactory"/>
-        <filter class="solr.StandardFilterFactory"/>
+
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.ASCIIFoldingFilterFactory" /> 
         <filter class="solr.SnowballPorterFilterFactory" language="English" />
@@ -90,15 +90,15 @@
     <!-- *** This fieldType is used by Sunspot! *** -->
     <fieldType name="boolean" class="solr.BoolField" omitNorms="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
-    <fieldType name="date" class="solr.DateField" omitNorms="true"/>
+    <fieldType name="date" class="solr.TrieDateField" omitNorms="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
-    <fieldType name="sdouble" class="solr.SortableDoubleField" omitNorms="true"/>
+    <fieldType name="sdouble" class="solr.TrieDoubleField" omitNorms="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
-    <fieldType name="sfloat" class="solr.SortableFloatField" omitNorms="true"/>
+    <fieldType name="sfloat" class="solr.TrieFloatField" omitNorms="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
-    <fieldType name="sint" class="solr.SortableIntField" omitNorms="true"/>
+    <fieldType name="sint" class="solr.TrieIntField" omitNorms="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
-    <fieldType name="slong" class="solr.SortableLongField" omitNorms="true"/>
+    <fieldType name="slong" class="solr.TrieLongField" omitNorms="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
     <fieldType name="tint" class="solr.TrieIntField" omitNorms="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
@@ -127,7 +127,6 @@
                worldBounds="-10000 -10000 10000 10000"
                distErrPct="0"
                maxDistErr="0.1"
-               units="degrees"
                />
 
     <!-- for storing ranges of 8-digit YYYYMMDD dates -->
@@ -138,9 +137,8 @@
                worldBounds="-99999999 -99999999 99999999 99999999"
                distErrPct="0"
                maxDistErr="0.1"
-               units="degrees"
                />
-    
+
   </types>
   <fields>
     <!-- Valid attributes for fields:
@@ -295,7 +293,7 @@
     <dynamicField name="*_llms" stored="true" type="location" multiValued="true" indexed="true"/>
     
     <!-- required by Solr 4 -->
-    <field name="_version_" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="_version_" type="slong" indexed="true" stored="true" multiValued="false" />
 
     <!-- SDBMSS fields -->
 
@@ -438,10 +436,7 @@
       Unless this field is marked with required="false", it will be a required field
    -->
   <uniqueKey>id</uniqueKey>
-  <!-- field for the QueryParser to use when an explicit fieldname is absent -->
-  <defaultSearchField>text</defaultSearchField>
-  <!-- SolrQueryParser configuration: defaultOperator="AND|OR" -->
-  <solrQueryParser defaultOperator="AND"/>
+  <!-- defaultSearchField and solrQueryParser removed in Solr 7+; df param set in solrconfig.xml /select handler -->
   <!-- copyField commands copy one field to another at the time a document
         is added to the index.  It's used either to index the same field differently,
         or to add multiple fields to the same field for easier/faster searching.  -->

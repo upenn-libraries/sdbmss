@@ -1,7 +1,11 @@
+<%#
+  OVERRIDE Blacklight v6.9.0: selected-filters panel (BAS render_constraints_filters_side), homepage
+    facet columns via render_facet_partials_home + show-more, else render_facet_partials.
+%>
 <% # main container for facets/limits menu -%>
 <div id="facets" class="facets sidenav">
     <!-- New Facet Display (above/in sidebar) -->
-  <% if params[:f] and params[:f].count > 0 %>
+  <% if params[:f] and params[:f].keys.count > 0 %>
   <div class="panel panel-default facet_limit facet_limit-active">
     <div class="collapse-toggle panel-heading" data-toggle="collapse" data-target="#selected-facets">
       <h5 class="panel-title facet-field-heading">
@@ -37,7 +41,7 @@
     <% if request.fullpath == "/" %>
         <%= render_facet_partials_home(4, :before) %>
       <div style="margin-top: 5px;" class="more-facets collapse">
-        <%= render_facet_partials_home(4, :after) %>    
+        <%= render_facet_partials_home(4, :after) %>
       </div>
       <a style="margin-top: 5px;" data-toggle='collapse' data-target='.more-facets' class='btn btn-default collapse in more-facets'>Show More...</a>
       <a style="margin-top: 5px;" data-toggle='collapse' data-target='.more-facets' class='btn btn-default collapse more-facets'>Hide...</a>
@@ -45,6 +49,6 @@
       <%= render_facet_partials %>
     <% end %>
   </div>
-  
+
 <% end %>
 </div>

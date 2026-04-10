@@ -1,4 +1,4 @@
-class EntryPlace < ActiveRecord::Base
+class EntryPlace < ApplicationRecord
 
   include CertaintyFlags
   include DisplayableName

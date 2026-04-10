@@ -18,7 +18,7 @@ require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 require 'capybara/rails'
-require 'factory_girl_rails'
+require 'factory_bot_rails'
 require 'warden/test/helpers'
 
 require 'capybara-screenshot/rspec'
@@ -154,8 +154,8 @@ RSpec.configure do |config|
   # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
 
-  # FactoryGirl support
-  config.include FactoryGirl::Syntax::Methods
+  # FactoryBot support
+  config.include FactoryBot::Syntax::Methods
 
   config.include Warden::Test::Helpers
   config.include SDBMSS::Capybara::AlertConfirmer

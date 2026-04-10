@@ -1,4 +1,4 @@
-class EntryMaterial < ActiveRecord::Base
+class EntryMaterial < ApplicationRecord
 
   include CertaintyFlags
   include HasPaperTrail

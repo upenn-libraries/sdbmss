@@ -1,5 +1,5 @@
 class  DericciGamesController < ApplicationController
-  
+
   include LogActivity
 
   load_and_authorize_resource :only => [:show, :new, :update]
@@ -28,16 +28,15 @@ class  DericciGamesController < ApplicationController
 
     # this is quite the query! -> and quite slow! but it should limit things correctly
     #@records = DericciRecord.where("(id IN (SELECT dericci_record_id from (SELECT * FROM dericci_links GROUP BY dericci_record_id, name_id HAVING sum(reliability) < 4) A where A.created_by_id <> #{current_user.id})) OR ((id NOT IN (SELECT dericci_record_id FROM dericci_links WHERE true)))").limit(20).order("RAND()")
-    @records = DericciRecord.where(out_of_scope: false).where.not("id in (?)", [0] + current_user.played_records.map(&:id)).order("RAND()").limit(15)
+    @records = DericciRecord.where(out_of_scope: false).where.not("id in (?)", [0] + current_user.played_records.map(&:id)).order(Arel.sql("RAND()")).limit(15)
     @game.dericci_game_records.create!(@records.map{ |r| {dericci_record: r}})
     redirect_to dericci_game_path(@game)
   end
 
   def update
-    ActiveRecord::Base.transaction do    
+    ActiveRecord::Base.transaction do
       game = DericciGame.find(params[:id])
       game.update!(game_params)
-      @transaction_id = PaperTrail.transaction_id
     end
     flash[:success] = '<span class="glyphicon glyphicon-tower"></span><span class="glyphicon glyphicon-bishop"></span><span class="glyphicon glyphicon-queen"></span><span class="glyphicon glyphicon-pawn"></span>Thank you for playing the Dericci Archives Game!'.html_safe
     respond_to do |format|
@@ -55,8 +54,8 @@ class  DericciGamesController < ApplicationController
 
   def game_params
     p = params.require(:dericci_game).permit(
-      :skipped, :completed, :flagged, :dericci_records_attributes => [:id, 
-        dericci_links_attributes: [:id, :name_id, :other_info, :_destroy], 
+      :skipped, :completed, :flagged, :dericci_records_attributes => [:id,
+        dericci_links_attributes: [:id, :name_id, :other_info, :_destroy],
         comments_attributes: [:commentable_id, :commentable_type, :comment],
         dericci_record_flags_attributes: [:id, :reason, :_destroy]
       ])

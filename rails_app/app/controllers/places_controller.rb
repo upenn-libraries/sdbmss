@@ -27,9 +27,9 @@ class PlacesController < SearchableAuthorityController
 
     # select
     if !params[:target_id]
-      @suggestions = @model.more_like_this.results
+      @suggestions = mlt_search(@model).results
     # confirm
-    else      
+    else
       @target = Place.find(params[:target_id])
     end
 

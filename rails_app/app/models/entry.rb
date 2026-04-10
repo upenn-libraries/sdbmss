@@ -1,4 +1,4 @@
-class Entry < ActiveRecord::Base
+class Entry < ApplicationRecord
 
   ALT_SIZE_TYPES = [
     ['F', 'Folio'],

@@ -1,4 +1,4 @@
-class EntryAuthor < ActiveRecord::Base
+class EntryAuthor < ApplicationRecord
 
   include CertaintyFlags
   include DisplayableName

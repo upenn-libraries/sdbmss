@@ -22,17 +22,10 @@ Rails.application.configure do
   # Raise an error on page load if there are pending migrations.
   config.active_record.migration_error = :page_load
 
-  config.active_record.raise_in_transactional_callbacks = true
-
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
   config.assets.debug = true
-
-  # Adds additional error checking when serving assets at runtime.
-  # Checks for improperly declared sprockets dependencies.
-  # Raises helpful error messages.
-  config.assets.raise_runtime_errors = true
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
@@ -41,7 +34,9 @@ Rails.application.configure do
 
   config.logger = Logger.new(STDOUT)
 
-  config.serve_static_files = true
+  config.public_file_server.enabled = true
+
+  config.web_console.allowed_ips = ['172.18.0.0/16', '172.27.0.0/16', '0.0.0.0/0'] if defined?(WebConsole)
 end
 
 # allows for mailer to send correct URLS on development

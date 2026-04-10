@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+cd "$(dirname "$0")/.."
+export RAILS_ENV=test
+exec bundle exec rspec

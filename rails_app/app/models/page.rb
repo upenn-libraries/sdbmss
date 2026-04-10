@@ -1,4 +1,4 @@
-class Page < ActiveRecord::Base
+class Page < ApplicationRecord
 
   validates :name, uniqueness: true, presence: true
   validates :filename, uniqueness: true, presence: true

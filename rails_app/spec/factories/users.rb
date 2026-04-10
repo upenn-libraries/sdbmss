@@ -1,10 +1,10 @@
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :user do
     sequence(:username) { |n| "user#{n}" }
     sequence(:email) { |n| "test#{n}@example.com" }
-    password 'somethingreallylong'
+    password { 'somethingreallylong' }
     active true
   end
 

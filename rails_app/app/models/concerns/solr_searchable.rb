@@ -1,4 +1,4 @@
-# This module is included in any model that has a searchable datatable (Name, Entry, Place, Language, Comment, EntryManuscript, 
+# This module is included in any model that has a searchable datatable (Name, Entry, Place, Language, Comment, EntryManuscript,
 # Manuscript, Source, User) and includes the do_search and do_csv_search methods (which handle search logic and results) and
 # a number of helper functions for generating and filtering search parameters.
 
@@ -7,7 +7,7 @@ module SolrSearchable
   require 'csv'
 
   # each model that depends on SolrSearchable can add to the searchable fields using these methods
-  # 
+  #
   # FILTERS: check for exact equality
   # FIELDS: search based on full-text tokenizing
   # DATES: allow for searching based on a date range (i.e. before/after)
@@ -15,7 +15,7 @@ module SolrSearchable
   def filters
     [
       ["Id", "id"],
-      ["Added By", "created_by"], 
+      ["Added By", "created_by"],
       ["Updated By",  "updated_by"]
     ]
   end
@@ -28,7 +28,7 @@ module SolrSearchable
 
   def dates
     [
-      ["Added on", "created_at"], 
+      ["Added on", "created_at"],
       ["Updated on", "updated_at"]
     ]
   end
@@ -70,7 +70,7 @@ module SolrSearchable
 
   def do_csv_dump
     s = do_search(ActionController::Parameters.new.merge({:limit => self.count, :offset => 0}))
-    
+
     results = s.results.map do |obj|
       obj.search_result_format
     end
@@ -78,13 +78,13 @@ module SolrSearchable
     headers = results.first.keys
     filename = "#{self.model_name.to_s.pluralize.underscore}.csv"
     path = "public/static/docs/#{filename}"
-    
+
     File.delete("#{path}.zip") if File.exist?("#{path}.zip")
 
     csv_file = CSV.open(path, "wb") do |csv|
       csv << headers
       results.each do |r|
-        csv << r.values 
+        csv << r.values
       end
     end
 
@@ -101,7 +101,7 @@ module SolrSearchable
 
   def do_csv_search(params, download)
     s = do_search(params.merge({:limit => self.count, :offset => 0}))
-    
+
     # any possible 'speed up' would need to be done here:
     results = s.results.map do |obj|
       obj.search_result_format
@@ -112,11 +112,11 @@ module SolrSearchable
     user = download.user
     id = download.id
     path = "tmp/#{id}_#{user}_#{filename}"
-    
+
     csv_file = CSV.open(path, "wb") do |csv|
       csv << headers
       results.each do |r|
-        csv << r.values 
+        csv << r.values
       end
     end
 
@@ -152,7 +152,7 @@ module SolrSearchable
     reviewed = params[:reviewed] && params[:reviewed] == "1" ? false : nil
 
   # Each model has a custom version of these functions (and a list of valid fields) to permit only the
-  # appropriate search fields for each model. 
+  # appropriate search fields for each model.
 
   # "Params" are any fulltext fields
   # "Filters" are all non-fulltext fields (numbers, booleans, exact string matches)
@@ -176,13 +176,13 @@ module SolrSearchable
       end
       return s
     end
-    
+
     s = self.search do
-  
+
   # Fulltext search is defined as a lambda function, since it needs to be able to be combined with non-fulltext
   # search options as the user decides.
 
-      fulltext_search = lambda { |p, o| 
+      fulltext_search = lambda { |p, o|
         if params.present?
           p.each do |field, value|
 
@@ -196,9 +196,9 @@ module SolrSearchable
                 # Each search field can also be qualified in various ways
 
                 op = Array(options[field + "_option"]).shift
-                
+
                 # If searching for this 'without' the term, right now just add a '-' to the beginning of query to negate it
-                
+
                 if op && op == 'does not contain'
                   fulltext "-" + v.gsub(' ', '+'), :fields => [field]
                 elsif op && op == 'blank'
@@ -241,7 +241,7 @@ module SolrSearchable
               with(field).greater_than v
             elsif op && op == 'without'
               without field, v
-            elsif v.kind_of?(Array) && v.all? { |v2| v2.blank? } # make sure it's not an array of blanks 
+            elsif v.kind_of?(Array) && v.all? { |v2| v2.blank? } # make sure it's not an array of blanks
             else
               if ['true', 'false'].include? v
                 v = (v == 'true')
@@ -282,7 +282,7 @@ module SolrSearchable
       # In order to use SUNSPOT'S 'and'/'or' options together with non-fulltext fields,
       # we create a lambda function for fulltext searching (above)
 
-      # ( This may be an idiosycracy of Sunspot only, but that is the reason for this roundabout approach ) 
+      # ( This may be an idiosycracy of Sunspot only, but that is the reason for this roundabout approach )
 
       if s_op == 'OR'
         any do
@@ -294,9 +294,9 @@ module SolrSearchable
         end
       end
 
-      # Unfortunately, sunspot does not natively support MIXING fulltext and exact searches using the "OR" operator 
+      # Unfortunately, sunspot does not natively support MIXING fulltext and exact searches using the "OR" operator
       # - so we do that manually
-      # 
+      #
       # params[:fq] refer to 'filter queries', or queries that refer to a fixed set of objects (exact strings, numbers, etc.)
       # params[:q] refers to fulltext queries
 
@@ -308,7 +308,13 @@ module SolrSearchable
         p_fq = []
         params[:fq].each do |fq|
           if not fq.include? "type"
-            new_q.push('_query_:"{!edismax} ' + fq + '"')
+            if s_op == 'OR'
+              # Only move filters into q for OR logic (Solr fq is always ANDed)
+              new_q.push(fq)
+            else
+              # For AND, keep filters in fq
+              p_fq.push(fq)
+            end
           else
             p_fq.push(fq)
           end
@@ -316,24 +322,38 @@ module SolrSearchable
         params[:fq] = p_fq
         if params[:q].blank?
           # nothing here...
-        elsif not params[:q].include? s_op
+        elsif params[:q].strip == '*'
+          # Solr 8 edismax does not treat bare '*' as match-all;
+          # bypass the edismax wrapper and use '*:*' directly.
+          params[:q] = '*:*'
+          params.delete(:qf)
+        elsif new_q.present? && !params[:q].include?(s_op)
           params[:q] = '(_query_:"{!edismax qf=\'' + params[:qf] + '\'}' + params[:q].gsub('"', '\"') + '")'
           params.delete(:qf)
+        else
+          # For simple edismax queries (Solr 8 compat), require all terms
+          # to match when using AND operator, matching pre-upgrade behavior.
+          # Skip if the query contains explicit boolean operators (OR/AND).
+          if s_op == 'AND' && params[:qf].present? && !params[:q].match?(/\b(OR|AND)\b/)
+            params[:mm] = '100%'
+          end
         end
+        # If no fulltext query, build q from filter queries or match-all
         if params[:q].blank?
           if new_q.length > 0
             params[:q] = new_q.join(" #{s_op} ")
           else
             params[:q] = "*:*"
           end
-        else
+        elsif new_q.present?
           params[:q] = ([params[:q]] + new_q).join(" #{s_op} ")
         end
         if linking_tool
           # NOTE: remove 'approved' thing here to make unapproved records show up in linking tool...
-          params[:q] = '(' + params[:q] + ') AND (_query_:"{!edismax qf=\'deprecated\'}false") AND (_query_:"{!edismax qf=\'draft\'}false")'
+          params[:fq] << 'deprecated:false'
+          params[:fq] << 'draft:false'
         elsif role != "admin" && self.model_name.to_s == 'Entry'
-          params[:q] = '(' + params[:q] + ') AND (_query_:"{!edismax qf=\'draft\'}false")'
+          params[:fq] << 'draft:false'
         end
       end
 

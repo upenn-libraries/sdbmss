@@ -1,5 +1,5 @@
 ARG APP_IMAGE_NAME=ruby
-ARG APP_IMAGE_TAG=2.6.10-bullseye
+ARG APP_IMAGE_TAG=2.7.8-bullseye
 
 # Bundle home
 ARG BUNDLE_HOME=vendor/bundle

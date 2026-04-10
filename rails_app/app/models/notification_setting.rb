@@ -1,3 +1,3 @@
-class NotificationSetting < ActiveRecord::Base
+class NotificationSetting < ApplicationRecord
   belongs_to :user
 end

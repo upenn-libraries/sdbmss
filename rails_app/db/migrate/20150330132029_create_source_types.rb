@@ -1,4 +1,4 @@
-class CreateSourceTypes < ActiveRecord::Migration
+class CreateSourceTypes < ActiveRecord::Migration[4.2]
   def change
     create_table :source_types do |t|
       t.string :name

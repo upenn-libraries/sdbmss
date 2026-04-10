@@ -1,4 +1,4 @@
-class UpdateNotificationSettingsDefaultsAlwaysEmail < ActiveRecord::Migration
+class UpdateNotificationSettingsDefaultsAlwaysEmail < ActiveRecord::Migration[4.2]
   def change
     change_column :notification_settings, :email_on_update, :boolean, :default => false
     change_column :notification_settings, :email_on_comment, :boolean, :default => false

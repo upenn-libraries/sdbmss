@@ -1,4 +1,4 @@
-class User < ActiveRecord::Base
+class User < ApplicationRecord
 
   ROLES = %w[contributor editor super_editor admin]
 
@@ -35,7 +35,7 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :notification_setting, allow_destroy: false
 
   before_validation :assign_default_role
-  before_create :create_notification_setting
+  after_create :create_notification_settings
 
   has_many :dericci_games, foreign_key: "created_by_id"
   has_many :dericci_game_records, through: :dericci_games

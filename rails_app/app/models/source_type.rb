@@ -1,5 +1,5 @@
 
-class SourceType < ActiveRecord::Base
+class SourceType < ApplicationRecord
 
   # Constants whose string values we use for the 'name' field.
   #
@@ -18,7 +18,7 @@ class SourceType < ActiveRecord::Base
 
   include TellBunny
 
-  default_scope { order("id = 4 desc") }
+  default_scope { order(Arel.sql("id = 4 desc")) }
 
   AUCTION_CATALOG = 'auction_catalog'
   COLLECTION_CATALOG = 'collection_catalog'

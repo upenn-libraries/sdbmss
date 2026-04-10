@@ -1,4 +1,4 @@
-class CreateManuscriptComments < ActiveRecord::Migration
+class CreateManuscriptComments < ActiveRecord::Migration[4.2]
   def change
     create_table :manuscript_comments do |t|
       t.references :manuscript, index: true

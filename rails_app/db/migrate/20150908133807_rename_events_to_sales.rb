@@ -1,4 +1,4 @@
-class RenameEventsToSales < ActiveRecord::Migration
+class RenameEventsToSales < ActiveRecord::Migration[4.2]
   def change
 
     create_table "sales", force: :cascade do |t|
