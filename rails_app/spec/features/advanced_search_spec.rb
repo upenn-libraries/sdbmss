@@ -13,7 +13,7 @@ describe "Blacklight Advanced Search", :js => true do
   end
 
   def perform_two_author_search
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
     search_fields = advanced_search_text_fields
     search_fields[0].set "Augustine"
@@ -22,13 +22,13 @@ describe "Blacklight Advanced Search", :js => true do
     select 'Author', from: "text_field_0"
     select 'Author', from: "text_field_1"
 
-    submit_blacklight_advanced_search
+    find_by_id('advanced-search-submit').click
   end
 
   it "should perform an empty search" do
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
-    submit_blacklight_advanced_search
+    find_by_id('advanced-search-submit').click
 
     expect(page).to have_content("You searched for:")
   end
@@ -45,14 +45,14 @@ describe "Blacklight Advanced Search", :js => true do
     #check the count of results for this search against an AND search in a single field
     count = search_result_count
 
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
     search_fields = advanced_search_text_fields
     search_fields[0].set "Augustine AND Hippo"
 
     select 'Author', from: "text_field_0"
 
-    submit_blacklight_advanced_search
+    find_by_id('advanced-search-submit').click
 
     expect(page.find('.filterValue')).to have_content("Augustine AND Hippo")
     count2 = search_result_count
@@ -62,19 +62,19 @@ describe "Blacklight Advanced Search", :js => true do
 
 
   it "should display list of Entries created by a given user" do
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
     search_fields = advanced_search_text_fields
     search_fields[0].set @user.username
     select 'Added By', from: "text_field_0"
 
-    submit_blacklight_advanced_search
+    find_by_id('advanced-search-submit').click
 
     expect(page).to have_content(@user.entries.last.public_id)
   end
 
   it "should do an advanced search using Title + Author (ANY)" do
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
     search_fields = advanced_search_text_fields
     search_fields[0].set "Cicero"
@@ -85,7 +85,7 @@ describe "Blacklight Advanced Search", :js => true do
 
     select 'any', from: 'op'
 
-    submit_blacklight_advanced_search
+    find_by_id('advanced-search-submit').click
 
     # constraints are ordered by fieldname, not by how they were entered into search form
 
@@ -97,7 +97,7 @@ describe "Blacklight Advanced Search", :js => true do
   end
 
   it "should do an advanced search using two Authors (ANY)" do
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
     search_fields = advanced_search_text_fields
     search_fields[0].set "Augustine"
@@ -108,20 +108,20 @@ describe "Blacklight Advanced Search", :js => true do
 
     select 'any', from: 'op'
 
-    submit_blacklight_advanced_search
+    find_by_id('advanced-search-submit').click
 
     expect(find('.appliedFilter', match: :first)).to have_content('Any')
 
     count = search_result_count
 
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
     search_fields = advanced_search_text_fields
     search_fields[0].set "Augustine OR Cicero"
 
     select 'Author', from: "text_field_0"
 
-    submit_blacklight_advanced_search
+    find_by_id('advanced-search-submit').click
 
     count2 = search_result_count
 
@@ -156,13 +156,13 @@ describe "Blacklight Advanced Search", :js => true do
   end
 
   it "should search for date range with single constraint" do
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
     fill_in "numeric_start_0", with: 100
     fill_in "numeric_end_0", with: 1800
     select "Manuscript Date", from: "numeric_field_0"
 
-    submit_blacklight_advanced_search
+    find_by_id('advanced-search-submit').click
 
     filters = page.all('.appliedFilter')
 
@@ -171,7 +171,7 @@ describe "Blacklight Advanced Search", :js => true do
   end
 
   it "should search for overlapping (ALL) numerical constraints" do
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
     fill_in "numeric_start_0", with: 100
     fill_in "numeric_end_0", with: 1800
@@ -181,7 +181,7 @@ describe "Blacklight Advanced Search", :js => true do
     fill_in "numeric_end_1", with: 2000
     select "Manuscript Date", from: "numeric_field_1"
 
-    submit_blacklight_advanced_search
+    find_by_id('advanced-search-submit').click
 
     filters = page.all('.appliedFilter')
 
@@ -193,13 +193,13 @@ describe "Blacklight Advanced Search", :js => true do
 
     count = search_result_count
 
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
     fill_in "numeric_start_0", with: 1000
     fill_in "numeric_end_0", with: 1800
     select "Manuscript Date", from: "numeric_field_0"
 
-    submit_blacklight_advanced_search
+    find_by_id('advanced-search-submit').click
 
     count2 = search_result_count
 
@@ -207,7 +207,7 @@ describe "Blacklight Advanced Search", :js => true do
   end
 
   it "should search over ANY numerical constraints" do
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
     fill_in "numeric_start_0", with: 0
     fill_in "numeric_end_0", with: 1
@@ -217,7 +217,7 @@ describe "Blacklight Advanced Search", :js => true do
     select "Folios", from: "numeric_field_1"
     select 'any', from: 'op'
 
-    submit_blacklight_advanced_search
+    find_by_id('advanced-search-submit').click
 
     filters = page.all('.appliedFilter')
 
@@ -225,12 +225,12 @@ describe "Blacklight Advanced Search", :js => true do
 
     count = search_result_count
 
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
     fill_in "numeric_start_0", with: 0
     fill_in "numeric_end_0", with: 3
     select "Folios", from: "numeric_field_0"
-    submit_blacklight_advanced_search
+    find_by_id('advanced-search-submit').click
 
     count2 = search_result_count
 
@@ -238,12 +238,12 @@ describe "Blacklight Advanced Search", :js => true do
   end
 
   it "should find source date by complete Date string (YYYY-MM-DD)" do
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
     search_fields = advanced_search_text_fields
     search_fields[0].set "2015-01-01"
     select 'Source Date', from: "text_field_0"
-    submit_blacklight_advanced_search
+    find_by_id('advanced-search-submit').click
 
     count = search_result_count
 
@@ -251,22 +251,22 @@ describe "Blacklight Advanced Search", :js => true do
   end
 
   it "should find source date by incomplete Date strings (YYYY-MM), (YYYY)" do
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
     search_fields = advanced_search_text_fields
     search_fields[0].set "2015-01"
     select 'Source Date', from: "text_field_0"
-    submit_blacklight_advanced_search
+    find_by_id('advanced-search-submit').click
 
     count = search_result_count
     expect(count).not_to eq(0)
 
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
     search_fields = advanced_search_text_fields
     search_fields[0].set "2015"
     select 'Source Date', from: "text_field_0"
-    submit_blacklight_advanced_search
+    find_by_id('advanced-search-submit').click
 
     count2 = search_result_count
 

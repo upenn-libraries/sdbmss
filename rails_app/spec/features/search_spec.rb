@@ -95,7 +95,7 @@ describe "Blacklight Search", :js => true do
   # end
 
   it "should load advanced search page" do
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
     search_fields = CatalogController.blacklight_config.search_fields.values
 
@@ -110,13 +110,13 @@ describe "Blacklight Search", :js => true do
   end
 
   it "should do advanced search using numeric range on Height" do
-    open_blacklight_advanced_search
+    visit advanced_search_path
 
     fill_in "numeric_start_0", with: 250
     fill_in "numeric_end_0", with: 260
     select "Height", from: "numeric_field_0"
 
-    submit_blacklight_advanced_search
+    find_by_id('advanced-search-submit').click
 
     entry_one = Entry.where("height > 250").where("height < 260").first
     entry_nine = Entry.where("height > 250").where("height < 260").last

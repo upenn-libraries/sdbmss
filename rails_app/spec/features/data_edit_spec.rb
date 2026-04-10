@@ -157,9 +157,6 @@ describe "Data entry", :js => true do
 
       visit edit_entry_path :id => entry.id
 
-      # mock out the confirm dialogue
-      page.evaluate_script('window.confirm = function() { return true; }')
-
       expect(page).to have_css("#delete_title_0")
       find_by_id("delete_title_0").click
       expect(page).to have_content("Are you sure you want to remove this field and its contents?")
