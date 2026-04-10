@@ -2,6 +2,19 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 
+# request_store 1.7.0's railtie calls insert_after on the middleware stack
+# every time initialize! runs.  Rails 5.2 freezes the stack after the first
+# boot so a second call raises FrozenError.  Guard insert to be a no-op when
+# the middleware is already present and the stack is frozen.
+module RequestStoreMiddlewareGuard
+  def insert(index, *args, &block)
+    return self if frozen? && any? { |m| m.name == args.first.to_s }
+    super
+  end
+  alias_method :insert_before, :insert
+end
+ActionDispatch::MiddlewareStack.prepend(RequestStoreMiddlewareGuard)
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
