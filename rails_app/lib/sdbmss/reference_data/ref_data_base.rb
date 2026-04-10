@@ -13,15 +13,18 @@ module SDBMSS::ReferenceData
 
     def lransom
       user = User.find_by(email: "lransom@upenn.edu") || User.find_by(username: "lransom")
-      if user.blank?
-        user = User.create!(
-          username: "lransom",
-          email: "lransom@upenn.edu",
-          password: "12345678",
-          password_confirmation: "12345678"
-        )
-      end
-      user
+      return user if user.present?
+
+      User.create!(
+        username: "lransom",
+        email: "lransom@upenn.edu",
+        password: "12345678",
+        password_confirmation: "12345678"
+      )
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique, Mysql2::Error => e
+      raise if e.is_a?(Mysql2::Error) && e.message !~ /Duplicate entry|Deadlock/
+
+      User.find_by(email: "lransom@upenn.edu") || User.find_by(username: "lransom")
     end
 
     def find_or_create_unscoped(model_class, attrs)

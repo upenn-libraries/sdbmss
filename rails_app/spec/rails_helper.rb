@@ -19,10 +19,11 @@ require 'rspec/rails'
 
 require 'capybara/rails'
 require 'factory_girl_rails'
+require 'warden/test/helpers'
 
 require 'capybara-screenshot/rspec'
 
-require_relative './helpers'
+Dir[Rails.root.join('spec/support/**/*.rb')].sort.each { |f| require f }
 
 module TestSuiteSetupHelpers
   extend self
@@ -120,12 +121,7 @@ end
 # end with _spec.rb. You can configure this pattern with the --pattern
 # option on the command line or in ~/.rspec, .rspec or `.rspec-local`.
 #
-# The following line is provided for convenience purposes. It has the downside
-# of increasing the boot-up time by auto-requiring all files in the support
-# directory. Alternatively, in the individual `*_spec.rb` files, manually
-# require only the support files necessary.
-#
-# Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+# Shared test-support code is auto-required from spec/support.
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -161,6 +157,7 @@ RSpec.configure do |config|
   # FactoryGirl support
   config.include FactoryGirl::Syntax::Methods
 
+  config.include Warden::Test::Helpers
   config.include SDBMSS::Capybara::AlertConfirmer
   config.include SDBMSS::Capybara::Login
 
@@ -235,6 +232,8 @@ RSpec.configure do |config|
       end
       TestSuiteSetupHelpers.flush_and_reindex_solr_after_js!
     end
+
+    Warden.test_reset!
   end
 
   # This is commented out b/c it seems the browser doesn't always hang

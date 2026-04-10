@@ -5,6 +5,9 @@ require "rails_helper"
 # There's JS on most of these pages. Not all features use JS, but
 # there's no good reason NOT to use the js driver, so we do.
 describe "Linking Tool", :js => true do
+  let(:admin_user) { create(:admin) }
+  let(:admin_password) { 'somethingreallylong' }
+
   def click_add_entry_link(entry_id)
     page.find(
       ".add-entry-link[data-entry-id='#{entry_id}']",
@@ -22,7 +25,7 @@ describe "Linking Tool", :js => true do
     create(
       :edit_entry_with_titles,
       source: source,
-      created_by: @user,
+      created_by: admin_user,
       titles: [title],
       include_author: false,
       catalog_or_lot_number: catalog_or_lot_number,
@@ -30,15 +33,15 @@ describe "Linking Tool", :js => true do
   end
 
   def create_linked_manuscript(*entries)
-    manuscript = create(:manuscript, created_by: @user, updated_by: @user)
+    manuscript = create(:manuscript, created_by: admin_user, updated_by: admin_user)
     entries.each do |entry|
       create(
         :entry_manuscript,
         entry: entry,
         manuscript: manuscript,
         relation_type: EntryManuscript::TYPE_RELATION_IS,
-        created_by: @user,
-        updated_by: @user,
+        created_by: admin_user,
+        updated_by: admin_user,
       )
     end
     manuscript
@@ -50,8 +53,12 @@ describe "Linking Tool", :js => true do
     SDBMSS::Util.wait_for_solr_to_be_current
   end
 
+  def persist_linking_changes
+    find("#persist-entries-manuscript-link").trigger('click')
+  end
+
   def build_linking_fixture(count: 3, source_title: "Linking Tool Source", shared_title: "Linking Tool Shared Title")
-    source = create(:edit_test_source, created_by: @user, title: source_title)
+    source = create(:edit_test_source, created_by: admin_user, title: source_title)
     entries = count.times.map do |index|
       create_linking_entry(
         source: source,
@@ -64,11 +71,7 @@ describe "Linking Tool", :js => true do
   end
 
   before :each do
-    @user = User.where(role: "admin").first
-  end
-
-  before :each do
-    login(@user, 'somethingunguessable')
+    login(admin_user, admin_password)
   end
 
   after :each do
@@ -89,7 +92,8 @@ describe "Linking Tool", :js => true do
 
   it "should show potential matches" do
     skip "disabled until algorithm is improved"
-    entry = Entry.last
+    _source, entries = build_linking_fixture(count: 2, source_title: "Linking Tool Matches Source")
+    entry = entries.first
     visit linking_tool_by_entry_path id: entry.id
     find_by_id("show-matches").trigger('click');
     #click_button('Suggest links')
@@ -98,32 +102,25 @@ describe "Linking Tool", :js => true do
     expect(find(".modal-title", visible: true).text.include?("No matches found")).to be_truthy
   end
 
-  # NOTE: tests here rely on data created by previous tests
-
   it "should create a new Manuscript out of ONE entry" do
-    count = Manuscript.count
-
     source, entries = build_linking_fixture(count: 2, source_title: "Linking Tool One Entry Source")
     entry = entries.second
     visit linking_tool_by_entry_path id: entry.id
     expect(page).to have_content("Click here for instructions")
     expect(page).to have_content(source.title)
-    find('#persist-entries-manuscript-link').click
+    persist_linking_changes
 
     expect(page).to have_content("Manage Manuscripts")    
     #expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
-    expect(Manuscript.count).to eq(count + 1)
-
-    manuscript = Manuscript.order(:id).last
+    manuscript = entry.reload.manuscripts.first
+    expect(entry.manuscripts.count).to eq(1)
     entry_ids = manuscript.entries.map(&:id)
     expect(entry_ids.count).to eq(1)
     expect(entry_ids.include?(entry.id)).to be_truthy
   end
 
   it "should create a new Manuscript out of two entries" do
-    count = Manuscript.count
-
     _source, entries = build_linking_fixture(count: 3, source_title: "Linking Tool Two Entry Source")
     entry = entries.first
     other_entry = entries.second
@@ -131,14 +128,16 @@ describe "Linking Tool", :js => true do
 
     click_add_entry_link(other_entry.id)
 
-    find('#persist-entries-manuscript-link').click
+    persist_linking_changes
 
     expect(page).to have_content("Manage Manuscripts")    
     #expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
-    expect(Manuscript.count).to eq(count + 1)
-
-    manuscript = Manuscript.order(:id).last
+    manuscript = entry.reload.manuscripts.first
+    other_manuscript = other_entry.reload.manuscripts.first
+    expect(entry.manuscripts.count).to eq(1)
+    expect(other_entry.manuscripts.count).to eq(1)
+    expect(other_manuscript.id).to eq(manuscript.id)
     entry_ids = manuscript.entries.map(&:id)
     expect(entry_ids.count).to eq(2)
     expect(entry_ids.include?(entry.id)).to be_truthy
@@ -148,8 +147,8 @@ describe "Linking Tool", :js => true do
   it "should show an EntryManuscript for the last created link" do
     _source, entries = build_linking_fixture(count: 1, source_title: "Linking Tool EntryManuscript Source")
     entry = entries.first
-    manuscript = create(:manuscript, created_by: @user, updated_by: @user)
-    em = create(:entry_manuscript, entry: entry, manuscript: manuscript, relation_type: 'is', created_by: @user, updated_by: @user)
+    manuscript = create(:manuscript, created_by: admin_user, updated_by: admin_user)
+    em = create(:entry_manuscript, entry: entry, manuscript: manuscript, relation_type: 'is', created_by: admin_user, updated_by: admin_user)
     index_records(em, manuscript)
 
     visit entry_manuscripts_path
@@ -194,7 +193,7 @@ describe "Linking Tool", :js => true do
     visit linking_tool_by_manuscript_path id: manuscript.id
     click_add_entry_link(candidate_entry.id)
 
-    find("#persist-entries-manuscript-link").trigger('click')
+    persist_linking_changes
 
     expect(page).not_to have_content("Add SDBM_#{candidate_entry.id}")    
 #    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
@@ -215,7 +214,7 @@ describe "Linking Tool", :js => true do
 
     choose_workspace_relation(entry.id, 'possible')
 
-    find("#persist-entries-manuscript-link").trigger('click')
+    persist_linking_changes
 
     sleep 2
     expect(page).to have_content("SDBM_MS")
@@ -235,7 +234,7 @@ describe "Linking Tool", :js => true do
 
     find("input[name='entry_id_#{entry.id}'][value='unlink']", match: :first).trigger('click')
 
-    find("#persist-entries-manuscript-link").trigger('click')
+    persist_linking_changes
 
     expect(page).to have_content("Add SDBM_#{entry_id}")    
 #    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
@@ -261,7 +260,7 @@ describe "Linking Tool", :js => true do
       find("input[name='entry_id_#{entry_id}'][value='unlink']", match: :first).trigger('click')
     end
     
-    find_by_id("persist-entries-manuscript-link").trigger("click")
+    persist_linking_changes
     #expect(find("div#modal.modal.fade.in")).to have_content("hasdfa")
     #click_button "Save changes"
     #expect(page).to have_content("Success")
@@ -277,7 +276,7 @@ describe "Linking Tool", :js => true do
     entry_id = entry.id
 
     find("input[name='entry_id_#{entry_id}'][value='unlink']", match: :first).trigger('click')
-    find_by_id("persist-entries-manuscript-link").trigger("click")
+    persist_linking_changes
     #click_button "Save changes"
     expect(page).to have_content("SDBM_MS")    
 #    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
@@ -288,7 +287,7 @@ describe "Linking Tool", :js => true do
   end
 
   it "should warn the user that there are unsaved changes before leaving page" do
-    expect(pending("test not created yet")).to fail
+    skip "unsaved-change navigation warning still needs a stable browser-level assertion strategy for this Angular workflow"
   end
 
   it "should show error message when overwriting changes" do
@@ -314,7 +313,7 @@ describe "Linking Tool", :js => true do
     # columns. whatever. just click one.
     all("input[name='entry_id_#{last_two_entries[0].id}'][value='possible']")[1].trigger('click')
 
-    find("#persist-entries-manuscript-link").trigger('click')
+    persist_linking_changes
 
     expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
   end
