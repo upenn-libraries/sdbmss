@@ -3,17 +3,15 @@
     stock partial is pagination only in a single full-width column.
 %>
 <% has_pagination = @response && @response.total_pages > 1 %>
-<div class="row record-padding">
+<div class="d-flex align-items-center record-padding">
   <% if has_pagination %>
-  <div class="col-md-9">
+  <div>
     <%= render Blacklight::Response::PaginationComponent.new(response: @response) %>
   </div>
   <% end %>
   <% if !@response.empty? && current_user %>
-  <div class="<%= has_pagination ? 'col-md-3' : 'col-md-12' %> text-right">
-    <div style="margin: 0px 0px 10px 0px;">
-      <a class="btn btn-outline-secondary export-csv" style="white-space: nowrap;" onclick="exportCSV('<%= search_results_as_csv_path %>')">Download results as CSV</a>
-    </div>
+  <div class="ml-auto" style="margin: 0px 0px 10px 0px;">
+    <a class="btn btn-outline-secondary export-csv" style="white-space: nowrap;" onclick="exportCSV('<%= search_results_as_csv_path %>')">Download results as CSV</a>
   </div>
   <% end %>
 </div>
