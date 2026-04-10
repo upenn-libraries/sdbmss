@@ -1,25 +1,25 @@
  <ul class="pagination">
   <% if page >= 3 %>
-    <li><%= link_to "First", polymorphic_path(model_class, request.params.merge(action: action, page: 0)) %></li>
+    <li class="page-item"><%= link_to "First", polymorphic_path(model_class, request.params.merge(action: action, page: 0)), class: "page-link" %></li>
   <% end %>
   <% if page >= 4 %>
-    <li class="text-muted"><a href="">...</a></li>
+    <li class="page-item disabled"><a class="page-link" href="">...</a></li>
   <% end %>
 
   <% pages.times do |p| %>
 
     <% if page == p %>
-      <li class="active"><a href=""><%= p + 1 %></a></li>
+      <li class="page-item active"><a class="page-link" href=""><%= p + 1 %></a></li>
     <% elsif (page - p).abs < 3 %>
-      <li><%= link_to p + 1, polymorphic_path(model_class, request.params.merge(action: action, page: p)) %></li>
+      <li class="page-item"><%= link_to p + 1, polymorphic_path(model_class, request.params.merge(action: action, page: p)), class: "page-link" %></li>
     <% end %>
-    
+
   <% end %>
 
   <% if page <= pages - 4 %>
-    <li class="text-muted"><a href="">...</a></li>
+    <li class="page-item disabled"><a class="page-link" href="">...</a></li>
   <% end %>
   <% if page <= pages - 3 %>
-    <li><%= link_to "Last", polymorphic_path(model_class, request.params.merge(action: action, page: pages - 1)) %></li>
+    <li class="page-item"><%= link_to "Last", polymorphic_path(model_class, request.params.merge(action: action, page: pages - 1)), class: "page-link" %></li>
   <% end %>
 </ul>

@@ -13,30 +13,28 @@
     <%= render partial: "pages/partial", locals: {page_name: "Problem Names" } %>
   </div>
   <div class="col-sm-12 text-center">
-    <ul class="pagination">
+    <ul class="pagination justify-content-center flex-wrap">
       <% ('a'..'z').to_a.each do |letter| %>
-        <li class='<%= letter == params[:letter] ? "active" : "" %>'><%= link_to letter.capitalize, request.params.merge(:letter => letter).except(:page) %></li>
+        <li class='page-item <%= letter == params[:letter] ? "active" : "" %>'><%= link_to letter.capitalize, request.params.merge(:letter => letter).except(:page), class: "page-link" %></li>
       <% end %>
-      <li class='<%= !params[:letter] ? "active" : "" %>'><%= link_to "All", request.params.except(:letter).except(:page) %></li>
+      <li class='page-item <%= !params[:letter] ? "active" : "" %>'><%= link_to "All", request.params.except(:letter).except(:page), class: "page-link" %></li>
     </ul>
   </div>
   <div class="col-sm-12 text-center">
-     <ul class="pagination">
+     <ul class="pagination justify-content-center">
         <% ['authors_count', 'artists_count', 'scribes_count', 'provenance_count', 'source_agents_count', "sale_agents_count"].each do |type| %>
-          <li class='<%= type == params[:type] ? "active" : "" %>'>
-            <%= link_to type.gsub('_count', '').humanize, request.params.merge(:type => type).except(:page) %>
+          <li class='page-item <%= type == params[:type] ? "active" : "" %>'>
+            <%= link_to type.gsub('_count', '').humanize, request.params.merge(:type => type).except(:page), class: "page-link" %>
           </li>
         <% end %>
-        <li class='<%= !params[:type] ? "active" : "" %>'><%= link_to "All", request.params.except(:type).except(:page) %></li>
-      </ul> 
+        <li class='page-item <%= !params[:type] ? "active" : "" %>'><%= link_to "All", request.params.except(:type).except(:page), class: "page-link" %></li>
+      </ul>
   </div>
   <div class="col-sm-6">
     <div class="dataTables_info" style="margin: 0px;"><%= "Showing #{@page * 50} to #{[(@page + 1) * 50, @total].min} of #{@total}" %></div>
   </div>
-  <div class="col-sm-6 text-right">
-    <ul class="pagination">
-      <%= render partial: "shared/pagination", locals: {page: @page, pages: (@total / 50.to_f).ceil, model_class: Name, action: "problems" } %>
-    </ul>
+  <div class="col-sm-6 d-flex justify-content-end">
+    <%= render partial: "shared/pagination", locals: {page: @page, pages: (@total / 50.to_f).ceil, model_class: Name, action: "problems" } %>
   </div>
   <div class="col-sm-12">
     <table class="table">
