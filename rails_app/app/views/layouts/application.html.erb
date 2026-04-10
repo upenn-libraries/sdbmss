@@ -58,7 +58,7 @@
         }
       </style>
       <script type='text/javascript'>
-        $(document).ready(function () {          
+        $(document).ready(function () {
           $(".fade").removeClass("fade");
           $.support.transition = false;
           jQuery.fx.off = true;
@@ -96,7 +96,7 @@
 
   </head>
   <body data-offset="54" class="<%= render_body_class %>">
-  <!-- control panel - or 'login' panel, when logged out -->  
+  <!-- control panel - or 'login' panel, when logged out -->
   <%= render :partial => 'shared/header_navbar' %>
 
   <%= render partial: 'shared/control_panel' %>
@@ -110,8 +110,13 @@
         <div style="padding-top: 20px;"></div>
       <% end %>
 
-      <%# this is from blacklight %>
       <%= render partial: 'shared/modal' %>
+
+      <div id="blacklight-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content"></div>
+        </div>
+      </div>
 
       <div id="main-container" class="container">
 
@@ -125,7 +130,7 @@
         </ol>
         <div class="pagination-search-widgets"></div>
         <% end %>
-        
+
         <!-- not sure why, but setting overflow: hidden seems to solve some of the scroll-bar issues I was having... -->
         <div class="row" style="overflow: hidden;">
           <div class="col-sm-12">
@@ -135,7 +140,7 @@
       </div>
       <%# this is SDBM-specific modal code %>
       <%= render :partial => 'shared/modal' %>
-      
+
       <%= render :partial => 'shared/footer' %>
     </div>
   </div>
