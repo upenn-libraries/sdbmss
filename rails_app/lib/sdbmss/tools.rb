@@ -1,3 +1,4 @@
+require 'fileutils'
 require 'net/http'
 require 'open3'
 require 'shellwords'
@@ -17,7 +18,7 @@ module SDBMSS
   # the interface and Jena custom images).
   #
   # Initially generated with assistance from GPT-5.2-Codex (OpenAI).
-  # Documentation, troubleshooting, and subsequent edits by Claude Sonnet 4.6 (Anthropic).
+  # Documentation, troubleshooting, +clobber+ command, and subsequent edits by Claude Sonnet 4.6 (Anthropic).
   class Tools
 
     class << self
@@ -28,7 +29,7 @@ module SDBMSS
       # @param interval_seconds [Integer] seconds to sleep between attempts
       # @param out [IO] output stream for error messages
       # @return [Boolean] true if the app responded 200 within the timeout, false otherwise
-      def sdbm_available?(host, timeout_seconds: 180, interval_seconds: 2, out: $stdout)
+      def sdbm_available?(host, timeout_seconds: 240, interval_seconds: 2, out: $stdout)
         uri = URI.parse("http://#{host}")
         started_at = Time.now
 
@@ -107,6 +108,22 @@ module SDBMSS
         load_docker_environment!
         run_compose!(%w[down -v])
         remove_custom_images! if scope == :all
+      end
+    end
+
+    # Full destructive reset: brings down the Compose stack and volumes, removes
+    # custom images, optionally runs +docker system prune -af+ (system-wide purge),
+    # and optionally deletes regenerable local directories.
+    #
+    # @param prune [Boolean] run +docker system prune -af+ (default: +true+)
+    # @param files [Boolean] delete +.bundle+, +public/assets+, +tmp+, +vendor/bundle+ (default: +true+)
+    def clobber(prune: true, files: true)
+      timed('clobber') do
+        load_docker_environment!
+        run_compose!(%w[down -v])
+        remove_custom_images!
+        run_command!(%w[docker system prune -af]) if prune
+        remove_local_files! if files
       end
     end
 
@@ -296,12 +313,14 @@ module SDBMSS
     private
 
     # Polls until the app returns HTTP 200, raising if it does not within the timeout.
+    # Reads +TOOLS_START_TIMEOUT+ from the environment to override the default timeout.
     def wait_for_sdbm_availability!
       host = app_host
       raise 'SDBMSS_APP_HOST is required in .env' if host.nil? || host.empty?
 
-      log("Waiting for app availability at http://#{host}")
-      return if self.class.sdbm_available?(host, out: @out)
+      timeout = env('TOOLS_START_TIMEOUT', nil)&.to_i || 240
+      log("Waiting for app availability at http://#{host} (timeout: #{timeout}s)")
+      return if self.class.sdbm_available?(host, timeout_seconds: timeout, out: @out)
 
       raise "Application is not reachable at http://#{host}"
     end
@@ -371,6 +390,21 @@ module SDBMSS
     # @return [String] Docker container ID for the running +mysql+ service
     def mysql_container_id
       @mysql_container_id ||= capture_command!(compose_command + %w[ps -q mysql]).strip
+    end
+
+    LOCAL_CLOBBER_DIRS = %w[.bundle public/assets tmp vendor/bundle].freeze
+
+    # Deletes regenerable local directories inside the Rails root.
+    def remove_local_files!
+      LOCAL_CLOBBER_DIRS.each do |dir|
+        path = File.join(rails_root, dir)
+        if Dir.exist?(path)
+          log("Removing #{dir}")
+          FileUtils.rm_rf(path)
+        else
+          log("#{dir} not present; skipping")
+        end
+      end
     end
 
     # Reads +.env+ and populates @env with any keys not already set.
