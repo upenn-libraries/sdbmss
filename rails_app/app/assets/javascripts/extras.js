@@ -11,9 +11,7 @@
 //= require sortable
 //= require ui-bootstrap-tpls-0.12.1.min
 //= require jquery.dataTables.min
-//= require dataTables.bootstrap
-//= require dataTables.colVis
-//  require dataTables.colReorder
+//= require dataTables.bootstrap4.min
 //= require dataTables.colResize
 //= require dataTables.fixedColumns
 //= require doubleScroll

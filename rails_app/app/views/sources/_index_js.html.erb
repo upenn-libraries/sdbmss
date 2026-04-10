@@ -330,9 +330,9 @@ $(document).ready(function() {
         searchNameField: "name"
     }
 
-     //if (window.screen.width > 640) {
-     //   config.fixedColumns = 3
-     //}
+     if (window.screen.width > 640) {
+        config.fixedColumns = 3
+     }
 
      var manageSources = new ManageSources(config);
      manageSources.setFormStateFromURL();

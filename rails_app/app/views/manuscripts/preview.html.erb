@@ -46,7 +46,7 @@
           ordering: false,
           searching: false,
           fixedColumns: {
-            leftColumns: 1
+            left: 1
           },
           scrollX: true,
           fixedHeader: true,
@@ -55,7 +55,6 @@
           scrollCollapse: true,
         }
         var table = $('#example').dataTable(datatables_options);
-        new $.fn.dataTable.FixedColumns( table );
         //
       });
     });

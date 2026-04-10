@@ -187,6 +187,7 @@ function relation (type) {
             // t = the table itself
             // i = information summary
             // p = pagination control
+            fixedColumns: this.options.fixedColumns ? { left: this.options.fixedColumns } : false,
             dom: this.options.dom,
             serverSide: true
         });
@@ -218,7 +219,7 @@ function relation (type) {
         );
         $('.reset').replaceWith('<a id="reset-columns" class="btn btn-secondary" title="Reset Table"><span class="fa fa-eraser"></span></a>');
         $("#reset-columns").click( function () {
-            localStorage["DataTables_search_results_" + window.location.pathname] = "";
+            the_table.state.clear();
             window.location = window.location.origin + window.location.pathname;
         });
         // new column hide/show function
@@ -242,11 +243,7 @@ function relation (type) {
             }
         }
 
-        if(this.options.fixedColumns) {
-            new $.fn.dataTable.FixedColumns(this.dataTable, {
-                leftColumns: this.options.fixedColumns
-            });
-        }
+        // FixedColumns is now initialized via the DataTable init option above
     };
 
     /**

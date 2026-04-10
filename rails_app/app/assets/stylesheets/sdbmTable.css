@@ -26,13 +26,36 @@ table.dataTable.compact tbody td {
 
 /*
  * eliminate margin-top, otherwise the left & right borders of surrounding
- * .dataTables_scroll element extend above the table and make it look weird.  
+ * .dataTables_scroll element extend above the table and make it look weird.
  */
 table.sdbm-table { margin-top: 0px !important; }
 
 .sdbm-table { font-size: 12px; }
 
 .sdbm-table tbody tr.selected { background-color: #b0bed9; }
+
+/*
+ * FixedColumns 4.x sets background-color:white on sticky cells, which
+ * overrides Bootstrap contextual row classes (table-warning, table-info, etc.)
+ * used by the app to highlight unapproved/draft rows. These rules let the
+ * contextual colors win on fixed cells while keeping a solid background for
+ * scroll-through coverage.
+ */
+table.dataTable tbody tr.table-warning>.dtfc-fixed-left,
+table.dataTable tbody tr.table-warning>.dtfc-fixed-right {
+    background-color: #ffeeba;
+}
+table.dataTable tbody tr.table-info>.dtfc-fixed-left,
+table.dataTable tbody tr.table-info>.dtfc-fixed-right {
+    background-color: #d1ecf1;
+}
+table.dataTable tbody tr.selected>.dtfc-fixed-left,
+table.dataTable tbody tr.selected>.dtfc-fixed-right {
+    background-color: #b0bed9;
+}
+
+/* widen the "Show N entries" select so digits aren't clipped */
+div.dataTables_length select { width: 4.5em !important; }
 
 /* show info and pagination at same horizontal level */
 .dataTables_info { float: left; }
