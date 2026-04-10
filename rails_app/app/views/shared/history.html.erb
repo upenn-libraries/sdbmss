@@ -33,7 +33,7 @@
                             </div>
                             <div class='col-sm-2 text-left'>
                                 <% if can? :edit, @model %>
-                                   <%= link_to "Undo", polymorphic_url(@model, :version_id => [version.id], :action => "revert_confirm"), :method => 'patch', class: 'btn-undo btn btn-secondary' %>
+                                   <%= link_to "Undo", polymorphic_url(@model, :version_id => [version.id], :action => "revert_confirm"), :method => 'patch', class: 'btn-undo btn btn-outline-secondary' %>
                                 <% end %>
                             </div>
                         </div>                    

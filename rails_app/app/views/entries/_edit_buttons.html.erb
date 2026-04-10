@@ -1,18 +1,18 @@
 <div class="row" style="padding-bottom: 20px;" ng-show="!entry.deprecated">
     <div class="col-sm-4">
         <button class="btn btn-primary save-button" ng-click="save(false)" ng-disabled="entryForm.$invalid || currentlySaving || !entry.source">Save</button>
-        <button ng-if="entry.draft || (!entry.id && !sdbmutil.getManuscriptId() && !sdbmutil.getNewManuscript())" ng-click="saveAsDraft()" class="btn btn-secondary save-button" ng-disabled="entryForm.$invalid || currentlySaving || !entry.source || (!entry.draft && num_drafts >= 10)" title="You may save up to 10 drafts at a time." >Save as Draft</button>
+        <button ng-if="entry.draft || (!entry.id && !sdbmutil.getManuscriptId() && !sdbmutil.getNewManuscript())" ng-click="saveAsDraft()" class="btn btn-outline-secondary save-button" ng-disabled="entryForm.$invalid || currentlySaving || !entry.source || (!entry.draft && num_drafts >= 10)" title="You may save up to 10 drafts at a time." >Save as Draft</button>
         <a class="btn btn-warning" id='cancelEdit' href="{{ entry.id ? '/entries/' + entry.id : '/dashboard'}}">Cancel</a>
     </div>
     <div class="col-sm-8 text-right">
         <span ng-if="entry && draft" >
             <span class="text-info">An unsaved version from <b>{{ draft.updated_object.toLocaleDateString() }}</b>, <b>{{ draft.updated_object.toLocaleTimeString() }}</b> has been detected </span>
-            <a href="" class="btn btn-secondary" ng-click="loadDraft()">
+            <a href="" class="btn btn-outline-secondary" ng-click="loadDraft()">
                 <span class="fa fa-repeat"></span>
                 Restore
             </a>            
         </span>
-        <a href="" data-toggle="modal" data-target="#backupSettings" class="btn btn-secondary" ng-if="entry.id || entry.source">
+        <a href="" data-toggle="modal" data-target="#backupSettings" class="btn btn-outline-secondary" ng-if="entry.id || entry.source">
             <span class="fa fa-refresh"></span> Auto-backup {{ backup == 'enabled' ? 'enabled' : 'disabled' }}
         </a>
     </div>

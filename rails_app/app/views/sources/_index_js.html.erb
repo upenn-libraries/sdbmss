@@ -69,13 +69,13 @@ $(document).ready(function() {
                     if (editable) {
                         result += '<a class="btn btn-sm btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>';
                     } else {
-                        result += '<a class="btn btn-sm btn-secondary disabled">Edit</a>';
+                        result += '<a class="btn btn-sm btn-outline-secondary disabled">Edit</a>';
                     }
                     // if I can edit the source, or it is any source OTHER than a personal/provenance observation
                     if (source_type.indexOf('Observation') == -1 || editable) {
                         result += '<a class="btn btn-sm btn-primary" href="/entries/new/?source_id=' + data + '">Add an Entry</a>';
                     } else {
-                        result += '<a class="btn btn-sm btn-secondary disabled">Add an Entry</a>';
+                        result += '<a class="btn btn-sm btn-outline-secondary disabled">Add an Entry</a>';
                     }
 
                     if (canDestroy) {

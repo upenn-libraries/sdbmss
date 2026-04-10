@@ -132,7 +132,7 @@
 
                       <% record = dericci_links.first.dericci_record %>
 
-                      <div class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#Dericci_<%= record.id %>" style="margin-bottom: 4px;">
+                      <div class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#Dericci_<%= record.id %>" style="margin-bottom: 4px;">
                         <%= record.name %> <span class="badge badge-light"><%= dericci_links.count %></span>
                       </div>
 
@@ -145,7 +145,7 @@
                               </button>
                               <p>This name has been linked to <%= link_to record.name, dericci_record_path(record) %> by </p>
                                 <% dericci_links.each do |dl| %>
-                                   <span class='btn btn-sm btn-secondary'>
+                                   <span class='btn btn-sm btn-outline-secondary'>
                                       <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
                                     </span>
                                     <% if dl.other_info.present? %>
@@ -159,7 +159,7 @@
                             <div class="modal-footer text-center">
                               <% if current_user && current_user.role == "admin" %>
                                   <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id), from_name: true), method: :delete, class: "btn btn-danger" %>
-                                  <%= link_to "Unverify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: false, from_name: true), method: :put, class: "btn btn-secondary" %>
+                                  <%= link_to "Unverify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: false, from_name: true), method: :put, class: "btn btn-outline-secondary" %>
                               <% end %>
                             </div>
                           </div>
@@ -194,7 +194,7 @@
                               </button>
                               <p>This name has been linked to <%= link_to record.name, dericci_record_path(record) %> by </p>
                                 <% dericci_links.each do |dl| %>
-                                   <span class='btn btn-sm btn-secondary'>
+                                   <span class='btn btn-sm btn-outline-secondary'>
                                       <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
                                     </span>
                                     <% if dl.other_info.present? %>
@@ -208,7 +208,7 @@
                             <div class="modal-footer text-center">
                               <% if current_user && current_user.role == "admin" %>
                                   <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id), from_name: true), method: :delete, class: "btn btn-danger" %>
-                                  <%= link_to "Verify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: true, from_name: true), method: :put, class: "btn btn-secondary" %>
+                                  <%= link_to "Verify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: true, from_name: true), method: :put, class: "btn btn-outline-secondary" %>
                               <% end %>
                             </div>
                           </div>

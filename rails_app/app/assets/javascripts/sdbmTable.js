@@ -193,7 +193,7 @@ function relation (type) {
         });
 
         var the_table = this.dataTable;
-        $('.wide').replaceWith('<a id="widescreen" class="btn btn-secondary" title="Widescreen View"><span class="fa fa-expand"></span></a>');
+        $('.wide').replaceWith('<a id="widescreen" class="btn btn-outline-secondary" title="Widescreen View"><span class="fa fa-expand"></span></a>');
         $('#widescreen').click( function () {
             $("#main-container").toggleClass('container-fluid').toggleClass('container');
             $("#widescreen > span").toggleClass('fa-compress').toggleClass('fa-expand');
@@ -207,17 +207,17 @@ function relation (type) {
             //$('.search_results').toggleClass('full-width');
         });
 
-        //$(".mapmode").replaceWith($("<a href='' class='btn btn-secondary'><span class='fa fa-image'></span></a>"));
+        //$(".mapmode").replaceWith($("<a href='' class='btn btn-outline-secondary'><span class='fa fa-image'></span></a>"));
 
         $('.spinner').replaceWith('<span id="spinner" style="display: none;"><img alt="working..." src="' + $("#spinner-src").attr('src') + '"> loading...</span>');
-        $('.csv').replaceWith('<a id="export-csv" class="btn btn-secondary" title="Export to CSV"><span class="fa fa-floppy-o"></span></a>');
+        $('.csv').replaceWith('<a id="export-csv" class="btn btn-outline-secondary" title="Export to CSV"><span class="fa fa-floppy-o"></span></a>');
         $('.columns').replaceWith('<div class="btn-group">' +
-            '<a class="btn btn-secondary dropdown-toggle" title="Show/Hide Columns" data-toggle="dropdown"><span class="fa fa-edit"></span></a>' +
+            '<a class="btn btn-outline-secondary dropdown-toggle" title="Show/Hide Columns" data-toggle="dropdown"><span class="fa fa-edit"></span></a>' +
             '<div id="column-control" class="dropdown-menu list-group">' +
             '</div>' +
             '</div>'
         );
-        $('.reset').replaceWith('<a id="reset-columns" class="btn btn-secondary" title="Reset Table"><span class="fa fa-eraser"></span></a>');
+        $('.reset').replaceWith('<a id="reset-columns" class="btn btn-outline-secondary" title="Reset Table"><span class="fa fa-eraser"></span></a>');
         $("#reset-columns").click( function () {
             the_table.state.clear();
             window.location = window.location.origin + window.location.pathname;

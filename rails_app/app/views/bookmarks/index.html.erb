@@ -74,7 +74,7 @@
                       </div>
                       <input type='text' class='form-control new-bookmark-tag' placeholder="New tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
                       <div class="input-group-append">
-                        <a href="" class="btn btn-secondary add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="fa fa-plus"></span> Add</a>
+                        <a href="" class="btn btn-outline-secondary add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="fa fa-plus"></span> Add</a>
                         <a href="" class="btn btn-warning add-bookmark-tag-confirm" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Cancel</a>
                       </div>
                     </div>

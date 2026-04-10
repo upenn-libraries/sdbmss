@@ -12,7 +12,7 @@
           <%= render partial: "shared/pagination", locals: {page: @page, pages: (@total / @per_page.to_f).ceil, model_class: Watch, action: nil } %>
         </td>
         <td class="text-right col-sm-2">
-          <%= link_to delete_many_watches_path(ids: @watches.map(&:id)), :method => :delete, id: "Unwatch_All", class: "btn btn-secondary btn-sm" do %>
+          <%= link_to delete_many_watches_path(ids: @watches.map(&:id)), :method => :delete, id: "Unwatch_All", class: "btn btn-outline-secondary btn-sm" do %>
             <span class="fa fa-eye-slash"></span> Unwatch All (On Page)
           <% end %>
         </td>
@@ -33,7 +33,7 @@
           <%= watch.watched.to_s %>
         </td>
         <td class='text-right col-sm-2'>
-          <%= link_to watch_path(watch), :method => :delete, class: 'watch-delete btn btn-secondary btn-sm' do %>
+          <%= link_to watch_path(watch), :method => :delete, class: 'watch-delete btn btn-outline-secondary btn-sm' do %>
             <span class="fa fa-eye-slash"></span> Unwatch
           <% end %>
         </td>

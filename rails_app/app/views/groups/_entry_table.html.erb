@@ -7,12 +7,12 @@
             <% if can? :edit, entry %>
               <%= link_to "Edit", edit_entry_path(entry), class: 'btn btn-sm btn-success' %>
             <% else %>
-              <a class="btn btn-secondary btn-sm disabled">Edit</a>
+              <a class="btn btn-outline-secondary btn-sm disabled">Edit</a>
             <% end %>
             <% if can? :link, entry %>
               <%= link_to "Linking Tool", linking_tool_by_entry_path(entry), class: 'btn btn-sm btn-info' %>
             <% else %>
-              <a class="btn btn-secondary btn-sm disabled">Linking Tool</a>
+              <a class="btn btn-outline-secondary btn-sm disabled">Linking Tool</a>
             <% end %>
           </div>
         </td>

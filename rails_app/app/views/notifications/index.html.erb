@@ -47,7 +47,7 @@
 <% @notifications.each do |notification| %>
   <div class="btn-group notification-btn">
     <% if notification.title %>
-      <div class="btn-secondary btn one-line text-left">
+      <div class="btn-outline-secondary btn one-line text-left">
         <% if notification.notified %>
           <%
             if notification.notified.class == User
@@ -70,11 +70,11 @@
         <%= notification.created_at.to_formatted_s(:long) %>
       </div>
       <% if notification.active %>
-        <%= link_to notification_path(notification, active: false), method: :put, class: 'btn btn-secondary' do %>
+        <%= link_to notification_path(notification, active: false), method: :put, class: 'btn btn-outline-secondary' do %>
           <span class="fa fa-check-circle"></span> Mark as Read
         <% end %>
       <% else %>
-        <a class="btn btn-secondary disabled"><span class="fa fa-check-circle"></span> Mark as Read</a>
+        <a class="btn btn-outline-secondary disabled"><span class="fa fa-check-circle"></span> Mark as Read</a>
       <% end %>
       <%= link_to(notification_path(notification, format: 'html'), method: :delete, class: "btn btn-danger") do %>
         <span class="fa fa-times"></span> Delete

@@ -49,10 +49,10 @@
               <% destroy_group_word = "Cancel Request" %>
             <% else %>
               <% destroy_group_word = "Reject Invitation" %>
-              <%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put, class: "btn btn-secondary btn-sm" %></li>
+              <%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put, class: "btn btn-outline-secondary btn-sm" %></li>
             <% end %>
           <% end %>
-          <%= link_to destroy_group_word, group_user_path(group_user), :method => :delete, data: { confirm: "Are you sure you would like to leave this group?" }, class: "btn btn-sm btn-secondary" %>
+          <%= link_to destroy_group_word, group_user_path(group_user), :method => :delete, data: { confirm: "Are you sure you would like to leave this group?" }, class: "btn btn-sm btn-outline-secondary" %>
         <% end %>
         </div>
       </td>

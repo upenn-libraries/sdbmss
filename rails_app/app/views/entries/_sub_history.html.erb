@@ -28,7 +28,7 @@
                                             </div>
                                             <div class='col-sm-2 text-left'>
                                                 <% if can? :edit, @entry %>
-                                                    <%= link_to "Undo", revert_confirm_entry_path(@entry, :version_id => [version.id]), :method => 'patch', class: "btn-undo btn btn-secondary #{muted ? 'disabled' : ''}", disabled: muted %>
+                                                    <%= link_to "Undo", revert_confirm_entry_path(@entry, :version_id => [version.id]), :method => 'patch', class: "btn-undo btn btn-outline-secondary #{muted ? 'disabled' : ''}", disabled: muted %>
                                                 <% end %>
                                             </div>
                                         </div>

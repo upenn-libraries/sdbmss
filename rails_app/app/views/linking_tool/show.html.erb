@@ -775,13 +775,13 @@ $(document).ready(function() {
         </div>
         <div class="col-sm-6 text-right">
             <div class="btn-group">
-                <a href="" class="btn btn-secondary" id="load-bookmarks">
+                <a href="" class="btn btn-outline-secondary" id="load-bookmarks">
                     <span class="fa fa-bookmark"></span> Load Bookmarks
                 </a>
                 <% if @entry.present? %>
                     <a class='btn btn-warning' title="IN DEVELOPMENT" href="" data-toggle="modal" data-target="#suggestions-modal"><span class="fa fa-exclamation-circle"></span> Find Suggested Links</a>
                 <% else %>
-                    <a href="" class="btn btn-secondary disabled">Find Suggested Links</a>
+                    <a href="" class="btn btn-outline-secondary disabled">Find Suggested Links</a>
                 <% end %>
             </div>
         </div>

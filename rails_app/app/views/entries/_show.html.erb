@@ -40,7 +40,7 @@
     <div class="alert text-muted alert-warning" style="background: #f8f8f8; border-color: #eee; position: relative;">
         This entry is a draft and has not yet been published.
         <% if can? :edit, entry %>
-            <%= link_to(entry_path(entry.id, draft: false, cumulative_updated_at: entry.cumulative_updated_at), :method => :patch, :title => "Publish?", :class => "btn btn-sm btn-secondary float-right publish-btn", :data => {:confirm => "Are you sure you wish to publish this entry?  It will become publicly viewable from this point forward."}) do %>
+            <%= link_to(entry_path(entry.id, draft: false, cumulative_updated_at: entry.cumulative_updated_at), :method => :patch, :title => "Publish?", :class => "btn btn-sm btn-outline-secondary float-right publish-btn", :data => {:confirm => "Are you sure you wish to publish this entry?  It will become publicly viewable from this point forward."}) do %>
             <span class="fa fa-file"></span>
           <% end %>
         <% end %>

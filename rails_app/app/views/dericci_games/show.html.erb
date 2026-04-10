@@ -102,7 +102,7 @@
       display: table-cell;
       white-space: normal;
     }
-    /*.my-btn-group .btn-secondary {
+    /*.my-btn-group .btn-outline-secondary {
       border: none;
     }*/
     /*.my-btn-group .btn:last-child {
@@ -162,7 +162,7 @@
       <ul class="game-nav nav nav-pills nav-stacked" style="margin-top: 15px;">
         <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }">
           <span class="btn-group my-btn-group">
-            <a href="" class="btn btn-secondary btn-sm one-line text-left view-name" ng-class="{'active': current_record == record}" ng-click="selectRecord(record)">
+            <a href="" class="btn btn-outline-secondary btn-sm one-line text-left view-name" ng-class="{'active': current_record == record}" ng-click="selectRecord(record)">
               {{ record.name }}
             </a>
             <a href="" class="btn btn-sm find-name" ng-class="getButton(record)" ng-disabled="record != current_record" ng-click="record == current_record ? findName(record) : ''" style="width: 90px;">
@@ -171,7 +171,7 @@
           </span>
         </li>
       </ul>
-      <a href="" class="btn btn-secondary btn-lg btn-full" id='save-game' ng-class="{ 'disabled': !canSubmit() }" ng-click="save()">
+      <a href="" class="btn btn-outline-secondary btn-lg btn-full" id='save-game' ng-class="{ 'disabled': !canSubmit() }" ng-click="save()">
         <span class="fa fa-check-sign"></span>
         Submit
       </a>
@@ -182,7 +182,7 @@
         <a href="" class="btn btn-danger btn-sm" ng-click="flag_review(current_record)" ng-if="current_record && !needsWork(current_record)">
           <span class="fa fa-exclamation-triangle"></span> Flag For Review
         </a>
-        <a href="" class="btn btn-secondary btn-sm" ng-click="unflag(current_record)" ng-if="current_record && needsWork(current_record)">
+        <a href="" class="btn btn-outline-secondary btn-sm" ng-click="unflag(current_record)" ng-if="current_record && needsWork(current_record)">
           <span class="fa fa-exclamation-triangle"></span> Unflag Record
         </a>
       </p>
@@ -200,7 +200,7 @@
             <dd>{{ current_record.place || "Unknown" }}</dd>
 
             <dt>PDF</dt>
-            <dd><a href="{{ current_record.url }}" target="_blank" class='btn btn-sm btn-secondary'>Hosted at the UK Senate House Archives</a></dd>
+            <dd><a href="{{ current_record.url }}" target="_blank" class='btn btn-sm btn-outline-secondary'>Hosted at the UK Senate House Archives</a></dd>
 
             <dt>Number of Cards</dt>
             <dd>{{ current_record.cards || "Unknown" }}</dd>
@@ -266,7 +266,7 @@
             <input class="form-control" ng-model="current_flag.reason" >
             </select>
             <div class="input-group-append">
-              <a href="" class="btn btn-secondary" ng-click="current_flag.reason.length > 0 ? flag_modal.close() : '';">Done</a>
+              <a href="" class="btn btn-outline-secondary" ng-click="current_flag.reason.length > 0 ? flag_modal.close() : '';">Done</a>
             </div>
           </div>
         </div>

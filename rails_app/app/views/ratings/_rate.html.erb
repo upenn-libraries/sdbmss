@@ -2,25 +2,25 @@
 <span class="btn-group">
     <% if (r = ratable.ratings.where(user: current_user).first) %>
         <% if r.qualifier == "confirm" %>
-            <%= link_to rating_path(r), :method => :delete, class: 'ratings rated btn btn-secondary btn-sm' do %>
+            <%= link_to rating_path(r), :method => :delete, class: 'ratings rated btn btn-outline-secondary btn-sm' do %>
               <span class="fa fa-thumbs-up"></span>
             <% end %>
-            <a class="ratings btn btn-secondary btn-sm" data-toggle="modal" data-target="#dispute_<%= ratable.class.name %>_<%= ratable.id %>">
+            <a class="ratings btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#dispute_<%= ratable.class.name %>_<%= ratable.id %>">
                 <span class="fa fa-thumbs-down"></span>
             </a>
         <% else %>
-            <%= link_to rating_path(r, qualifier: "confirm", reason: ""), :method => :put, class: 'ratings btn btn-secondary btn-sm' do %>
+            <%= link_to rating_path(r, qualifier: "confirm", reason: ""), :method => :put, class: 'ratings btn btn-outline-secondary btn-sm' do %>
               <span class="fa fa-thumbs-up"></span>
             <% end %>
-            <%= link_to rating_path(r), :method => :delete, class: 'ratings rated disputed btn btn-secondary btn-sm' do %>
+            <%= link_to rating_path(r), :method => :delete, class: 'ratings rated disputed btn btn-outline-secondary btn-sm' do %>
               <span class="fa fa-thumbs-down"></span>
             <% end %>
         <% end %>
     <% else %>
-        <%= link_to(ratings_path(ratable_id: ratable.id, ratable_type: ratable.class.name, qualifier: "confirm"), method: :post, class: "btn btn-secondary btn-sm ratings") do %>
+        <%= link_to(ratings_path(ratable_id: ratable.id, ratable_type: ratable.class.name, qualifier: "confirm"), method: :post, class: "btn btn-outline-secondary btn-sm ratings") do %>
             <span class="fa fa-thumbs-up"></span>
         <% end %>
-        <a class='ratings btn btn-secondary btn-sm' data-toggle="modal" data-target="#dispute_<%= ratable.class.name %>_<%= ratable.id %>">
+        <a class='ratings btn btn-outline-secondary btn-sm' data-toggle="modal" data-target="#dispute_<%= ratable.class.name %>_<%= ratable.id %>">
             <span class="fa fa-thumbs-down"></span>
         </a>
     <% end %>

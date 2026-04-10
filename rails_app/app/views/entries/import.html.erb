@@ -37,7 +37,7 @@
   </div>
   
   <div class="row" ng-if="!source">
-    <div class="col-sm-12 text-center"><a ng-click="selectSourceModal()" class="btn btn-secondary" id="select_source">Select/Create a Source</a></div>
+    <div class="col-sm-12 text-center"><a ng-click="selectSourceModal()" class="btn btn-outline-secondary" id="select_source">Select/Create a Source</a></div>
   </div>
 
   <div class="source-info" ng-if="source">
@@ -88,7 +88,7 @@
       <div class="input-group">
         <input type="file" class="form-control" id="file" accept=".csv" ng-upload-change="handleFile($event)" ng-disabled="!source"></input>
         <span class="input-group-append">
-          <a class="btn btn-secondary" data-toggle="modal" data-target="#csvInfo" href="#csvInfo" ng-disabled="!source">
+          <a class="btn btn-outline-secondary" data-toggle="modal" data-target="#csvInfo" href="#csvInfo" ng-disabled="!source">
             <span class="fa fa-question-circle"></span>
           </a>
         </span>
@@ -276,7 +276,7 @@
         <div class="card-body">
           <p>
             Have you reviewed the entries and verified that your data has accurately translated to our data model?  In that case, feel free to begin your 
-            <a href="" class="btn btn-secondary btn-lg" ng-click="save(0)" ng-if="!checked && saving != true" style="width: 100%;">Check</a>
+            <a href="" class="btn btn-outline-secondary btn-lg" ng-click="save(0)" ng-if="!checked && saving != true" style="width: 100%;">Check</a>
             <a href="" class="btn btn-primary btn-lg" ng-click="save(0)" ng-if="checked && saving != true" style="width: 100%;">Upload</a>
             <a href="" class="btn btn-danger btn-lg" ng-click="cancel()" ng-if="saved != true && saving == true" style="width: 100%;">Cancel</a>
           </p>

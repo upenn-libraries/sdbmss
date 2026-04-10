@@ -70,7 +70,7 @@
           <%= hidden_field_tag "version_id[]", v.id %>
         <% end %>
         <%= f.submit 'Restore', class: 'btn btn-warning btn-lg' %>
-        <%= link_to 'Cancel', polymorphic_url([:history, @model]), class: 'btn btn-secondary btn-lg' %>
+        <%= link_to 'Cancel', polymorphic_url([:history, @model]), class: 'btn btn-outline-secondary btn-lg' %>
       <% end %>
     </div>
   </div>

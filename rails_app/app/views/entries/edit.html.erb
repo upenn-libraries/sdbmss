@@ -230,7 +230,7 @@ label.col-sm-2-and-half {
     </div>
 
     <div class="row" ng-if="!entry.source">
-      <div class="col-sm-12 text-center"><a ng-click="selectSourceModal(entry, null)" class="btn btn-secondary" id="select_source">Select/Create a Source</a></div>
+      <div class="col-sm-12 text-center"><a ng-click="selectSourceModal(entry, null)" class="btn btn-outline-secondary" id="select_source">Select/Create a Source</a></div>
     </div>
 
     <div class="source-info" ng-if="entry.source">
@@ -364,7 +364,7 @@ label.col-sm-2-and-half {
                             <a id='remove_selling_agent_name_authority_0' class="fa fa-times" ng-click="removeNameAuthority(sale_agent, 'agent')"></a>
                             <a href="/names/{{ sale_agent.agent.id }}" target="_blank"><span id="sale_agent_{{ $index }}">{{ sale_agent.agent.name }}</span></a>
                           </div>
-                          <span id="sale_selling_agent_certainty_flags" ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="btn btn-secondary certainty-flag clickable" sdbm-certainty-flags="sale_agent"><span class="fa"></span></span>
+                          <span id="sale_selling_agent_certainty_flags" ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="sale_agent"><span class="fa"></span></span>
                         </div>
 
                         <span class='control-label' sdbm-tooltip="entry_sale_agent_role">Role</span>
@@ -459,7 +459,7 @@ label.col-sm-2-and-half {
                 <a href="/names/{{ entry_author.author.id }}" target="_blank">{{ entry_author.author.name }}</a>
               </span>
               <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_author" encourage-name-authority-name="author"></span>
-              <span ng-if='entry_author.author != undefined && entry_author.author.id != undefined' id="author_certainty_flags_{{ $index }}" class="btn btn-secondary certainty-flag clickable" sdbm-certainty-flags="entry_author"><span class="fa"></span></span>
+              <span ng-if='entry_author.author != undefined && entry_author.author.id != undefined' id="author_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_author"><span class="fa"></span></span>
             </div>
 
             <span class='control-label'><span sdbm-tooltip="entry_author_role">Role</span>
@@ -546,7 +546,7 @@ label.col-sm-2-and-half {
               <a href="/names/{{ entry_artist.artist.id }}" target="_blank">{{ entry_artist.artist.name }}</a>
             </div>
             <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_artist" encourage-name-authority-name="artist"></span>
-            <span ng-if='entry_artist.artist != undefined && entry_artist.artist.id != undefined' id="artist_certainty_flags_{{ $index }}" class="btn btn-secondary certainty-flag clickable" sdbm-certainty-flags="entry_artist"><span class="fa"></span></span>
+            <span ng-if='entry_artist.artist != undefined && entry_artist.artist.id != undefined' id="artist_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_artist"><span class="fa"></span></span>
           </div>
 
           <span class='control-label'><span sdbm-tooltip="entry_artist_role">Role</span>
@@ -592,7 +592,7 @@ label.col-sm-2-and-half {
               <a href="/names/{{ entry_scribe.scribe.id }}" target="_blank">{{ entry_scribe.scribe.name }}</a>
             </div>
             <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_scribe" encourage-name-authority-name="scribe"></span>
-            <span ng-if='entry_scribe.scribe != undefined && entry_scribe.scribe.id != undefined'  id="scribe_certainty_flags_{{ $index }}" class="btn btn-secondary certainty-flag clickable" sdbm-certainty-flags="entry_scribe"><span class="fa"></span></span>
+            <span ng-if='entry_scribe.scribe != undefined && entry_scribe.scribe.id != undefined'  id="scribe_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_scribe"><span class="fa"></span></span>
           </div>
         </div>
       </div>
@@ -632,7 +632,7 @@ label.col-sm-2-and-half {
                 <a href="/places/{{ entry_place.place.id }}" target="_blank">{{ entry_place.place.name }}</a>
               </div>
               <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_place" encourage-name-authority-name="place"></span>
-              <span ng-if='entry_place.place != undefined && entry_place.place.id != undefined' id="place_certainty_flags_{{ $index }}" class="btn btn-secondary certainty-flag clickable" sdbm-certainty-flags="entry_place"><span class="fa"></span></span>
+              <span ng-if='entry_place.place != undefined && entry_place.place.id != undefined' id="place_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_place"><span class="fa"></span></span>
             </div>
           </div>
       </div>
@@ -671,7 +671,7 @@ label.col-sm-2-and-half {
               <a class="fa fa-times" ng-click="removeNameAuthority(entry_language, 'language')"></a>
               <a href="/languages/{{ entry_language.language.id }}" target="_blank">{{ entry_language.language.name }}</a>
             </div>
-            <span ng-if='entry_language.language != undefined && entry_language.language.id != undefined' id="language_certainty_flags_{{ $index }}" class="btn btn-secondary certainty-flag clickable" sdbm-certainty-flags="entry_language"><span class="fa"></span></span>
+            <span ng-if='entry_language.language != undefined && entry_language.language.id != undefined' id="language_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_language"><span class="fa"></span></span>
           </div>
 
         </div>
@@ -809,7 +809,7 @@ label.col-sm-2-and-half {
           <div class="input-group">
             <input ng-class="{ 'has-error': !entryForm['height'].$valid }" type="text" class="form-control" id="height" name="height" ng-pattern="/^[0-9]*$/" data-ng-model="entry.height">
             <span class="input-group-append">
-              <a href="" ng-click="convertInchesToMillimeter(entry, 'height')" class="btn btn-secondary"><span class="fa fa-th"></span></a>
+              <a href="" ng-click="convertInchesToMillimeter(entry, 'height')" class="btn btn-outline-secondary"><span class="fa fa-th"></span></a>
             </span>
           </div>
         </div>
@@ -819,7 +819,7 @@ label.col-sm-2-and-half {
           <div class="input-group">
             <input ng-class="{ 'has-error': !entryForm['width'].$valid }" type="text" class="form-control" id="width" name="width" ng-pattern="/^[0-9]*$/" data-ng-model="entry.width">
             <span class="input-group-append">
-              <a href="" ng-click="convertInchesToMillimeter(entry, 'width')" class="btn btn-secondary"><span class="fa fa-th"></span></a>
+              <a href="" ng-click="convertInchesToMillimeter(entry, 'width')" class="btn btn-outline-secondary"><span class="fa fa-th"></span></a>
             </span>
           </div>
         </div>
@@ -918,7 +918,7 @@ label.col-sm-2-and-half {
                   <a class="fa fa-times" ng-click="removeNameAuthority(prov, 'provenance_agent')"></a>
                   <a href="/names/{{ prov.provenance_agent.id }}" target="_blank">{{ prov.provenance_agent.name }}</a>
                 </div>
-                <span ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' id="provenance_certainty_flags_{{ $index }}" class="btn btn-secondary certainty-flag clickable" sdbm-certainty-flags="prov" ng-if="prov.provenance_agent != undefined && prov.provenance_agent.id != undefined"><span class="fa"></span></span>
+                <span ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' id="provenance_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="prov" ng-if="prov.provenance_agent != undefined && prov.provenance_agent.id != undefined"><span class="fa"></span></span>
                 <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="prov" encourage-name-authority-name="provenance_agent"></span>
               </div>
             </div>
@@ -1127,6 +1127,6 @@ label.col-sm-2-and-half {
     <div class="modal-body form-horizontal form-inline compress-whitespace">
       <p>
         Convert <input type="number" class="form-control" ng-model="inches" ng-change="convert()"> inches into <input type="number" class="form-control" ng-model="millimeters"> millimeters
-        <a href="" class="btn btn-secondary float-right" ng-click="confirm();">Done</a></p>
+        <a href="" class="btn btn-outline-secondary float-right" ng-click="confirm();">Done</a></p>
     </div>
 </script>

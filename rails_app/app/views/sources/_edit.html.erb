@@ -7,7 +7,7 @@
             <% if index == 1 %>
                     <span ng-hide="mergeEdit" class="btn btn-success" ng-click="beginMergeEdit()">Edit</span>
                     <span ng-show="mergeEdit">
-                        <span class="btn btn-secondary" ng-click="confirmMergeEdit()" ng-disabled="form.$invalid || currentlySaving">Save</span>
+                        <span class="btn btn-outline-secondary" ng-click="confirmMergeEdit()" ng-disabled="form.$invalid || currentlySaving">Save</span>
                         <span class="btn btn-warning" ng-click="cancelMergeEdit()">Cancel</span>
                     </span>
             <% end %>

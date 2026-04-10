@@ -4,7 +4,7 @@
         <form class='input-group' ng-submit="autocomplete()">
             <input autofocus type="text" id="searchNameAuthority" class="form-control search-form" ng-model="nameSearchString">
             <span class='input-group-append'>
-                <input type='submit' class='btn btn-secondary' value='Search' id='search-name'>Search</a>
+                <input type='submit' class='btn btn-outline-secondary' value='Search' id='search-name'>Search</a>
             </span>
         </form>
     </div>
@@ -17,9 +17,9 @@
                     <tr>
                         <th style="width: 90px;">
                             <div class="btn-group">
-                                <a href="" ng-disabled="page <= 1" ng-click="prevPage()" class="btn btn-sm btn-secondary"><span class="fa fa-chevron-left"></span></a>
-                                <span class="btn btn-sm btn-secondary">{{ page }}</span>
-                                <a href="" ng-click="nextPage()" class="btn btn-sm btn-secondary"><span class="fa fa-chevron-right"></span></a>
+                                <a href="" ng-disabled="page <= 1" ng-click="prevPage()" class="btn btn-sm btn-outline-secondary"><span class="fa fa-chevron-left"></span></a>
+                                <span class="btn btn-sm btn-outline-secondary">{{ page }}</span>
+                                <a href="" ng-click="nextPage()" class="btn btn-sm btn-outline-secondary"><span class="fa fa-chevron-right"></span></a>
                             </div>
                         </th>
                         <th class='text-left'>Name</th>
@@ -65,7 +65,7 @@
         <div class='row'>
             <div class='col-sm-12 text-right'>
                 <span class="btn-group">
-                    <button class="btn btn-secondary" ng-click="cancel()">Cancel</button>
+                    <button class="btn btn-outline-secondary" ng-click="cancel()">Cancel</button>
                 </span>
             </div>
         </div>

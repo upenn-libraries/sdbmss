@@ -55,7 +55,7 @@
         <% current_user.tags.each do |tag| %>
             <li class="list-inline-item">
                 <div class="btn-group">
-                <%= link_to(main_app.bookmarks_path(tag: tag[0]), class: "btn btn-sm btn-secondary") do %>
+                <%= link_to(main_app.bookmarks_path(tag: tag[0]), class: "btn btn-sm btn-outline-secondary") do %>
                     <%= "#{tag[0]}" %>
                 <% end %>
                 <span class="btn btn-sm btn-info btn-tag">

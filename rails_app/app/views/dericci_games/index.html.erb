@@ -136,14 +136,14 @@
       <div class="alert alert-success">You have played <%= @games.count %> games!  <%= render partial: "shared/request_advancement" %></div>
     <% end %>
     <!-- -->
-    <%= link_to new_dericci_game_path, class: 'btn btn-sm btn-secondary', id: "new-game" do %>
+    <%= link_to new_dericci_game_path, class: 'btn btn-sm btn-outline-secondary', id: "new-game" do %>
       <span class="fa fa-building"></span> Start a <strong>New Game</strong>
     <% end %>
 
     <% completed = @games.select { |g| g.completed.to_i + g.skipped.to_i + g.flagged.to_i >= 100 } %>
     <% inprogress = @games.select { |g| g.completed.to_i + g.skipped.to_i + g.flagged.to_i < 100 } %>
-    <a data-toggle="collapse" data-target="#completed-games" class="btn btn-sm btn-secondary">Completed Games <span class="badge badge-light"><%= completed.count %></span> <span class="caret"></span></a>
-    <a data-toggle="collapse" data-target="#in-progress" class="btn btn-sm btn-secondary">In Progress <span class="badge badge-light"><%= inprogress.count %></span> <span class="caret"></span></a>
+    <a data-toggle="collapse" data-target="#completed-games" class="btn btn-sm btn-outline-secondary">Completed Games <span class="badge badge-light"><%= completed.count %></span> <span class="caret"></span></a>
+    <a data-toggle="collapse" data-target="#in-progress" class="btn btn-sm btn-outline-secondary">In Progress <span class="badge badge-light"><%= inprogress.count %></span> <span class="caret"></span></a>
     <%= render partial: "list", locals: {title: "In Progress", games: inprogress } %>
     <%= render partial: "list", locals: {title: "Completed Games", games: completed } %>
   </div>

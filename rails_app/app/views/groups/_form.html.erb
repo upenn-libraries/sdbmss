@@ -24,13 +24,13 @@
       <% if g.object.confirmed %>
         <%= g.select :role, [["Manager", "Manager"], ["Member", "Member"]], {}, {class: "form-control"} %>
       <% elsif g.object.created_by == g.object.user %>
-        <%= link_to(group_user_path(g.object, group_user: {confirmed: true, admin: true}), method: :put, class: "btn btn-secondary") do %>
+        <%= link_to(group_user_path(g.object, group_user: {confirmed: true, admin: true}), method: :put, class: "btn btn-outline-secondary") do %>
           <span class="text-success">Confirm</span>
         <% end %>
       <% else %>
         <span class="form-control" style='border: none; box-shadow: none;'>Invited</span>
       <% end %>
-        <%= link_to(group_user_path(g.object, {format: 'html', admin: true}),  method: :delete, class: "btn btn-secondary", data: { confirm: 'Are you sure you want to remove this user?' }) do %>
+        <%= link_to(group_user_path(g.object, {format: 'html', admin: true}),  method: :delete, class: "btn btn-outline-secondary", data: { confirm: 'Are you sure you want to remove this user?' }) do %>
           <span class="text-danger">
             <span class="fa fa-times"></span>
             <% if g.object.user == current_user %>

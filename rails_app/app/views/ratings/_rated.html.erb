@@ -1,6 +1,6 @@
 <span class="<%= defined?(up) ? 'dropup' : 'dropdown' %>">
     <% confirms = ratable.ratings.where(qualifier: "confirm") %>
-        <a data-toggle="dropdown" data-placement="bottom" class="btn btn-sm btn-secondary dropdown-toggle">
+        <a data-toggle="dropdown" data-placement="bottom" class="btn btn-sm btn-outline-secondary dropdown-toggle">
             Confirmed by <%= confirms.count %> <%= "user".pluralize(confirms.count) %>
         <% if confirms.count > 0 %>
             </a>
@@ -19,7 +19,7 @@
 </span>
 <span class="<%= defined?(up) ? 'dropup' : 'dropdown' %>">
     <% disputes = ratable.ratings.where(qualifier: "dispute") %>
-        <a data-toggle="dropdown" data-placement="bottom" class="btn btn-sm btn-secondary dropdown-toggle">
+        <a data-toggle="dropdown" data-placement="bottom" class="btn btn-sm btn-outline-secondary dropdown-toggle">
             Disputed by <%= disputes.count %> <%= "user".pluralize(disputes.count) %>
         <% if disputes.count > 0 %>
         </a>

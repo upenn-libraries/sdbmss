@@ -5,9 +5,9 @@
 <p class="text-center">
   <% if params[:comment_sort] == "desc" %>
     <% comments = comments.reverse %>
-    <%= link_to "Sort by Oldest First", request.params.merge({:comment_sort => "asc"}), class: "btn btn-sm btn-secondary" %>
+    <%= link_to "Sort by Oldest First", request.params.merge({:comment_sort => "asc"}), class: "btn btn-sm btn-outline-secondary" %>
   <% else %>
-    <%= link_to "Sort by Newest First", request.params.merge({:comment_sort => "desc"}), class: "btn btn-sm btn-secondary" %>
+    <%= link_to "Sort by Newest First", request.params.merge({:comment_sort => "desc"}), class: "btn btn-sm btn-outline-secondary" %>
   <% end %>
 </p>
 <% comments.each do |comment| %>
@@ -90,8 +90,8 @@
                 <div class="input-group textarea-group">
                   <%= text_area_tag :reply, reply.reply, class: 'form-control', rows: 1, placeholder: "Begin your reply here..." %>
                   <div class="input-group-append textarea-group-btn">
-                    <%= submit_tag 'Confirm', class: 'btn btn-secondary' %>
-                    <a onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');" href="" class='btn btn-secondary'>Cancel</a>
+                    <%= submit_tag 'Confirm', class: 'btn btn-outline-secondary' %>
+                    <a onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');" href="" class='btn btn-outline-secondary'>Cancel</a>
                   </div>
                 </div>
               </div>
@@ -110,8 +110,8 @@
               <%= hidden_field_tag :comment_id, comment.id %>
               <%= text_area_tag :reply, '', class: 'form-control', rows: 1, placeholder: "Begin your reply here..." %>
               <div class="input-group-append textarea-group-btn">
-                <%= submit_tag 'Add Reply', class: 'btn btn-secondary textarea-btn' %>
-                <a href="#comment_<%= comment.id %> .add-reply-toggle" data-toggle="collapse" class='btn btn-secondary textarea-btn'>Cancel</a>
+                <%= submit_tag 'Add Reply', class: 'btn btn-outline-secondary textarea-btn' %>
+                <a href="#comment_<%= comment.id %> .add-reply-toggle" data-toggle="collapse" class='btn btn-outline-secondary textarea-btn'>Cancel</a>
               </div>
             </div>
           <% end %>

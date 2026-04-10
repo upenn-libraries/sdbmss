@@ -112,7 +112,7 @@
     <div class="col-sm-12">
         <%= render partial: "pages/partial", locals: {page_name: "Manuscript Instructions"} %>
         <p>
-            <a class="btn btn-secondary btn-sm" data-blacklight-modal="trigger" rel="nofollow" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
+            <a class="btn btn-outline-secondary btn-sm" data-blacklight-modal="trigger" rel="nofollow" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
         </p>
     </div>
     <% if @manuscript.location %>
@@ -286,7 +286,7 @@
                                     <div class="input-group">
                                         <%= submit_tag "Create", class: 'form-control btn-info', data: {confirm: "Are you sure you would like to create a new Observation?"} %>
                                         <span class="input-group-btn">
-                                            <a id="clearProvenance" class="btn btn-secondary">Clear</a>
+                                            <a id="clearProvenance" class="btn btn-outline-secondary">Clear</a>
                                         </span>
                                     </div>
                                 </div>
