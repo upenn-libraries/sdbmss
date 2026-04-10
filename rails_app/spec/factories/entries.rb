@@ -1,15 +1,15 @@
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :edit_entry_with_titles, class: Entry do
     transient do
-      titles ["Book of Hours"]
-      include_author true
+      titles { ["Book of Hours"] }
+      include_author { true }
     end
 
     source { create(:edit_test_source) }
     created_by { source.created_by || User.where(role: 'admin').first || create(:admin) }
-    approved false
-    catalog_or_lot_number "123"
+    approved { false }
+    catalog_or_lot_number { "123" }
 
     after(:create) do |entry, evaluator|
       evaluator.titles.each_with_index do |title, index|

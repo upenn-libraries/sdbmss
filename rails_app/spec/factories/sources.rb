@@ -1,8 +1,8 @@
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :edit_test_source, class: Source do
-    title "A Sample Test Source With a Highly Unique Name"
-    date "2013-11-12"
+    title { "A Sample Test Source With a Highly Unique Name" }
+    date { "2013-11-12" }
     source_type { SourceType.auction_catalog }
     created_by { User.where(role: 'admin').first || create(:admin) }
 

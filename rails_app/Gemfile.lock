@@ -332,7 +332,7 @@ GEM
     regexp_parser (2.11.3)
     reline (0.6.3)
       io-console (~> 0.5)
-    request_store (1.7.0)
+    request_store (1.6.0)
       rack (>= 1.4)
     responders (3.1.1)
       actionpack (>= 5.2)
@@ -530,6 +530,7 @@ DEPENDENCIES
   rack-handlers
   rails (~> 5.2.8)
   rdoc (~> 6.3.0)
+  request_store (~> 1.6.0)
   responders (~> 3.0)
   rsolr (~> 2.0)
   rspec-rails (~> 5.0)
@@ -553,4 +554,4 @@ DEPENDENCIES
   yard (~> 0.9.11)
 
 BUNDLED WITH
-   1.17.3
+   2.1.4
