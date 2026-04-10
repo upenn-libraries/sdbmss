@@ -34,8 +34,8 @@
                 </dt>
                 <dd>
                   <ul class="list-inline">
-                    <li ng-if="bookmark.tags.length <= 0" class='text-warning'>This bookmark has no tags.</li>
-                    <li ng-repeat="tag in bookmark.tags" class="bookmark-tag" ng-class="{'btn-info btn-lg' : tag == search_tag, 'bg-primary' : tag != search_tag}">
+                    <li ng-if="bookmark.tags.length <= 0" class='list-inline-item text-warning'>This bookmark has no tags.</li>
+                    <li ng-repeat="tag in bookmark.tags" class="list-inline-item bookmark-tag" ng-class="{'btn-info btn-lg' : tag == search_tag, 'bg-primary' : tag != search_tag}">
                         <a href="" ng-click="searchTag(tag);">{{ tag }}</a>
                         <a href="" class='remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="fa fa-times"></span></a>
                     </li>

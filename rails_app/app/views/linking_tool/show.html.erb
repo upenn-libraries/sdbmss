@@ -840,7 +840,7 @@ $(document).ready(function() {
                         </p>
                         <ul class="list-inline">
                         <% Entry.similar_fields.each_with_index do |field, index| %>
-                            <li>
+                            <li class="list-inline-item">
                                 <input id="suggestion-field-<%= field %>" type="checkbox" value="<%= field %>" class="form-control suggestion-field">
                                     <label for="suggestion-field-<%= field %>" class="control-label">
                                         <%= field.to_s.gsub("_search", "").humanize %>
@@ -854,7 +854,7 @@ $(document).ready(function() {
                         <p class="text-info"><b>Numerical fields</b> may provide more precise or less ambiguous results, but not all entries have values in all fields.</p>
                         <ul class="list-inline">
                             <% [:folios, :num_columns, :num_lines, :height, :width].each do |field, index| %>
-                                <li>
+                                <li class="list-inline-item">
                                     <input type="checkbox" id="suggestion-range-<%= field %>" value="<%= field %>" class="form-control suggestion-field">
                                         <label for="suggestion-range-<%= field %>" class="control-label">
                                             <%= field.to_s.gsub("num_", "").humanize %>

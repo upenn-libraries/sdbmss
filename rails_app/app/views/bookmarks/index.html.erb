@@ -55,9 +55,9 @@
               <div class="row">
                 <div class="col-sm-7">
                   <ul class="list-inline" style="margin-bottom: 0px;">
-                    <li class=""><span class="btn btn-sm"><span class="fa fa-tag"></span> Tags</span> </li>
-                    <li ng-if="bookmark.tags.length <= 0" class="text-muted">This bookmark has no tags.</li>
-                    <li ng-repeat="tag in bookmark.tags" class="btn-group">
+                    <li class="list-inline-item"><span class="btn btn-sm"><span class="fa fa-tag"></span> Tags</span> </li>
+                    <li ng-if="bookmark.tags.length <= 0" class="list-inline-item text-muted">This bookmark has no tags.</li>
+                    <li ng-repeat="tag in bookmark.tags" class="list-inline-item btn-group">
                       <a class="btn btn-secondary btn-sm" ng-class="{'btn-primary' : tag == tagSearch}" href="" ng-click="searchTag(tag);">{{ tag }}</a>
                       <a href="" class='btn btn-secondary btn-sm remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)" title="Remove tag '{{ tag }}'"><span class="fa fa-times"></span></a>
                     </li>

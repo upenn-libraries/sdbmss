@@ -211,7 +211,7 @@
       <dd style="padding: 0px;">
         <ul class="list-inline text-left">
         <% @model.children.order(:name).each do |child| %>
-          <li style="font-size: <%= 12 + [10, child.children.count].min %>px;"><span class="text-muted"></span>  <%= link_to child.name, place_path(child) %></li>
+          <li class="list-inline-item" style="font-size: <%= 12 + [10, child.children.count].min %>px;"><span class="text-muted"></span>  <%= link_to child.name, place_path(child) %></li>
         <% end %>
         </ul>
     <% end %>

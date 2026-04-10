@@ -512,7 +512,7 @@
                         <% end %>
                         <span class="list-inline">
                         <% entry.group_records.each do |group_record| %>
-                            <li>
+                            <li class="list-inline-item">
                                 <%= link_to group_record.group.name, group_path(group_record.group) %>
                                 <% if group_record.editable %>
                                     <span class="text-muted">(Editable)</span>

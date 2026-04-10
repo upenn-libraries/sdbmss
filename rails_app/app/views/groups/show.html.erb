@@ -51,22 +51,22 @@
         </p>
 
         <div class="list-inline">
-            <li class='h4'>Managers</li>
+            <li class='list-inline-item h4'>Managers</li>
         <% @model.admin.each do |user| %>
-            <li><%= render partial: "shared/username_with_profile_link", locals: { user: user } %>   </li>
+            <li class="list-inline-item"><%= render partial: "shared/username_with_profile_link", locals: { user: user } %>   </li>
         <% end %>
         <% if @model.users.count <= 0 %>
-            <li class='text-muted'>There are no users in this group at the moment.</li>
+            <li class='list-inline-item text-muted'>There are no users in this group at the moment.</li>
         <% end %>
         </div>
 
         <div class="list-inline">
-            <li class='h4'>Members</li>
+            <li class='list-inline-item h4'>Members</li>
         <% @model.members.each do |user| %>
-            <li><%= render partial: "shared/username_with_profile_link", locals: { user: user } %>   </li>
+            <li class="list-inline-item"><%= render partial: "shared/username_with_profile_link", locals: { user: user } %>   </li>
         <% end %>
         <% if @model.users.count <= 0 %>
-            <li class='text-muted'>There are no users in this group at the moment.</li>
+            <li class='list-inline-item text-muted'>There are no users in this group at the moment.</li>
         <% end %>
         </div>
 

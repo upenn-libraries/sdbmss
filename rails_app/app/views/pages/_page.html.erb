@@ -10,12 +10,12 @@
   </div>
   <div class="col-sm-3 text-right">
     <ul class="list-inline">
-      <li>
+      <li class="list-inline-item">
         <%= link_to(edit_page_path(page.name)) do %>
           <span class="fa fa-pencil"></span> Edit
         <% end %>
       </li>
-      <li>
+      <li class="list-inline-item">
         <%= link_to(page_path(page.name), :method => :delete, data: { confirm: "Are you sure you would like to permanently remove this file?" }) do %>
           <span class="fa fa-times"></span> Delete
         <% end %>

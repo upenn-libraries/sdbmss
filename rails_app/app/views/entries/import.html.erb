@@ -125,8 +125,8 @@
     <div class="col-sm-12">
       <div class="alert alert-warning">
         <ul class="list-inline">
-          <li><strong>Warning: The following catalog or lot numbers are used multiple times:</strong></li>
-          <li ng-repeat="duplicate in duplicates track by $index">
+          <li class="list-inline-item"><strong>Warning: The following catalog or lot numbers are used multiple times:</strong></li>
+          <li class="list-inline-item" ng-repeat="duplicate in duplicates track by $index">
             {{ duplicate }}
           </li>
         </ul>
@@ -136,15 +136,15 @@
       <div class="">
         <h4>Transaction Information</h4>
         <ul class="list-inline">
-          <li class='input-group'>
+          <li class='list-inline-item input-group'>
             <span class='input-group-addon input-group-label'>Cat. or Lot Number </span>
             <span class="input-group-addon">{{ entries[entry_index].source_catalog_or_lot_number }}</span>
           </li>
-          <li class='input-group'>
+          <li class='list-inline-item input-group'>
             <span class='input-group-addon input-group-label'>Transaction Type </span>
             <span class="input-group-addon">{{ entries[entry_index].source_transaction_type }}</span>
-          </li>          
-          <li class='input-group'>
+          </li>
+          <li class='list-inline-item input-group'>
             <span class='input-group-addon input-group-label'>Sale Price</span>
             <span class="input-group-addon">{{ entries[entry_index].sale_price }}</span>
           </li>
@@ -208,63 +208,63 @@
         </ul>
         <h4>Other Info</h4>
         <ul class="list-inline">
-          <li class="input-group">
+          <li class="list-inline-item input-group">
               <span class='input-group-addon input-group-label'>Historiated Initials</span>
               <span class='input-group-addon'>{{ entries[entry_index].initials_historiated }}</span>
-          </li>          
-           <li class="input-group">
+          </li>
+           <li class="list-inline-item input-group">
               <span class='input-group-addon input-group-label'>Decorated Initials</span>
               <span class='input-group-addon'>{{ entries[entry_index].initials_decorated }}</span>
           </li>
-           <li class="input-group">
+           <li class="list-inline-item input-group">
               <span class='input-group-addon input-group-label'>Fullpage Miniatures</span>
               <span class='input-group-addon'>{{ entries[entry_index].miniatures_fullpage }}</span>
           </li>
-            <li class="input-group">
+            <li class="list-inline-item input-group">
               <span class='input-group-addon input-group-label'>Large Miniatures</span>
               <span class='input-group-addon'>{{ entries[entry_index].miniatures_large }}</span>
             </li>
-            <li class="input-group">
+            <li class="list-inline-item input-group">
               <span class='input-group-addon input-group-label'>Small Miniatures</span>
               <span class='input-group-addon'>{{ entries[entry_index].miniatures_small }}</span>
             </li>
-            <li class="input-group">
+            <li class="list-inline-item input-group">
               <span class='input-group-addon input-group-label'>Unspec. Miniatures</span>
               <span class='input-group-addon'>{{ entries[entry_index].miniatures_unspec_size }}</span>
             </li>
-            <li class="input-group">
+            <li class="list-inline-item input-group">
               <span class='input-group-addon input-group-label'>Folios</span>
               <span class='input-group-addon'>{{ entries[entry_index].folios }}</span>
             </li>
-            <li class="input-group">
+            <li class="list-inline-item input-group">
               <span class='input-group-addon input-group-label'>Lines</span>
               <span class='input-group-addon'>{{ entries[entry_index].lines }}</span>
             </li>
-            <li class="input-group">
+            <li class="list-inline-item input-group">
               <span class='input-group-addon input-group-label'>Columns</span>
               <span class='input-group-addon'>{{ entries[entry_index].columns }}</span>
             </li>
-            <li class="input-group">
+            <li class="list-inline-item input-group">
               <span class='input-group-addon input-group-label'>Height(mm)</span>
               <span class='input-group-addon'>{{ entries[entry_index].height }}</span>
             </li>
-            <li class="input-group">
+            <li class="list-inline-item input-group">
               <span class='input-group-addon input-group-label'>Width(mm)</span>
               <span class='input-group-addon'>{{ entries[entry_index].width }}</span>
             </li>
-            <li class="input-group">
+            <li class="list-inline-item input-group">
               <span class='input-group-addon input-group-label'>Alt. Size</span>
               <span class='input-group-addon'>{{ entries[entry_index].alt_size }}</span>
             </li>
-            <li class="input-group">
+            <li class="list-inline-item input-group">
               <span class='input-group-addon input-group-label'>Binding</span>
               <span class='input-group-addon'>{{ entries[entry_index].manuscript_binding }}</span>
             </li>
-            <li class="input-group">
+            <li class="list-inline-item input-group">
               <span class='input-group-addon input-group-label'>Manuscript URL</span>
               <span class='input-group-addon'><a href="{{ entries[entry_index].manuscript_link }}" target="_blank">{{ entries[entry_index].manuscript_link }}</a></span>
             </li>
-            <li class="input-group">
+            <li class="list-inline-item input-group">
               <span class='input-group-addon input-group-label'>Other Info</span>
               <span class='input-group-addon'>{{ entries[entry_index].other_info }}</span>
             </li>
