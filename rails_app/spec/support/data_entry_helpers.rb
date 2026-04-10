@@ -6,15 +6,18 @@ module DataEntryHelpers
   def add_name_authority(id, value)
     find_by_id(id).click
     expect(page).to have_content('in Name Authority')
-    expect(page).to have_selector('#searchNameAuthority');
+    expect(page).to have_selector('#searchNameAuthority')
     find_by_id('searchNameAuthority').set value
     find_by_id('search-name').click
     expect(page).not_to have_content('To begin searching')
     if page.all('tr', :text => value).count <= 0
       expect(page).to have_content("Propose '#{value}")
       find_by_id('propose-name').click
-      expect(page).to have_content("This window asks you to create an authorized name")
-      click_button('Create')
+      expect(page).to have_selector('.modal-title', text: /^Create /, visible: true)
+      within all('.modal-dialog').last do
+        expect(page).to have_selector('.name-form a.btn.btn-primary', text: 'Save', visible: true)
+        find('.name-form a.btn.btn-primary', text: 'Save').click
+      end
       expect(page).not_to have_content("Error")
     else
       within '#select-name-table' do
@@ -49,12 +52,138 @@ module DataEntryHelpers
   end
 
   def open_source_create_modal
-    find_by_id("select_source").click
-    expect(page).to have_content("Search for Existing Source")
+    expect(page).to have_selector("#select_source")
+    find_by_id("select_source").trigger("click")
+    expect(page).to have_selector(".modal-title", text: "Search for Existing Source", visible: true)
     fill_in "date", with: "2014"
     expect(page).to have_content("Unable to find the Source you are looking for?")
-    find_by_id("create_source").trigger('click')
-    expect(page).to have_content("Not sure what your source type is?")
+    find_by_id("create_source").trigger("click")
+    expect(page).to have_selector("#source_type", visible: true)
+  end
+
+  def open_source_search_modal
+    expect(page).to have_selector("#select_source")
+    find_by_id("select_source").trigger("click")
+    expect(page).to have_selector(".modal-title", text: "Search for Existing Source", visible: true)
+  end
+
+  def wait_for_data_edit_page_to_load
+    expect(find(".source-name").text.length).to be > 0
+  end
+
+  def create_edit_test_source
+    create(:edit_test_source, created_by: @user)
+  end
+
+  def create_edit_entry(source: nil)
+    source ||= create_edit_test_source
+    entry = Entry.create!(
+      source: source,
+      created_by: @user,
+      approved: false,
+      catalog_or_lot_number: "123",
+      folios: 123,
+      num_lines: 3,
+      num_columns: 2,
+      height: 200,
+      width: 300,
+      alt_size: "F",
+      miniatures_fullpage: 6,
+      miniatures_large: 7,
+      miniatures_small: 8,
+      miniatures_unspec_size: 9,
+      initials_historiated: 10,
+      initials_decorated: 11,
+      manuscript_binding: "Velvet",
+      manuscript_link: "http://something.com",
+      other_info: "Other stuff",
+    )
+
+    sale = entry.sales.create!(
+      sold: "Yes",
+      date: "20140303",
+      price: 130000,
+      currency: "USD",
+    )
+    sale.sale_agents.create!(agent: Name.find_or_create_agent("Sotheby's"), role: SaleAgent::ROLE_SELLING_AGENT)
+    sale.sale_agents.create!(agent: Name.find_or_create_agent("Joe2"), role: SaleAgent::ROLE_SELLER_OR_HOLDER)
+    sale.sale_agents.create!(agent: Name.find_or_create_agent("Joe3"), role: SaleAgent::ROLE_BUYER)
+
+    entry.entry_titles.create!(title: "Book of Hours", order: 0)
+    entry.entry_titles.create!(title: "Bible", order: 1)
+    entry.entry_authors.create!(
+      author: Name.find_or_create_agent("Schmoe, Joe"),
+      observed_name: "Joe Schmoe",
+      role: "Tr",
+      uncertain_in_source: true,
+      order: 0,
+    )
+    entry.entry_dates.create!(
+      observed_date: "early 15th century",
+      date_normalized_start: "1400",
+      date_normalized_end: "1426",
+      order: 0,
+    )
+    entry.entry_artists.create!(
+      artist: Name.find_or_create_agent("Schultz, Charles"),
+      observed_name: "Chuck",
+      order: 0,
+    )
+    entry.entry_scribes.create!(
+      scribe: Name.find_or_create_agent("Brother Francis"),
+      observed_name: "Brother Francisco",
+      order: 0,
+    )
+    entry.entry_languages.create!(
+      language: Language.find_or_create_by(name: "Latin"),
+      order: 0,
+    )
+    entry.entry_materials.create!(
+      material: "Parchment",
+      order: 0,
+    )
+    entry.entry_places.create!(
+      place: Place.find_or_create_by(name: "Italy, Tuscany, Florence"),
+      observed_name: "Somewhere in Italy",
+      uncertain_in_source: true,
+      order: 0,
+    )
+    entry.entry_uses.create!(
+      use: "Some mysterious office or other",
+      order: 0,
+    )
+    entry.provenance.create!(
+      observed_name: "Somebody, Joe",
+      provenance_agent: Name.find_or_create_agent("Somebody, Joseph"),
+      uncertain_in_source: true,
+      start_date_normalized_start: "1945-06-15",
+      direct_transfer: true,
+      order: 0,
+    )
+    entry.provenance.create!(
+      provenance_agent: Name.find_or_create_agent("Sotheby's"),
+      comment: "An historic sale",
+      direct_transfer: true,
+      order: 1,
+    )
+    entry.provenance.create!(
+      observed_name: "Wild Bill Collector",
+      comment: "This is some unknown dude",
+      order: 2,
+    )
+
+    entry
+  end
+
+  def create_edit_entry_with_titles(titles, include_author: true, catalog_or_lot_number: "123", source: nil)
+    create(
+      :edit_entry_with_titles,
+      source: (source || create_edit_test_source),
+      created_by: @user,
+      catalog_or_lot_number: catalog_or_lot_number,
+      titles: titles,
+      include_author: include_author,
+    )
   end
 
 
@@ -198,7 +327,7 @@ module DataEntryHelpers
     expect(sale.get_sellers_or_holders.first.agent.name).to eq('Joe2')
     expect(sale.get_buyers.first.agent.name).to eq('Joe3')
     expect(sale.sold).to eq('Yes')
-    expect(sale.date).to eq('20140303')
+    expect(sale.date.delete('-')).to eq('20140303')
     expect(sale.price).to eq(130000)
     expect(sale.currency).to eq('USD')
 

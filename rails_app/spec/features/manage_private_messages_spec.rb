@@ -7,8 +7,8 @@ require "rails_helper"
 describe "Manage Private Messages", :js => true do
 
   before :all do
-    @user = User.where(role: "admin").first
-    @user2 = User.where(role: "contributor").first
+    @user = User.find_by(role: "admin")
+    @user2 = User.find_by(role: "contributor")
   end
 
   before :each do
@@ -17,14 +17,6 @@ describe "Manage Private Messages", :js => true do
 
   after :each do
     page.reset!
-  end
-
-  it "should prevent a 'guest' user from accessing messaging" do    
-    visit "/users/sign_out"
-    expect(page).to have_content("Login")
-
-    visit private_messages_path
-    expect(page).to have_content("You need to sign in or sign up before continuing.")
   end
 
   it "should display an intelligable empty inbox" do

@@ -40,11 +40,17 @@ module SDBMSS::Blacklight
     end
 
     def add(object_id)
+      object_id = normalize_id(object_id)
+      return if object_id.nil?
+
       @ids_to_entries[object_id] ||= nil
     end
 
     # returns the model object instance for the object_id
     def get(object_id)
+      object_id = normalize_id(object_id)
+      return nil if object_id.nil?
+
       # Load model objects on demand, only if we haven't loaded them yet
       ids_to_load = @ids_to_entries.select { |id, object| object.nil? }.keys
       if ids_to_load.count > 0
@@ -55,10 +61,18 @@ module SDBMSS::Blacklight
         entries = entries.with_associations
 
         entries.each do |entry|
-          @ids_to_entries[entry.id] = entry
+          @ids_to_entries[normalize_id(entry.id)] = entry
         end
       end
       @ids_to_entries[object_id]
+    end
+
+    private
+
+    def normalize_id(object_id)
+      return nil if object_id.blank?
+
+      object_id.to_i
     end
 
   end
