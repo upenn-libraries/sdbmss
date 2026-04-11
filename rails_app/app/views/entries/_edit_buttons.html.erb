@@ -4,17 +4,17 @@
         <button ng-if="entry.draft || (!entry.id && !sdbmutil.getManuscriptId() && !sdbmutil.getNewManuscript())" ng-click="saveAsDraft()" class="btn btn-outline-secondary save-button" ng-disabled="entryForm.$invalid || currentlySaving || !entry.source || (!entry.draft && num_drafts >= 10)" title="You may save up to 10 drafts at a time." >Save as Draft</button>
         <a class="btn btn-warning" id='cancelEdit' href="{{ entry.id ? '/entries/' + entry.id : '/dashboard'}}">Cancel</a>
     </div>
-    <div class="col-sm-8 text-right">
-        <span ng-if="entry && draft" >
-            <span class="text-info">An unsaved version from <b>{{ draft.updated_object.toLocaleDateString() }}</b>, <b>{{ draft.updated_object.toLocaleTimeString() }}</b> has been detected </span>
-            <a href="" class="btn btn-outline-secondary" ng-click="loadDraft()">
+    <div class="col-sm-8 d-flex flex-wrap justify-content-end align-items-center" style="gap: 6px;">
+        <span class="text-info" ng-if="entry && draft">An unsaved version from <b>{{ draft.updated_object.toLocaleDateString() }}</b>, <b>{{ draft.updated_object.toLocaleTimeString() }}</b> has been detected </span>
+        <span class="d-flex align-items-center flex-shrink-0" style="gap: 6px;">
+            <a href="" class="btn btn-outline-secondary" ng-click="loadDraft()" ng-if="entry && draft">
                 <span class="fa fa-repeat"></span>
                 Restore
             </a>
+            <a href="" data-toggle="modal" data-target="#backupSettings" class="btn btn-outline-secondary" ng-if="entry.id || entry.source">
+                <span class="fa fa-refresh"></span> Auto-backup {{ backup == 'enabled' ? 'enabled' : 'disabled' }}
+            </a>
         </span>
-        <a href="" data-toggle="modal" data-target="#backupSettings" class="btn btn-outline-secondary" ng-if="entry.id || entry.source">
-            <span class="fa fa-refresh"></span> Auto-backup {{ backup == 'enabled' ? 'enabled' : 'disabled' }}
-        </a>
     </div>
     <div class="col-sm-12 label-alignment" ng-show="entryForm.$invalid">
         <div style="color: red;">

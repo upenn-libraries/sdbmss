@@ -236,7 +236,7 @@ label.col-sm-2-and-half {
     <div class="source-info" ng-if="entry.source">
       <div class="source-container">
           <div class="form-group row">
-              <label class="col-sm-2 control-label">Source</label>
+              <label class="col-sm-2 control-label text-md-right">Source</label>
               <div class="col-sm-7 label-alignment source-name">
                   <a href="/sources/{{ entry.source.id }}">SDBM_SOURCE_{{ entry.source.id }}</a> - {{ entry.source.display_value }} ({{ entry.source.source_type.display_name }})
               </div>
@@ -250,7 +250,7 @@ label.col-sm-2-and-half {
       </div>
 
       <div class="row form-group" ng-if="entry.source.source_type_id != 8">
-        <label for="cat_lot_no" class="col-sm-2 control-label">
+        <label for="cat_lot_no" class="col-sm-2 control-label text-md-right">
             <span ng-show="entry.source.source_type.name != 'online'" sdbm-tooltip="entry_cat_lot_no">Cat. or Lot #</span>
             <span ng-show="entry.source.source_type.name == 'online'" sdbm-tooltip="entry_listing_id">Listing ID</span>
         </label>
@@ -264,7 +264,7 @@ label.col-sm-2-and-half {
 
       <!-- insitution is disabled for new entries -->
       <div class="row form-group" ng-if="entry.institution !== undefined" old="entry.source.source_type.entries_have_institution_field">
-        <label for="cat_lot_no" class="col-sm-2 control-label"><span sdbm-tooltip="entry_institution">Institution/Collection</span></label>
+        <label for="cat_lot_no" class="col-sm-2 control-label text-md-right"><span sdbm-tooltip="entry_institution">Institution/Collection</span></label>
         <div class="col-sm-5">
 
             <div class="btn-group" role="group">
@@ -287,7 +287,7 @@ label.col-sm-2-and-half {
           </div>
 
           <div class="form-group row">
-              <label class="col-sm-2 control-label">This entry is</label>
+              <label class="col-sm-2 control-label text-md-right">This entry is</label>
               <div class="col-sm-3">
                   <select class="form-control" id="transaction_type" ng-model="entry.transaction_type" ng-options="option[0] as option[1] for option in optionsTransactionType" ng-disabled="transactionTypeDisabled()"></select>
               </div>
@@ -296,14 +296,14 @@ label.col-sm-2-and-half {
           <div ng-show="entry.transaction_type == 'sale'">
 
               <div class="form-group row">
-                  <label for="sold" class="col-sm-2 control-label"><span sdbm-tooltip="entry_sold">Sold</span></label>
+                  <label for="sold" class="col-sm-2 control-label text-md-right"><span sdbm-tooltip="entry_sold">Sold</span></label>
                   <div class="col-sm-2">
                       <select class="form-control" id="sale_sold" ng-model="entry.sale.sold" ng-options="option[0] as option[1] for option in optionsSold">
                           <option value=""></option>
                       </select>
                   </div>
                   <div ng-show="entry.sale.sold == 'Yes'">
-                      <label for="sold" class="col-sm-4 control-label">Date Sold</span></label>
+                      <label for="sold" class="col-sm-4 control-label text-md-right">Date Sold</span></label>
                       <div class="col-sm-3">
                           <input type="text" class="form-control" id="sale_date" ng-model="entry.sale.date">
                       </div>
@@ -311,17 +311,17 @@ label.col-sm-2-and-half {
               </div>
 
               <div class="form-group row">
-                  <label for="price" class="col-sm-2 control-label"><span sdbm-tooltip="entry_price">Price</span></label>
+                  <label for="price" class="col-sm-2 control-label text-md-right"><span sdbm-tooltip="entry_price">Price</span></label>
                   <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['sale_price'].$valid }">
                       <input type="text" class="form-control" id="sale_price" name="sale_price" ng-pattern="/^[0-9,\.]*$/" ng-model="entry.sale.price">
                   </div>
-                  <label for="currency" class="col-sm-1 control-label"><span sdbm-tooltip="entry_currency">Currency</span></label>
+                  <label for="currency" class="col-sm-1 control-label text-md-right"><span sdbm-tooltip="entry_currency">Currency</span></label>
                   <div class="col-sm-1">
                       <select name="currency" id="sale_currency" class="form-control" ng-model="entry.sale.currency" ng-options="option[0] as option[1] for option in optionsCurrency">
                           <option value=""></option>
                       </select>
                   </div>
-                  <label for="other-currency" class="col-sm-2 control-label"><span sdbm-tooltip="entry_other_currency">Other Currency</span></label>
+                  <label for="other-currency" class="col-sm-2 control-label text-md-right"><span sdbm-tooltip="entry_other_currency">Other Currency</span></label>
                   <div class="col-sm-3">
                       <input type="text" class="form-control" id="other-currency" ng-model="entry.sale.other_currency">
                   </div>
@@ -348,7 +348,7 @@ label.col-sm-2-and-half {
                           <span class="fa fa-times"></span>
                         </a>
                       </div>
-                      <div class="col-sm-12">
+                      <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
                         <span class='control-label expandable'>
                           <span class="expandable-table">
                             <span sdbm-tooltip="sale_agent_as_recorded">As Recorded</span>
@@ -405,7 +405,7 @@ label.col-sm-2-and-half {
             <span class="fa fa-times"></span>
           </a>
         </div>
-          <div class="col-sm-12">
+          <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
             <span class='control-label expandable'>
               <span class="expandable-table">
                 <span sdbm-tooltip="entry_title_as_recorded">As Recorded</span>
@@ -442,7 +442,7 @@ label.col-sm-2-and-half {
             <span class="fa fa-times"></span>
           </a>
         </div>
-        <div class="col-sm-12">
+        <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
             <span class='control-label expandable'>
               <span class="expandable-table">
                 <span sdbm-tooltip="entry_author_as_recorded">As Recorded</span>
@@ -491,7 +491,7 @@ label.col-sm-2-and-half {
             <span class="fa fa-times"></span>
           </a>
         </div>
-        <div class="col-sm-12">
+        <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
           <span class='control-label expandable'>
             <span class="expandable-table">
               <span sdbm-tooltip="entry_date_as_recorded">As Recorded</span>
@@ -530,7 +530,7 @@ label.col-sm-2-and-half {
             <span class="fa fa-times"></span>
           </a>
         </div>
-        <div class="col-sm-12">
+        <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
           <span class='control-label expandable'>
             <span class="expandable-table">
               <span sdbm-tooltip="entry_artist_as_recorded">As Recorded</span>
@@ -576,7 +576,7 @@ label.col-sm-2-and-half {
             <span class="fa fa-times"></span>
           </a>
         </div>
-        <div class="col-sm-12">
+        <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
           <span class='control-label expandable'>
             <span class="expandable-table">
               <span sdbm-tooltip="entry_scribe_as_recorded">As Recorded</span>
@@ -616,7 +616,7 @@ label.col-sm-2-and-half {
             <span class="fa fa-times"></span>
           </a>
         </div>
-          <div class="col-sm-12">
+          <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
             <span class='control-label expandable'>
               <span class="expandable-table">
                 <span sdbm-tooltip="entry_place_as_recorded">As Recorded</span>
@@ -656,7 +656,7 @@ label.col-sm-2-and-half {
             <span class="fa fa-times"></span>
           </a>
         </div>
-        <div class="col-sm-12">
+        <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
           <span class='control-label expandable'>
             <span class="expandable-table">
               <span sdbm-tooltip="entry_language_as_recorded">As Recorded</span>
@@ -696,7 +696,7 @@ label.col-sm-2-and-half {
             <span class="fa fa-times"></span>
           </a>
         </div>
-        <div class="col-sm-12">
+        <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
           <span class='control-label expandable'>
             <span class="expandable-table">
               <span sdbm-tooltip="entry_use">Use</span>
@@ -727,7 +727,7 @@ label.col-sm-2-and-half {
             <span class="fa fa-times"></span>
           </a>
         </div>
-        <div class="col-sm-12">
+        <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
           <span class='control-label expandable'>
             <span class="expandable-table">
               <span sdbm-tooltip="entry_material_as_recorded">As Recorded</span>
@@ -898,20 +898,20 @@ label.col-sm-2-and-half {
         </div>
         <div class="col-sm-12">
           <div class="row provenance-row">
-            <div class="col-sm-2">
+            <div class="col-md-2">
               <div class="control-label">
                 <span sdbm-tooltip="entry_provenance_agent_as_recorded">Name As Recorded</span>
               </div>
             </div>
-            <div class="col-sm-4 expandable">
+            <div class="col-md-4 expandable">
                 <span class="expandable-table">
                   <input input maxlength="255" id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name" size="12" ng-focus="expand($event)" ng-blur="reduce($event)">
                 </span>
             </div>
-            <div class="col-sm-2">
+            <div class="col-md-2">
               <span class='control-label one-line' sdbm-tooltip="entry_provenance_agent">Authority Name</span>
             </div>
-            <div class="col-sm-4">
+            <div class="col-md-4">
               <div class="btn-group name-authority-group">
                 <a id='find_provenance_name_authority_{{ $index }}' ng-if='prov.provenance_agent.id == undefined' ng-init="prov.provenance_agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', prov.provenance_agent, 'is_provenance_agent', prov.observed_name)" style="width: 100%">Find or Create Authority Name</a>
                 <div ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
@@ -924,10 +924,10 @@ label.col-sm-2-and-half {
             </div>
           </div>
           <div class="row provenance-row">
-            <div class="col-sm-2">
+            <div class="col-md-2">
               <label for="" class="control-label" sdbm-tooltip="entry_provenance_dates">Date(s)</label>
             </div>
-            <div class="col-sm-5">
+            <div class="col-md-5">
               <div class="prov-date">
                 <div class="input-group" ng-init="prov.dates = prov.dates || [{date: ''}]">
                   <select name="" id="" class="form-control" ng-model="prov.dates[0].type" ng-blur="updateProvenanceDateRange(prov, prov.dates[0])" ng-options="opt for opt in getProvenanceDateOptions(prov, prov.dates[0])" ng-init="prov.dates[0].type = prov.dates[0].type || getProvenanceDateOptions(prov, prov.dates[0])[0]"></select>
@@ -940,7 +940,7 @@ label.col-sm-2-and-half {
                 </div>
               </div>
             </div>
-            <div class="col-sm-5 text-right form-inline prov-date-range">
+            <div class="col-md-5 text-right form-inline prov-date-range">
               <span class='control-label'><span sdbm-tooltip="entry_provenance_date_range_for_search">Suggested Range</span>
                 <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date_normalized_start" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">
                 to
@@ -949,16 +949,16 @@ label.col-sm-2-and-half {
             </div>
           </div>
           <div class="row provenance-row">
-            <div class="col-sm-2">
+            <div class="col-md-2">
               <label for="" class="control-label form-inline" style="text-align: left;"><span sdbm-tooltip="entry_provenance_evidence">Evidence:</span>
               </label>
             </div>
-            <div class="col-sm-10">
+            <div class="col-md-10">
               <textarea id="provenance_comment_{{ $index }}" class="form-control" id="comment" ng-model="prov.comment" rows="1" placeholder="Enter additional evidence here..."></textarea>
             </div>
           </div>
           <div class="row provenance-row">
-            <div class="col-sm-12 text-center">
+            <div class="col-md-12 text-center">
             <label for="" class="control-label">
               <span sdbm-tooltip="entry_provenance_direct_transfer">Directly Transfered to Next</span>
               <input class='directly_transfered' id="provenance_direct_transfer_{{ $index }}" type="checkbox" ng-model="prov.direct_transfer" ng-click="lockProvenance($event)"/>
