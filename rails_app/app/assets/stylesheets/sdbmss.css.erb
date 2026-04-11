@@ -204,8 +204,6 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
   left: 0;
   min-width: 320px;
   z-index: 1030;
-  padding-top: 0;
-  padding-bottom: 0;
 }
 #header-navbar .nav-link {
   line-height: 1.5;
@@ -496,7 +494,6 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
 .breadcrumb {
   background: none;
   text-align: center;
-  justify-content: center;
   margin: 0px;
 }
 .breadcrumb-item.active a {
@@ -558,23 +555,12 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
   margin-bottom: 10px;
   z-index: 10;
 }
-#search-navbar > .container {
-  width: 100%;
-}
 #search-navbar .catalog-search-form {
   flex: 1;
 }
 #search-navbar .catalog-search-info {
   flex: none;
   flex-wrap: nowrap;
-}
-#search-navbar .catalog-search-info .navbar-nav {
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-}
-#search-navbar .catalog-search-info .nav > li {
-  white-space: nowrap;
 }
 #search-navbar .catalog-search-info .nav > li > a {
   padding: 15px 10px;
@@ -613,9 +599,6 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
 .catalog-search-form {
   width: 60%;
 }
-.catalog-search-form .row {
-  width: 100%;
-}
 .catalog-search-form .row > div {
   padding-left: 30px;
 }
@@ -623,12 +606,7 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
   margin: 0px;
   line-height: 0px;
 }
-.panel-search .catalog-search-form,
-.card-search .catalog-search-form {
-  width: 100%;
-}
 .card-search .form-inline .row {
-  width: 100%;
   flex: 1;
 }
 .panel-search,
@@ -1264,20 +1242,12 @@ div[ui-sortable] {
   border-bottom: 1px solid #ddd;
   line-height: normal;
   margin: 0px;
-  align-items: center;
 }
 .provenance-row:last-child {
   border-bottom: none;
 }
 .provenance-row .control-label {
-  margin-bottom: 0;
   line-height: 34px;
-}
-.provenance-row .name-authority-group {
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-  width: 100%;
 }
 .provenance-row .well-name-authority {
   max-width: calc(100% - 40px);
@@ -1285,9 +1255,6 @@ div[ui-sortable] {
   text-overflow: ellipsis;
 }
 .provenance-row .text-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   padding: 6px 0;
 }
 .provenance-row .text-center .control-label {
@@ -1502,10 +1469,8 @@ fieldset[disabled=disabled] a {
   height: 100%;
 }
 .blacklight-entries-edit .remove-link-container a {
-  display: block;
   height: auto;
   line-height: 22px;
-  text-align: center;
 }
 .remove-link-container:hover {
   background: pink;
@@ -1520,19 +1485,6 @@ fieldset[disabled=disabled] a {
 
 .form-group.row {
   *border-bottom: 1px #eee dashed;
-}
-#identify_source label,
-#identify_source .control-label {
-  margin-bottom: 0;
-}
-#identify_source .form-group.row {
-  align-items: center;
-}
-#identify_source .source-container .form-group.row {
-  align-items: flex-start;
-}
-#identify_source .label-alignment {
-  padding-top: 0;
 }
 .unapproved > td, .unapproved > td > a {
   color: #999;
@@ -1570,7 +1522,6 @@ fieldset[disabled=disabled] a {
   min-width: 15px;
   min-height: 1px;
   padding-right: 10px;
-  white-space: nowrap;
 }
 .edit-label .affix-top {
   position: relative;
@@ -2279,10 +2230,6 @@ so that gray backdrop shvows up correctly */
 }
 
 
-.dropdown-toggle .caret {
-  display: none;
-}
-
 .collapsed .caret {
   border-top: 0;
   border-left: 4px dashed;
@@ -2476,9 +2423,6 @@ Private Message Styling
     background: none;
     border: none;
     box-shadow: none;
-}
-.constraints-container .catalog_startOverLink {
-    float: right;
 }
 .constraints-container .text-muted,
 #sortAndPerPage .text-muted {
@@ -2692,14 +2636,9 @@ Private Message Styling
 
 .textarea-group {
   width: 100%;
-  display: flex;
-  align-items: stretch;
 }
 .textarea-group textarea {
   flex: 1;
-}
-.textarea-group-btn {
-  display: flex;
 }
 .textarea-btn {
   height: 100%;
@@ -2956,7 +2895,6 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 .facet_limit-active,
 .facet-limit-active {
   border-color: #28a745;
-  margin-bottom: 1rem;
 }
 .appliedFilter .filterName:after {
   content: " ❯ ";
@@ -3010,27 +2948,8 @@ small.document-disclaimer {
 /* ===== Manage Entries (entries index) BS4 fixes ===== */
 
 /* 1. Search form: force inline (row) layout instead of stacked column */
-nav.navbar.navbar-light .search-form {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  width: 100%;
-}
-nav.navbar.navbar-light .search-form > .navbar-left,
-nav.navbar.navbar-light .search-form > .navbar-brand {
-  margin-right: auto;
-  align-self: flex-start;
-}
-nav.navbar.navbar-light .search-form .navbar-right {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: flex-start;
-}
 nav.navbar.navbar-light .search-form .navbar-right .search-fieldset {
   float: none;
-  flex-direction: column;
 }
 nav.navbar.navbar-light .search-form .navbar-right .search-fieldset .search-block {
   flex-wrap: nowrap;
@@ -3077,19 +2996,11 @@ nav.navbar.navbar-light .navbar-brand:hover {
   width: auto !important;
 }
 /* 4. All dropdown + Search button must be inline, not stacked */
-.search-form .form-submission {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-}
 .search-form .form-submission .input-group-append {
   flex-shrink: 0;
 }
 
 /* "add term" link: keep on one line */
-#addSearch {
-  white-space: nowrap;
-}
 
 /* 5. Show [50] entries: spacing between label text and dropdown, compact select */
 div.dataTables_length label {

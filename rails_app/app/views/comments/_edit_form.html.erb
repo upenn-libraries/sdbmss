@@ -4,9 +4,9 @@
       <%= hidden_field_tag 'id', comment.id %>
       <%= hidden_field_tag 'commentable_id', comment.commentable_id %>
       <%= hidden_field_tag 'commentable_type', comment.commentable_type %>
-      <div class="input-group textarea-group">
+      <div class="input-group textarea-group d-flex align-items-stretch">
         <%= text_area_tag 'comment', comment.comment, class: "form-control", rows: 5 %>
-        <div class="input-group-append textarea-group-btn">
+        <div class="input-group-append textarea-group-btn d-flex">
           <%= submit_tag 'Confirm', class: 'btn btn-outline-secondary textarea-btn' %>
         </div>
       </div>

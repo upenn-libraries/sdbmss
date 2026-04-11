@@ -3,9 +3,9 @@
     <div class="col-sm-12">
       <%= hidden_field_tag 'commentable_id', record.id %>
       <%= hidden_field_tag 'commentable_type', record.model_name %>
-      <div class="input-group textarea-group">
+      <div class="input-group textarea-group d-flex align-items-stretch">
         <%= text_area_tag 'comment', '', class: "form-control", rows: 5, placeholder: "Leave a comment here..." %>
-        <div class="input-group-append textarea-group-btn">
+        <div class="input-group-append textarea-group-btn d-flex">
           <%= submit_tag 'Post', class: 'btn btn-primary text-center textarea-btn' %>
         </div>
       </div>

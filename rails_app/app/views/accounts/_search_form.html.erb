@@ -1,5 +1,5 @@
 
-<ul class="navbar-left navbar-nav nav">
+<ul class="navbar-left navbar-nav nav mr-auto">
     <li>
         <% if can? :review, model_class %>
             <label>
@@ -13,16 +13,16 @@
 </ul>
 
 
-<div class="navbar-right">
+<div class="navbar-right d-flex flex-row flex-nowrap align-items-center">
     <ul class="nav float-left navbar-nav">
         <li>
-            <a href="" class="" id="addSearch">
+            <a href="" class="text-nowrap" id="addSearch">
                 <span class="fa fa-plus"></span> add term
             </a>
         </li>
     </ul>
     
-    <div class="search-form form-inline search-fieldset float-left navbar-form">
+    <div class="search-form form-inline search-fieldset flex-column float-left navbar-form">
         <div class="input-group search-block">
             <div class="input-group-append">
                 <button type='button' class="btn btn-warning search-remove"> <span class="fa fa-times"></span> </button>
@@ -56,7 +56,7 @@
     </div>
 
     <div class="navbar-form float-left form-inline">
-        <div class="input-group form-submission">
+        <div class="input-group form-submission d-flex flex-nowrap align-items-center">
             <select name="op" id="search_op" class="form-control">
                 <option value="AND">All</option>
                 <option value="OR">Any</option>

@@ -235,9 +235,9 @@ label.col-sm-2-and-half {
 
     <div class="source-info" ng-if="entry.source">
       <div class="source-container">
-          <div class="form-group row">
-              <label class="col-sm-2 control-label text-md-right">Source</label>
-              <div class="col-sm-7 label-alignment source-name">
+          <div class="form-group row align-items-start">
+              <label class="col-sm-2 control-label text-md-right mb-0">Source</label>
+              <div class="col-sm-7 label-alignment pt-0 source-name">
                   <a href="/sources/{{ entry.source.id }}">SDBM_SOURCE_{{ entry.source.id }}</a> - {{ entry.source.display_value }} ({{ entry.source.source_type.display_name }})
               </div>
               <div class="col-sm-3">
@@ -249,22 +249,22 @@ label.col-sm-2-and-half {
           </div>
       </div>
 
-      <div class="row form-group" ng-if="entry.source.source_type_id != 8">
-        <label for="cat_lot_no" class="col-sm-2 control-label text-md-right">
+      <div class="row form-group align-items-center" ng-if="entry.source.source_type_id != 8">
+        <label for="cat_lot_no" class="col-sm-2 control-label text-md-right mb-0">
             <span ng-show="entry.source.source_type.name != 'online'" sdbm-tooltip="entry_cat_lot_no">Cat. or Lot #</span>
             <span ng-show="entry.source.source_type.name == 'online'" sdbm-tooltip="entry_listing_id">Listing ID</span>
         </label>
         <div class="col-sm-2">
           <input type="text" class="form-control" id="cat_lot_no" placeholder="" ng-model="entry.catalog_or_lot_number" sdbm-cat-lot-no-check="">
         </div>
-        <div class="col-sm-5 label-alignment">
+        <div class="col-sm-5 label-alignment pt-0">
             <span id="cat_lot_no_warning" style="color: darkorange;"></span>
         </div>
       </div>
 
       <!-- insitution is disabled for new entries -->
-      <div class="row form-group" ng-if="entry.institution !== undefined" old="entry.source.source_type.entries_have_institution_field">
-        <label for="cat_lot_no" class="col-sm-2 control-label text-md-right"><span sdbm-tooltip="entry_institution">Institution/Collection</span></label>
+      <div class="row form-group align-items-center" ng-if="entry.institution !== undefined" old="entry.source.source_type.entries_have_institution_field">
+        <label for="cat_lot_no" class="col-sm-2 control-label text-md-right mb-0"><span sdbm-tooltip="entry_institution">Institution/Collection</span></label>
         <div class="col-sm-5">
 
             <div class="btn-group" role="group">
@@ -335,7 +335,7 @@ label.col-sm-2-and-half {
               <div class="form-inline row section">
                   <div class="col-sm-12">
                     <span class='h4'>Sale Agent(s)</span>
-                    <span class="add-link-container">
+                    <span class="add-link-container text-nowrap">
                       <a a id="add_sale_agent" class="clickable" data-ng-click="addRecord(entry.sale.sale_agents)" title="Add">
                         Add new <span class="fa fa-plus"></span>
                       </a>
@@ -391,7 +391,7 @@ label.col-sm-2-and-half {
   <div class='form-inline row section'>
     <div class="col-sm-12">
       <span class='h4'>Text Title(s)</span>
-      <span class="add-link-container">
+      <span class="add-link-container text-nowrap">
         <a id="add_title" class="clickable" data-ng-click="addRecord(entry.entry_titles);" title="Add">
           <span class="fa fa-plus"></span>
           add new
@@ -428,7 +428,7 @@ label.col-sm-2-and-half {
   <div class="form-inline row entry-author-group section">
     <div class="col-sm-12">
       <span class='h4'>Author(s)</span>
-      <span class="add-link-container">
+      <span class="add-link-container text-nowrap">
         <a id="add_author" class="clickable" data-ng-click="addRecord(entry.entry_authors)" title="Add">
           <span class="fa fa-plus"></span>
           add new
@@ -477,7 +477,7 @@ label.col-sm-2-and-half {
       <span class="h4">
         Date(s)
       </span>
-      <span class="add-link-container">
+      <span class="add-link-container text-nowrap">
         <a id="add_date" class="clickable" data-ng-click="addRecord(entry.entry_dates)" title="Add">
           <span class="fa fa-plus"></span>
           add new
@@ -516,7 +516,7 @@ label.col-sm-2-and-half {
   <div class="form-inline row entry-artist-group section">
     <div class="col-sm-12">
       <span class='h4'>Artist(s)</span>
-      <span class="add-link-container">
+      <span class="add-link-container text-nowrap">
         <a id="add_artist" class="clickable" data-ng-click="addRecord(entry.entry_artists)" title="Add">
           <span class="fa fa-plus"></span>
           add new
@@ -562,7 +562,7 @@ label.col-sm-2-and-half {
   <div class="form-inline row entry-scribe-group section">
     <div class="col-sm-12">
       <span class='h4'>Scribe(s)</span>
-      <span class="add-link-container">
+      <span class="add-link-container text-nowrap">
         <a id="add_scribe" class="clickable" data-ng-click="addRecord(entry.entry_scribes)" title="Add">
           <span class="fa fa-plus"></span>
           add new
@@ -602,7 +602,7 @@ label.col-sm-2-and-half {
   <div class="form-inline row section">
     <div class="col-sm-12">
       <span class='h4'>Place(s)</span>
-      <span class="add-link-container">
+      <span class="add-link-container text-nowrap">
         <a a id="add_place" class="clickable" data-ng-click="addRecord(entry.entry_places)" title="Add">
           <span class="fa fa-plus"></span>
           add new
@@ -642,7 +642,7 @@ label.col-sm-2-and-half {
   <div class="form-inline row section">
     <div class="col-sm-12">
       <span class='h4'>Language(s)</span>
-      <span class="add-link-container">
+      <span class="add-link-container text-nowrap">
         <a id="add_language" class="clickable" data-ng-click="addRecord(entry.entry_languages)" title="Add">
           <span class="fa fa-plus"></span>
           add new
@@ -682,7 +682,7 @@ label.col-sm-2-and-half {
   <div class="form-inline row section">
     <div class="col-sm-12">
       <span class='h4'>Use(s)</span>
-      <span class="add-link-container">
+      <span class="add-link-container text-nowrap">
         <a a id="add_use" class="clickable" data-ng-click="addRecord(entry.entry_uses)" title="Add">
           <span class="fa fa-plus"></span>
           add new
@@ -713,7 +713,7 @@ label.col-sm-2-and-half {
       <span class="h4">
         Material(s)
       </span>
-      <span class="add-link-container">
+      <span class="add-link-container text-nowrap">
         <a a id="add_material" class="clickable" data-ng-click="addRecord(entry.entry_materials)" title="Add">
           <span class="fa fa-plus"></span>
           add new
@@ -881,7 +881,7 @@ label.col-sm-2-and-half {
   <div class='row section'>
     <div class='col-sm-12'>
       <span class='h4' sdbm-tooltip="entry_provenance">Agent(s)</span>
-      <span class="add-link-container">
+      <span class="add-link-container text-nowrap">
         <a id="add_provenance" class="clickable" data-ng-click="addRecord(entry.provenance)" title="Add">
           <span class="fa fa-plus"></span>
           add new
@@ -897,7 +897,7 @@ label.col-sm-2-and-half {
           </a>
         </div>
         <div class="col-sm-12">
-          <div class="row provenance-row">
+          <div class="row provenance-row align-items-center">
             <div class="col-md-2">
               <div class="control-label">
                 <span sdbm-tooltip="entry_provenance_agent_as_recorded">Name As Recorded</span>
@@ -912,7 +912,7 @@ label.col-sm-2-and-half {
               <span class='control-label one-line' sdbm-tooltip="entry_provenance_agent">Authority Name</span>
             </div>
             <div class="col-md-4">
-              <div class="btn-group name-authority-group">
+              <div class="btn-group name-authority-group d-flex align-items-center flex-nowrap w-100">
                 <a id='find_provenance_name_authority_{{ $index }}' ng-if='prov.provenance_agent.id == undefined' ng-init="prov.provenance_agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', prov.provenance_agent, 'is_provenance_agent', prov.observed_name)" style="width: 100%">Find or Create Authority Name</a>
                 <div ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
                   <a class="fa fa-times" ng-click="removeNameAuthority(prov, 'provenance_agent')"></a>
@@ -923,7 +923,7 @@ label.col-sm-2-and-half {
               </div>
             </div>
           </div>
-          <div class="row provenance-row">
+          <div class="row provenance-row align-items-center">
             <div class="col-md-2">
               <label for="" class="control-label" sdbm-tooltip="entry_provenance_dates">Date(s)</label>
             </div>
@@ -948,7 +948,7 @@ label.col-sm-2-and-half {
               </span>
             </div>
           </div>
-          <div class="row provenance-row">
+          <div class="row provenance-row align-items-center">
             <div class="col-md-2">
               <label for="" class="control-label form-inline" style="text-align: left;"><span sdbm-tooltip="entry_provenance_evidence">Evidence:</span>
               </label>
@@ -957,7 +957,7 @@ label.col-sm-2-and-half {
               <textarea id="provenance_comment_{{ $index }}" class="form-control" id="comment" ng-model="prov.comment" rows="1" placeholder="Enter additional evidence here..."></textarea>
             </div>
           </div>
-          <div class="row provenance-row">
+          <div class="row provenance-row align-items-center">
             <div class="col-md-12 text-center">
             <label for="" class="control-label">
               <span sdbm-tooltip="entry_provenance_direct_transfer">Directly Transfered to Next</span>
@@ -969,7 +969,7 @@ label.col-sm-2-and-half {
       </div>
     </div>
     <div class="col-sm-12">
-      <span class="add-link-container">
+      <span class="add-link-container text-nowrap">
         <a id="add_provenance" class="clickable" data-ng-click="addRecord(entry.provenance)" title="Add">
           <span class="fa fa-plus"></span>
           add new

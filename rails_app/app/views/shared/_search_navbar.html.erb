@@ -1,14 +1,14 @@
 <div id="search-navbar" class="navbar navbar-light navbar-expand" role="navigation">
-  <div class="container">
+  <div class="container w-100">
     <%= render_search_bar  %>
     <div class="navbar-collapse catalog-search-info col-4" id="myNavbar">
-      <ul class="nav navbar-nav ml-auto">
+      <ul class="nav navbar-nav ml-auto flex-row flex-nowrap align-items-center">
         <% if user_signed_in? %>
-          <li>
+          <li class="text-nowrap">
             <%= link_to t('blacklight.header_links.search_history'), blacklight.search_history_path, class: "nav-link" %>
           </li>
         <% end %>
-        <li>
+        <li class="text-nowrap">
           <a style="" href="<%= recent_additions_path %>" class="recent_additions">Recent<span class="hide-mobile-lg"> Additions</span></a>
         </li>
       </ul>
