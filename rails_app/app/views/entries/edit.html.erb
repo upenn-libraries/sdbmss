@@ -1124,9 +1124,12 @@ label.col-sm-2-and-half {
     <div class="modal-header">
       <h3 class="modal-title">Convert Inches to Millimeters</h3>
     </div>
-    <div class="modal-body form-horizontal form-inline compress-whitespace">
+    <div class="modal-body">
       <p>
         Convert <input type="number" class="form-control" ng-model="inches" ng-change="convert()"> inches into <input type="number" class="form-control" ng-model="millimeters"> millimeters
-        <a href="" class="btn btn-outline-secondary float-right" ng-click="confirm();">Done</a></p>
+      </p>
+    </div>
+    <div class="modal-footer">
+      <a href="" class="btn btn-outline-secondary" ng-click="confirm();">Done</a>
     </div>
 </script>

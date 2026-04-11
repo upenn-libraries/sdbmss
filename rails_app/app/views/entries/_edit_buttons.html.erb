@@ -10,7 +10,7 @@
             <a href="" class="btn btn-outline-secondary" ng-click="loadDraft()">
                 <span class="fa fa-repeat"></span>
                 Restore
-            </a>            
+            </a>
         </span>
         <a href="" data-toggle="modal" data-target="#backupSettings" class="btn btn-outline-secondary" ng-if="entry.id || entry.source">
             <span class="fa fa-refresh"></span> Auto-backup {{ backup == 'enabled' ? 'enabled' : 'disabled' }}
@@ -38,7 +38,7 @@
                             <td>
                                 <input type="radio" class="form-control" value="enabled" ng-model="backup">
                             </td>
-                            <td style="vertical-align: middle;">
+                            <td  class="w-100"style="vertical-align: middle;">
                                 Always enabled
                             </td>
                         </tr>

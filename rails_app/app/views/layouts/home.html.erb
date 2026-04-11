@@ -101,7 +101,7 @@
     <div class="main-content" style="padding-top: 20px;">
       <%# render :partial => 'shared/search_navbar' %>
 
-      <%# this is from blacklight %>
+      <%= render partial: 'shared/sdbm_modal' %>
       <%= render partial: 'shared/modal' %>
 
       <div id="main-container" class="container">
@@ -122,7 +122,7 @@
         </div>
       </div>
       <%# this is SDBM-specific modal code %>
-      <%= render :partial => 'shared/modal' %>
+      <%= render :partial => 'shared/sdbm_modal' %>
       
       <%= render :partial => 'shared/footer' %>
     </div>

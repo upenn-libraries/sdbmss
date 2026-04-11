@@ -1215,7 +1215,7 @@ var BOOKMARK_SCOPE;
               //type: function () { return type; },
               //base: function () { return base; }
             },
-            size: 'lg'
+            size: 'sm'
           });
           modal.result.then(function () {
             //$scope.saveDraft();

@@ -1,23 +1,27 @@
 <p>Group managers can add entries to their group(s) from this page.</p>
 <p>First, select entries by clicking on the box to the left of each entry.  Next, select from the dropdown menu which group to add entries to or remove entries from.  Then, click <b>Add Entry(s)</b> or <b>Remove Entry(s)</b>. The User Group name will appear in the corresponding column below.</p>
 
-<div class="input-group" style="width: 100%;">
-  <input type="submit" value="Add" class='group-form-control form-control' id="add-to-group" style="max-width: 50px;"/>
-  <input type="submit" value="Remove" class='group-form-control form-control' id="remove-from-group" style="max-width: 80px;"/>
-  <% groups = Group.joins(:group_users).where(:group_users => {user: current_user}) %> <!-- don't have to be a manager to add records... -->
-  <% if groups.count > 0 %>  
-  <select class='group-form-control form-control' id="group-select" style="max-width: 200px;">
-    <% groups.each do |group| %>
-      <option value="<%= group.id %>"><%= group.name %></option>
+<div class="d-flex align-items-center">
+  <div class="input-group" style="max-width: 500px;">
+    <div class="input-group-prepend">
+      <input type="submit" value="Add" class='btn btn-outline-secondary' id="add-to-group"/>
+      <input type="submit" value="Remove" class='btn btn-outline-secondary' id="remove-from-group"/>
+    </div>
+    <% groups = Group.joins(:group_users).where(:group_users => {user: current_user}) %> <!-- don't have to be a manager to add records... -->
+    <% if groups.count > 0 %>
+    <select class='custom-select' id="group-select">
+      <% groups.each do |group| %>
+        <option value="<%= group.id %>"><%= group.name %></option>
+      <% end %>
+    </select>
+    <% else %>
+    <select name="" id="" class="custom-select" disabled>
+      <option value="nil">You have no user groups.</option>
+    </select>
     <% end %>
-  </select>
-  <% else %>
-  <select name="" id="" class="group-form-control form-control disabled" style="max-width: 240px" disabled>
-    <option value="nil">You have no user groups.</option>
-  </select>
-  <% end %>
-  <label for="" class="control-label group-form-control">
+  </div>
+  <label class="font-weight-bold ml-3 mb-0">
     Allow editing?
-    <input type="checkbox" class="" value="true" id="editable"></input>
+    <input type="checkbox" class="ml-1" value="true" id="editable">
   </label>
 </div>

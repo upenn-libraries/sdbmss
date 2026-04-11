@@ -1,11 +1,11 @@
 <script type="text/ng-template" id="selectSource.html">
-<div class="modal-header">
+<div class="modal-header d-block">
     <h3 class="modal-title text-center" style="border-bottom: 1px solid #eee;" sdbm-tooltip="select_source">
         Search for Existing Source
     </h3>
-    
+
     <div class="find-source-container">
-        <div class="form-group row text-center" style="margin: 10px -15px">
+        <div class="form-group row text-center" style="margin-top: 10px;">
             <div class="col-sm-4">
                 <label class="control-label text-muted" sdbm-tooltip="identify_source_source_date"><span>Source Date</span></label>
                 <input class="form-control" name="date" ng-model="date" id='source-date-search'/>
@@ -19,7 +19,7 @@
                 <div class="label-alignment">
                     <span class="source-explain">e.g. Sothebys, University of Pennsylvania</span>
                 </div>
-                
+
             </div>
             <div class="col-sm-4">
                 <label class="control-label text-muted" sdbm-tooltip="identify_source_source_title"><span>Source Title</span></label>
@@ -30,24 +30,26 @@
             </div>
         </div>
         <div class="row search-info" ng-show="searchAttempted">
-            <div class="col-sm-12 form-inline text-right">
-                <span class='float-left' style='line-height: 34px;'>Showing {{ sources.length }}
+            <div class="col-sm-12 d-flex align-items-center">
+                <span style='line-height: 34px;'>Showing {{ sources.length }}
                 of {{ total || 0 }} results.</span>
-                Sort by
-                <select name="" id="find_order" class="form-control" ng-model="order" ng-change="findSourceCandidates()">
-                    <option value="id asc">Id (asc)</option>
-                    <option value="id desc">Id (desc)</option>
-                    <option value="date asc">Date (asc)</option>
-                    <option value="date desc">Date (desc)</option>
-                </select>
-                Show
-                <select class="form-control" name="find_limit" id="" ng-model="limit" ng-change="findSourceCandidates()">
-                    <option value="20">20</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="200">200</option>
-                </select>
-                results
+                <span class="ml-auto d-flex align-items-center flex-nowrap">
+                    <span class="text-nowrap">Sort by</span>
+                    <select name="" id="find_order" class="form-control ml-1 mr-2" ng-model="order" ng-change="findSourceCandidates()">
+                        <option value="id asc">Id (asc)</option>
+                        <option value="id desc">Id (desc)</option>
+                        <option value="date asc">Date (asc)</option>
+                        <option value="date desc">Date (desc)</option>
+                    </select>
+                    Show
+                    <select class="form-control ml-1 mr-1" name="find_limit" id="" ng-model="limit" ng-change="findSourceCandidates()">
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="200">200</option>
+                    </select>
+                    results
+                </span>
             </div>
         </div>
     </div>
@@ -69,7 +71,7 @@
                 <td>
                     <% if true %>
                         <span ng-class="{'text-danger' : source.problem}"><a href="/sources/{{ source.id }}" target="_blank"  ng-class="{'text-danger' : source.problem}">{{ source.display_value }}</a> ({{ source.entries_count }} {{ source.entries_count == 1 ? 'entry' : 'entries' }})
-                            <span class="" ng-if="source.problem" sdbm-tooltip="problemSource"></span>   
+                            <span class="" ng-if="source.problem" sdbm-tooltip="problemSource"></span>
                         </span>
                     <% else %>
                         <a href="/sources/{{ source.id }}" target="_blank">{{ source.display_value }}</a> ({{ source.entries_count }} {{ source.entries_count == 1 ? 'entry' : 'entries' }}) {{ source.source_type }}
