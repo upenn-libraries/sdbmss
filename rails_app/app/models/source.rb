@@ -298,6 +298,8 @@ class Source < ApplicationRecord
   end
 
   def invalid_source_fields
+    return [] if source_type.nil?
+
     self.class.invalid_source_fields_for_source_type(source_type.name)
   end
 

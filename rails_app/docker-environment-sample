@@ -39,3 +39,4 @@ SDBMSS_SECRET_TOKEN=sdbmsssecrettoken
 SDBMSS_SMTP_HOST=mail.somewhere.com
 SOLR_TEST_URL=http://solr:8983/solr/test
 SOLR_URL=http://solr:8983/solr/development
+# TOOLS_START_TIMEOUT=240   # seconds to wait for app HTTP 200 on start (default: 240)

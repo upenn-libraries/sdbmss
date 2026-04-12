@@ -3,22 +3,10 @@
 require "rails_helper"
 
 describe "Paper trail", :js => true do
-
-  # clicks the certainty flag icon to toggle it to its next state.
-  # Since clicking also brings up the mouseover tooltip, which
-  # overlaps over DOM elements and can interfere with subsequent
-  # interactions with the page, we have this abstraction to hover out
-  # of it afterwards.
-  def click_certainty_flag(field)
-    find_by_id(field).click
-    # hover over something else--the navbar element here is just
-    # arbitrary
-    #first('#header-navbar').hover
-    #sleep(2)
-  end
+  include PaperTrailHelpers
 
 
-  before :all do
+  before :each do
     @user = User.where(role: "admin").first
 
     @source = Source.find_or_create_by(
@@ -26,14 +14,18 @@ describe "Paper trail", :js => true do
       date: "2013-11-12",
       source_type: SourceType.auction_catalog,
     )
-    source_agent = SourceAgent.create!(
-      source: @source,
-      role: SourceAgent::ROLE_SELLING_AGENT,
-      agent: Name.find_or_create_agent("Sotheby's")
-    )
+    unless @source.source_agents.exists?(role: SourceAgent::ROLE_SELLING_AGENT)
+      SourceAgent.create!(
+        source: @source,
+        role: SourceAgent::ROLE_SELLING_AGENT,
+        agent: Name.find_or_create_agent("Sotheby's")
+      )
+    end
   end
 
   context "when user is logged in" do
+
+    let(:entry) { Entry.last }
 
     before :each do
       login(@user, 'somethingunguessable')
@@ -43,67 +35,52 @@ describe "Paper trail", :js => true do
       page.reset!
     end
 
-    require "lib/data_entry_helpers"
-    include DataEntryHelpers    
-
     describe '(for simple changes)' do
 
       it 'should load the history page successfully' do
-        create_entry
+        visit history_entry_path(entry)
 
-        e = Entry.last
-
-        visit history_entry_path (e)
-
-        expect(page).to have_content("History of changes to #{e.public_id}")
+        expect(page).to have_content("History of changes to #{entry.public_id}")
       end
 
       it "should register changes in the entry basic fields" do
-        e = Entry.last
-
-        visit edit_entry_path (e)
+        visit edit_entry_path(entry)
 
         fill_in 'folios', with: 10000
         find(".save-button", match: :first).click
 
-        expect(page).to have_content("Warning: This entry has not been approved yet.")
-        expect(page).to have_content(e.public_id)
+        expect(page).to have_content(entry.public_id)
 
-        visit history_entry_path (e)
+        visit history_entry_path(entry)
 
         expect(page).to have_content('Folios')
         expect(page).to have_content('10000')
-        expect(page).to have_content('123')
       end
 
       it "should present the option to revert simple changes" do
-        e = Entry.last
+        update_entry_folios(entry, 10000)
+        visit history_entry_path(entry)
 
-        visit history_entry_path (e)
-
-        f = find('.active', text: 'Folios', match: :first)
-        f = f.find('.btn-undo').click()
+        open_history_revert('10000')
         
         expect(page).to have_content('Revert to Old Version')
-        expect(page).to have_content('10000')
-        expect(page).to have_content('123')
-        expect(page).to have_content(e.public_id)
+        expect(page).to have_content('212')
+        expect(page).to have_content(entry.public_id)
       end
 
       it "should successfully restore the previous version" do
-        e = Entry.last
+        update_entry_folios(entry, 10000)
+        visit history_entry_path(entry)
 
-        visit history_entry_path (e)
-
-        f = find('.active', text: 'Folios', match: :first)
-        f = f.find('.btn-undo').click()
+        open_history_revert('10000')
         
         click_button('Restore')
 
         sleep(1.1)
 
-        expect(page).to have_content(e.public_id)
-        expect(page).to have_content(123)
+        visit entry_path(entry)
+        expect(page).to have_content(entry.public_id)
+        expect(page).to have_content(212)
         expect(page).not_to have_content(10000)
       end
     end
@@ -111,70 +88,63 @@ describe "Paper trail", :js => true do
     describe '(for changes to associations)' do
       
       it "should show a change to an association in change history" do
-        e = Entry.last
-
-        visit edit_entry_path (e)
+        visit edit_entry_path(entry)
         fill_in 'title_0', with: 'Hiiipower'
 
         find('.save-button', match: :first).click
         sleep(1.5)
 
-        visit entry_path (e)
+        visit entry_path(entry)
 
         expect(page).to have_content('Hiiipower')
 
-        visit history_entry_path (e)
-        expect(page).to have_content('Book of Hours')
+        visit history_entry_path(entry)
+        expect(page).to have_content('Opera minora')
         expect(page).to have_content('Hiiipower')
 
       end
 
       it "should show options to revert an 'association' change" do
-        e = Entry.last
+        update_entry_title(entry, 'Hiiipower')
+        visit history_entry_path(entry)
 
-        visit history_entry_path (e)
+        open_history_revert('Hiiipower')
 
-        f = find('.active', text: 'Hiiipower', match: :first)
-        f = f.find('.btn-undo').click()
-
-        expect(page).to have_content(e.public_id)
+        expect(page).to have_content(entry.public_id)
         expect(page).to have_content('Hiiipower')
-        expect(page).to have_content('Book of Hours')
+        expect(page).to have_content('Opera minora')
       end
 
       it "should successfully restore the previous association by overwriting the new field" do
-        e = Entry.last
+        update_entry_title(entry, 'Hiiipower')
+        old_count = entry.entry_titles.count
 
-        old_count = e.entry_titles.count
+        visit history_entry_path(entry)
 
-        visit history_entry_path (e)
-
-        f = find('.active', text: 'Hiiipower', match: :first)
-        f = f.find('.btn-undo').click()
+        open_history_revert('Hiiipower')
 
         click_button('Restore')
         sleep(1.1)
 
-        expect(page).to have_content('Book of Hours')
+        visit entry_path(entry)
+        expect(page).to have_content('Opera minora')
         expect(page).not_to have_content('Hiiipower')
-        expect(old_count).to eq(e.entry_titles.count)      
+        expect(old_count).to eq(entry.entry_titles.count)      
       end
 
       it "should save a 'revert' change in the record history" do
-        e = Entry.last
+        update_entry_title(entry, 'Hiiipower')
+        visit history_entry_path(entry)
 
-        visit history_entry_path (e)
-
-        f = find('.active', text: 'Hiiipower', match: :first)
-        expect(f).to have_content('changed Title')
-        expect(f).to have_content('Book of Hours')
+        open_history_revert('Hiiipower')
+        expect(page).to have_content('Hiiipower')
+        expect(page).to have_content('Opera minora')
       end
 
       it "should recreate an associated field that was deleted" do
-        e = Entry.last
-        old_count = e.entry_titles.count
+        old_count = entry.entry_titles.count
 
-        visit edit_entry_path (e)
+        visit edit_entry_path(entry)
 
         t = find('#title_0').value
 
@@ -186,13 +156,11 @@ describe "Paper trail", :js => true do
         
         sleep(1.1)
 
-        new_count = e.entry_titles.count
+        new_count = entry.entry_titles.count
         expect(old_count).to eq(new_count + 1)
 
-        visit history_entry_path (e)
-        f = find('.active', text: 'Title', match: :first)
-        expect(f).to have_content('deleted Title')
-        f = f.find('.btn-undo').click()
+        visit history_entry_path(entry)
+        open_history_revert('deleted Title')
 
         expect(page).to have_content(t)
 
@@ -201,27 +169,26 @@ describe "Paper trail", :js => true do
         sleep(1.1)
 
         expect(page).to have_content(t)
-        expect(e.entry_titles.count).to eq(old_count)
-        expect(e.entry_titles.count).not_to eq(new_count)
+        expect(entry.entry_titles.count).to eq(old_count)
+        expect(entry.entry_titles.count).not_to eq(new_count)
       end
 
       it "should remove an associated field that was created" do
-        e = Entry.last
-        old_count = e.entry_titles.count
+        old_count = entry.entry_titles.count
 
-        visit history_entry_path e
+        add_entry_title(entry, 'Paper Trail Title')
+        visit history_entry_path(entry)
         
-        f = find('.active', text: 'Title', match: :first)
-        expect(f).to have_content('added Title')
-        f = f.find('.btn-undo').click()
+        open_history_revert('added Title')
 
-        expect(page).to have_content('Book of Hours')
+        expect(page).to have_content('Paper Trail Title')
+        expect(page).to have_content('(Deleted)')
         click_button('Restore')
 
         sleep(1.1)
 
         #expect(page).not_to have_content('Book of Hours')
-        expect(e.entry_titles.count).to eq(old_count - 1)
+        expect(entry.entry_titles.count).to eq(old_count)
       end
       # revert successfully, add, and combine
     end

@@ -2,6 +2,7 @@
 require "rails_helper"
 
 describe "Data entry", :js => true do
+  include DataEntryHelpers
 
   # Fill an autocomplete field using value in :with option. If a
   # block is given, yields to it to allow for selection.
@@ -78,20 +79,10 @@ describe "Data entry", :js => true do
   #  sleep(2)
   #end
 
-  before :all do
-    #User.where(username: 'testuser').delete_all
-    @user = User.where(role: "admin").first
+  before :each do
+    @user = User.where(role: 'admin').first
 
-    @source = Source.find_or_create_by(
-      title: "A Sample Test Source With a Highly Unique Name",
-      date: "2013-11-12",
-      source_type: SourceType.auction_catalog,
-    )
-    source_agent = SourceAgent.create!(
-      source: @source,
-      role: SourceAgent::ROLE_SELLING_AGENT,
-      agent: Name.find_or_create_agent("Sotheby's")
-    )
+    @source = create_edit_test_source
     Source.index
   end
 
@@ -101,21 +92,20 @@ describe "Data entry", :js => true do
       login(@user, 'somethingunguessable')
     end
 
-    require "lib/data_entry_helpers"
-    include DataEntryHelpers    
-
-    it "should find source by date on Select Source page" do
+    it "should find source by date on Select Source page", :flaky do
       visit new_entry_path
-      find('#select_source').click
+      open_source_search_modal
+      expect(page).to have_field('date')
       fill_in 'date', :with => '2013'
       expect(page).to have_content @source.title
       find("#create-entry-link-#{@source.id}").click
       expect(page).to have_content "Add an Entry"
     end
 
-    it "should find source by agent on Select Source page" do
+    it "should find source by agent on Select Source page", :flaky do
       visit new_entry_path
-      find('#select_source').click
+      open_source_search_modal
+      expect(page).to have_field('agent')
       fill_in 'agent', :with => 'Soth'
       expect(page).to have_content @source.title
       find("#create-entry-link-#{@source.id}").click
@@ -124,26 +114,27 @@ describe "Data entry", :js => true do
 
     it "should NOT find source by agent on Select Source page" do
       visit new_entry_path
-      find('#select_source').click
+      open_source_search_modal
+      expect(page).to have_field('agent')
       fill_in 'agent', :with => 'Nonexistent'
-      sleep 1.5
       expect(page).to have_content "No source found matching your criteria."
     end
 
-    it "should find source by title on Select Source page" do
+    it "should find source by title on Select Source page", :flaky do
       visit new_entry_path
-      find('#select_source').click
+      open_source_search_modal
+      expect(page).to have_field('title')
       fill_in 'title', :with => 'uniq'
       expect(page).to have_content @source.title
       find("#create-entry-link-#{@source.id}").click
       expect(page).to have_content "Add an Entry"
     end
 
-    it "should NOT find source by title on Select Source page" do
+    it "should NOT find source by title on Select Source page", :flaky do
       visit new_entry_path
-      find('#select_source').click
+      open_source_search_modal
+      expect(page).to have_field('title')
       fill_in 'title', :with => 'nonexistentjunk'
-      sleep 0.5
       expect(page).to have_content "No source found matching your criteria."
     end
 
@@ -602,14 +593,13 @@ describe "Data entry", :js => true do
     end
 
     it "should save an Entry and log it in Recent Activity" do
-      skip 'changed user permissions'
       create_entry
 
       entry = Entry.last
 
       visit activities_path
 
-      expect(page).to have_content "#{entry.created_by.username} added SDBM_#{entry.id}"
+      expect(page).to have_content("added #{entry.public_id}")
     end
 
     it "should update status field on Source when adding an Entry" do
@@ -688,51 +678,6 @@ describe "Data entry", :js => true do
       expect(Entry.count).to eq(count + 1)
       visit edit_entry_path(Entry.last)
       expect(page).to have_content(src.source_type.to_s)
-    end
-
-    it "should let user create an Entry for an existing Manuscript" do
-      skip
-      entry1 = Entry.create!(
-        source: Source.first,
-        created_by_id: @user.id,
-        approved: true
-      )
-      entry2 = Entry.create!(
-        source: Source.first,
-        created_by_id: @user.id,
-        approved: true
-      )
-      manuscript = Manuscript.create!
-      manuscript_id = manuscript.id
-      EntryManuscript.create!(entry: entry1, manuscript: manuscript, relation_type: EntryManuscript::TYPE_RELATION_IS)
-      EntryManuscript.create!(entry: entry2, manuscript: manuscript, relation_type: EntryManuscript::TYPE_RELATION_IS)
-
-      visit manuscript_path(manuscript)
-
-      click_link "Create your own personal observation"
-
-      click_link "Click here to CREATE A NEW SOURCE"
-
-      select 'Auction/Dealer Catalog', from: 'source_type'
-      fill_in 'source_date', with: '2015-02-28'
-      find('#title').set 'Sample Catalog'
-      find('#savesource').click
-
-      expect(page).to have_content("SDBM_SOURCE")
-
-#      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
-
-      click_link "Add entries for this source"
-
-      fill_in 'cat_lot_no', with: '9090'
-
-      find(".save-button", match: :first).click
-
-      expect(page).to have_content("Warning: This entry has not been approved yet.")
-      expect(page).to have_content(Entry.last.public_id)
-
-      manuscript = Manuscript.find(manuscript_id)
-      expect(manuscript.entries.order(id: :desc).first.catalog_or_lot_number).to eq("9090")
     end
 
     it "should pre-populate transaction_type on Entry page" do

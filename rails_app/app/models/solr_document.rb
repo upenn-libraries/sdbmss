@@ -34,7 +34,15 @@ class SolrDocument
 
   # returns the Entry object for this solr document
   def model_object
-    @response.objects_resultset.get(self[:entry_id])
+    object = @response.objects_resultset.get(self[:entry_id])
+
+    if object.blank? || object.id.blank?
+      Rails.logger.warn(
+        "SolrDocument#model_object missing entry for solr_id=#{self[:id].inspect} entry_id=#{self[:entry_id].inspect}"
+      )
+    end
+
+    object
   end
 
 end
