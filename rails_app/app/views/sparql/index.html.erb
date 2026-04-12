@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "extras", media: "all" %>
   <%= javascript_include_tag "extras" %>
-		
+
 		<script>
 			var editor, results;
 			$(document).ready(function () {
@@ -30,7 +30,7 @@
 						table.addClass('table-bordered');
 						var header = $("<tr></tr>");
 						for (var i = 0; i < data.head.vars.length; i++) {
-							header.append($("<th>" + data.head.vars[i] + "</th>"));							
+							header.append($("<th>" + data.head.vars[i] + "</th>"));
 						}
 						csv += data.head.vars.join(",");
 						table.append(header);
@@ -40,11 +40,11 @@
 							for (var j = 0; j < data.head.vars.length; j++) {
 								var value = data.results.bindings[i][data.head.vars[j]].value;
 								if (value.indexOf("http") != -1) {
-									value = "<a href='" + value + "' target='_blank'>" + value + "</a>";									
+									value = "<a href='" + value + "' target='_blank'>" + value + "</a>";
 								}
 								row.append($("<td>" + value + "</td>"));
 								if (data.results.bindings[i][data.head.vars[j]].value != undefined) {
-									csv += data.results.bindings[i][data.head.vars[j]].value;									
+									csv += data.results.bindings[i][data.head.vars[j]].value;
 								} else {
 									csv += "";
 								}
@@ -127,14 +127,14 @@
 	<div class="sparql-wrapper">
 		<div class="sparql-navigation">
 			<ol class="">
-				<li><strong><a href="#sparql-intro">Introduction</a></strong></li>			
+				<li><strong><a href="#sparql-intro">Introduction</a></strong></li>
 				<% @pages.each do |page| %>
 					<li><a href="#<%= page.name.underscore %>"><%= page.name %></a></li>
 				<% end %>
-			</ol>		
+			</ol>
 		</div>
 		<div class="sparql-query">
-			<form id="query-form" class="form form-inline" action="https://sdbm.library.upenn.edu/sparql/sdbm/query" method="post">	
+			<form id="query-form" class="form form-inline" action="https://sdbm.library.upenn.edu/sparql/sdbm/query" method="post">
 			<textarea name="query" id="editor">
 SELECT ?subject ?predicate ?object
 WHERE {
@@ -142,8 +142,8 @@ WHERE {
   ?subject ?predicate ?object .
 }
 			</textarea>
-			<label for="limit" class="control-label">Limit
-				<select name="limit" id="limit" class="form-control">
+			<label for="limit" class="control-label mr-1">Limit
+				<select name="limit" id="limit" class="form-control ml-1">
 					<option value="25" selected="true">25</option>
 					<option value="50">50</option>
 					<option value="100">100</option>
@@ -152,9 +152,9 @@ WHERE {
 			<input type="submit" class="form-control">
 			</form>
 		</div>
-		<div class="sparql-content">		
+		<div class="sparql-content">
 			<div class="contents">
-				<div id="sparql-intro">					
+				<div id="sparql-intro">
 	        <%= render partial: "pages/partial", locals: {page_name: "Sparql Intro"} %>
 				</div>
 				<% @pages.each do |page| %>
@@ -162,7 +162,7 @@ WHERE {
 						<h3><%= page.name %></h3>
 		        <%= render partial: "pages/partial", locals: {page_name: page.name} %>
 					</div>
-				<% end %>				
+				<% end %>
 			</div>
 		</div>
 	</div>
@@ -177,7 +177,7 @@ WHERE {
           <div class="modal-body">
           </div>
           <div class="modal-footer">
-          	Download as: 
+          	Download as:
           	<a href="" class="btn btn-outline-secondary btn-sm" id="download-json">
           		JSON
           	</a>
