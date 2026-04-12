@@ -17,47 +17,43 @@
 </div>
 <%= form_tag dericci_records_path, :method => 'get', class: "form-inline" do %>
 <div class="row" style="margin-bottom: 10px;">
-  <div class="col-sm-12 text-center">
+  <div class="col-sm-12 d-flex flex-wrap justify-content-center align-items-center">
       <% if can? :manage, DericciRecord %>
-        <label for="" class="control-label">
+        <label for="" class="control-label mr-2 mb-0">
           Flagged
-          <%= check_box_tag 'flagged', true, params[:flagged], class: 'form-control' %>
+          <%= check_box_tag 'flagged', true, params[:flagged], class: 'ml-1' %>
         </label>
-        <label for="" class="control-label">
+        <label for="" class="control-label mr-2 mb-0">
           Unverified
-          <%= check_box_tag 'verified_id', nil, params[:verified_id], class: 'form-control' %>
+          <%= check_box_tag 'verified_id', nil, params[:verified_id], class: 'ml-1' %>
         </label>
-        <label for="" class="control-label">
+        <label for="" class="control-label mr-2 mb-0">
           Linked
-          <%= check_box_tag 'linked', nil, params[:linked], class: 'form-control' %>
+          <%= check_box_tag 'linked', nil, params[:linked], class: 'ml-1' %>
         </label>
-        <label for="" class="control-label">
+        <label for="" class="control-label mr-3 mb-0">
           In Scope
-          <%= check_box_tag 'in_scope', nil, params[:in_scope], class: 'form-control' %>
+          <%= check_box_tag 'in_scope', nil, params[:in_scope], class: 'ml-1' %>
         </label>
       <% end %>
-      <%= select_tag "field", options_for_select({"Name" => "name","Date" => "dates","Place" => "place"}, params[:field]), class: "form-control" %>
-      <%= text_field_tag :term, params[:term], class: "form-control" %>
-      <div class="input-group">
-        <%= submit_tag "Search", :name => nil, class: "form-control", id: "search-dericci" %>
-        <div class="input-group-append">
-          <%= link_to "Clear", dericci_records_path, class: "btn btn-warning" %>
-        </div>
-      </div>
+      <%= select_tag "field", options_for_select({"Name" => "name","Date" => "dates","Place" => "place"}, params[:field]), class: "form-control form-control-sm mr-1", style: "width: auto;" %>
+      <%= text_field_tag :term, params[:term], class: "form-control form-control-sm mr-1", style: "width: auto;" %>
+      <%= submit_tag "Search", :name => nil, class: "btn btn-primary btn-sm mr-1", id: "search-dericci" %>
+      <%= link_to "Clear", dericci_records_path, class: "btn btn-warning btn-sm" %>
   </div>
-  <div class="row text-center">
-    <label for="" class="control-label">Repositories <%= radio_button_tag :type, '901/2', params[:type] == '901/2' %></label>
-    <label for="" class="control-label">Collectors <%= radio_button_tag :type, '901/3', params[:type] == '901/3' %></label>
-    <label for="" class="control-label">Show All <%= radio_button_tag :type, '', params[:type] == '' || params[:type] == nil %></label>
+  <div class="col-sm-12 d-flex justify-content-center mt-2">
+    <label for="" class="control-label mr-3 mb-0">Repositories <%= radio_button_tag :type, '901/2', params[:type] == '901/2', class: 'ml-1' %></label>
+    <label for="" class="control-label mr-3 mb-0">Collectors <%= radio_button_tag :type, '901/3', params[:type] == '901/3', class: 'ml-1' %></label>
+    <label for="" class="control-label mb-0">Show All <%= radio_button_tag :type, '', params[:type] == '' || params[:type] == nil, class: 'ml-1' %></label>
   </div>
 </div>
 <div class="row">
-  <div class="col-sm-12 text-center">
-    <ul class="pagination">
+  <div class="col-sm-12 d-flex justify-content-center">
+    <ul class="pagination justify-content-center flex-wrap">
       <% ('a'..'z').to_a.each do |letter| %>
-        <li class='<%= letter == params[:letter] ? "active" : "" %>'><%= link_to letter.capitalize, request.params.merge(:letter => letter).except(:page) %></li>
+        <li class='page-item <%= letter == params[:letter] ? "active" : "" %>'><%= link_to letter.capitalize, request.params.merge(:letter => letter).except(:page), class: "page-link" %></li>
       <% end %>
-      <li class='<%= !params[:letter] ? "active" : "" %>'><%= link_to "All", request.params.except(:letter).except(:page) %></li>
+      <li class='page-item <%= !params[:letter] ? "active" : "" %>'><%= link_to "All", request.params.except(:letter).except(:page), class: "page-link" %></li>
     </ul>
   </div>
   <div class="col-sm-3">
@@ -67,13 +63,13 @@
     <%= render partial: "shared/pagination", locals: {page: @page, pages: @num_pages, model_class: DericciRecord, action: nil } %>   
   </div>
   <div class="col-sm-3 text-right">
-    Show <%= select_tag "limit", options_for_select([10, 20, 50, 100], params[:limit]), class: "form-control" %>
+    Show <%= select_tag "limit", options_for_select([10, 20, 50, 100], params[:limit]), class: "form-control form-control-sm d-inline-block", style: "width: auto;" %>
   </div>
 </div>
 <% end %>
 <div class="row">
   <div class="col-sm-12">
-    <table class="table table-responsive sdbm-table">
+    <table class="table sdbm-table">
       <thead>
         <tr>
           <th>Name</th>

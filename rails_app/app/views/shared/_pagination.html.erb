@@ -1,4 +1,4 @@
- <ul class="pagination">
+ <ul class="pagination justify-content-center">
   <% if page >= 3 %>
     <li class="page-item"><%= link_to "First", polymorphic_path(model_class, request.params.merge(action: action, page: 0)), class: "page-link" %></li>
   <% end %>

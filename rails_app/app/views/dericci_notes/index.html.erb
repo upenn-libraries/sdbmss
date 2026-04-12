@@ -6,14 +6,14 @@
     <h3>Archive of Miscellaneous Notes</h3>
   </div>
   <div class="col-sm-6 text-right">
-    <ul class="pagination">
+    <ul class="pagination justify-content-end">
       <% (1 + DericciNote.count / 20).times do |i| %>
-        <li class="<%= @page == i ? 'active' : '' %>"><%= link_to (i + 1), dericci_notes_path(page: i) %></li>
+        <li class="page-item <%= @page == i ? 'active' : '' %>"><%= link_to (i + 1), dericci_notes_path(page: i), class: "page-link" %></li>
       <% end %>
     </ul>
   </div>
   <div class="col-sm-12">
-    <table class="table table-responsive table-bordered">
+    <table class="table table-bordered w-100">
       <tbody>
         <% @notes.each do |note| %>
           <tr>
