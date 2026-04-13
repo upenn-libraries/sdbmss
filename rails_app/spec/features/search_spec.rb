@@ -179,7 +179,7 @@ describe "Blacklight Search", :js => true do
     click_button('search')
     expect(page).to have_selector("#documents")
 
-    visit search_history_path
+    visit "/search_history"
 
     expect(page).to have_content("My Unique Search")
   end
