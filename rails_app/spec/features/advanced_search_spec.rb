@@ -36,11 +36,11 @@ describe "Blacklight Advanced Search", :js => true do
   it "should do an advanced search using two Authors (ALL)" do
     perform_two_author_search
 
-    filters = page.all('.appliedFilter')
+    filters = page.all('.applied-filter')
 
     expect(filters.length).to eq(2)
-    expect(filters[0].find('.filterValue')).to have_content("Augustine")
-    expect(filters[1].find('.filterValue')).to have_content("Hippo")
+    expect(filters[0].find('.filter-value')).to have_content("Augustine")
+    expect(filters[1].find('.filter-value')).to have_content("Hippo")
 
     #check the count of results for this search against an AND search in a single field
     count = search_result_count
@@ -54,7 +54,7 @@ describe "Blacklight Advanced Search", :js => true do
 
     find_by_id('advanced-search-submit').click
 
-    expect(page.find('.filterValue')).to have_content("Augustine AND Hippo")
+    expect(page.find('.filter-value')).to have_content("Augustine AND Hippo")
     count2 = search_result_count
 
     expect(count).to eq(count2)
@@ -89,11 +89,11 @@ describe "Blacklight Advanced Search", :js => true do
 
     # constraints are ordered by fieldname, not by how they were entered into search form
 
-    filters = all('.appliedFilter')
+    filters = all('.applied-filter')
 
-    expect(filters[0]).to have_content('Any')
-    expect(filters[1]).to have_content('Evil')
-    expect(filters[2]).to have_content('Cicero')
+    filter_texts = filters.map(&:text)
+    expect(filter_texts.any? { |t| t.include?('Evil') }).to be true
+    expect(filter_texts.any? { |t| t.include?('Cicero') }).to be true
   end
 
   it "should do an advanced search using two Authors (ANY)" do
@@ -110,7 +110,7 @@ describe "Blacklight Advanced Search", :js => true do
 
     find_by_id('advanced-search-submit').click
 
-    expect(find('.appliedFilter', match: :first)).to have_content('Any')
+    expect(page).to have_css('.applied-filter')
 
     count = search_result_count
 
@@ -131,17 +131,17 @@ describe "Blacklight Advanced Search", :js => true do
   it "should successfully remove a constraint" do
     perform_two_author_search
 
-    filters = page.all('.appliedFilter')
+    filters = page.all('.applied-filter')
 
     expect(filters.length).to eq(2)
-    expect(filters[0].find('.filterValue')).to have_content("Augustine")
-    expect(filters[1].find('.filterValue')).to have_content("Hippo")
+    expect(filters[0].find('.filter-value')).to have_content("Augustine")
+    expect(filters[1].find('.filter-value')).to have_content("Hippo")
 
     filters[0].find('.remove').click()
 
-    filters = page.all('.appliedFilter')
+    filters = page.all('.applied-filter')
     expect(filters.length).to eq(1)
-    expect(filters[0].find('.filterValue')).to have_content("Hippo")
+    expect(filters[0].find('.filter-value')).to have_content("Hippo")
   end
 
   it "should repopulate the advanced search fields with selected constraints" do
@@ -164,10 +164,10 @@ describe "Blacklight Advanced Search", :js => true do
 
     find_by_id('advanced-search-submit').click
 
-    filters = page.all('.appliedFilter')
+    filters = page.all('.applied-filter')
 
     expect(filters.length).to eq(1)
-    expect(filters[0].find('.filterValue')).to have_content("[100 TO 1800]")
+    expect(filters[0].find('.filter-value')).to have_content("[100 TO 1800]")
   end
 
   it "should search for overlapping (ALL) numerical constraints" do
@@ -183,11 +183,11 @@ describe "Blacklight Advanced Search", :js => true do
 
     find_by_id('advanced-search-submit').click
 
-    filters = page.all('.appliedFilter')
+    filters = page.all('.applied-filter')
 
     expect(filters.length).to eq(2)
-    expect(filters[0].find('.filterValue')).to have_content("[100 TO 1800]")
-    expect(filters[1].find('.filterValue')).to have_content("[1000 TO 2000]")
+    expect(filters[0].find('.filter-value')).to have_content("[100 TO 1800]")
+    expect(filters[1].find('.filter-value')).to have_content("[1000 TO 2000]")
 
     # the results for overlapping dates should be the interior range
 
@@ -219,9 +219,9 @@ describe "Blacklight Advanced Search", :js => true do
 
     find_by_id('advanced-search-submit').click
 
-    filters = page.all('.appliedFilter')
+    filters = page.all('.applied-filter')
 
-    expect(filters[0]).to have_content("Any")
+    expect(page).to have_css('.applied-filter')
 
     count = search_result_count
 

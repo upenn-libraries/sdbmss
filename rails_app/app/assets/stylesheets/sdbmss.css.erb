@@ -2227,19 +2227,6 @@ so that gray backdrop shvows up correctly */
   display: inline-block;
 }
 
-/* general - BS4 dropped .caret, restore it */
-.caret {
-  display: inline-block;
-  width: 0;
-  height: 0;
-  margin-left: 2px;
-  vertical-align: middle;
-  border-top: 4px dashed;
-  border-right: 4px solid transparent;
-  border-left: 4px solid transparent;
-}
-
-
 .collapsed .caret {
   border-top: 0;
   border-left: 4px dashed;
@@ -3153,8 +3140,10 @@ div.dataTables_wrapper {
 }
 
 .modal.in {
-  display: block;
+  display: block !important;
   opacity: 1;
+  position: absolute;
+  z-index: 1050;
 }
 .modal.fade.in {
   opacity: 1;

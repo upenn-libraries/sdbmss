@@ -19,7 +19,7 @@
               <span class="submit-search-text"><%=t('blacklight.search.form.submit')%></span>
               <i class="fa fa-search"></i>
             </button>
-            <a href="<%= main_app.advanced_search_path(search_state.params_for_search) %>" class="btn btn-light advanced_search">Advanced</a>
+            <a href="<%= main_app.advanced_search_path(request.query_parameters) %>" class="btn btn-light advanced_search">Advanced</a>
           </div>
         </div>
       </div>

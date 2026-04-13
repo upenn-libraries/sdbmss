@@ -308,10 +308,8 @@ describe "Linking Tool", :js => true do
     em.relation_type = EntryManuscript::TYPE_RELATION_PARTIAL
     em.save!
 
-    # there are actually TWO inputs that match here, because of some
-    # HTML craziness that happens with th datatable's fixed
-    # columns. whatever. just click one.
-    all("input[name='entry_id_#{last_two_entries[0].id}'][value='possible']")[1].trigger('click')
+    # DataTables fixed columns may duplicate inputs; click the last available one.
+    all("input[name='entry_id_#{last_two_entries[0].id}'][value='possible']").last.click
 
     persist_linking_changes
 

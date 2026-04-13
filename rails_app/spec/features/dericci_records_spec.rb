@@ -21,7 +21,7 @@ describe "Browse Dericci Records", :js => true do
 
   def open_verified_name_modal
     3.times do
-      find("#verify", visible: true).trigger("click")
+      page.execute_script("document.querySelector('#verify').click()")
       return if page.has_selector?("#searchNameAuthority", visible: true, wait: 2)
     end
 
@@ -111,11 +111,11 @@ describe "Browse Dericci Records", :js => true do
     expect(page).to have_selector("#searchNameAuthority", visible: true)
     expect(page).to have_selector("#select-name-table", visible: true)
     expect(page).to have_content("Camillo")
-    find(".selectName", visible: true, match: :first).click
+    find("tr", text: "Camillo").find(".selectName").click
     expect(page).not_to have_selector("#searchNameAuthority", visible: true)
     expect(page).to have_content("Camillo")
-    expect(page).to have_selector("a.btn.btn-success.btn-xs", text: "Save")
-    find("a.btn.btn-success.btn-xs", text: "Save").click
+    expect(page).to have_selector("a.btn.btn-success.btn-sm", text: "Save")
+    find("a.btn.btn-success.btn-sm", text: "Save").click
     expect(page).to have_content("Camillo")
   end
 

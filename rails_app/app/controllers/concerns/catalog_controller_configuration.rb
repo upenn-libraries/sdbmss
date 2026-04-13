@@ -433,6 +433,7 @@ module CatalogControllerConfiguration
       config.show.document_actions.delete(:sms)
       config.show.document_actions.delete(:citation)
 
+      config.add_show_tools_partial(:bookmark, partial: 'bookmark_control', if: :render_bookmarks_control?)
       #config.add_show_tools_partial(:edit_entry, partial: 'nav/edit_entry', if: :show_edit_entry_link?)
       config.add_show_tools_partial(:watch_entry, partial: 'nav/watch_entry')
       config.add_show_tools_partial(:linking_tool_by_entry, partial: 'nav/linking_tool_by_entry', if: :show_linking_tool_by_entry?)

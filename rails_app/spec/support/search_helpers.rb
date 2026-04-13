@@ -12,7 +12,7 @@ module SearchHelpers
   end
 
   def search_result_count
-    page_entries = find(".page_entries").text.match(/of\s(\d+)/)
+    page_entries = find(".page-entries").text.match(/of\s(\d+)/)
     page_entries ? page_entries[1].to_i : 0
   end
 

@@ -97,7 +97,10 @@ describe "Manage entries", :js => true do
   it "should load all entries from the Manage Entries page" do
     visit entries_path
 
-    expect(page.find('#search_results_info')).to have_content(ActiveSupport::NumberHelper::number_to_delimited(Entry.all.count))
+    expect(page).to have_css('#search_results_info', text: /of \d+ records/, wait: 10)
+    displayed_count = page.find('#search_results_info').text.match(/of (\d+) records/)[1].to_i
+    solr_count = Entry.search { paginate page: 1, per_page: 1 }.total
+    expect(displayed_count).to eq(solr_count)
   end
 
   it "should perform a search on any field without error" do
@@ -182,7 +185,7 @@ describe "Manage entries", :js => true do
     expect(page).to have_content("Cite")
 
     click_link "Cite"
-    now = DateTime.now.to_formatted_s(:date_mla)    
+    now = DateTime.now.to_formatted_s(:date_mla)
     result = "Schoenberg Database of Manuscripts. The Schoenberg Institute for Manuscript Studies, University of Pennsylvania Libraries. Web. #{now}: #{Entry.first.public_id}."
     expect(page).to have_content(result)
   end
@@ -201,7 +204,7 @@ describe "Manage entries", :js => true do
 
   it "should show suggestions of similar records in the linking tool" do
     skip "linking suggestions remain deferred until the matching algorithm is stable enough for deterministic coverage"
-  end  
+  end
 
   it "should verify a legacy entry" do
     skip "legacy-entry verification still needs a dedicated workflow spec; this manage-entries path is not implemented"

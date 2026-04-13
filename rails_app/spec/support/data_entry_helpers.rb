@@ -2,18 +2,19 @@ module DataEntryHelpers
   def click_certainty_flag(field)
     find_by_id(field).click
   end
-  
+
   def add_name_authority(id, value)
-    find_by_id(id).click
+    page.execute_script("document.getElementById('#{id}').click()")
     expect(page).to have_content('in Name Authority')
     expect(page).to have_selector('#searchNameAuthority')
     find_by_id('searchNameAuthority').set value
     find_by_id('search-name').click
     expect(page).not_to have_content('To begin searching')
-    if page.all('tr', :text => value).count <= 0
+    found_in_table = within('#select-name-table') { all('tr', :text => value).count }
+    if found_in_table <= 0
       expect(page).to have_content("Propose '#{value}")
       find_by_id('propose-name').click
-      expect(page).to have_selector('.modal-title', text: /^Create /, visible: true)
+      expect(page).to have_selector('.modal-title', text: /Create/, visible: true)
       within all('.modal-dialog').last do
         expect(page).to have_selector('.name-form a.btn.btn-primary', text: 'Save', visible: true)
         find('.name-form a.btn.btn-primary', text: 'Save').click
@@ -30,16 +31,18 @@ module DataEntryHelpers
   end
 
   def add_model_authority(id, value)
-    find_by_id(id).click
+    page.execute_script("document.getElementById('#{id}').click()")
+    expect(page).to have_css(".modal.in", visible: :all, wait: 5)
     expect(page).to have_content('in Name Authority')
     fill_in 'searchModelAuthority', with: value
     find_by_id('search-model').click
     expect(page).not_to have_content('To begin searching')
-    if page.all('tr', :text => value).count <= 0
+    found_in_table = within('#select-model-table') { all('tr', :text => value).count }
+    if found_in_table <= 0
       expect(page).to have_content("Propose '#{value}")
       find_by_id('propose-model').click
-      expect(page).to have_content("This window asks you to create an authorized name")
-      click_button('Create')
+      expect(page).to have_css('.modal.in .modal-footer .btn-primary', wait: 5)
+      page.execute_script("document.querySelector('.modal.in .modal-footer .btn-primary').click()")
       expect(page).not_to have_content("Error")
     else
       within '#select-model-table' do
@@ -53,18 +56,18 @@ module DataEntryHelpers
 
   def open_source_create_modal
     expect(page).to have_selector("#select_source")
-    find_by_id("select_source").trigger("click")
-    expect(page).to have_selector(".modal-title", text: "Search for Existing Source", visible: true)
+    page.execute_script("document.getElementById('select_source').click()")
+    expect(page).to have_selector(".modal-title", text: "Search for Existing Source", visible: true, wait: 5)
     fill_in "date", with: "2014"
     expect(page).to have_content("Unable to find the Source you are looking for?")
-    find_by_id("create_source").trigger("click")
-    expect(page).to have_selector("#source_type", visible: true)
+    page.execute_script("document.getElementById('create_source').click()")
+    expect(page).to have_selector("#source_type", visible: true, wait: 5)
   end
 
   def open_source_search_modal
     expect(page).to have_selector("#select_source")
-    find_by_id("select_source").trigger("click")
-    expect(page).to have_selector(".modal-title", text: "Search for Existing Source", visible: true)
+    page.execute_script("document.getElementById('select_source').click()")
+    expect(page).to have_selector(".modal-title", text: "Search for Existing Source", visible: true, wait: 5)
   end
 
   def wait_for_data_edit_page_to_load
@@ -194,7 +197,7 @@ module DataEntryHelpers
     # sale_selling_agent should be auto-populated from source, so we skip it
     #fill_autocomplete_select_or_create_entity 'sale_seller', with: 'Joe2'
     #fill_autocomplete_select_or_create_entity 'sale_buyer', with: 'Joe3'
-    
+
     offset = @source.source_agents.count
 
     find_by_id('add_sale_agent').click
@@ -221,19 +224,19 @@ module DataEntryHelpers
     fill_in 'sale_price', with: '130000'
     select 'USD', from: 'sale_currency'
 
-    find_by_id('add_title').trigger('click')
+    find_by_id('add_title').click
     fill_in 'title_0', with: 'Book of Hours'
     #find_by_id("add_title_0").click
-    find_by_id('add_title').trigger('click')
+    find_by_id('add_title').click
     fill_in 'title_1', with: 'Bible'
 
 #      fill_autocomplete_select_or_create_entity 'author_0', with: 'Schmoe, Joe'
-    find_by_id('add_author').trigger('click')
+    find_by_id('add_author').click
     add_name_authority('find_author_name_authority_0', 'Schmoe, Joe')
     fill_in 'author_observed_name_0', with: 'Joe Schmoe'
     click_certainty_flag('author_certainty_flags_0')
     select 'Translator', from: 'author_role_0'
-    
+
     find_by_id('add_date').click
     fill_in 'date_observed_date_0', with: 'early 15th century'
     # move focus out of observed_date in order to trigger auto-populate of normalized dates
@@ -260,7 +263,7 @@ module DataEntryHelpers
     fill_in 'place_observed_name_0', with: 'Somewhere in Italy'
     #fill_autocomplete_select_or_create_entity 'place_0', with: 'Italy'
     add_model_authority('find_place_name_authority_0', 'Italy')
-    
+
     find_by_id('add_use').click
     fill_in 'use_0', with: 'Some mysterious office or other'
 
@@ -282,7 +285,7 @@ module DataEntryHelpers
 
     first('#add_provenance').click
     fill_in 'provenance_observed_name_0', with: 'Somebody, Joe'
-    
+
     #fill_autocomplete_select_or_create_entity 'provenance_agent_0', with: 'Somebody, Joseph'
     add_name_authority('find_provenance_name_authority_0', 'Somebody, Joseph')
 

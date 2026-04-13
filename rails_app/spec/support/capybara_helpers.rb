@@ -50,11 +50,11 @@ module SDBMSS
       def accept_data_confirm_modal_from(&block)
         block.call
 
-        within(".modal.in", visible: true) do
+        within(".modal.show", visible: true) do
           find(".commit", match: :first).click
         end
 
-        expect(page).to have_no_css(".modal.in", visible: true)
+        expect(page).to have_no_css(".modal.show", visible: true)
       end
 
       private

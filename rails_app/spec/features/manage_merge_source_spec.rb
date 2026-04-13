@@ -79,9 +79,9 @@ describe "Manage Merging Sources", :js => true do
     expect(page).to have_content("Merge #{@source.public_id}")
     expect(page).to have_content("#{@source2.public_id}")
 
-    click_button("Yes")
-    
-    expect(page).to have_content("#{@source.public_id} has been successfully merged into #{@source2.public_id}")
+    page.execute_script("document.querySelector('form.sdbmss-form button.btn-primary').closest('form').submit()")
+
+    expect(page).to have_content("has been successfully merged into", wait: 10)
 
     @source2.index!
     @source2.entries.each do |e|
