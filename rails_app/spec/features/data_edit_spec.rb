@@ -167,7 +167,7 @@ describe "Data entry", :js => true do
 
       find(".save-button", match: :first).click
 
-      expect(page).to have_current_path(entry_path(entry), only_path: true)
+      expect(page).to have_current_path(entry_path(entry))
 
       entry.reload
 
@@ -188,7 +188,7 @@ describe "Data entry", :js => true do
 
       find(".save-button", match: :first).click
 
-      expect(page).to have_current_path(entry_path(entry), only_path: true)
+      expect(page).to have_current_path(entry_path(entry))
 
       entry.reload
 
@@ -209,7 +209,7 @@ describe "Data entry", :js => true do
 
       find(".save-button", match: :first).click
 
-      expect(page).to have_current_path(entry_path(entry), only_path: true)
+      expect(page).to have_current_path(entry_path(entry))
 
       entry.reload
 
