@@ -16,6 +16,7 @@ RSpec.describe "Manage Names", type: :request do
     it "renders the merge page for an admin user" do
       author = Name.author
       author.update!(name: "Joe Zchmoe")
+      author.index!
 
       login_as(admin_user, scope: :user)
       get merge_name_path(author.id)

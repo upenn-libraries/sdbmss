@@ -38,6 +38,9 @@
 .ruby-version
 
 VERSION
+# Claude Code machine-local overrides (not shared)
+.claude/settings.local.json
+
 # don't track .env files
 .env
 .lando.env
