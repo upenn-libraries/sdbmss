@@ -1004,7 +1004,7 @@ class Entry < ActiveRecord::Base
     filename = download.filename
     user = download.user
     id = download.id
-    path = "tmp/#{id}_#{user}_#{filename}"
+    path = "tmp/downloads/#{id}_#{user}_#{filename}"
     headers = nil
     loop do
       s = do_search(params.merge({:limit => 300, :offset => offset}))
