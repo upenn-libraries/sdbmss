@@ -218,7 +218,8 @@ namespace :sdbmss do
         user.save!
       else
         puts "Creating test user #{role} with password #{password}"
-        user = User.create email: "#{role}@#{role}.com",
+        # domain names may not contain "_"
+        user = User.create email: "#{role}@#{role.gsub(/_+/, '')}.com",
                     username: role,
                     fullname:"#{role} #{role}",
                     role: role,
