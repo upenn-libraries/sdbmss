@@ -64,13 +64,13 @@
     .progress {
       margin-bottom: 0px;
     }
-    .progress-bar-success {
+    .progress-bar-success, .bg-success {
       background-color: #AE9A4A;
     }
-    .progress-bar-warning {
+    .progress-bar-warning, .bg-warning {
       background-color: #306F63;
     }
-    .progress-bar-danger {
+    .progress-bar-danger, .bg-danger {
       background-color: #7F8FA8;
     }
     .table td {
@@ -109,7 +109,7 @@
                 ],
                 "backgroundColor":["#8BC311", "#56C34A", "#AE724A", "#7F8FA8", "#306F63"]
               }]
-          }, 
+          },
           options: {
             title: {
               display: true,
@@ -128,7 +128,7 @@
 <% end %>
 <div class="row">
   <div class="col-sm-12 text-center">
-    <h1>The De Ricci Digitized Archive Name Game</h1>  
+    <h1>The De Ricci Digitized Archive Name Game</h1>
   </div>
   <div class="col-sm-12 text-center">
     <!-- request advancement -->
@@ -137,18 +137,18 @@
     <% end %>
     <!-- -->
     <%= link_to new_dericci_game_path, class: 'btn btn-sm btn-outline-secondary', id: "new-game" do %>
-      <span class="fa fa-building"></span> Start a <strong>New Game</strong>
+      <span class="fa fa-gamepad"></span> Start a <strong>New Game</strong>
     <% end %>
 
     <% completed = @games.select { |g| g.completed.to_i + g.skipped.to_i + g.flagged.to_i >= 100 } %>
     <% inprogress = @games.select { |g| g.completed.to_i + g.skipped.to_i + g.flagged.to_i < 100 } %>
-    <a data-toggle="collapse" data-target="#completed-games" class="btn btn-sm btn-outline-secondary">Completed Games <span class="badge badge-light"><%= completed.count %></span> <span class="caret"></span></a>
-    <a data-toggle="collapse" data-target="#in-progress" class="btn btn-sm btn-outline-secondary">In Progress <span class="badge badge-light"><%= inprogress.count %></span> <span class="caret"></span></a>
+    <a data-toggle="collapse" data-target="#completed-games" class="btn btn-sm btn-outline-secondary">Completed Games <span class="badge badge-dark"><%= completed.count %></span> <span class="caret"></span></a>
+    <a data-toggle="collapse" data-target="#in-progress" class="btn btn-sm btn-outline-secondary">In Progress <span class="badge badge-dark"><%= inprogress.count %></span> <span class="caret"></span></a>
     <%= render partial: "list", locals: {title: "In Progress", games: inprogress } %>
     <%= render partial: "list", locals: {title: "Completed Games", games: completed } %>
   </div>
 </div>
-<div class="row">
+<div class="row mt-4">
   <div class="col-sm-12">
     <div class="chart">
       <canvas height="480" width="480" id="piechart"></canvas>
@@ -170,6 +170,6 @@
     <%= render partial: "pages/partial", locals: {page_name: "De Ricci Game Results" } %>
   </div>
   <div class="col-sm-12">
-    <%= render partial: "pages/partial", locals: {page_name: "De Ricci Game FAQ" } %>        
+    <%= render partial: "pages/partial", locals: {page_name: "De Ricci Game FAQ" } %>
   </div>
 </div>

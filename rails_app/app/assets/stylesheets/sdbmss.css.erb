@@ -203,6 +203,7 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
   top: 0;
   left: 0;
   min-width: 320px;
+  min-height: 54px;
   z-index: 1030;
 }
 #header-navbar .nav-link {
@@ -499,7 +500,7 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
 .breadcrumb-item.active a {
   border: 1px solid #eee;
   border-radius: 4px;
-  padding: 9px;
+  padding: 0 5px;
   background: #f8f8f8;
   color: #666;
 }
@@ -560,7 +561,16 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
 }
 #search-navbar .catalog-search-info {
   flex: none;
-  flex-wrap: nowrap;
+}
+@media (max-width: 767px) {
+  #search-navbar .catalog-search-info {
+    flex-basis: 100%;
+    text-align: right;
+  }
+  #search-navbar .catalog-search-info .nav {
+    flex-direction: column;
+    align-items: flex-end;
+  }
 }
 #search-navbar .catalog-search-info .nav > li > a {
   padding: 15px 10px;
@@ -2217,19 +2227,6 @@ so that gray backdrop shvows up correctly */
   display: inline-block;
 }
 
-/* general - BS4 dropped .caret, restore it */
-.caret {
-  display: inline-block;
-  width: 0;
-  height: 0;
-  margin-left: 2px;
-  vertical-align: middle;
-  border-top: 4px dashed;
-  border-right: 4px solid transparent;
-  border-left: 4px solid transparent;
-}
-
-
 .collapsed .caret {
   border-top: 0;
   border-left: 4px dashed;
@@ -2757,6 +2754,13 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
   border-color: #a94442;
   color: white;
 }
+.table .bg-danger,
+.table .bg-danger td,
+.table .bg-danger a,
+.table .bg-danger .text-danger {
+  color: white !important;
+  border-color: white;
+}
 .alert-info {
   background-color: #4d6b98;
   border-color: #4d6b98;
@@ -3136,8 +3140,10 @@ div.dataTables_wrapper {
 }
 
 .modal.in {
-  display: block;
+  display: block !important;
   opacity: 1;
+  position: absolute;
+  z-index: 1050;
 }
 .modal.fade.in {
   opacity: 1;

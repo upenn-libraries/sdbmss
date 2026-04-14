@@ -18,6 +18,10 @@ module SDBMSS
         click_button 'Log in'
         expect(page).to have_content 'Signed in successfully'
       end
+
+      def fast_login(user)
+        login_as(user, scope: :user)
+      end
     end
 
     module AlertConfirmer
@@ -41,6 +45,16 @@ module SDBMSS
 
       def get_modal_text(name)
         page.evaluate_script "window.#{name}Msg;"
+      end
+
+      def accept_data_confirm_modal_from(&block)
+        block.call
+
+        within(".modal.show", visible: true) do
+          find(".commit", match: :first).click
+        end
+
+        expect(page).to have_no_css(".modal.show", visible: true)
       end
 
       private

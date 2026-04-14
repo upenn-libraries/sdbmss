@@ -65,13 +65,13 @@
     .progress {
       margin-bottom: 0px;
     }
-    .progress-bar-success {
+    .progress-bar-success, .bg-success {
       background-color: #AE9A4A;
     }
-    .progress-bar-warning {
+    .progress-bar-warning, .bg-warning {
       background-color: #306F63;
     }
-    .progress-bar-danger {
+    .progress-bar-danger, .bg-danger {
       background-color: #7F8FA8;
     }
     .table td {
@@ -170,7 +170,7 @@
     <p>The Name Game goal is to link PDFs of the De Ricci cards to corresponding SDBM Name Authority records. Each link must be reviewed and confirmed by an Editor, Super Editor, or Admin <span sdbm-tooltip="user_levels"></span> The PDF will then appear in the corresponding SDBM Name Authority record, so that all users can easily access whatever information the De Ricci card contains. To advance from Contributor to Editor, you must complete at least 10 games. Once your games are complete, click the Request Advancement button on the Name Game page. SDBM Admins will review your links, flags, rejections, and skips for accuracy and then determine whether you qualify for advancement <span sdbm-tooltip="user_levels"></span> The Name Game only applies to advancement from the Contributor to Editor level.</p>
 
     <h5>
-      <strong>Got another idea for a data-enriching game? <%= link_to "Suggest one via the community forum!", thredded_path %></strong>
+      <strong>Got another idea for a data-enriching game? <%= mail_to "sdbm@upenn.edu", "Contact us with your suggestion!" %></strong>
     </h5>
 
   </div>

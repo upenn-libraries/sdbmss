@@ -12,6 +12,9 @@ module SDBMSS
     # TODO: audit belongs_to associations for optional: true, then remove this override
     config.active_record.belongs_to_required_by_default = false
 
+    # Disable SassC as CSS compressor because it cannot handle modern CSS var() syntax in vendor DataTables stylesheets
+    config.assets.css_compressor = nil
+
     # Psych 3.1+ restricts YAML deserialization to safe classes by default.
     # The ActiveRecord session store and Blacklight save Ruby objects (like
     # HashWithIndifferentAccess) into YAML-serialized session data.
@@ -52,5 +55,5 @@ module SDBMSS
     config.sdbmss_show_testing_message = false
 
   end
-  
+
 end

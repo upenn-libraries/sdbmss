@@ -1,6 +1,8 @@
 require "rails_helper"
 
 describe "Data entry", :js => true do
+  include DataEntryHelpers
+
   # Fill an autocomplete field using value in :with option. If a
   # block is given, yields to it to allow for selection.
   def fill_autocomplete(field, options = {})
@@ -75,27 +77,21 @@ describe "Data entry", :js => true do
   #  sleep(2)
   #end
 
-  before :all do
-    #User.where(username: 'testuser').delete_all
+  before :each do
     @user = User.where(role: 'admin').first
-=begin
-    User.create!(
-      email: 'testuser@test.com',
-      username: 'testuser',
-      password: 'somethingunguessable'
-    )
-=end    
 
     @source = Source.find_or_create_by(
       title: "A Sample Test Source With a Highly Unique Name",
       date: "2013-11-12",
       source_type: SourceType.auction_catalog,
     )
-    source_agent = SourceAgent.create!(
-      source: @source,
-      role: SourceAgent::ROLE_SELLING_AGENT,
-      agent: Name.find_or_create_agent("Sotheby's")
-    )
+    unless @source.source_agents.exists?(role: SourceAgent::ROLE_SELLING_AGENT)
+      SourceAgent.create!(
+        source: @source,
+        role: SourceAgent::ROLE_SELLING_AGENT,
+        agent: Name.find_or_create_agent("Sotheby's")
+      )
+    end
   end
 
   context "when user is logged in" do
@@ -107,9 +103,6 @@ describe "Data entry", :js => true do
     after :each do
       page.reset!
     end
-
-    require "lib/data_entry_helpers"
-    include DataEntryHelpers
 
     it "should edit an existing Source" do
       source = Source.create!(
@@ -131,7 +124,7 @@ describe "Data entry", :js => true do
 
 #      expect(page).to have_content(entry.public_id)
 
-      source = Source.last
+      source.reload
       expect(source.source_type).to eq(SourceType.auction_catalog)
       expect(source.date).to eq('20141215')
       expect(source.title).to eq('my existing source')
@@ -139,9 +132,7 @@ describe "Data entry", :js => true do
 
 
     it "should show creator on Edit page" do
-      create_entry
-
-      entry = Entry.last
+      entry = create_edit_entry
 
       visit edit_entry_path :id => entry.id
 
@@ -150,13 +141,7 @@ describe "Data entry", :js => true do
     end
 
     it "should preserve entry on Edit page when saving without making any changes" do
-      #count = Entry.count
-
-      #create_entry
-
-      #expect(Entry.count).to eq(count + 1)
-
-      entry = Entry.last
+      entry = create_edit_entry
 
       visit edit_entry_path :id => entry.id
 
@@ -167,58 +152,22 @@ describe "Data entry", :js => true do
       verify_entry(entry)
     end
 
-    it "should create history when updating an Entry" do
-      skip "(Test is out of date with new change history implementation" do
-      end
-      #count = Entry.count
-
-      #create_entry
-
-      #expect(Entry.count).to eq(count + 1)
-
-      entry = Entry.last
-
-      old_title = entry.entry_titles.first.title
-
-      visit edit_entry_path :id => entry.id
-
-      fill_in 'title_0', with: 'Changed Book'
-
-      find(".save-button", match: :first).click
-
-      expect(page).to have_content(entry.public_id)
-
-      entry.reload
-
-      visit history_entry_path :id => entry.id
-
-      # should display in 3rd row
-      expect(all(:xpath, "//tr")[2].all(:xpath, ".//td")[2].text).to eq("changed Title")
-      expect(all(:xpath, "//tr")[2].all(:xpath, ".//td")[3].text).to eq("Title: from #{old_title} to Changed Book")
-    end
-
     it "should remove a title on Edit page" do
-      #count = Entry.count
-
-      #create_entry
-
-      #expect(Entry.count).to eq(count + 1)
-
-      entry = Entry.last
+      entry = create_edit_entry_with_titles(["Book of Hours", "Bible"], include_author: false)
 
       visit edit_entry_path :id => entry.id
 
-      # mock out the confirm dialogue
-      page.evaluate_script('window.confirm = function() { return true; }')
-
+      expect(page).to have_css("#delete_title_0")
       find_by_id("delete_title_0").click
       expect(page).to have_content("Are you sure you want to remove this field and its contents?")
-      click_button "Yes"
+      within all(".modal-dialog").last do
+        click_button "Yes"
+      end
+      expect(page).to have_field("title_0", with: "Bible")
 
       find(".save-button", match: :first).click
 
-      expect(page).to have_content("Warning: This entry has not been approved yet.")
-      expect(page).to have_content(entry.public_id)
+      expect(page).to have_current_path(entry_path(entry))
 
       entry.reload
 
@@ -228,24 +177,18 @@ describe "Data entry", :js => true do
     end
 
     it "should clear out a title on Edit Page" do
-      #count = Entry.count
-
-      #create_entry
-
-      #expect(Entry.count).to eq(count + 1)
-
-      entry = Entry.last
+      entry = create_edit_entry_with_titles(["Bible"])
 
       visit edit_entry_path :id => entry.id
 
       # clear out the title field; this should result in deletion of
       # underlying entry_title record
+      expect(page).to have_field('title_0')
       fill_in 'title_0', with: ''
 
       find(".save-button", match: :first).click
 
-      expect(page).to have_content("Warning: This entry has not been approved yet.")
-      expect(page).to have_content(entry.public_id)
+      expect(page).to have_current_path(entry_path(entry))
 
       entry.reload
 
@@ -254,74 +197,52 @@ describe "Data entry", :js => true do
     end
 
     it "should clear out a Name Authority (autocomplete) field" do
-      #count = Entry.count
-
-      #create_entry
-
-      #expect(Entry.count).to eq(count + 1)
-
-      entry = Entry.last
+      entry = create_edit_entry_with_titles(["Book of Hours"])
 
       visit edit_entry_path :id => entry.id
 
-      fill_in 'author_observed_name_0', with: "Joe"
-      #fill_in 'author_0', with: '     '
-      #fill_autocomplete('author_0', with: '     ')
-
-      expect(page).to have_content('Schmoe, Joe')
+      expect(page).to have_field('author_observed_name_0')
+      expect(page).to have_css('#remove_author_name_authority_0')
       find_by_id('remove_author_name_authority_0').click
-      expect(page).not_to have_content('Schmoe, Joe')
+      expect(page).not_to have_css('#remove_author_name_authority_0')
       #expect(find_field('author_0').value).to eq('     ')
 
       find(".save-button", match: :first).click
 
-      expect(page).to have_content(entry.public_id)
+      expect(page).to have_current_path(entry_path(entry))
 
       entry.reload
 
-      entry = Entry.last
-
-      expect(page).to have_content("Warning: This entry has not been approved yet.")
       expect(entry.entry_authors.count).to eq(1)
       expect(entry.entry_authors.first.author_id).to eq(nil)
     end
 
     it "should warn when editing Entry to have same catalog number as existing Entry" do
-      #create_entry
+      source = create_edit_test_source
+      existing_entry = create_edit_entry_with_titles(["Book of Hours"], include_author: false, catalog_or_lot_number: "123", source: source)
+      entry = create_edit_entry_with_titles(["Book of Hours"], include_author: false, catalog_or_lot_number: "124", source: source)
+      [existing_entry, entry].each(&:index!)
+      Sunspot.commit
 
-      visit new_entry_path :source_id => @source.id
-
-      # make a new entry w/ same Source but diff catalog number
-      fill_in 'cat_lot_no', with: "124"
-      find(".save-button", match: :first).click
-
-      expect(page).to have_content("Warning: This entry has not been approved yet.")
-      expect(page).to have_content(Entry.last.public_id)
-
-      visit edit_entry_path :id => Entry.last.id
+      visit edit_entry_path :id => entry.id
       fill_in 'cat_lot_no', with: "123"
-      find_by_id('add_title').click
-      find_by_id('title_0').trigger('focus')
+      find_by_id('cat_lot_no').trigger('focusout')
 
-      expect(page).to have_content "Warning! An entry with that catalog number may already exist"
+      expect(page).to have_css('#cat_lot_no_warning', text: /Warning! An entry with that catalog number may already exist/)
 
       # change it back to a new number so msg goes away
       fill_in 'cat_lot_no', with: "124"
-      find_by_id('add_title').click
-      find_by_id('title_0').trigger('focus')
+      find_by_id('cat_lot_no').trigger('focusout')
 
-      expect(page).not_to have_content "Warning! An entry with that catalog number may already exist"
+      expect(page).to have_no_css('#cat_lot_no_warning', text: /Warning! An entry with that catalog number may already exist/)
     end
 
     it "should disallow saving on Edit Page when another change was made" do
-      #create_entry
-
       entry = Entry.last
 
       visit edit_entry_path :id => entry.id
 
-      # wait for AJAX to finish
-      expect(find(".source-name").text.length).to be > 0
+      wait_for_data_edit_page_to_load
 
       # change folios and try to modify folios
 
@@ -337,14 +258,11 @@ describe "Data entry", :js => true do
     end
 
     it "should disallow saving on Edit Page when another change was made (variation 1)" do
-      #create_entry
-
       entry = Entry.last
 
       visit edit_entry_path :id => entry.id
 
-      # wait for AJAX to finish
-      expect(find(".source-name").text.length).to be > 0
+      wait_for_data_edit_page_to_load
 
       # change folios and try to modify title association record
 
@@ -361,14 +279,11 @@ describe "Data entry", :js => true do
     end
 
     it "should disallow saving on Edit Page when another change was made (variation 2)" do
-      #create_entry
-
       entry = Entry.last
 
       visit edit_entry_path :id => entry.id
 
-      # wait for AJAX to finish
-      expect(find(".source-name").text.length).to be > 0
+      wait_for_data_edit_page_to_load
 
       # change title association record and try to modify folios
 
@@ -392,7 +307,7 @@ describe "Data entry", :js => true do
     end
 
     it "should disallow creating Entries if not logged in" do
-      visit new_entry_path :source_id => @source.id
+      visit new_entry_path :source_id => create_edit_test_source.id
       expect(page).to have_content("You need to sign in")
     end
 

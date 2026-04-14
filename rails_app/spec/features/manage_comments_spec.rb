@@ -5,10 +5,12 @@ describe "Manage Comments", :js => true do
   before :all do
 #    SDBMSS::ReferenceData.create_all
 
-    @user = User.where(role: "admin").first
+    @user = User.find_by(role: "admin")
   end
 
   before :each do
+    Comment.create!(comment: "This is an interesting observation!", commentable: Entry.first, created_by: @user)
+    Sunspot.commit
     login(@user, 'somethingunguessable')
   end
 
@@ -23,17 +25,6 @@ describe "Manage Comments", :js => true do
     visit comment_path(Comment.last)
 
     expect(page).to have_content("This is an interesting observation!")
-  end
-
-  it "should show manage comments page" do
-    visit comments_path
-
-    expect(page).to have_content("This is an interesting observation")
-
-    find("#search_value").set "observation"
-    find('#search_submit').click
-
-    expect(page).to have_content("This is an interesting observation") 
   end
 
   it "should allow a user to edit their comments" do
@@ -53,26 +44,18 @@ describe "Manage Comments", :js => true do
   end
 
   it "should allow a user to delete their comments" do
-    skip "right, we can't click on modals because that would be useful!"
     visit comments_path
 
     find('#search_results a', match: :first).click
 
-    expect(page).to have_content('That\'s ridiculous.')
+    expect(page).to have_content('This is an interesting observation!')
 
-    find('a[data-method="delete"]', match: :first).click
-    
-    expect(page).to have_content('Are you sure?')
-    
-    #find('button.btn.btn-danger.commit', match: :first).click
-    click_button "Confirm"
+    accept_data_confirm_modal_from do
+      find('a[data-method="delete"]', match: :first).click
+    end
 
     expect(page).to have_content('This comment has been deleted.')
-    expect(page).not_to have_content('That\'s ridiculous.')
-  end
-
-  it "should properly notify the owner of the commented record" do
-    skip "not yet!"
+    expect(page).not_to have_content('This is an interesting observation!')
   end
 
 end

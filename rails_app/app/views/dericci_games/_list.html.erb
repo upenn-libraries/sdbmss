@@ -1,30 +1,30 @@
 <div class="collapse" id="<%= title.parameterize %>">
   <h5 class="text-center text-info"><%= title %></h5>
-  <table class="table table-responsive text-left" style="max-height: 300px; overflow-y: scroll; margin-top: 5px;">
+  <table class="table text-left" style="max-height: 300px; overflow-y: scroll; margin-top: 5px;">
     <tbody>
       <% if games.reverse.each do |game| %>
         <tr>
-          <td>
+          <td style="width: 130px;">
             <%= link_to(dericci_game_path(game), class: 'btn btn-outline-secondary btn-sm play-game') do %>
-              <span class="fa fa-building"></span> Go To Game
+              <span class="fa fa-gamepad"></span> Go To Game
             <% end %>
           </td>
-          <td>
+          <td class="text-center" style="width: 200px;">
             <%= game.created_at.to_formatted_s(:long) %>
           </td>
           <td>
-            <div class="progress">
-              <div class="progress-bar progress-bar-success" role="progressbar" style="width:<%= game.completed.to_i.floor %>%;">
+            <div class="progress" style="height: 28px;">
+              <div class="progress-bar bg-success" role="progressbar" style="width:<%= game.completed.to_i.floor %>%; line-height: 28px;">
                 <%= game.completed.to_i %>% Completed
               </div>
-              <div class="progress-bar progress-bar-warning" role="progressbar" style="width:<%= game.skipped.to_i.floor %>%;">
+              <div class="progress-bar bg-warning" role="progressbar" style="width:<%= game.skipped.to_i.floor %>%; line-height: 28px;">
                 <%= game.skipped.to_i %>% Skipped
               </div>
-              <div class="progress-bar progress-bar-danger" role="progressbar" style="width:<%= game.flagged.to_i.ceil %>%;">
+              <div class="progress-bar bg-danger" role="progressbar" style="width:<%= game.flagged.to_i.ceil %>%; line-height: 28px;">
                 <%= game.flagged.to_i %>% Flagged
               </div>
               <% if game.skipped.to_i + game.completed.to_i <= 0 %>
-                <div class="text-muted text-center">Not started</div>
+                <span class="text-muted w-100 text-center" style="line-height: 28px;">Not started</span>
               <% end %>
             </div>
           </td>

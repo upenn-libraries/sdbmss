@@ -443,7 +443,7 @@ var BOOKMARK_SCOPE;
         else return 'fa-search';
       };
       $scope.cantFind = function () {
-        $(".cantfind").toggleClass("in");
+        $(".cantfind").toggleClass("show");
       }
 
       $scope.getText = function (record) {

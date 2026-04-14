@@ -2,8 +2,6 @@
 require 'json'
 require "rails_helper"
 
-# There's JS on most of these pages. Not all features use JS, but
-# there's no good reason NOT to use the js driver, so we do.
 describe "Manage Users", :js => true do
 
   before :all do
@@ -18,9 +16,30 @@ describe "Manage Users", :js => true do
     page.reset!
   end
 
-  it "should load" do
-    visit accounts_path
-    expect(page).to have_content("Manage Accounts")
+  it "should allow a super-editor to do the appropriate things" do
+    user = User.create!(
+      email: 'mail@garbagemailaddress.org',
+      username: 'supereditor',
+      password: '12345678',
+      role: 'super_editor'
+    )
+
+    visit profile_path(user.username)
+    expect(page).to have_content('super_editor')
+
+    source = Source.create!(
+      source_type: SourceType.auction_catalog,
+      date: "20150101",
+      title: "Test catalog",
+      whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
+      medium: Source::TYPE_MEDIUM_INTERNET,
+      created_by: user,
+    )
+    e = Entry.create!(source: source, unverified_legacy_record: true)
+    e.index!
+    visit entry_path(e)
+
+    expect(page).to have_content("Edit #{e.public_id}")
   end
 
   it "should create a user" do
@@ -82,34 +101,7 @@ describe "Manage Users", :js => true do
 
     expect(user.bio).to eq("A changed bio")
     expect(user.role).to eq("editor")
-    # check that password is NOT changed
     expect(user.valid_password?("somethingunguessable")).to eq(true)
-  end
-
-  it "should allow a super-editor to do the appropriate things" do
-    user = User.create!(
-      email: 'mail@garbagemailaddress.org',
-      username: 'supereditor',
-      password: '12345678',
-      role: 'super_editor'
-    )
-
-    visit profile_path(user.username)
-    expect(page).to have_content('super_editor')
-
-    source = Source.create!(
-      source_type: SourceType.auction_catalog,
-      date: "20150101",
-      title: "Test catalog",
-      whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
-      medium: Source::TYPE_MEDIUM_INTERNET,
-      created_by: user,
-    )
-    e = Entry.create!(source: source, unverified_legacy_record: true)
-    e.index!
-    visit entry_path(e)
-
-    expect(page).to have_content("Edit #{e.public_id}")
   end
 
 end

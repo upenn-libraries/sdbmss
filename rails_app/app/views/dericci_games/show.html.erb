@@ -6,8 +6,10 @@
       height: 20px;
     }
     .modal-left {
-      max-width: 50%;
-      box-shadow: 10px 0px 24px -5px rgba(0,0,0,0.5);
+      padding-right: 0 !important;
+    }
+    .modal-backdrop.modal-left {
+      display: none;
     }
     .modal-title {
       overflow: hidden;
@@ -16,12 +18,13 @@
     .modal-left .modal-dialog {
       margin: 0px;
       height: 100%;
-      width: 100%;
+      max-width: 60%;
       overflow: hidden;
     }
     .modal-left .modal-content {
       height: 100%;
       border-radius: 0px;
+      box-shadow: none;
     }
     .modal-header .close {
       margin: 8px;
@@ -94,13 +97,17 @@
       margin: 10px 15px 10px 15px;
     }
     .my-btn-group {
-      display: table;
+      display: flex;
       width: 100%;
     }
     .my-btn-group .btn {
-      float: none;
-      display: table-cell;
       white-space: normal;
+    }
+    .my-btn-group .btn.view-name {
+      flex: 1;
+    }
+    .my-btn-group .btn.find-name {
+      flex: 0 0 90px;
     }
     /*.my-btn-group .btn-outline-secondary {
       border: none;
@@ -159,8 +166,8 @@
   <div class="row">
     <div class="col-sm-4" style="">
       <p class='text-center'>Select a <span class='lead'>Record</span> and click <span class="lead text-primary"><span class="fa fa-search"></span> Find</span></p>
-      <ul class="game-nav nav nav-pills nav-stacked" style="margin-top: 15px;">
-        <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }">
+      <ul class="game-nav nav nav-pills flex-column" style="margin-top: 15px;">
+        <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }" class="mb-1">
           <span class="btn-group my-btn-group">
             <a href="" class="btn btn-outline-secondary btn-sm one-line text-left view-name" ng-class="{'active': current_record == record}" ng-click="selectRecord(record)">
               {{ record.name }}

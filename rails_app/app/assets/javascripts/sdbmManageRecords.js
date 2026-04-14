@@ -292,6 +292,10 @@ var load_session = false;
             var field = search_row.find("select[name=search_field]").val();
             var option = search_row.find("select[name=search_option]").val();
 
+            if (!term) {
+                continue;
+            }
+
             if ( search_query[field] ) {
                 search_query[field].push(term);
             } else {
