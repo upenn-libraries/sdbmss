@@ -5,14 +5,11 @@ require "rails_helper"
 # There's JS on most of these pages. Not all features use JS, but
 # there's no good reason NOT to use the js driver, so we do.
 describe "Manage Private Messages", :js => true do
-
-  before :all do
-    @user = User.find_by(role: "admin")
-    @user2 = User.find_by(role: "contributor")
-  end
+  let(:admin_user) { create(:admin) }
+  let(:contributor_user) { create(:user, role: "contributor") }
 
   before :each do
-      login(@user, 'somethingunguessable')
+      login(admin_user, 'somethingreallylong')
   end
 
   after :each do
@@ -25,7 +22,7 @@ describe "Manage Private Messages", :js => true do
   end
 
   it "should allow a user to send a new private message" do
-    visit new_private_message_path(user_id: [@user2.id])
+    visit new_private_message_path(user_id: [contributor_user.id])
     
     fill_in "title", with: "Welcome!"
     fill_in "message", with: "This is a welcome message."
@@ -34,19 +31,19 @@ describe "Manage Private Messages", :js => true do
 
     expect(page).to have_content("Welcome!")
     expect(page).to have_content("This is a welcome message.")
-    expect(page).to have_content(@user.username)
-    expect(page).to have_content(@user2.username)
+    expect(page).to have_content(admin_user.username)
+    expect(page).to have_content(contributor_user.username)
   
     expect(PrivateMessage.count).to eq(1)
 
     visit private_messages_path(sent_by: true)
     expect(page).to have_content("Welcome!")
-    expect(page).to have_content(@user.username)
-    expect(page).to have_content(@user2.username)
+    expect(page).to have_content(admin_user.username)
+    expect(page).to have_content(contributor_user.username)
   end
 
   it "should allow a user to view any message chain that includes them" do
-    visit new_private_message_path(user_id: [@user2.id])
+    visit new_private_message_path(user_id: [contributor_user.id])
     fill_in "title", with: "Welcome!"
     fill_in "message", with: "This is a welcome message."
 
@@ -54,20 +51,20 @@ describe "Manage Private Messages", :js => true do
 
     expect(page).to have_content("Welcome!")
     expect(page).to have_content("This is a welcome message.")
-    expect(page).to have_content(@user.username)
-    expect(page).to have_content(@user2.username)
+    expect(page).to have_content(admin_user.username)
+    expect(page).to have_content(contributor_user.username)
 
     page.reset!
-    login(@user2, "somethingunguessable")
+    login(contributor_user, "somethingreallylong")
     visit private_messages_path
     expect(page).to have_content("Welcome!")
 
     visit notifications_path
-    expect(page).to have_content("#{@user} sent you a message")
+    expect(page).to have_content("#{admin_user} sent you a message")
   end
 
   it "should allow a user to reply to a private message" do
-    visit new_private_message_path(user_id: [@user2.id])
+    visit new_private_message_path(user_id: [contributor_user.id])
     fill_in "title", with: "Welcome!"
     fill_in "message", with: "This is a welcome message."
 
@@ -75,13 +72,13 @@ describe "Manage Private Messages", :js => true do
 
     expect(page).to have_content("Welcome!")
     expect(page).to have_content("This is a welcome message.")
-    expect(page).to have_content(@user.username)
-    expect(page).to have_content(@user2.username)
+    expect(page).to have_content(admin_user.username)
+    expect(page).to have_content(contributor_user.username)
 
     page.reset!
-    login(@user2, "somethingunguessable")
+    login(contributor_user, "somethingreallylong")
 
-    visit private_message_path(@user2.private_messages.last)
+    visit private_message_path(contributor_user.private_messages.last)
     expect(page).to have_content('Reply')
     click_button 'Reply'
 

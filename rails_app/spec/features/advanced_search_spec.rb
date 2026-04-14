@@ -5,9 +5,10 @@ require "rails_helper"
 # there's no good reason NOT to use the js driver, so we do.
 describe "Blacklight Advanced Search", :js => true do
   include SearchHelpers
+  let(:admin_user) { create(:admin) }
 
   before :each do
-    @user = User.where(role: "admin").first
+    @user = admin_user
     e = Entry.create!({source: latest_seeded_source, created_by: @user})
     e.index!
   end
@@ -15,7 +16,7 @@ describe "Blacklight Advanced Search", :js => true do
   def perform_two_author_search
     visit advanced_search_path
 
-    search_fields = advanced_search_text_fields
+    search_fields = page.all(".advanced-search-field input[type=text]")
     search_fields[0].set "Augustine"
     search_fields[1].set "Hippo"
 
@@ -47,7 +48,7 @@ describe "Blacklight Advanced Search", :js => true do
 
     visit advanced_search_path
 
-    search_fields = advanced_search_text_fields
+    search_fields = page.all(".advanced-search-field input[type=text]")
     search_fields[0].set "Augustine AND Hippo"
 
     select 'Author', from: "text_field_0"
@@ -64,7 +65,7 @@ describe "Blacklight Advanced Search", :js => true do
   it "should display list of Entries created by a given user" do
     visit advanced_search_path
 
-    search_fields = advanced_search_text_fields
+    search_fields = page.all(".advanced-search-field input[type=text]")
     search_fields[0].set @user.username
     select 'Added By', from: "text_field_0"
 
@@ -76,7 +77,7 @@ describe "Blacklight Advanced Search", :js => true do
   it "should do an advanced search using Title + Author (ANY)" do
     visit advanced_search_path
 
-    search_fields = advanced_search_text_fields
+    search_fields = page.all(".advanced-search-field input[type=text]")
     search_fields[0].set "Cicero"
     search_fields[1].set "Evil"
 
@@ -99,7 +100,7 @@ describe "Blacklight Advanced Search", :js => true do
   it "should do an advanced search using two Authors (ANY)" do
     visit advanced_search_path
 
-    search_fields = advanced_search_text_fields
+    search_fields = page.all(".advanced-search-field input[type=text]")
     search_fields[0].set "Augustine"
     search_fields[1].set "Cicero"
 
@@ -116,7 +117,7 @@ describe "Blacklight Advanced Search", :js => true do
 
     visit advanced_search_path
 
-    search_fields = advanced_search_text_fields
+    search_fields = page.all(".advanced-search-field input[type=text]")
     search_fields[0].set "Augustine OR Cicero"
 
     select 'Author', from: "text_field_0"
@@ -149,7 +150,7 @@ describe "Blacklight Advanced Search", :js => true do
 
     page.find('a.advanced_search').click()
 
-    search_fields = advanced_search_text_fields
+    search_fields = page.all(".advanced-search-field input[type=text]")
 
     expect(search_fields[0].value).to eq("Augustine")
     expect(search_fields[1].value).to eq("Hippo")
@@ -240,7 +241,7 @@ describe "Blacklight Advanced Search", :js => true do
   it "should find source date by complete Date string (YYYY-MM-DD)" do
     visit advanced_search_path
 
-    search_fields = advanced_search_text_fields
+    search_fields = page.all(".advanced-search-field input[type=text]")
     search_fields[0].set "2015-01-01"
     select 'Source Date', from: "text_field_0"
     find_by_id('advanced-search-submit').click
@@ -253,7 +254,7 @@ describe "Blacklight Advanced Search", :js => true do
   it "should find source date by incomplete Date strings (YYYY-MM), (YYYY)" do
     visit advanced_search_path
 
-    search_fields = advanced_search_text_fields
+    search_fields = page.all(".advanced-search-field input[type=text]")
     search_fields[0].set "2015-01"
     select 'Source Date', from: "text_field_0"
     find_by_id('advanced-search-submit').click
@@ -263,7 +264,7 @@ describe "Blacklight Advanced Search", :js => true do
 
     visit advanced_search_path
 
-    search_fields = advanced_search_text_fields
+    search_fields = page.all(".advanced-search-field input[type=text]")
     search_fields[0].set "2015"
     select 'Source Date', from: "text_field_0"
     find_by_id('advanced-search-submit').click

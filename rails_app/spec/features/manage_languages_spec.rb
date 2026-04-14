@@ -1,10 +1,11 @@
 
 require "rails_helper"
 describe "Manage languages", :js => true do
+  let(:admin_user) { create(:admin) }
 
   before :each do
-    @admin = User.where(role: "admin").first
-    @user = User.where(role: "admin").first
+    @admin = admin_user
+    @user = admin_user
 
     @language = Language.find_or_create_by(name: "Martian") do |l|
       l.created_by = @user
@@ -16,7 +17,7 @@ describe "Manage languages", :js => true do
   context "when admin is logged in" do
 
     before :each do
-      login(@user, 'somethingunguessable')
+      login(@user, 'somethingreallylong')
     end
 
     it "should add a new Language" do
@@ -57,8 +58,8 @@ describe "Manage languages", :js => true do
       expect(Language.count).to eq(count-1)
     end
 
-    it "should export CSV", :js => false do
-      skip "language CSV export still exists, but async download polling belongs in lower-level coverage instead of this feature spec"
+    it "should export CSV", :js => false,
+      skip: "language CSV export still exists, but async download polling belongs in lower-level coverage instead of this feature spec" do
     end
   end
 
@@ -73,7 +74,7 @@ describe "Manage languages", :js => true do
     end
 
     before :each do
-      login(@admin, 'somethingunguessable')
+      login(@admin, 'somethingreallylong')
     end
 
 #    it "should mark Languages as reviewed" do

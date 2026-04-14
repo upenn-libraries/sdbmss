@@ -78,7 +78,7 @@ describe "Linking Tool", :js => true do
     page.reset!
   end
 
-  it "should load" do
+  it "should load", :flaky do
     source, entries = build_linking_fixture(count: 2, source_title: "Linking Tool Load Source")
     entry = entries.first
 

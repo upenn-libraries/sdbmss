@@ -1,10 +1,11 @@
 
 require "rails_helper"
 describe "Manage places", :js => true do
+  let(:admin_user) { create(:admin) }
 
-  before :all do
-    @admin = User.where(role: "admin").first
-    @user = User.where(role: "admin").first
+  before :each do
+    @admin = admin_user
+    @user = admin_user
   end
 
   context "when contributor is logged in" do
@@ -14,7 +15,7 @@ describe "Manage places", :js => true do
         name: "Martian",
         created_by: @user,
       )
-      login(@user, 'somethingunguessable')
+      login(@user, 'somethingreallylong')
     end
 
     it "should add a new Place" do
@@ -56,8 +57,8 @@ describe "Manage places", :js => true do
       expect(Place.count).to eq(count-1)
     end
 
-    it "should export CSV", :js => false do
-      skip "place CSV export still exists, but async download polling belongs in lower-level coverage instead of this feature spec"
+    it "should export CSV", :js => false,
+      skip: "place CSV export still exists, but async download polling belongs in lower-level coverage instead of this feature spec" do
     end
   end
 
@@ -68,7 +69,7 @@ describe "Manage places", :js => true do
         name: "Pig Latin",
         created_by: @user,
       )
-      login(@admin, 'somethingunguessable')
+      login(@admin, 'somethingreallylong')
     end
 
 #    it "should mark Places as reviewed" do

@@ -5,7 +5,7 @@ ARG APP_IMAGE_TAG=2.7.8-bullseye
 ARG BUNDLE_HOME=vendor/bundle
 
 # Bundle version
-ARG BUNDLE_VERSION=1.17.3
+ARG BUNDLE_VERSION=2.1.4
 
 # The root of our app
 ARG PROJECT_ROOT=/home/app

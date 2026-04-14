@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Manage private messages", type: :request do
-  let(:admin_user) { User.where(role: "admin").first || create(:admin) }
+  let(:admin_user) { create(:admin) }
 
   describe "GET /private_messages" do
     it "redirects guests to sign in" do
@@ -20,7 +20,7 @@ RSpec.describe "Manage private messages", type: :request do
   end
 
   describe "GET /private_messages/new" do
-    let(:recipient) { User.where(role: "contributor").first || create(:user, role: "contributor") }
+    let(:recipient) { create(:user, role: "contributor") }
 
     it "renders the compose page for a signed-in user" do
       login_as(admin_user, scope: :user)

@@ -70,7 +70,7 @@ module SDBMSS::Blacklight
         entries = entries.with_associations
 
         entries.each do |entry|
-          @ids_to_entries[normalize_id(entry.id)] = entry
+          @ids_to_entries[entry.id] = entry
         end
       end
       @ids_to_entries[object_id]

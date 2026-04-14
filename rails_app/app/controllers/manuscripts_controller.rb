@@ -94,7 +94,9 @@ class ManuscriptsController < SearchableAuthorityController
 
   def citation
     respond_to do |format|
-      format.js
+      format.html do
+        return render layout: false if request.xhr?
+      end
     end
   end
 
