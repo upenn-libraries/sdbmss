@@ -1,6 +1,6 @@
 <!-- these edit forms are used for inline editing during MERGE only -->
 
-<div class='panel <%= index == 0 ? "panel-danger" : "panel-success" %>' ng-controller="SourceCtrl" ng-init="sourceId=<%= source.id %>; mergeEdit = false;" ng-form name="form" data-ng-cloak>
+<div class='card <%= index == 0 ? "border-danger" : "border-success" %> mb-5' ng-controller="SourceCtrl" ng-init="sourceId=<%= source.id %>; mergeEdit = false;" ng-form name="form" data-ng-cloak>
     <div class='card-header'>
         <h4 class='h4'><%= link_to source.public_id, source_path(source) %> <%= index == 0 ? "(Will be deleted)" : "" %>
             <small class="float-right" style="margin-top: -10px;">
@@ -26,13 +26,13 @@
                     <a class='badge badge-secondary' target="_blank" href="<%= search_advanced_path(source: source.public_id) %>"><%= SDBMSS::Util.to_many(source.entries_count, "entry") %></a>
                 </div>
             </div>
-        
+
             <label for="source_type" class="col-sm-4 control-label"><span>Source Type</span></label>
             <div class="col-sm-8">
                 <span class="merge-details">{{ source.source_type.display_name }}</span>
             </div>
         </div>
-        
+
         <div class="source-fields-container" ng-show="showFields()">
 
             <div class="form-group row" ng-show="source.source_type.name != 'online' && source.source_type.name != 'unpublished'">
@@ -54,7 +54,7 @@
 
                 <div class="form-group row">
                     <label class="col-sm-4 control-label">
-                      <span><span sdbm-tooltip="source_selling_agent">Selling Agent(s)</span></span>  
+                      <span><span sdbm-tooltip="source_selling_agent">Selling Agent(s)</span></span>
                       <div class="add-link-container text-nowrap">
                         <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
                           Add new <span class="fa fa-plus"></span>
@@ -69,7 +69,7 @@
                               </a>
                             </div>
                             <div class="row">
-                                <div class="col-sm-12">                            
+                                <div class="col-sm-12">
                                     <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'selling_agent', 'is_provenance_agent')">Find in Name Authority</a>
                                     <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
                                         <a class="fa fa-times" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
@@ -107,7 +107,7 @@
 
                 <div class="form-group row">
                     <label class="col-sm-4 control-label">
-                      <span><span sdbm-tooltip="source_selling_agent">Selling Agent(s)</span></span>  
+                      <span><span sdbm-tooltip="source_selling_agent">Selling Agent(s)</span></span>
                       <div class="add-link-container text-nowrap">
                         <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
                           Add new <span class="fa fa-plus"></span>
@@ -122,7 +122,7 @@
                               </a>
                             </div>
                             <div class="row">
-                                <div class="col-sm-12">                            
+                                <div class="col-sm-12">
                                     <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'selling_agent', 'is_provenance_agent')">Find in Name Authority</a>
                                     <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
                                         <a class="fa fa-times" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
@@ -138,13 +138,13 @@
                 </div>
 
             </div>
-            
+
             <div class="auction-source-container" ng-if="source.source_type.name == 'collection_catalog'">
 
 
                 <div class="form-group row">
                     <label class="col-sm-4 control-label">
-                      <span><span sdbm-tooltip="source_selling_agent">Institution(s)</span></span>  
+                      <span><span sdbm-tooltip="source_selling_agent">Institution(s)</span></span>
                       <div class="add-link-container text-nowrap">
                         <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
                           Add new <span class="fa fa-plus"></span>
@@ -159,7 +159,7 @@
                               </a>
                             </div>
                             <div class="row">
-                                <div class="col-sm-12">                            
+                                <div class="col-sm-12">
                                     <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find in Name Authority</a>
                                     <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
                                         <a class="fa fa-times" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
@@ -207,7 +207,7 @@
                 </div>
 
             </div>
-            
+
             <div class="other-published-container" ng-if="source.source_type.name == 'other_published'">
 
                 <div class="form-group row">
@@ -231,7 +231,7 @@
 
                 <div class="form-group row">
                     <label class="col-sm-4 control-label">
-                      <span><span sdbm-tooltip="source_selling_agent">Institution(s)</span></span>  
+                      <span><span sdbm-tooltip="source_selling_agent">Institution(s)</span></span>
                       <div class="add-link-container text-nowrap">
                         <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
                           Add new <span class="fa fa-plus"></span>
@@ -246,7 +246,7 @@
                               </a>
                             </div>
                             <div class="row">
-                                <div class="col-sm-12">                            
+                                <div class="col-sm-12">
                                     <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find in Name Authority</a>
                                     <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
                                         <a class="fa fa-times" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
@@ -337,14 +337,14 @@
                     <input type="text" ng-readonly="!mergeEdit" class="form-control" name="location" id="location" ng-model="source.location" />
                 </div>
             </div>
-                    
+
             <div class="form-group row" ng-show="source.source_type.name != 'observation'">
                 <label for="location" class="col-sm-4 control-label"><span>Online Link / Call Num.</span></label>
                 <div class="col-sm-8">
                     <input type="text" ng-readonly="!mergeEdit" class="form-control" name="link" id="link" ng-model="source.link" />
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-sm-12 text-center">
                     <div class='h4'>Other Info</div>

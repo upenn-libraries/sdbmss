@@ -8,31 +8,28 @@
     <%= render partial: "manage_models/breadcrumbs" %>
 <% end %>
 
-<div class="col-sm-12">
-    <h2 class='h2 text-center'>Merge <%= @source.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h2>
-</div>
+<h2 class='h2 text-center'>Merge <%= @source.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h2>
 
-<div class="col-sm-12">
-    <p>It is possible that two separate <b>Source</b> records may be created that represent the exact same <b>Source</b>. When this occurs, it is necessary to merge the two <b>Source</b> records into a single record. This eliminates redundancy and facilitates findability within the database.</p>
-    <p>Merging <b>Sources</b> is an advanced function within the database. When you merge a <b>Source</b> into another one, Entries associated with the Source to be merged will be added to those associated with the remaining <b>Source</b>. The merged <b>Source</b> will be deleted forever and cannot be recovered. Exercise extreme caution when merging. Use this function only when you are completely certain that the two Source records represent the exact same <b>Source</b>.</p>
-    <p class="text-info">Note: you will not be able to merge two <b>Source</b> records that are identified as different source types. If a source type has been incorrectly identified, it will be necessary to manually re-enter the records from the incorrect Source to the correct <b>Source</b>. Contact an administrator in these instances at <a href="mailto:sdbm@upenn.edu">sdbm@upenn.edu</a>.</p>
-</div>
+<p>It is possible that two separate <b>Source</b> records may be created that represent the exact same <b>Source</b>. When this occurs, it is necessary to merge the two <b>Source</b> records into a single record. This eliminates redundancy and facilitates findability within the database.</p>
+<p>Merging <b>Sources</b> is an advanced function within the database. When you merge a <b>Source</b> into another one, Entries associated with the Source to be merged will be added to those associated with the remaining <b>Source</b>. The merged <b>Source</b> will be deleted forever and cannot be recovered. Exercise extreme caution when merging. Use this function only when you are completely certain that the two Source records represent the exact same <b>Source</b>.</p>
+<p class="text-info">Note: you will not be able to merge two <b>Source</b> records that are identified as different source types. If a source type has been incorrectly identified, it will be necessary to manually re-enter the records from the incorrect Source to the correct <b>Source</b>. Contact an administrator in these instances at <a href="mailto:sdbm@upenn.edu">sdbm@upenn.edu</a>.</p>
 
-<div class="col-sm-5">
+<%= form_tag(request.path, method: :post, class: "sdbmss-form") do %>
+<div class="row">
+<div class="col-md-5">
         <% if @target.present? %>
             <%= render partial: "sources/edit", locals: { source: @source, index: 0 } %>
         <% else %>
             <div class="card-body"><%= render partial: "sources/source_details", locals: {source: @source} %></div>
         <% end %>
 </div>
-<%= form_tag(request.path, method: :post, class: "form-horizontal sdbmss-form") do %>
-<div class='col-sm-2 text-center'>
+<div class='col-md-2 text-center'>
     <% if @target %>
     <div class="">
         <div class="card-body text-center">
+            <div><span class="h3">Confirm</span></div>
             <input type="hidden" name="confirm" value="yes"/>
             <input type="hidden" name="target_id" value="<%= @target.id %>"/>
-            <div><span class="h3">Confirm</span></div>
             <p>Are you sure? <strong><%= @source.public_id %></strong> will be <strong class="text-danger">deleted.</strong></p>
             <button class="btn btn-primary">Yes</button>
             <a class="btn btn-warning" href="<%= merge_source_path(@source) %>">Cancel</a>
@@ -48,7 +45,7 @@
     <% end %>
 </div>
 <!-- form tag for collecting the results of the merge request -->
-<div class="col-sm-5">
+<div class="col-md-5">
     <% if @target_id.present? && @target.present? %>
         <%= render partial: "sources/edit", locals: { source: @target, index: 1 } %>
     <% else %>
@@ -62,14 +59,14 @@
             </div>
         <% end %>
         <div class="text-center form-inline">
-        <%= form_tag(request.path, method: :get, class: "form-horizontal form-inline sdbmss-form text-center") do %>
-                <label class="control-label">Find by unique ID</label>
-                <button class="btn btn-primary" id='select-specific'>Select</button>
-                <input type="text" name="target_id" class="form-control" placeholder="Enter Source ID here..."></p>
+        <%= form_tag(request.path, method: :get, class: "form-inline sdbmss-form text-center") do %>
+                <label class="control-label mr-1">Find by unique ID</label>
+                <button class="btn btn-primary mr-1" id='select-specific'>Select</button>
+                <input type="text" name="target_id" class="form-control" placeholder="Enter Source ID here...">
         <% end %>
         </div>
         <% if @similar.present? %>
-        <div class="table-responsive">
+        <div class="table-responsive mt-4">
             <table class='table table-striped'>
               <thead>
                 <tr>
@@ -86,7 +83,7 @@
                     <tr>
                         <td><a class='btn btn-primary' href="<%= source_path(id: @source.id)%>/merge?target_id=<%= src.id %>">Select</a></td>
                         <td><%= link_to src.id, source_path(src.id) %></td>
-                        <td><%= src.source_agents[0].agent.name if src.source_agents.count > 0 %></td>
+                        <td><%= src.source_agents[0].agent&.name if src.source_agents.count > 0 %></td>
                         <td><%= format_fuzzy_date(src.date) %></td>
                         <td><a href="<%= search_advanced_path(source: src.public_id) %>"><%= src.entries.approved_only.count %> entries</a></td>
                     </tr>
@@ -99,5 +96,6 @@
             <b>No suggested names found, use manual search above.</b>
         <% end %>
     <% end %>
+</div>
 </div>
 <% end %>
