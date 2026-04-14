@@ -101,8 +101,8 @@ services:
       {% else %}
       - sdbm_assets:/home/app/public/assets
       - sdbm_docs:/home/app/public/static
-      - sdbm_downloads:/home/app/tmp
       {% endif %}
+      - downloads:/home/app/tmp/downloads
 
 networks:
   mysql:
@@ -117,11 +117,9 @@ secrets:
     external: true
     name: "{{ 'app_rails_master_key_v' ~ app_versioned_secrets.rails_master_key.version }}"
 
-{% if is_development != true %}
 volumes:
+  {% if is_development != true %}
   sdbm_assets:
   sdbm_docs:
-  sdbm_downloads:
-    external: true
-    name: sdbm_downloads
-{% endif %}
+  {% endif %}
+  downloads:

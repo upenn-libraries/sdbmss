@@ -1,5 +1,5 @@
 ---
-app_build_docker_image: false
+app_build_docker_image: true
 app_image_tag: "development"
 app_solr_url: "http://solr:8983/solr/development"
 app_url: "sdbm-dev.library.upenn.edu"

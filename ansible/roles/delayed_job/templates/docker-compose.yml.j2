@@ -52,7 +52,7 @@ services:
     #  start_period: 10s
     #  timeout: 10s
     volumes:
-      - sdbm_downloads:/home/app/tmp
+      - downloads:/home/app/tmp/downloads
     networks:
       - mysql
       - traefik
@@ -70,9 +70,7 @@ networks:
     external: true
 
 volumes:
-  sdbm_downloads:
-    external: true
-    name: sdbm_downloads
+  downloads:
 
 secrets:
   rails_master_key:

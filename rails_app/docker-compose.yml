@@ -59,6 +59,7 @@ services:
     - traefik
     volumes:
     - .:/home/app/
+    - sdbmss_downloads:/home/app/tmp/downloads
     labels:
     - traefik.enable=true
     - traefik.http.routers.app.entrypoints=web
@@ -114,6 +115,8 @@ services:
       mysql:
         condition: service_healthy
     restart: on-failure
+    volumes:
+    - sdbmss_downloads:/home/app/tmp/downloads
   interface:
     image: ${INTERFACE_IMAGE_NAME}:${INTERFACE_IMAGE_TAG}
     command:
@@ -382,3 +385,6 @@ volumes:
   rabbitmq_data:
   sdbm_solr:
   certificates:
+  sdbmss_downloads:
+    external: true
+    name: sdbmss_downloads
