@@ -1,5 +1,5 @@
-<%# It's weird that we return this fragment in a .js file but that's
-how blacklight does citations, so we follow along. %>
+<%# HTML fragment for the ajax modal (XHR requests). Matches Blacklight’s citation tool:
+    render HTML with layout: false when request.xhr? — not format.js (text/javascript). %>
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
   <h3><%= t('blacklight.tools.citation') %></h3>

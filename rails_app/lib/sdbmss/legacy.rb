@@ -219,11 +219,11 @@ module SDBMSS::Legacy
             end
 
             if before
-              period = end_date.ends_with?("0") ? 100 : 101
+              period = end_date.to_s.ends_with?("0") ? 100 : 101
               start_date = (end_date.to_i - period).to_s
             elsif after
               if circa_without_modifier != 'CCENT'
-                period = start_date.ends_with?("0") ? 101 : 100
+                period = start_date.to_s.ends_with?("0") ? 101 : 100
                 end_date = (start_date.to_i + period).to_s
               else
                 # we want "ccent+ 1250" to normalize to "13th to 14th century"

@@ -8,20 +8,17 @@ require 'net/http'
 # tests because we use a different set of test data.
 describe "Date Search", :js => true do
 
-  before :all do
-    user = User.where(username: "lransom").first
-=begin
-    user = User.create!(
-      username: "lransom",
-      email: "lransom@upenn.edu",
-      password: "12345678",
-      password_confirmation: "12345678"
-    )
-=end    
+  before :each do
+    # Create custom date-range entries on top of reference data.  Must be
+    # before(:each) (not :all) because JS tests use DatabaseCleaner :truncation,
+    # which removes all rows after every example.  Recreating here ensures
+    # both tests see consistent data; Sunspot.commit makes them searchable.
+    user = User.where(username: 'lransom').first
+
     source = Source.create!(
       source_type: SourceType.auction_catalog,
-      date: "20150101",
-      title: "Test catalog",
+      date: '20150101',
+      title: 'Test catalog',
       whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
       medium: Source::TYPE_MEDIUM_INTERNET,
       created_by: user,
@@ -29,13 +26,13 @@ describe "Date Search", :js => true do
 
     Entry.create!(
       source: source,
-      catalog_or_lot_number: "1",
+      catalog_or_lot_number: '1',
       transaction_type: Entry::TYPE_TRANSACTION_SALE,
       entry_dates_attributes: [
         {
-          observed_date: "1900 to 1950",
-          date_normalized_start: "1900",
-          date_normalized_end: "1951",
+          observed_date: '1900 to 1950',
+          date_normalized_start: '1900',
+          date_normalized_end: '1951',
         },
       ],
       created_by: user,
@@ -44,22 +41,20 @@ describe "Date Search", :js => true do
 
     Entry.create!(
       source: source,
-      catalog_or_lot_number: "1",
+      catalog_or_lot_number: '1',
       transaction_type: Entry::TYPE_TRANSACTION_SALE,
       entry_dates_attributes: [
         {
-          observed_date: "1502",
-          date_normalized_start: "1502",
-          date_normalized_end: "1503",
+          observed_date: '1502',
+          date_normalized_start: '1502',
+          date_normalized_end: '1503',
         },
       ],
       created_by: user,
       approved: true
     )
 
-    SDBMSS::Util.wait_for_solr_to_be_current
-
-    #expect(Entry.all.count).to eq(2)
+    Sunspot.commit
   end
 
   def date_search start_date, end_date, num_expected_results
