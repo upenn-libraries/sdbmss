@@ -20,7 +20,7 @@ Blacklight 5→6 upgrade and any companion gem bumps.
 | paper_trail | 4.0.2 |
 | sunspot / sunspot_rails | 2.2.0 |
 | delayed_job_active_record | 4.1.11 |
-| thredded | 0.9.4 |
+
 | invisible_captcha | 1.1.0 |
 
 ---
@@ -160,17 +160,6 @@ Compared to `blacklight` **6.25.0** (`app/views/catalog/` in the gem). **Shadows
 
 ---
 
-## Thredded 0.9.4
-
-| File | Gem Class / Method Overridden | What the Customization Does | Risk | Upgrade Notes |
-|---|---|---|---|---|
-| `config/initializers/thredded.rb` | `Thredded::AutoFollowAndNotifyJob#perform` (gem line 6) — reopened | Replaces email notification with in-app notification call | Medium | `perform` signature unchanged (`post_id`); notification internals are version-sensitive |
-| `config/initializers/thredded.rb` | `Thredded::CreateMessageboard` (subclass) — overrides `#run`, suppresses `#first_topic_title` / `#first_post_content` | Disables auto-creation of first topic and post when a new messageboard is created | Medium | `run` still exists in gem; interactor pattern may change between 0.9.x versions |
-| `config/initializers/thredded.rb` | `Thredded::ApplicationController` — injects `ThreddedNullUserPermissions` mixin | Replaces Thredded's Pundit-based permission system with a null-object that grants/denies based on app roles | **High** | `authorize_reading` and `authorize_creating` (gem lines 66, 72) are the actual override points; any Thredded upgrade must verify these method names |
-| `app/views/thredded/` | Thredded built-in views (messageboards, posts, shared, users) | Custom-styled forum views | Low | Additive; stable unless Thredded changes locals passed to partials |
-
----
-
 ## invisible_captcha 1.1.0
 
 | File | Gem Class / Method Overridden | What the Customization Does | Risk | Upgrade Notes |
@@ -186,7 +175,7 @@ Compared to `blacklight` **6.25.0** (`app/views/catalog/` in the gem). **Shadows
 | **DONE** | 18 | BL: `Catalog#facet` (updated for 6.25 XHR format change), `fetch_one`, `url_for_document`, `render_facet_partials_home`, `SolrResponse` subclass, `ShowPresenter#heading`, `SearchBuilder` (10 processors), `catalog_controller` overrides, `entries_controller`, `SolrDocument#initialize`, `search_builder.rb`, `Blacklight::User`, helper overrides, `fetch_many_document_params` config, catalog views (22 files) · BAS: `ParsingNestingParser`, `RenderConstraintsOverride` |
 | **REMOVED** (intentional) | 5 | BL: `FacetPaginator#initialize`, `Blacklight::Facet#facet_paginator`, `add_facet_paging_to_solr`, `FacetField#order`, `facet_field_aggregations` — all part of non-functional facet asc/desc ordering; deleted in `efeaf02b` |
 | **NEEDS REVIEW** | 0 | — |
-| **NO CHANGE NEEDED** | 7 gems | Devise, Devise-Guests, Delayed Job, Thredded, CanCanCan, PaperTrail, Sunspot, invisible_captcha — all overrides are independent of Blacklight; verified 2026-03-31 that none are affected by the BL5→6 migration. These gems have their own upgrade paths in Phase 2. |
+| **NO CHANGE NEEDED** | 6 gems | Devise, Devise-Guests, Delayed Job, CanCanCan, PaperTrail, Sunspot, invisible_captcha — all overrides are independent of Blacklight; verified 2026-03-31 that none are affected by the BL5→6 migration. These gems have their own upgrade paths in Phase 2. |
 
 ### Known minor gaps (non-blocking)
 

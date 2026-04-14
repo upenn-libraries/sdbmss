@@ -114,8 +114,6 @@ gem "bunny", "~> 2.22"
 
 gem 'data-confirm-modal'
 
-# thredded removed — client confirmed forum is no longer needed (2026-04-07)
-
 gem 'whenever', :require => false
 
 # codemirror-rails removed (railties < 6.0 blocker); JS/CSS vendored in vendor/assets/
