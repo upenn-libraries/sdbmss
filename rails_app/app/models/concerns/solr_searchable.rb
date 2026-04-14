@@ -162,21 +162,6 @@ module SolrSearchable
     dates = dates_for_search(params)
     params = params_for_search(params)
 
-    # Some manage-table pages send reviewed=0/1 as a sentinel for the
-    # built-in "unreviewed only" toggle, not as an exact-match field search.
-    # If a model also exposes reviewed as a normal filter, avoid applying both.
-    if ['0', '1'].include?(filters[:reviewed] || filters['reviewed'])
-      filters = filters.except(:reviewed, 'reviewed')
-    end
-
-    if params.to_h.empty? && filters.to_h.empty? && dates.to_h.empty? && reviewed.nil? && !linking_tool && self.model_name.to_s != 'Entry'
-      s = self.search do
-        paginate :per_page => limit, :page => page
-        order.present? ? order_by(order[:field], order[:direction]) : order_by(:score, :desc)
-      end
-      return s
-    end
-    
     s = self.search do
   
   # Fulltext search is defined as a lambda function, since it needs to be able to be combined with non-fulltext
@@ -324,7 +309,7 @@ module SolrSearchable
           if new_q.length > 0
             params[:q] = new_q.join(" #{s_op} ")
           else
-            params[:q] = "*:*"
+            params[:q] = "*"
           end
         else
           params[:q] = ([params[:q]] + new_q).join(" #{s_op} ")
