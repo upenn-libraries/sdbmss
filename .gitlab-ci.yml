@@ -175,7 +175,7 @@ deploy_staging:
   needs:
     - copy_app_docker_images
   only:
-    - development
+    - main
 
 deploy_production:
   needs:
