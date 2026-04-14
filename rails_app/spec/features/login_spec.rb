@@ -3,9 +3,9 @@ require "rails_helper"
 
 describe "Login", :js => true do
 
-  let(:password) { "somethingunguessable" }
-  let(:active_user) { User.where(role: "contributor").first }
-  let(:admin_user) { User.where(role: "admin").first }
+  let(:password) { "somethingreallylong" }
+  let(:active_user) { create(:user, role: "contributor", password: password) }
+  let(:admin_user) { create(:admin, password: password) }
   let(:inactive_user) do
     User.find_or_initialize_by(username: "user_inactive").tap do |user|
       user.email = "user2@logintest.com"

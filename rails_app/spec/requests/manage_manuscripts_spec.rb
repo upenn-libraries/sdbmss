@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Manage manuscripts", type: :request do
-  let(:admin_user) { User.where(role: "admin").first || create(:admin) }
+  let(:admin_user) { create(:admin) }
   let(:manuscript) { create(:manuscript, created_by: admin_user, updated_by: admin_user) }
   let!(:entry_link) { create(:entry_manuscript, manuscript: manuscript, created_by: admin_user, updated_by: admin_user) }
   let(:entry) { entry_link.entry }

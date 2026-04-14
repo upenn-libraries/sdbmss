@@ -5,15 +5,10 @@ require "rails_helper"
 #ActiveRecord::Base.logger = Logger.new(STDOUT) if defined?(ActiveRecord::Base)
 
 describe "Manage Merging Sources", :js => true do
-
-  before :all do
-    @user = User.where(role: "admin").first
-
-#    SDBMSS::ReferenceData.create_all
-  end
+  let(:admin_user) { create(:admin) }
 
   before :each do
-      login(@user, 'somethingunguessable')
+      login(admin_user, 'somethingreallylong')
   end
 
   after :each do

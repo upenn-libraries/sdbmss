@@ -2,9 +2,10 @@
 require "rails_helper"
 
 describe "Manage entries", :js => true do
+  let(:admin_user) { create(:admin) }
 
   before :each do
-    @user = User.where(role: "admin").first
+    @user = admin_user
 
     @unapproved_entry = Entry.new(
       source: Source.last,
@@ -13,7 +14,7 @@ describe "Manage entries", :js => true do
     )
     @unapproved_entry.save!
     Sunspot.commit
-    login(@user, 'somethingunguessable')
+    login(@user, 'somethingreallylong')
   end
 
   after :each do

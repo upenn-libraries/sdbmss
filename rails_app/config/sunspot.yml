@@ -32,4 +32,4 @@ test:
     #
     # 15-second timeout: generous enough for Solr's first response after
     # startup, while still bounding failures on a stuck/unreachable Solr.
-    timeout: 15
+    read_timeout: 15

@@ -4,10 +4,11 @@ require "rails_helper"
 
 describe "Paper trail", :js => true do
   include PaperTrailHelpers
+  let(:admin_user) { create(:admin) }
 
 
   before :each do
-    @user = User.where(role: "admin").first
+    @user = admin_user
 
     @source = Source.find_or_create_by(
       title: "A Sample Test Source With a Highly Unique Name",
@@ -28,7 +29,7 @@ describe "Paper trail", :js => true do
     let(:entry) { Entry.last }
 
     before :each do
-      login(@user, 'somethingunguessable')
+      login(@user, 'somethingreallylong')
     end
 
     after :each do

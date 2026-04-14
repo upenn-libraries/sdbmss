@@ -2,6 +2,7 @@ require "rails_helper"
 
 describe "Data entry", :js => true do
   include DataEntryHelpers
+  let(:admin_user) { create(:admin) }
 
   # Fill an autocomplete field using value in :with option. If a
   # block is given, yields to it to allow for selection.
@@ -77,27 +78,37 @@ describe "Data entry", :js => true do
   #  sleep(2)
   #end
 
-  before :each do
-    @user = User.where(role: 'admin').first
+  before :each do |example|
+    @user = admin_user
 
-    @source = Source.find_or_create_by(
-      title: "A Sample Test Source With a Highly Unique Name",
-      date: "2013-11-12",
-      source_type: SourceType.auction_catalog,
-    )
-    unless @source.source_agents.exists?(role: SourceAgent::ROLE_SELLING_AGENT)
-      SourceAgent.create!(
+    @source = create(:edit_test_source, created_by: @user)
+
+    if example.metadata[:duplicate_catalog_warning]
+      @existing_entry = create(
+        :edit_entry_with_titles,
         source: @source,
-        role: SourceAgent::ROLE_SELLING_AGENT,
-        agent: Name.find_or_create_agent("Sotheby's")
+        created_by: @user,
+        titles: ["Book of Hours"],
+        include_author: false,
+        catalog_or_lot_number: "123",
       )
+      @duplicate_catalog_entry = create(
+        :edit_entry_with_titles,
+        source: @source,
+        created_by: @user,
+        titles: ["Book of Hours"],
+        include_author: false,
+        catalog_or_lot_number: "124",
+      )
+      [@existing_entry, @duplicate_catalog_entry].each(&:index!)
+      Sunspot.commit
     end
   end
 
   context "when user is logged in" do
 
     before :each do
-      login(@user, 'somethingunguessable')
+      login(@user, 'somethingreallylong')
     end
 
     after :each do
@@ -132,7 +143,7 @@ describe "Data entry", :js => true do
 
 
     it "should show creator on Edit page" do
-      entry = create_edit_entry
+      entry = create(:edit_test_entry, :fully_loaded_for_edit, source: @source, created_by: @user)
 
       visit edit_entry_path :id => entry.id
 
@@ -141,7 +152,7 @@ describe "Data entry", :js => true do
     end
 
     it "should preserve entry on Edit page when saving without making any changes" do
-      entry = create_edit_entry
+      entry = create(:edit_test_entry, :fully_loaded_for_edit, source: @source, created_by: @user)
 
       visit edit_entry_path :id => entry.id
 
@@ -153,7 +164,13 @@ describe "Data entry", :js => true do
     end
 
     it "should remove a title on Edit page" do
-      entry = create_edit_entry_with_titles(["Book of Hours", "Bible"], include_author: false)
+      entry = create(
+        :edit_entry_with_titles,
+        source: @source,
+        created_by: @user,
+        titles: ["Book of Hours", "Bible"],
+        include_author: false,
+      )
 
       visit edit_entry_path :id => entry.id
 
@@ -167,7 +184,7 @@ describe "Data entry", :js => true do
 
       find(".save-button", match: :first).click
 
-      expect(page).to have_current_path(entry_path(entry))
+      expect(page).to have_current_path(entry_path(entry), only_path: true)
 
       entry.reload
 
@@ -177,7 +194,12 @@ describe "Data entry", :js => true do
     end
 
     it "should clear out a title on Edit Page" do
-      entry = create_edit_entry_with_titles(["Bible"])
+      entry = create(
+        :edit_entry_with_titles,
+        source: @source,
+        created_by: @user,
+        titles: ["Bible"],
+      )
 
       visit edit_entry_path :id => entry.id
 
@@ -188,7 +210,7 @@ describe "Data entry", :js => true do
 
       find(".save-button", match: :first).click
 
-      expect(page).to have_current_path(entry_path(entry))
+      expect(page).to have_current_path(entry_path(entry), only_path: true)
 
       entry.reload
 
@@ -197,7 +219,12 @@ describe "Data entry", :js => true do
     end
 
     it "should clear out a Name Authority (autocomplete) field" do
-      entry = create_edit_entry_with_titles(["Book of Hours"])
+      entry = create(
+        :edit_entry_with_titles,
+        source: @source,
+        created_by: @user,
+        titles: ["Book of Hours"],
+      )
 
       visit edit_entry_path :id => entry.id
 
@@ -209,7 +236,7 @@ describe "Data entry", :js => true do
 
       find(".save-button", match: :first).click
 
-      expect(page).to have_current_path(entry_path(entry))
+      expect(page).to have_current_path(entry_path(entry), only_path: true)
 
       entry.reload
 
@@ -217,14 +244,8 @@ describe "Data entry", :js => true do
       expect(entry.entry_authors.first.author_id).to eq(nil)
     end
 
-    it "should warn when editing Entry to have same catalog number as existing Entry" do
-      source = create_edit_test_source
-      existing_entry = create_edit_entry_with_titles(["Book of Hours"], include_author: false, catalog_or_lot_number: "123", source: source)
-      entry = create_edit_entry_with_titles(["Book of Hours"], include_author: false, catalog_or_lot_number: "124", source: source)
-      [existing_entry, entry].each(&:index!)
-      Sunspot.commit
-
-      visit edit_entry_path :id => entry.id
+    it "should warn when editing Entry to have same catalog number as existing Entry", :duplicate_catalog_warning do
+      visit edit_entry_path :id => @duplicate_catalog_entry.id
       fill_in 'cat_lot_no', with: "123"
       find_by_id('cat_lot_no').trigger('focusout')
 
@@ -242,7 +263,7 @@ describe "Data entry", :js => true do
 
       visit edit_entry_path :id => entry.id
 
-      wait_for_data_edit_page_to_load
+      expect(find(".source-name").text.length).to be > 0
 
       # change folios and try to modify folios
 
@@ -262,7 +283,7 @@ describe "Data entry", :js => true do
 
       visit edit_entry_path :id => entry.id
 
-      wait_for_data_edit_page_to_load
+      expect(find(".source-name").text.length).to be > 0
 
       # change folios and try to modify title association record
 
@@ -283,7 +304,7 @@ describe "Data entry", :js => true do
 
       visit edit_entry_path :id => entry.id
 
-      wait_for_data_edit_page_to_load
+      expect(find(".source-name").text.length).to be > 0
 
       # change title association record and try to modify folios
 
@@ -307,7 +328,7 @@ describe "Data entry", :js => true do
     end
 
     it "should disallow creating Entries if not logged in" do
-      visit new_entry_path :source_id => create_edit_test_source.id
+      visit new_entry_path :source_id => create(:edit_test_source).id
       expect(page).to have_content("You need to sign in")
     end
 

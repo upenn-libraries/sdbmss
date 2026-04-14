@@ -5,6 +5,7 @@ require "rails_helper"
 # there's no good reason NOT to use the js driver, so we do.
 describe "Blacklight Search", :js => true do
   include SearchHelpers
+  let(:admin_user) { create(:admin) }
 
   before :all do
     # since we already have a set of reference data, we use that here
@@ -18,7 +19,7 @@ describe "Blacklight Search", :js => true do
   end
 
   before :each do
-    @user = User.where(role: "admin").first
+    @user = admin_user
   end
 
   it "should load main landing page" do
@@ -27,7 +28,7 @@ describe "Blacklight Search", :js => true do
   end
 
   it "should show my public entries" do
-    login(@user, 'somethingunguessable')
+    login(@user, 'somethingreallylong')
 
     source = Source.create!(
       title: "Test Source for Public Entries",
@@ -44,7 +45,9 @@ describe "Blacklight Search", :js => true do
   end
 
   it "should display all entries" do
-    open_blacklight_search
+    visit root_path
+    click_button('search')
+    expect(page).to have_selector("#documents")
 
     latest_seeded_entries(5).each do |entry|
       expect(page).to have_link(entry.public_id)
@@ -55,14 +58,18 @@ describe "Blacklight Search", :js => true do
   end
 
   it "should display results for an Author facet" do
-    open_blacklight_search
+    visit root_path
+    click_button('search')
+    expect(page).to have_selector("#documents")
 
     find(:css, "#facet-author .facet-values a", match: :first).click
     expect(page).to have_selector("#documents")
   end
 
   it "should display list of Author facet values" do
-    open_blacklight_search
+    visit root_path
+    click_button('search')
+    expect(page).to have_selector("#documents")
 
     find(:css, ".more_facets_link a", match: :first).click
 
@@ -149,7 +156,7 @@ describe "Blacklight Search", :js => true do
     expect(page).to have_xpath("//dd[contains(.,'#{source.public_id}')]")
   end
 
-  it "should load show Name page", :flaky do
+  it "should load show Name page" do
     name = latest_seeded_name
     visit name_path(name)
     expect(page).to have_content("#{name.public_id}")
@@ -171,7 +178,7 @@ describe "Blacklight Search", :js => true do
   end
 
   it "should add search to History" do
-    login(@user, 'somethingunguessable')
+    login(@user, 'somethingreallylong')
     visit root_path
     find('#dismiss-welcome').click if page.has_css?('#dismiss-welcome')
 
@@ -179,7 +186,7 @@ describe "Blacklight Search", :js => true do
     click_button('search')
     expect(page).to have_selector("#documents")
 
-    visit "/search_history"
+    visit search_history_path
 
     expect(page).to have_content("My Unique Search")
   end
