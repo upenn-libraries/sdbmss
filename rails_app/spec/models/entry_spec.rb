@@ -27,12 +27,6 @@ describe Entry do
       expect(entry.get_entries_for_manuscript).to eq([])
     end
 
-    it "should get similar entries" do
-      skip "sdbmss::similarentries deprecated for the moment"
-      entry = Entry.last
-      SDBMSS::SimilarEntries.new(entry)
-    end
-
     it "should get as flat hash" do
       entry = Entry.last
       expect(entry.as_flat_hash).to be_a(Hash)
