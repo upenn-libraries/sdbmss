@@ -5,15 +5,10 @@ require "rails_helper"
 #ActiveRecord::Base.logger = Logger.new(STDOUT) if defined?(ActiveRecord::Base)
 
 describe "Manage Merging Sources", :js => true do
-
-  before :all do
-    @user = User.where(role: "admin").first
-
-#    SDBMSS::ReferenceData.create_all
-  end
+  let(:admin_user) { create(:admin) }
 
   before :each do
-      login(@user, 'somethingunguessable')
+      login(admin_user, 'somethingreallylong')
   end
 
   after :each do
@@ -49,7 +44,7 @@ describe "Manage Merging Sources", :js => true do
 
     visit new_entry_path :source_id => @source.id
     fill_in 'folios', with: '7'
-    first(".save-button").click
+    find(".save-button", match: :first).click
     
     expect(page).to have_content('Warning: This entry has not been approved yet. The data may be incorrect or unreliable, or may not conform to the general data standards.')
     #sleep 1.1
@@ -58,7 +53,7 @@ describe "Manage Merging Sources", :js => true do
 
     find_by_id('add_title').click
     fill_in 'title_0', with: 'Test Title'
-    first(".save-button").click
+    find(".save-button", match: :first).click
 
     expect(page).to have_content('Warning: This entry has not been approved yet. The data may be incorrect or unreliable, or may not conform to the general data standards.')
 

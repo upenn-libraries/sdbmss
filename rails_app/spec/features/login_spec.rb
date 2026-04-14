@@ -3,42 +3,46 @@ require "rails_helper"
 
 describe "Login", :js => true do
 
-  before :all do
-    @user_active = User.where(role: "contributor").first
+  let(:password) { "somethingreallylong" }
+  let(:active_user) { create(:user, role: "contributor", password: password) }
+  let(:admin_user) { create(:admin, password: password) }
+  let(:inactive_user) do
+    User.find_or_initialize_by(username: "user_inactive").tap do |user|
+      user.email = "user2@logintest.com"
+      user.active = false
+      user.password = password unless user.persisted?
+      user.save!
+    end
+  end
 
-    @user_inactive = User.create!(
-      email: 'user2@logintest.com',
-      username: 'user_inactive',
-      password: 'somethingunguessable',
-      active: false
-    )
-
-    @admin = User.where(role: "admin").first
+  before :each do
+    inactive_user
   end
 
   it "should allow login" do
-    login(@user_active, 'somethingunguessable')
+    login(active_user, password)
   end
 
   it "should disallow login" do
     visit root_path
-    #find('#dismiss-welcome').click
-    fill_in 'user_login', :with => @user_inactive.username
-    fill_in 'user_password', :with => 'somethingunguessable'
+
+    fill_in "user_login", with: inactive_user.username
+    fill_in "user_password", with: password
     click_button 'Log in'
-    expect(page).to have_content 'Your account has been de-activated.'
+
+    expect(page).to have_content "New SDBM accounts are inactive by default."
   end
 
   it "should allow login_as" do
-    login(@admin, 'somethingunguessable')
-    visit login_as_path username: @user_active.username
+    login(admin_user, password)
+    visit login_as_path username: active_user.username
     expect(page.status_code).to eq(200)
   end
 
   it "should disallow login_as" do
-    login(@user_active, 'somethingunguessable')
+    login(active_user, password)
 
-    visit login_as_path username: @admin.username
+    visit login_as_path username: admin_user.username
     expect(page.status_code).to eq(403)
   end
 

@@ -1,6 +1,15 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  config.before_initialize do
+    test_url = ENV['SOLR_TEST_URL'] || begin
+      uri = URI.parse(ENV['SOLR_URL'] || 'http://localhost:8983/solr/development')
+      "#{uri.scheme}://#{uri.host}:#{uri.port}/solr/test"
+    end
+    ENV['SOLR_URL'] = test_url
+  end
+
+
   # The test environment is used exclusively to run your application's
   # test suite. You never need to work with it otherwise. Remember that
   # your test database is "scratch space" for the test suite and is wiped
@@ -24,7 +33,7 @@ Rails.application.configure do
   config.action_dispatch.show_exceptions = false
 
   # Disable request forgery protection in test environment.
-  config.action_controller.allow_forgery_protection = false
+  config.action_controller.allow_forgery_protection = true
 
   # Tell Action Mailer not to deliver emails to the real world.
   # The :test delivery method accumulates sent emails in the
@@ -33,6 +42,8 @@ Rails.application.configure do
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
+
+  config.active_job.queue_adapter = :test
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
