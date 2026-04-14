@@ -181,6 +181,3 @@ sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | Fuseki is available :-)
 
 The SDBM is currently structured to be deployed to production and staging docker swarm by Ansible. These deployments are managed by a GitLab CI/CD pipeline.
 
-
-
-
