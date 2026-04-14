@@ -5,7 +5,7 @@ describe Name do
 
   describe "methods" do
 
-    it "should get suggestions" do
+    it "should get suggestions", :flaky do
       suggestions = Name.suggestions("William Shakespeare")
       expect(suggestions[:already_exists]).to eq(false)
       expect(suggestions[:results].length).to be > 0

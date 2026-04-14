@@ -93,7 +93,7 @@ describe "Data entry", :js => true do
       login(@user, 'somethingreallylong')
     end
 
-    it "should find source by date on Select Source page", :flaky do
+    it "should find source by date on Select Source page" do
       visit new_entry_path
       open_source_search_modal
       expect(page).to have_field('date')
@@ -103,7 +103,7 @@ describe "Data entry", :js => true do
       expect(page).to have_content "Add an Entry"
     end
 
-    it "should find source by agent on Select Source page", :flaky do
+    it "should find source by agent on Select Source page" do
       visit new_entry_path
       open_source_search_modal
       expect(page).to have_field('agent')
@@ -121,7 +121,7 @@ describe "Data entry", :js => true do
       expect(page).to have_content "No source found matching your criteria."
     end
 
-    it "should find source by title on Select Source page", :flaky do
+    it "should find source by title on Select Source page" do
       visit new_entry_path
       open_source_search_modal
       expect(page).to have_field('title')
@@ -131,7 +131,7 @@ describe "Data entry", :js => true do
       expect(page).to have_content "Add an Entry"
     end
 
-    it "should NOT find source by title on Select Source page", :flaky do
+    it "should NOT find source by title on Select Source page" do
       visit new_entry_path
       open_source_search_modal
       expect(page).to have_field('title')

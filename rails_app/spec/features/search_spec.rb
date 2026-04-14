@@ -156,7 +156,7 @@ describe "Blacklight Search", :js => true do
     expect(page).to have_xpath("//dd[contains(.,'#{source.public_id}')]")
   end
 
-  it "should load show Name page", :flaky do
+  it "should load show Name page" do
     name = latest_seeded_name
     visit name_path(name)
     expect(page).to have_content("#{name.public_id}")

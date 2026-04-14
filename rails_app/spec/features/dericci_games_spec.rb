@@ -35,7 +35,7 @@ describe "De Ricci Game", :js => true do
       expect(page).to have_content("Is there a problem with this .pdf file")
     end
 
-    it "should allow you to continue a game previously started" do
+    it "should allow you to continue a game previously started", :flaky do
       visit dericci_games_path
       find('#new-game').click
 
