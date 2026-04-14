@@ -3,6 +3,7 @@ require "rails_helper"
 require 'net/http'
 
 describe "Date Entry Workflow", :js => true do
+  let(:admin_user) { create(:admin) }
 
   before :all do
     # since we already have a set of reference data, we use that here
@@ -14,8 +15,6 @@ describe "Date Entry Workflow", :js => true do
 #    SDBMSS::ReferenceData.create_all
 
     SDBMSS::Util.wait_for_solr_to_be_current
-
-    @user = User.where(role: "admin").first
 =begin    
     @user = User.create!(
       email: 'search@search.com',
@@ -28,7 +27,8 @@ describe "Date Entry Workflow", :js => true do
   end
 
   before :each do
-    login(@user, 'somethingunguessable')
+    @user = admin_user
+    login(@user, 'somethingreallylong')
   end
 
   it "should update 'Date For Search' with parsed DATE information on change to 'Date As Recorded'" do

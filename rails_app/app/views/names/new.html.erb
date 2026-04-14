@@ -1,0 +1,17 @@
+<%= stylesheet_link_tag "extras", media: "all" %>
+<%= javascript_include_tag "extras" %>
+
+<% @page_title = "New Name - " + application_name %>
+
+<h1 class='text-center'>New Name</h1>
+
+<div ng-controller="NameCtrl">
+  <%= render 'form' %>
+
+  <%= render "places/create_modal" %>
+  <%= render "shared/select_model_authority" %>
+</div>
+
+<% content_for :breadcrumbs do %>
+  <%= render partial: "breadcrumbs" %>
+<% end %>
