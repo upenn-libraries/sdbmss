@@ -67,7 +67,7 @@ describe Name do
     end
 
     it "should update counters appropriately when records are merged" do
-      admin = User.where(role: "admin").first
+      admin = create(:admin)
 
       author = Name.create!(is_author: true, name: "Merge Counter Author", created_by: admin)
       artist = Name.create!(is_artist: true, name: "Merge Counter Artist", created_by: admin)

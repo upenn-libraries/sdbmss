@@ -30,6 +30,8 @@ module TestSuiteSetupHelpers
 
   SOLR_TEST_MODELS = [Entry, Name, Source, Manuscript, Language, Place].freeze
 
+  # JS examples reseed a truncated MySQL database. Disabling FK checks keeps
+  # truncation/reseed cheap and avoids ordering every table delete manually.
   def with_foreign_key_checks_disabled
     ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
     yield
@@ -55,6 +57,9 @@ module TestSuiteSetupHelpers
     suite_logger.warn(message)
   end
 
+  # Test setup occasionally hits transient deadlocks or duplicate-key races
+  # while the browser thread and reseed path overlap. Retry only those known
+  # bootstrap failures rather than hiding unrelated setup errors.
   def with_seed_retries(label)
     attempts = 0
     begin
@@ -70,12 +75,16 @@ module TestSuiteSetupHelpers
     end
   end
 
+  # The suite depends on baseline seed data, reference data, and custom MySQL
+  # functions being present after each full truncation.
   def seed_reference_data!
     SDBMSS::SeedData.create
     SDBMSS::ReferenceData.create_all
     SDBMSS::Mysql.create_functions
   end
 
+  # JS examples rely on Solr-backed search. Clearing it explicitly is faster
+  # and more predictable than trying to keep incremental state in sync.
   def delete_all_solr_docs!
     solr_http.post(
       "#{solr_test_uri.path}/update?commit=true",
@@ -92,6 +101,8 @@ module TestSuiteSetupHelpers
     )
   end
 
+  # Most specs only need a small set of models indexed in test. Keeping that
+  # list explicit keeps suite setup cost bounded.
   def reindex_solr_models!(models = SOLR_TEST_MODELS, per_model_logging: false)
     models.each do |model|
       begin
@@ -105,6 +116,8 @@ module TestSuiteSetupHelpers
     Sunspot.commit
   end
 
+  # After JS truncation we rebuild Solr from the canonical database state
+  # instead of trusting any incremental callbacks that ran during the example.
   def flush_and_reindex_solr_after_js!
     delete_all_solr_docs!
     reindex_solr_models!(SOLR_TEST_MODELS, per_model_logging: true)
@@ -162,6 +175,8 @@ RSpec.configure do |config|
   config.include SDBMSS::Capybara::Login
 
   config.before(:suite) do
+    # Start from a fully truncated DB, then rebuild the baseline records and
+    # a minimal Solr index once for the whole suite.
     TestSuiteSetupHelpers.with_foreign_key_checks_disabled do
       DatabaseCleaner.clean_with(:truncation)
       begin
@@ -191,6 +206,8 @@ RSpec.configure do |config|
     # Replace the Sunspot session with a fresh ThreadLocalSessionProxy so that
     # every thread (test thread AND WEBrick server thread) gets new RSolr
     # connections, eliminating stale socket errors from previous tests.
+    # If the suite eventually runs under Puma/system-test infrastructure with a
+    # cleaner app-server lifecycle, this JS-only reset is worth reevaluating.
     Sunspot.session = Sunspot::Rails.build_session if example.metadata[:js]
     # Suppress User#perform_index_tasks globally (patches the class, visible to
     # ALL threads including WEBrick).  Devise login updates the User record
@@ -211,6 +228,8 @@ RSpec.configure do |config|
       Capybara.reset_sessions!
       # Brief pause to let WEBrick finish any in-flight request that may
       # hold a DB lock before we truncate, preventing deadlock on reseed.
+      # This is another WEBrick-era workaround to revisit if the suite moves
+      # to Puma and we can validate a cleaner request shutdown path.
       sleep 1
     end
     DatabaseCleaner.clean
@@ -219,6 +238,8 @@ RSpec.configure do |config|
       # to hit Solr on every record created, causing Net::ReadTimeout on stale
       # connections and corrupting the Sunspot connection pool for subsequent
       # tests.
+      # If server/request lifecycle becomes less fragile under Puma, we may be
+      # able to replace this with narrower indexing control.
       TestSuiteSetupHelpers.with_foreign_key_checks_disabled do
         sunspot_session = Sunspot.session
         Sunspot.session = Sunspot::Rails::StubSessionProxy.new(sunspot_session)

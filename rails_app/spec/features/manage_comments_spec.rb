@@ -1,17 +1,12 @@
 require "rails_helper"
 
 describe "Manage Comments", :js => true do
-
-  before :all do
-#    SDBMSS::ReferenceData.create_all
-
-    @user = User.find_by(role: "admin")
-  end
+  let(:admin_user) { create(:admin) }
 
   before :each do
-    Comment.create!(comment: "This is an interesting observation!", commentable: Entry.first, created_by: @user)
+    Comment.create!(comment: "This is an interesting observation!", commentable: Entry.first, created_by: admin_user)
     Sunspot.commit
-    login(@user, 'somethingunguessable')
+    login(admin_user, 'somethingreallylong')
   end
 
   it "should add a comment to an entry" do

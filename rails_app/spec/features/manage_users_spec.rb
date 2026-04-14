@@ -3,13 +3,10 @@ require 'json'
 require "rails_helper"
 
 describe "Manage Users", :js => true do
-
-  before :all do
-    @user = User.where(role: "admin").first
-  end
+  let(:admin_user) { create(:admin) }
 
   before :each do
-    login(@user, 'somethingunguessable')
+    login(admin_user, 'somethingreallylong')
   end
 
   after :each do

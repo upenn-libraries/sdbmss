@@ -3,8 +3,8 @@ require "rails_helper"
 describe "Manage sources", :js => true do
   include DataEntryHelpers
 
-  let(:password) { "somethingunguessable" }
-  let(:admin_user) { User.where(role: "admin").first }
+  let(:password) { "somethingreallylong" }
+  let(:admin_user) { create(:admin) }
   let(:source_title) { "my test source" }
   let(:source) do
     Source.find_or_create_by(title: source_title) do |record|

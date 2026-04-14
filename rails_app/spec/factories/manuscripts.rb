@@ -1,7 +1,7 @@
 FactoryGirl.define do
 
   factory :manuscript do
-    created_by { User.where(role: "admin").first || create(:admin) }
+    created_by { create(:admin) }
     updated_by { created_by }
   end
 
@@ -9,7 +9,7 @@ FactoryGirl.define do
     association :entry, factory: :edit_entry_with_titles
     manuscript
     relation_type EntryManuscript::TYPE_RELATION_IS
-    created_by { manuscript.created_by || User.where(role: "admin").first || create(:admin) }
+    created_by { manuscript.created_by || create(:admin) }
     updated_by { created_by }
   end
 

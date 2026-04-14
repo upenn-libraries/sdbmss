@@ -1,7 +1,7 @@
 require "rails_helper"
 
 describe "De Ricci Game", :js => true do
-  let(:admin_user) { User.find_by(role: "admin") }
+  let(:admin_user) { create(:admin) }
 
   def resolve_game_record(index)
     if index.zero?
@@ -24,7 +24,7 @@ describe "De Ricci Game", :js => true do
 
   context "when user is logged in " do
     before do
-      login(admin_user, "somethingunguessable")
+      login(admin_user, "somethingreallylong")
     end
 
     it "should load the dericci game landing page and start a new game" do

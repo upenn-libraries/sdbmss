@@ -6,7 +6,7 @@
 </div>
 -->
 <% entry = document.model_object %>
-<% if entry.blank? || entry.id.blank? %>
+<% if entry.nil? %>
     <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
 <% else %>
 <div class="panel panel-default document">
