@@ -11,9 +11,9 @@ FactoryBot.define do
   factory :admin, class: User do
     sequence(:username) { |n| "admin#{n}" }
     sequence(:email) { |n| "admin#{n}@example.com" }
-    password 'somethingreallylong'
-    active true
-    role 'admin'
+    password { 'somethingreallylong' }
+    active { true }
+    role { 'admin' }
   end
 
 end
