@@ -267,7 +267,13 @@ class CatalogController < ApplicationController
     user_signed_in? && @document.present? && (entry = @document.model_object).present?
   end
 
-  helper_method :show_linking_tool_by_entry?, :show_linking_tool_by_manuscript?,
+  # Override Blacklight v7.38.0 so only signed in users render bookmark controls
+  def render_bookmarks_control?
+    user_signed_in?
+  end
+
+  helper_method :render_bookmarks_control?,
+                :show_linking_tool_by_entry?, :show_linking_tool_by_manuscript?,
                 :show_verify_entry?, :show_deprecate_entry?, :show_entry_history_link?
 
   def render_bad_search

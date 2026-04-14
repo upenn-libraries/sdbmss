@@ -56,16 +56,6 @@ module ApplicationHelper
     new_params
   end
 
-  # overrides Blacklight::BlacklightHelperBehavior#render_bookmarks_control?
-  def render_bookmarks_control?
-    user_signed_in?
-  end
-
-  # overrides Blacklight::BlacklightHelperBehavior#render_saved_searches?
-  def render_saved_searches?
-    user_signed_in?
-  end
-
   # NOT overridden from blacklight
   def render_search_history_control?
     user_signed_in?

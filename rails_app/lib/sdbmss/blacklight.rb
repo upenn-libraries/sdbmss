@@ -2,8 +2,8 @@
 # This module contains customized subclasses of things used by
 # Blacklight
 
-# OVERRIDE (customizaton to _facets.html.erb) - if on the home page, render 4 facets, # otherwise it renders them all
 module Blacklight
+  # OVERRIDE (customizaton to _facets.html.erb) - if on the home page, render 4 facets, # otherwise it renders them all
   module FacetsHelperBehavior
 
     def render_facet_partials_home(number, direction, fields = facet_field_names, options = {})
@@ -17,6 +17,15 @@ module Blacklight
       end.compact, "\n")
     end
 
+  end
+
+  # OVERRIDE Blacklight v7.38.0 so the Start Over button doesn't return the user back to the root page
+  StartOverButtonComponent.class_eval do
+    def call
+      link_to t('blacklight.search.start_over'),
+              start_over_path + "?search_field=all_fields&utf8=%E2%9C%93",
+              class: 'catalog_startOverLink btn btn-primary'
+    end
   end
 end
 
@@ -128,14 +137,14 @@ module SDBMSS::Blacklight
       # unless a query is specifically filtering on approved field,
       # only show approved records.
       if blacklight_params['approved'].blank?
-        solr_parameters['fq'] << 'approved:*'
+        (solr_parameters['fq'] ||= []) << 'approved:*'
       end
     end
 
     def show_created_by_user(solr_parameters)
       if blacklight_params['created_by_user'].to_s == '1' && scope.current_user
         # scope is the Blacklight-configured rails controller
-        solr_parameters['fq'] << 'created_by:' + scope.current_user.username.to_s
+        (solr_parameters['fq'] ||= []) << 'created_by:' + scope.current_user.username.to_s
       end
     end
 
@@ -143,12 +152,12 @@ module SDBMSS::Blacklight
       # unless a query is specifically filtering on approved field,
       # only show approved records.
       if blacklight_params['deprecated'].blank?
-        solr_parameters['fq'] << 'deprecated:false'
+        (solr_parameters['fq'] ||= []) << 'deprecated:false'
       end
     end
 
     def show_drafts(solr_parameters)
-      solr_parameters['fq'] << 'draft:false'
+      (solr_parameters['fq'] ||= []) << 'draft:false'
     end
 
     def handle_facet_prefix(solr_parameters)
@@ -165,6 +174,8 @@ module SDBMSS::Blacklight
     # the same as other numeric range queries.
     def translate_daterange_string(date, min, max)
       if date.present?
+        return date if date.include?('"')
+
         m = /\[(.+?) TO (.+?)\]/.match(date)
         if m
           from, to = m[1], m[2]
@@ -200,6 +211,8 @@ module SDBMSS::Blacklight
 
     def translate_date_string_to_search_query(date)
       if date.present?
+        return date if date.end_with?('*')
+
         date = date.gsub("-", "")
         short = [8 - date.length, 0].max
         date = date + "*" * short

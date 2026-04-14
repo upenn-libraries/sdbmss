@@ -30,7 +30,7 @@ describe "Blacklight Advanced Search", :js => true do
 
     find_by_id('advanced-search-submit').click
 
-    expect(page).to have_content("You searched for:")
+    expect(page).to have_css('#appliedParams')
   end
 
   it "should do an advanced search using two Authors (ALL)" do

@@ -13,7 +13,7 @@
       <div class="col-10">
           <span class='h4'>
             <%# data-context-href triggers an HTTP callback before loading the entry page; this makes prev/next links on individual Entry page work %>
-            <a href="<%= url_for entry %>" data-context-href="<%= track_path document, document_counter %>"><%= entry.public_id %></a>
+            <a href="<%= url_for entry %>" data-context-href="<%= session_tracking_path(document, counter: document_counter, search_id: current_search_session.try(:id)) %>"><%= entry.public_id %></a>
             <% if !entry.approved %>
               <small class="text-muted document-disclaimer"><i class="fa fa-exclamation-triangle"></i> Unapproved</small>
             <% end %>
