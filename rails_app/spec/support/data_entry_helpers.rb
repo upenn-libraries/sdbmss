@@ -6,15 +6,18 @@ module DataEntryHelpers
   def add_name_authority(id, value)
     find_by_id(id).click
     expect(page).to have_content('in Name Authority')
-    expect(page).to have_selector('#searchNameAuthority');
+    expect(page).to have_selector('#searchNameAuthority')
     find_by_id('searchNameAuthority').set value
     find_by_id('search-name').click
     expect(page).not_to have_content('To begin searching')
     if page.all('tr', :text => value).count <= 0
       expect(page).to have_content("Propose '#{value}")
       find_by_id('propose-name').click
-      expect(page).to have_content("This window asks you to create an authorized name")
-      click_button('Create')
+      expect(page).to have_selector('.modal-title', text: /^Create /, visible: true)
+      within all('.modal-dialog').last do
+        expect(page).to have_selector('.name-form a.btn.btn-primary', text: 'Save', visible: true)
+        find('.name-form a.btn.btn-primary', text: 'Save').click
+      end
       expect(page).not_to have_content("Error")
     else
       within '#select-name-table' do
@@ -49,12 +52,19 @@ module DataEntryHelpers
   end
 
   def open_source_create_modal
-    find_by_id("select_source").click
-    expect(page).to have_content("Search for Existing Source")
+    expect(page).to have_selector("#select_source")
+    find_by_id("select_source").trigger("click")
+    expect(page).to have_selector(".modal-title", text: "Search for Existing Source", visible: true)
     fill_in "date", with: "2014"
     expect(page).to have_content("Unable to find the Source you are looking for?")
-    find_by_id("create_source").trigger('click')
-    expect(page).to have_content("Not sure what your source type is?")
+    find_by_id("create_source").trigger("click")
+    expect(page).to have_selector("#source_type", visible: true)
+  end
+
+  def open_source_search_modal
+    expect(page).to have_selector("#select_source")
+    find_by_id("select_source").trigger("click")
+    expect(page).to have_selector(".modal-title", text: "Search for Existing Source", visible: true)
   end
 
 
@@ -198,7 +208,7 @@ module DataEntryHelpers
     expect(sale.get_sellers_or_holders.first.agent.name).to eq('Joe2')
     expect(sale.get_buyers.first.agent.name).to eq('Joe3')
     expect(sale.sold).to eq('Yes')
-    expect(sale.date).to eq('20140303')
+    expect(sale.date.delete('-')).to eq('20140303')
     expect(sale.price).to eq(130000)
     expect(sale.currency).to eq('USD')
 

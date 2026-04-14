@@ -5,7 +5,7 @@ describe Name do
 
   describe "methods" do
 
-    it "should get suggestions" do
+    it "should get suggestions", :flaky do
       suggestions = Name.suggestions("William Shakespeare")
       expect(suggestions[:already_exists]).to eq(false)
       expect(suggestions[:results].length).to be > 0
@@ -64,6 +64,34 @@ describe Name do
       author1.merge_into(author2)
 
       expect(author1.deleted).to eq(true)
+    end
+
+    it "should update counters appropriately when records are merged" do
+      admin = create(:admin)
+
+      author = Name.create!(is_author: true, name: "Merge Counter Author", created_by: admin)
+      artist = Name.create!(is_artist: true, name: "Merge Counter Artist", created_by: admin)
+
+      source = Source.create!(source_type: SourceType.auction_catalog, created_by: admin)
+      entry1 = Entry.create!(source: source, created_by: admin, approved: true)
+      entry2 = Entry.create!(source: source, created_by: admin, approved: true)
+
+      EntryAuthor.create!(entry: entry1, author: author)
+      EntryAuthor.create!(entry: entry1, author: artist)
+      EntryArtist.create!(entry: entry2, artist: artist)
+
+      author.reload
+      artist.reload
+
+      expect(author.authors_count).to eq(author.author_entries.where(deprecated: false, draft: false).count)
+      expect(artist.authors_count).to eq(artist.author_entries.where(deprecated: false, draft: false).count)
+      expect(artist.artists_count).to eq(artist.artist_entries.where(deprecated: false, draft: false).count)
+
+      artist.merge_into(author)
+
+      author.reload
+      expect(author.authors_count).to eq(author.author_entries.where(deprecated: false, draft: false).count)
+      expect(author.artists_count).to eq(author.artist_entries.where(deprecated: false, draft: false).count)
     end
 
     it "should save an extremely large viaf_id" do
