@@ -29,6 +29,7 @@ module CatalogControllerConfiguration
       config.default_solr_params = {
         # use dismax query parser
         :defType => 'edismax',
+        'q.op' => 'AND',
         # we load entry fields from db, so these are the only fields we need returned from solr
         :fl => 'id, entry_id',
         :rows => 10,
