@@ -1,16 +1,18 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV['RAILS_ENV'] ||= 'test'
 
-require 'simplecov'
+if ENV['COVERAGE'] == '1'
+  require 'simplecov'
 
-# filter out legacy code from coverage
-SimpleCov.start 'rails' do
-  add_filter 'lib/sdbmss/legacy.rb'
-  add_filter 'lib/sdbmss/csv.rb'
-  add_filter 'lib/sdbmss/viaf_reconcilliation.rb'
+  # filter out legacy code from coverage
+  SimpleCov.start 'rails' do
+    add_filter 'lib/sdbmss/legacy.rb'
+    add_filter 'lib/sdbmss/csv.rb'
+    add_filter 'lib/sdbmss/viaf_reconcilliation.rb'
+  end
+
+  puts 'SimpleCov started'
 end
-
-puts 'SimpleCov started'
 
 require 'spec_helper'
 require File.expand_path('../config/environment', __dir__)
@@ -124,6 +126,7 @@ module TestSuiteSetupHelpers
   rescue StandardError => e
     log_setup_warning("Solr flush after JS test failed: #{e.message}")
   end
+
 end
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -148,9 +151,9 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   #
-  # must be false for DatabaseCleaner per-example strategy to work
-  # (Poltergeist is gone; project now uses Cuprite)
-  config.use_transactional_fixtures = false
+  # Browser specs run against Puma with a shared ActiveRecord connection, so
+  # examples can stay transaction-based instead of truncating per example.
+  config.use_transactional_fixtures = true
 
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and
@@ -177,6 +180,7 @@ RSpec.configure do |config|
   config.before(:suite) do
     # Start from a fully truncated DB, then rebuild the baseline records and
     # a minimal Solr index once for the whole suite.
+    SharedConnection.connection = ActiveRecord::Base.connection
     TestSuiteSetupHelpers.with_foreign_key_checks_disabled do
       DatabaseCleaner.clean_with(:truncation)
       begin
@@ -203,57 +207,22 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do |example|
+    SharedConnection.connection = ActiveRecord::Base.connection if example.metadata[:js]
+
     # Replace the Sunspot session with a fresh ThreadLocalSessionProxy so that
-    # every thread (test thread AND WEBrick server thread) gets new RSolr
+    # every thread (test thread AND Puma server thread) gets new RSolr
     # connections, eliminating stale socket errors from previous tests.
-    # If the suite eventually runs under Puma/system-test infrastructure with a
-    # cleaner app-server lifecycle, this JS-only reset is worth reevaluating.
     Sunspot.session = Sunspot::Rails.build_session if example.metadata[:js]
     # Suppress User#perform_index_tasks globally (patches the class, visible to
-    # ALL threads including WEBrick).  Devise login updates the User record
+    # ALL threads including the app server). Devise login updates the User record
     # (Trackable), which fires after_save :perform_index_tasks → Sunspot.index →
     # RSolr POST.  Stubbing this one callback prevents Net::ReadTimeout in
-    # WEBrick while leaving all other AR Sunspot callbacks (Comment, Place, etc.)
+    # Puma while leaving all other AR Sunspot callbacks (Comment, Place, etc.)
     # intact so those records are indexed normally and searches still work.
     allow_any_instance_of(User).to receive(:perform_index_tasks)
-    DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
-    DatabaseCleaner.start
   end
 
-  config.after(:each) do |example|
-    if example.metadata[:js]
-      # Reset browser BEFORE the slow re-seeding so Capybara's own cleanup
-      # hook (which runs after ours in LIFO order) doesn't time out waiting
-      # for a browser that has been idle during Solr callbacks.
-      Capybara.reset_sessions!
-      # Brief pause to let WEBrick finish any in-flight request that may
-      # hold a DB lock before we truncate, preventing deadlock on reseed.
-      # This is another WEBrick-era workaround to revisit if the suite moves
-      # to Puma and we can validate a cleaner request shutdown path.
-      sleep 1
-    end
-    DatabaseCleaner.clean
-    if example.metadata[:js]
-      # Suppress Solr during re-seeding: AR after_commit callbacks would try
-      # to hit Solr on every record created, causing Net::ReadTimeout on stale
-      # connections and corrupting the Sunspot connection pool for subsequent
-      # tests.
-      # If server/request lifecycle becomes less fragile under Puma, we may be
-      # able to replace this with narrower indexing control.
-      TestSuiteSetupHelpers.with_foreign_key_checks_disabled do
-        sunspot_session = Sunspot.session
-        Sunspot.session = Sunspot::Rails::StubSessionProxy.new(sunspot_session)
-        begin
-          TestSuiteSetupHelpers.with_seed_retries('Reseed') do
-            TestSuiteSetupHelpers.seed_reference_data!
-          end
-        ensure
-          Sunspot.session = sunspot_session
-        end
-      end
-      TestSuiteSetupHelpers.flush_and_reindex_solr_after_js!
-    end
-
+  config.append_after(:each) do |example|
     Warden.test_reset!
   end
 
