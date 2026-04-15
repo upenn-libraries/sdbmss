@@ -1,3 +1,5 @@
+require 'ostruct'
+
 module ApplicationHelper
 
   def format_fuzzy_date(d)

@@ -15,18 +15,12 @@ if [ "$1" = "bundle" -a "$2" = "exec" ]; then
         bundle install -j$(nproc) --retry 3
     fi
 
-    # remove unicorn.pid
-    if [ -f ${PROJECT_ROOT}/tmp/pids/unicorn.pid ]; then
-        rm -f ${PROJECT_ROOT}/tmp/pids/unicorn.pid
-    fi
-
-    # remove server.pid
-    if [ -f ${PROJECT_ROOT}/tmp/pids/server.pid ]; then
-        rm -f ${PROJECT_ROOT}/tmp/pids/server.pid
-    fi
+    # remove stale pid files
+    rm -f ${PROJECT_ROOT}/tmp/pids/puma.pid
+    rm -f ${PROJECT_ROOT}/tmp/pids/server.pid
 
     # run db migrations when starting the web server
-    if [ "$3" = "unicorn" ]; then
+    if [ "$3" = "puma" ]; then
         bundle exec rake db:migrate
         if [ "${RAILS_ENV}" = "development" ] || [ "${RAILS_ENV}" = "test" ]; then
             bundle exec rake db:create RAILS_ENV=test
