@@ -8,8 +8,8 @@ class PrivateMessage < ApplicationRecord
   has_many :user_messages, -> { where(:deleted => false) }, foreign_key: "private_message_id", dependent: :destroy
   has_many :users, through: :user_messages
 
-  belongs_to :private_message
-  has_many :replies, foreign_key: "private_message_id", class_name: "PrivateMessage"
+  belongs_to :private_message, inverse_of: false
+  has_many :replies, foreign_key: "private_message_id", class_name: "PrivateMessage", inverse_of: false
 
   accepts_nested_attributes_for :user_messages
 

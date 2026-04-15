@@ -20,8 +20,8 @@ class Place < ApplicationRecord
 
   validates_presence_of :name
 
-  belongs_to :parent, class_name: "Place"
-  has_many :children,  class_name: "Place", foreign_key: "parent_id", :dependent => :restrict_with_error
+  belongs_to :parent, class_name: "Place", inverse_of: false
+  has_many :children,  class_name: "Place", foreign_key: "parent_id", :dependent => :restrict_with_error, inverse_of: false
 
   #has_many :names, class_name: "Name", foreign_key: "associated_place_id", :dependent => :restrict_with_error
 
