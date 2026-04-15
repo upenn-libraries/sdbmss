@@ -5,11 +5,11 @@ services:
     command:
     - bundle
     - exec
-    - rails
-    - s
     - unicorn
-    - -b
-    - 0.0.0.0
+    - -c
+    - config/unicorn.rb
+    - -l
+    - 0.0.0.0:3000
     deploy:
       placement:
         constraints:
@@ -48,7 +48,7 @@ services:
     healthcheck:
       test:
       - CMD-SHELL
-      - ps aux | grep '[r]ails worker' || exit 1
+      - ps aux | grep '[u]nicorn' || exit 1
       timeout: 10s
       interval: 30s
       retries: 10

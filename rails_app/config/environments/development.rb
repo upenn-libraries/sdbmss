@@ -32,11 +32,15 @@ Rails.application.configure do
 
   #config.log_level = :info
 
-  config.logger = Logger.new(STDOUT)
+  config.logger = ActiveSupport::Logger.new(STDOUT)
 
   config.public_file_server.enabled = true
 
-  config.web_console.whitelisted_ips = ['172.18.0.0/16', '172.27.0.0/16', '0.0.0.0/0'] if defined?(WebConsole)
+  config.hosts << "app.sdbmss.orb.local"
+  config.hosts << "sdbmss.localhost"
+  config.hosts << "localhost"
+
+  config.web_console.permissions = ['172.18.0.0/16', '172.27.0.0/16', '0.0.0.0/0'] if defined?(WebConsole)
 end
 
 # allows for mailer to send correct URLS on development

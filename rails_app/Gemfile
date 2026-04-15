@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.8'
+gem 'rails', '~> 6.1.0'
 
 gem "nokogiri", "< 1.16"
 # gem "loofah", "= 2.19.1" # updated to 2.21.1, but that calls for Nokogiri::HTML4, which is not available in 1.8.5
@@ -9,6 +9,8 @@ gem "rubyzip", "~> 2.3"
 gem "ffi", ">= 1.9.24", "< 1.17"
 gem "json", ">= 2.3"
 gem "psych", "~> 3.1"
+gem "logger", "~> 1.5.3"
+gem "launchy", "~> 3.0.1"
 gem "rdoc", "~> 6.3.0"
 gem "sprockets", "~> 3.7"
 gem "kramdown"
@@ -28,10 +30,10 @@ gem 'bigdecimal'
 gem 'sassc-rails', '>= 2.0'
 
 # Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '~> 2.7.2'
+gem 'uglifier', '~> 4.2'
 
 # Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.2'
+gem 'coffee-rails', '~> 5.0'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.2.1'
@@ -70,13 +72,13 @@ gem "cancancan", "~> 3.5"
 gem 'sunspot_rails', '~> 2.5.0'
 
 # Use database as session store
-gem 'activerecord-session_store', '~> 1.1'
+gem 'activerecord-session_store', '~> 2.0'
 
 # for calculating string similarity
 gem 'levenshtein', '~> 0.2.2'
 
 # for auditing model changes
-gem 'paper_trail', '~> 10.3'
+gem 'paper_trail', '~> 12.3'
 
 # natural language date parser
 gem 'chronic', '~> 0.10.2'
@@ -126,7 +128,7 @@ end
 
 group :development do
   # in-browser console
-  gem 'web-console', '~> 3.7'
+  gem 'web-console', '~> 4.1'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring', '~> 2.1'
   # Use Capistrano for deployment

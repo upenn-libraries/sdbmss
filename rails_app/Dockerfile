@@ -137,7 +137,7 @@ RUN RAILS_ENV=${RAILS_ENV} \
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["bundle", "exec", "rails", "s", "unicorn", "-b", "0.0.0.0"]
+CMD ["bundle", "exec", "unicorn", "-c", "config/unicorn.rb", "-l", "0.0.0.0:3000"]
 
 
 # Production Image
@@ -218,4 +218,4 @@ RUN RAILS_ENV=${RAILS_ENV} \
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["bundle", "exec", "rails", "s", "unicorn", "-b", "0.0.0.0"]
+CMD ["bundle", "exec", "unicorn", "-c", "config/unicorn.rb", "-l", "0.0.0.0:3000"]

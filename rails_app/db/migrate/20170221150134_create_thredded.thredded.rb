@@ -4,6 +4,8 @@
 # rubocop:disable Metrics/MethodLength
 class CreateThredded < ActiveRecord::Migration[4.2]
   def change
+    return if table_exists?(:thredded_categories)
+
     unless table_exists?(:friendly_id_slugs)
       # The user might have installed FriendlyId separately already.
       create_table :friendly_id_slugs do |t|
@@ -30,7 +32,7 @@ class CreateThredded < ActiveRecord::Migration[4.2]
       t.index [:messageboard_id, :slug], name: :index_thredded_categories_on_messageboard_id_and_slug, unique: true
       t.index [:messageboard_id], name: :index_thredded_categories_on_messageboard_id
     end
-    DbTextSearch::CaseInsensitive.add_index connection, :thredded_categories, :name, name: :thredded_categories_name_ci
+    DbTextSearch::CaseInsensitive.add_index(connection, :thredded_categories, :name, name: :thredded_categories_name_ci) if defined?(DbTextSearch)
 
     create_table :thredded_messageboards do |t|
       t.string :name, limit: 191, null: false
@@ -71,7 +73,7 @@ class CreateThredded < ActiveRecord::Migration[4.2]
       t.index [:postable_id], name: :index_thredded_posts_on_postable_id_and_postable_type
       t.index [:user_id], name: :index_thredded_posts_on_user_id
     end
-    DbTextSearch::FullText.add_index connection, :thredded_posts, :content, name: :thredded_posts_content_fts
+    DbTextSearch::FullText.add_index(connection, :thredded_posts, :content, name: :thredded_posts_content_fts) if defined?(DbTextSearch)
 
     create_table :thredded_private_posts do |t|
       t.references :user
@@ -131,7 +133,7 @@ class CreateThredded < ActiveRecord::Migration[4.2]
       t.index [:messageboard_id], name: :index_thredded_topics_on_messageboard_id
       t.index [:user_id], name: :index_thredded_topics_on_user_id
     end
-    DbTextSearch::FullText.add_index connection, :thredded_topics, :title, name: :thredded_topics_title_fts
+    DbTextSearch::FullText.add_index(connection, :thredded_topics, :title, name: :thredded_topics_title_fts) if defined?(DbTextSearch)
 
     create_table :thredded_user_details do |t|
       t.references :user, null: false

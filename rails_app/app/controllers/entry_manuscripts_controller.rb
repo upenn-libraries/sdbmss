@@ -33,7 +33,7 @@ class EntryManuscriptsController < SearchableAuthorityController
           elsif record["id"]
             em = EntryManuscript.find(record["id"])
             em.updated_by = current_user;
-            em.update_attributes!(attrs)
+            em.update!(attrs)
           else
             em = EntryManuscript.new(attrs)
             em.manuscript_id = manuscript.id

@@ -222,7 +222,7 @@ class SourcesController < SearchableAuthorityController
     end
     if params[:confirm] == "yes"
       ActiveRecord::Base.transaction do
-        @target.update_attributes(source_params_for_create_and_edit)
+        @target.update(source_params_for_create_and_edit)
         id = @source.public_id
         @source.merge_into(@target)
         if params[:source_agent_id]

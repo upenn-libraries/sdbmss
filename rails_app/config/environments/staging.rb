@@ -22,7 +22,7 @@ Rails.application.configure do
   # config.action_dispatch.rack_cache = true
 
   # Disable Rails's static asset server (Apache or nginx will already do this).
-  config.serve_static_files = true #false
+  config.public_file_server.enabled = true
 
   # config.assets.js_compressor = :uglifier
 
@@ -45,7 +45,7 @@ Rails.application.configure do
 
   # Set to :debug to see everything in the log.
   config.log_level = :debug
-  config.logger = Logger.new(STDOUT)
+  config.logger = ActiveSupport::Logger.new(STDOUT)
 
   # Prepend all log lines with the following tags.
   # config.log_tags = [ :subdomain, :uuid ]
@@ -88,7 +88,7 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.active_record.raise_in_transactional_callbacks = true
+  config.hosts << ENV.fetch('SDBMSS_APP_HOST', 'sdbmss-staging.library.upenn.edu')
 end
 
 Rails.application.config.middleware.use ExceptionNotification::Rack,

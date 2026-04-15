@@ -9,6 +9,7 @@ Bundler.require(*Rails.groups)
 module SDBMSS
   class Application < Rails::Application
     config.load_defaults "5.2"
+    config.autoloader = :classic
     # TODO: audit belongs_to associations for optional: true, then remove this override
     config.active_record.belongs_to_required_by_default = false
 

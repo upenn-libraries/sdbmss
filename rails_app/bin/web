@@ -2,4 +2,4 @@
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
-exec bundle exec rails s unicorn -b 0.0.0.0
+exec bundle exec unicorn -c config/unicorn.rb -l 0.0.0.0:3000

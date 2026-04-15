@@ -40,7 +40,7 @@ describe Name do
       source.save!
       entry = Entry.new(source: source)
       entry.save!
-      entry.update_attributes(
+      entry.update(
         entry_authors_attributes: [
           {
             author: author
@@ -128,7 +128,7 @@ describe Name do
       source.save!
       entry = Entry.new(source: source)
       entry.save!
-      entry.update_attributes(
+      entry.update(
         entry_authors_attributes: [
           {
             author: artist
