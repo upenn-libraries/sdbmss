@@ -225,6 +225,13 @@ GEM
       kramdown (~> 2.0)
     launchy (2.5.0)
       addressable (~> 2.7)
+    letter_opener (1.10.0)
+      launchy (>= 2.2, < 4)
+    letter_opener_web (2.0.0)
+      actionmailer (>= 5.2)
+      letter_opener (~> 1.7)
+      railties (>= 5.2)
+      rexml
     levenshtein (0.2.2)
     logger (1.7.0)
     loofah (2.25.1)
@@ -520,6 +527,7 @@ DEPENDENCIES
   jquery-ui-rails (~> 5.0.3)
   json (>= 2.3)
   kramdown
+  letter_opener_web
   levenshtein (~> 0.2.2)
   mysql2
   nokogiri (< 1.16)

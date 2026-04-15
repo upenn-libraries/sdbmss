@@ -2,6 +2,11 @@ Rails.application.routes.draw do
 
   mount Thredded::Engine => '/forum'
 
+  # In-browser mail inbox for development. Visit /letter_opener.
+  if Rails.env.development?
+    mount LetterOpenerWeb::Engine, at: '/letter_opener'
+  end
+
   get "/sparql-space", :to => "sparql#index"
 
   root :to => "catalog#index"
