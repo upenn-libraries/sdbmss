@@ -80,7 +80,7 @@ GEM
     bcrypt (3.1.22)
     bigdecimal (4.1.1)
     bindex (0.8.1)
-    blacklight (7.38.0)
+    blacklight (7.41.0)
       deprecation
       globalid
       hashdiff
@@ -88,8 +88,9 @@ GEM
       jbuilder (~> 2.7)
       kaminari (>= 0.15)
       ostruct (>= 0.3.2)
-      rails (>= 5.1, < 7.3)
-      view_component (>= 2.66, < 4)
+      rails (>= 6.1, < 8.1)
+      view_component (>= 2.74, < 4)
+      zeitwerk
     blacklight_advanced_search (7.0.0)
       blacklight (~> 7.0)
       parslet
@@ -176,6 +177,7 @@ GEM
       devise
     diff-lcs (1.6.2)
     docile (1.4.1)
+    drb (2.2.3)
     erubi (1.13.1)
     exception_notification (4.6.0)
       actionmailer (>= 5.2, < 9)
@@ -248,7 +250,7 @@ GEM
       addressable (~> 2.8)
       childprocess (~> 5.0)
     levenshtein (0.2.2)
-    logger (1.5.3)
+    logger (1.7.0)
     loofah (2.25.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -263,11 +265,13 @@ GEM
     method_source (1.1.0)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
-    minitest (5.26.1)
+    minitest (6.0.4)
+      drb (~> 2.0)
+      prism (~> 1.5)
     multi_json (1.15.0)
     mysql2 (0.5.7)
       bigdecimal
-    net-imap (0.4.23)
+    net-imap (0.6.3)
       date
       net-protocol
     net-pop (0.1.2)
@@ -442,7 +446,7 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.38)
-    zeitwerk (2.6.18)
+    zeitwerk (2.7.5)
 
 PLATFORMS
   ruby
@@ -452,7 +456,7 @@ DEPENDENCIES
   activerecord-session_store (~> 2.0)
   autoprefixer-rails (>= 9.1.0)
   bigdecimal
-  blacklight (>= 7.7, < 7.39)
+  blacklight (>= 7.7, < 8)
   blacklight_advanced_search (~> 7.0)
   bootstrap (~> 4.6)
   bunny (~> 2.22)
