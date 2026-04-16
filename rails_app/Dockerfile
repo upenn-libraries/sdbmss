@@ -1,5 +1,5 @@
 ARG APP_IMAGE_NAME=ruby
-ARG APP_IMAGE_TAG=3.2.8-bullseye
+ARG APP_IMAGE_TAG=3.3.11-bookworm
 
 # Bundle home
 ARG BUNDLE_HOME=vendor/bundle
@@ -11,7 +11,7 @@ ARG BUNDLE_VERSION=2.4.22
 ARG PROJECT_ROOT=/home/app
 
 # Ruby major version (used in gem paths)
-ARG RUBY_MAJOR=3.2
+ARG RUBY_MAJOR=3.3
 
 # Rails env
 ARG RAILS_ENV=development
