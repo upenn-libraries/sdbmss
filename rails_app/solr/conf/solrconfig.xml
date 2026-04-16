@@ -35,7 +35,7 @@
        that you fully re-index after changing this setting as it can
        affect both how text is indexed and queried.
   -->
-  <luceneMatchVersion>8.11.0</luceneMatchVersion>
+  <luceneMatchVersion>9.7.0</luceneMatchVersion>
 
   <!-- <lib/> directives can be used to instruct Solr to load an Jars
        identified and use them to resolve any "plugins" specified in
@@ -165,7 +165,7 @@
            autowarmCount - the number of entries to prepopulate from
                and old cache.  
       -->
-    <filterCache class="solr.FastLRUCache"
+    <filterCache class="solr.CaffeineCache"
                  size="512"
                  initialSize="512"
                  autowarmCount="0"/>
@@ -175,7 +175,7 @@
          Caches results of searches - ordered lists of document ids
          (DocList) based on a query, a sort, and the range of documents requested.  
       -->
-    <queryResultCache class="solr.LRUCache"
+    <queryResultCache class="solr.CaffeineCache"
                      size="512"
                      initialSize="512"
                      autowarmCount="0"/>
@@ -186,7 +186,7 @@
          document).  Since Lucene internal document ids are transient,
          this cache will not be autowarmed.  
       -->
-    <documentCache class="solr.LRUCache"
+    <documentCache class="solr.CaffeineCache"
                    size="512"
                    initialSize="512"
                    autowarmCount="0"/>
