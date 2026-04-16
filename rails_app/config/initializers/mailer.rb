@@ -1,4 +1,4 @@
-if Rails.env.development?
+if Rails.env.development? && ENV['SDBMSS_NOTIFY_EMAIL'].present? && ENV['SDBMSS_NOTIFY_EMAIL_PASSWORD'].present?
 
   ActionMailer::Base.raise_delivery_errors = true
 

@@ -44,7 +44,7 @@ gem 'turbolinks', '~> 5.2'
 gem 'jbuilder', '~> 2.7'
 
 # Use puma as the app server
-gem 'puma', '~> 5.6'
+gem 'puma'
 
 # Blacklight
 gem "blacklight", ">= 7.7", "< 8"
@@ -130,6 +130,8 @@ group :development do
   # Use Capistrano for deployment
   gem 'capistrano-rails', '~> 1.1.0'
   gem 'pry-rails'
+  # Intercept outgoing mail in development; view at /letter_opener
+  gem 'letter_opener_web'
 
   # This can autogenerate ERD diagrams from ActiveRecord models and
   # schema. This causes problems when it's enabled for anything
@@ -146,4 +148,6 @@ group :test, :development do
   gem 'cuprite'
   gem 'simplecov', :require => false
   gem 'debug'
+  gem 'stackprof', '>= 0.2.9', require: false
+  gem 'test-prof'
 end

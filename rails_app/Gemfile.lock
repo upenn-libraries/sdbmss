@@ -249,6 +249,13 @@ GEM
     launchy (3.0.1)
       addressable (~> 2.8)
       childprocess (~> 5.0)
+    letter_opener (1.10.0)
+      launchy (>= 2.2, < 4)
+    letter_opener_web (2.0.0)
+      actionmailer (>= 5.2)
+      letter_opener (~> 1.7)
+      railties (>= 5.2)
+      rexml
     levenshtein (0.2.2)
     logger (1.7.0)
     loofah (2.25.1)
@@ -408,6 +415,7 @@ GEM
       net-sftp (>= 2.1.2)
       net-ssh (>= 2.8.0)
       ostruct
+    stackprof (0.2.28)
     sunspot (2.7.1)
       bigdecimal
       pr_geohash (~> 1.0)
@@ -415,6 +423,7 @@ GEM
     sunspot_rails (2.7.1)
       rails (>= 5)
       sunspot (= 2.7.1)
+    test-prof (1.6.1)
     thor (1.5.0)
     tilt (2.7.0)
     timeout (0.6.1)
@@ -489,13 +498,14 @@ DEPENDENCIES
   json (>= 2.3)
   kramdown
   launchy (~> 3.0.1)
+  letter_opener_web
   levenshtein (~> 0.2.2)
   mysql2
   nokogiri (< 1.16)
   number_to (~> 0.7.1)
   paper_trail (~> 12.3)
   pry-rails
-  puma (~> 5.6)
+  puma
   rails (~> 6.1.0)
   rdoc (~> 6.3.0)
   responders (~> 3.0)
@@ -507,7 +517,9 @@ DEPENDENCIES
   simplecov
   spring (~> 2.1)
   sprockets (~> 3.7)
+  stackprof (>= 0.2.9)
   sunspot_rails (~> 2.7.0)
+  test-prof
   turbolinks (~> 5.2)
   uglifier (~> 4.2)
   view_component (~> 2.82)
