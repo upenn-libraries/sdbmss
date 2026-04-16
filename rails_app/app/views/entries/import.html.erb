@@ -22,20 +22,20 @@
     <div class="col-sm-12">
       <h1 class='text-center'>Bulk Import</h1>
       <p class="text-muted">
-        Data is imported via CSV, with certain conventions and strctures.  You can download a template CSV file 
-      <% if File.exists?("public/import-template.csv") %>
+        Data is imported via CSV, with certain conventions and strctures.  You can download a template CSV file
+      <% if File.exist?("public/import-template.csv") %>
         <strong><%= link_to "HERE", "/import-template.csv" %></strong>.
       <% else %>
         <strong class="text-muted">(File Not Available)</strong>.
       <% end %>
-        Our CSV syntax expects commas as separators, double quotes as delimiters, semi-colons to list multiple elements per column, and uses the arbitrary separator :::: for multi-valued elements in multi-element columns.  
+        Our CSV syntax expects commas as separators, double quotes as delimiters, semi-colons to list multiple elements per column, and uses the arbitrary separator :::: for multi-valued elements in multi-element columns.
       </p>
       <p class='text-muted text-center'>
         <strong>Make sure that these characters are not used in other contexts in the data.</strong>
       </p>
     </div>
   </div>
-  
+
   <div class="row" ng-if="!source">
     <div class="col-sm-12 text-center"><a ng-click="selectSourceModal()" class="btn btn-outline-secondary" id="select_source">Select/Create a Source</a></div>
   </div>
@@ -73,7 +73,7 @@
               " - double quote delimited
             </li>
             <li>
-              NO DOUBLE QUOTES ALLOWED IN ROWS - REPLACE WITH SINGLE QUOTES              
+              NO DOUBLE QUOTES ALLOWED IN ROWS - REPLACE WITH SINGLE QUOTES
             </li>
           </ul>
         </div>
@@ -152,7 +152,7 @@
         <h4>Selling Agent(s)</h4>
         <ul class="list-unstyled">
           <li ng-repeat="sale_agent in entries[entry_index].sales_attributes[0].sale_agents_attributes">{{ sale_agent.observed_name }} <span class="text-muted">({{ sale_agent.role }})</span></li>
-        </ul>        
+        </ul>
         <h4>Title(s)</h4>
         <ul class="list-unstyled">
           <li ng-repeat="title in entries[entry_index].entry_titles_attributes">{{ title.title }}</li>
@@ -275,7 +275,7 @@
       <div class="card">
         <div class="card-body">
           <p>
-            Have you reviewed the entries and verified that your data has accurately translated to our data model?  In that case, feel free to begin your 
+            Have you reviewed the entries and verified that your data has accurately translated to our data model?  In that case, feel free to begin your
             <a href="" class="btn btn-outline-secondary btn-lg" ng-click="save(0)" ng-if="!checked && saving != true" style="width: 100%;">Check</a>
             <a href="" class="btn btn-primary btn-lg" ng-click="save(0)" ng-if="checked && saving != true" style="width: 100%;">Upload</a>
             <a href="" class="btn btn-danger btn-lg" ng-click="cancel()" ng-if="saved != true && saving == true" style="width: 100%;">Cancel</a>
