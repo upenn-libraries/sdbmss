@@ -23,7 +23,7 @@ class Page < ApplicationRecord
 
   def path
     if ext == "pdf"
-      "/#{location}/#{URI.encode filename}"
+      "/#{location}/#{URI.encode_uri_component(filename)}"
     else
       Rails.root.join('public', "#{location}", filename)
     end
