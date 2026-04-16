@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_06_203527) do
-
+ActiveRecord::Schema[7.2].define(version: 2019_03_06_203527) do
   create_table "activities", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.string "item_type", null: false
     t.integer "item_id"
     t.string "event", null: false
     t.integer "user_id"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.integer "transaction_id"
   end
 
@@ -26,8 +25,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.string "user_type"
     t.string "document_id"
     t.string "title"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "document_type"
     t.text "tags"
     t.index ["user_id"], name: "index_bookmarks_on_user_id"
@@ -37,10 +36,10 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.text "comment"
     t.boolean "public", default: true
     t.boolean "is_correction", default: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "reviewed", default: false
-    t.datetime "reviewed_at"
+    t.datetime "reviewed_at", precision: nil
     t.boolean "deleted", default: false
     t.integer "created_by_id"
     t.integer "updated_by_id"
@@ -58,13 +57,13 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "attempts", default: 0, null: false
     t.text "handler", null: false
     t.text "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
+    t.datetime "run_at", precision: nil
+    t.datetime "locked_at", precision: nil
+    t.datetime "failed_at", precision: nil
     t.string "locked_by"
     t.string "queue"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
@@ -78,8 +77,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.boolean "reviewed"
     t.integer "skipped"
     t.integer "completed"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "flagged", default: 0
     t.index ["created_by_id"], name: "index_dericci_games_on_created_by_id"
   end
@@ -87,9 +86,9 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
   create_table "dericci_links", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.integer "name_id"
     t.integer "dericci_record_id"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.integer "created_by_id"
-    t.datetime "updated_at"
+    t.datetime "updated_at", precision: nil
     t.integer "updated_by_id"
     t.boolean "approved"
     t.integer "dericci_game_id"
@@ -104,8 +103,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.string "cards"
     t.string "size"
     t.string "senate_house"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "link"
   end
 
@@ -113,8 +112,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "dericci_record_id"
     t.text "reason"
     t.integer "created_by_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "dericci_records", id: :integer, charset: "utf8", force: :cascade do |t|
@@ -140,8 +139,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.string "size"
     t.string "senate_house"
     t.string "link"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "downloads", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
@@ -149,7 +148,7 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "status", default: 0
     t.integer "user_id"
     t.integer "created_by_id"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.index ["created_by_id"], name: "index_downloads_on_created_by_id"
     t.index ["user_id"], name: "index_downloads_on_user_id"
   end
@@ -174,14 +173,14 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "initials_decorated"
     t.boolean "approved", default: false
     t.boolean "deleted", default: false
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.integer "created_by_id"
-    t.datetime "updated_at"
+    t.datetime "updated_at", precision: nil
     t.integer "updated_by_id"
     t.integer "institution_id"
     t.string "transaction_type"
     t.integer "approved_by_id"
-    t.datetime "approved_at"
+    t.datetime "approved_at", precision: nil
     t.integer "touch_count", default: 0, null: false
     t.boolean "deprecated", default: false
     t.integer "superceded_by_id"
@@ -199,8 +198,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
   create_table "entry_artists", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.integer "entry_id"
     t.integer "artist_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "uncertain_in_source", default: false
     t.boolean "supplied_by_data_entry", default: false
     t.string "observed_name"
@@ -214,8 +213,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "entry_id"
     t.integer "author_id"
     t.string "observed_name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "role"
     t.boolean "uncertain_in_source", default: false
     t.boolean "supplied_by_data_entry", default: false
@@ -230,10 +229,10 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.text "changed_from"
     t.text "changed_to"
     t.string "change_type"
-    t.datetime "change_date"
+    t.datetime "change_date", precision: nil
     t.integer "changed_by_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["changed_by_id"], name: "index_entry_changes_on_changed_by_id"
     t.index ["entry_id"], name: "index_entry_changes_on_entry_id"
   end
@@ -247,8 +246,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
 
   create_table "entry_dates", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.integer "entry_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "observed_date"
     t.string "date_normalized_start"
     t.string "date_normalized_end"
@@ -261,8 +260,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
   create_table "entry_languages", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.integer "entry_id"
     t.integer "language_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "uncertain_in_source", default: false
     t.boolean "supplied_by_data_entry", default: false
     t.integer "order"
@@ -283,11 +282,11 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "entry_id"
     t.integer "manuscript_id"
     t.string "relation_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "reviewed", default: false
     t.integer "reviewed_by_id"
-    t.datetime "reviewed_at"
+    t.datetime "reviewed_at", precision: nil
     t.integer "created_by_id"
     t.integer "updated_by_id"
     t.index ["created_by_id"], name: "index_entry_manuscripts_on_created_by_id"
@@ -300,8 +299,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
   create_table "entry_materials", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.integer "entry_id"
     t.string "material"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "uncertain_in_source", default: false
     t.boolean "supplied_by_data_entry", default: false
     t.integer "order"
@@ -312,8 +311,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
   create_table "entry_places", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.integer "entry_id"
     t.integer "place_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "uncertain_in_source", default: false
     t.boolean "supplied_by_data_entry", default: false
     t.string "observed_name"
@@ -325,8 +324,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
   create_table "entry_scribes", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.integer "entry_id"
     t.integer "scribe_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "uncertain_in_source", default: false
     t.boolean "supplied_by_data_entry", default: false
     t.string "observed_name"
@@ -339,8 +338,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "entry_id"
     t.string "title", limit: 2048
     t.string "common_title", limit: 2048
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "uncertain_in_source", default: false
     t.boolean "supplied_by_data_entry", default: false
     t.integer "order"
@@ -350,8 +349,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
   create_table "entry_uses", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.integer "entry_id"
     t.string "use"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "order"
     t.index ["entry_id"], name: "index_entry_uses_on_entry_id"
   end
@@ -361,7 +360,7 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "sluggable_id", null: false
     t.string "sluggable_type", limit: 50
     t.string "scope", limit: 191
-    t.datetime "created_at", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
@@ -388,8 +387,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.boolean "public", default: false
     t.integer "created_by_id"
     t.integer "updated_by_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.text "description"
   end
 
@@ -398,23 +397,23 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "status"
     t.integer "record_id"
     t.string "record_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "tries", default: 0
     t.index ["record_type", "record_id"], name: "index_jena_responses_on_record_type_and_record_id"
   end
 
   create_table "languages", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.integer "created_by_id"
-    t.datetime "updated_at"
+    t.datetime "updated_at", precision: nil
     t.integer "updated_by_id"
     t.integer "entries_count", default: 0, null: false
     t.boolean "deleted", default: false
     t.boolean "reviewed", default: false
     t.integer "reviewed_by_id"
-    t.datetime "reviewed_at"
+    t.datetime "reviewed_at", precision: nil
     t.boolean "problem", default: false
     t.index ["created_by_id"], name: "index_languages_on_created_by_id"
     t.index ["name"], name: "index_languages_on_name", unique: true
@@ -437,8 +436,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
   end
 
   create_table "manuscripts", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "created_by_id"
     t.integer "updated_by_id"
     t.string "name"
@@ -446,7 +445,7 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.string "location"
     t.boolean "reviewed", default: false
     t.integer "reviewed_by_id"
-    t.datetime "reviewed_at"
+    t.datetime "reviewed_at", precision: nil
     t.string "url"
     t.index ["created_by_id"], name: "index_manuscripts_on_created_by_id"
     t.index ["reviewed_by_id"], name: "index_manuscripts_on_reviewed_by_id"
@@ -478,9 +477,9 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.boolean "is_author", default: false
     t.boolean "is_scribe", default: false
     t.boolean "is_provenance_agent", default: false
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.integer "created_by_id"
-    t.datetime "updated_at"
+    t.datetime "updated_at", precision: nil
     t.integer "updated_by_id"
     t.integer "authors_count", default: 0, null: false
     t.integer "artists_count", default: 0, null: false
@@ -491,7 +490,7 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.text "other_info"
     t.boolean "reviewed", default: false
     t.integer "reviewed_by_id"
-    t.datetime "reviewed_at"
+    t.datetime "reviewed_at", precision: nil
     t.integer "provenance_count", default: 0, null: false
     t.boolean "confirmed", default: false
     t.boolean "problem", default: false
@@ -515,8 +514,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.boolean "on_update", default: true
     t.boolean "on_comment", default: true
     t.boolean "on_reply", default: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "on_message", default: true
     t.boolean "email_on_message", default: true
     t.boolean "email_on_comment", default: true
@@ -538,8 +537,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.string "category"
     t.boolean "active", default: true
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "url"
     t.string "title"
     t.integer "notified_id"
@@ -550,8 +549,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.string "filename"
     t.string "name"
     t.string "category", default: "upload"
-    t.datetime "created_at", default: "2017-01-20 18:04:43"
-    t.datetime "updated_at", default: "2017-01-20 18:04:44"
+    t.datetime "created_at", precision: nil, default: "2017-01-20 18:04:43"
+    t.datetime "updated_at", precision: nil, default: "2017-01-20 18:04:44"
     t.index ["filename"], name: "index_pages_on_filename"
     t.index ["name"], name: "index_pages_on_name"
   end
@@ -559,15 +558,15 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
   create_table "places", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.integer "entry_id"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.integer "created_by_id"
-    t.datetime "updated_at"
+    t.datetime "updated_at", precision: nil
     t.integer "updated_by_id"
     t.integer "entries_count", default: 0, null: false
     t.boolean "deleted", default: false
     t.boolean "reviewed", default: false
     t.integer "reviewed_by_id"
-    t.datetime "reviewed_at"
+    t.datetime "reviewed_at", precision: nil
     t.boolean "problem", default: false
     t.decimal "latitude", precision: 10, scale: 6
     t.decimal "longitude", precision: 10, scale: 6
@@ -584,8 +583,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
 
   create_table "private_messages", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.text "message"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "deleted", default: false
     t.integer "created_by_id"
     t.integer "updated_by_id"
@@ -605,9 +604,9 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "provenance_agent_id"
     t.string "acquisition_method"
     t.boolean "direct_transfer", default: false
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.integer "created_by_id"
-    t.datetime "updated_at"
+    t.datetime "updated_at", precision: nil
     t.integer "updated_by_id"
     t.string "start_date"
     t.string "start_date_normalized_start"
@@ -630,8 +629,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "ratable_id"
     t.string "ratable_type"
     t.string "user_level"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "qualifier", default: "confirm"
     t.text "reason"
   end
@@ -641,8 +640,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "comment_id"
     t.integer "created_by_id"
     t.integer "updated_by_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "deleted", default: false
     t.index ["comment_id"], name: "index_replies_on_comment_id"
     t.index ["created_by_id"], name: "index_replies_on_created_by_id"
@@ -654,8 +653,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.string "observed_name"
     t.integer "agent_id"
     t.string "role"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "uncertain_in_source", default: false
     t.boolean "supplied_by_data_entry", default: false
     t.index ["agent_id"], name: "index_sale_agents_on_agent_id"
@@ -670,9 +669,9 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.string "currency"
     t.string "other_currency"
     t.string "sold"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.integer "created_by_id"
-    t.datetime "updated_at"
+    t.datetime "updated_at", precision: nil
     t.integer "updated_by_id"
     t.index ["created_by_id"], name: "index_sales_on_created_by_id"
     t.index ["entry_id"], name: "index_sales_on_entry_id"
@@ -683,16 +682,16 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.text "query_params"
     t.integer "user_id"
     t.string "user_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["user_id"], name: "index_searches_on_user_id"
   end
 
   create_table "sessions", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.string "session_id", null: false
     t.text "data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["session_id"], name: "index_sessions_on_session_id", unique: true
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
@@ -701,8 +700,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "source_id"
     t.integer "agent_id"
     t.string "role"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "observed_name"
     t.index ["agent_id"], name: "index_source_agents_on_agent_id"
     t.index ["source_id"], name: "index_source_agents_on_source_id"
@@ -733,9 +732,9 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.text "other_info"
     t.string "status"
     t.string "hidden"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.integer "created_by_id"
-    t.datetime "updated_at"
+    t.datetime "updated_at", precision: nil
     t.integer "updated_by_id"
     t.integer "entries_count", default: 0, null: false
     t.string "location_institution"
@@ -745,7 +744,7 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "source_type_id"
     t.boolean "reviewed", default: false
     t.integer "reviewed_by_id"
-    t.datetime "reviewed_at"
+    t.datetime "reviewed_at", precision: nil
     t.boolean "legacy", default: false
     t.boolean "problem", default: false
     t.index ["created_by_id"], name: "index_sources_on_created_by_id"
@@ -758,8 +757,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "messageboard_id", null: false
     t.string "name", limit: 191, null: false
     t.string "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "slug", limit: 191, null: false
     t.index ["messageboard_id", "slug"], name: "index_thredded_categories_on_messageboard_id_and_slug", unique: true
     t.index ["messageboard_id"], name: "index_thredded_categories_on_messageboard_id"
@@ -769,8 +768,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
   create_table "thredded_messageboard_groups", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.integer "position", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "thredded_messageboard_notifications_for_followed_topics", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
@@ -784,7 +783,7 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
   create_table "thredded_messageboard_users", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.integer "thredded_user_detail_id", null: false
     t.integer "thredded_messageboard_id", null: false
-    t.datetime "last_seen_at", null: false
+    t.datetime "last_seen_at", precision: nil, null: false
     t.index ["thredded_messageboard_id", "last_seen_at"], name: "index_thredded_messageboard_users_for_recently_active"
     t.index ["thredded_messageboard_id", "thredded_user_detail_id"], name: "index_thredded_messageboard_users_primary"
     t.index ["thredded_user_detail_id"], name: "fk_rails_06e42c62f5"
@@ -799,8 +798,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "position", null: false
     t.integer "last_topic_id"
     t.integer "messageboard_group_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["messageboard_group_id"], name: "index_thredded_messageboards_on_messageboard_group_id"
     t.index ["slug"], name: "index_thredded_messageboards_on_slug"
   end
@@ -828,15 +827,15 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "moderator_id"
     t.integer "moderation_state", null: false
     t.integer "previous_moderation_state", null: false
-    t.datetime "created_at", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.index ["messageboard_id", "created_at"], name: "index_thredded_moderation_records_for_display"
   end
 
   create_table "thredded_post_notifications", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.string "email", limit: 191, null: false
     t.integer "post_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "post_type", limit: 191
     t.index ["post_id", "post_type"], name: "index_thredded_post_notifications_on_post"
   end
@@ -849,8 +848,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "postable_id", null: false
     t.integer "messageboard_id", null: false
     t.integer "moderation_state", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["content"], name: "thredded_posts_content_fts", type: :fulltext
     t.index ["messageboard_id"], name: "index_thredded_posts_on_messageboard_id"
     t.index ["moderation_state", "updated_at"], name: "index_thredded_posts_for_display"
@@ -863,8 +862,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.text "content"
     t.integer "postable_id", null: false
     t.string "ip"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "thredded_private_topics", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
@@ -874,9 +873,9 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.string "slug", limit: 191, null: false
     t.integer "posts_count", default: 0
     t.string "hash_id", limit: 191, null: false
-    t.datetime "last_post_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "last_post_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["hash_id"], name: "index_thredded_private_topics_on_hash_id"
     t.index ["slug"], name: "index_thredded_private_topics_on_slug"
   end
@@ -884,8 +883,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
   create_table "thredded_private_users", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.integer "private_topic_id"
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["private_topic_id"], name: "index_thredded_private_users_on_private_topic_id"
     t.index ["user_id"], name: "index_thredded_private_users_on_user_id"
   end
@@ -909,9 +908,9 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.string "hash_id", limit: 191, null: false
     t.string "type", limit: 191
     t.integer "moderation_state", null: false
-    t.datetime "last_post_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "last_post_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["hash_id"], name: "index_thredded_topics_on_hash_id"
     t.index ["messageboard_id", "slug"], name: "index_thredded_topics_on_messageboard_id_and_slug", unique: true
     t.index ["messageboard_id"], name: "index_thredded_topics_on_messageboard_id"
@@ -922,14 +921,14 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
 
   create_table "thredded_user_details", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.datetime "latest_activity_at"
+    t.datetime "latest_activity_at", precision: nil
     t.integer "posts_count", default: 0
     t.integer "topics_count", default: 0
-    t.datetime "last_seen_at"
+    t.datetime "last_seen_at", precision: nil
     t.integer "moderation_state", default: 0, null: false
-    t.datetime "moderation_state_changed_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "moderation_state_changed_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["latest_activity_at"], name: "index_thredded_user_details_on_latest_activity_at"
     t.index ["moderation_state", "moderation_state_changed_at"], name: "index_thredded_user_details_for_moderations"
     t.index ["user_id"], name: "index_thredded_user_details_on_user_id"
@@ -939,16 +938,16 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "user_id", null: false
     t.integer "messageboard_id", null: false
     t.boolean "follow_topics_on_mention", default: true, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["user_id", "messageboard_id"], name: "thredded_user_messageboard_preferences_user_id_messageboard_id", unique: true
   end
 
   create_table "thredded_user_preferences", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.boolean "follow_topics_on_mention", default: true, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["user_id"], name: "index_thredded_user_preferences_on_user_id"
   end
 
@@ -956,14 +955,14 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "user_id", null: false
     t.integer "postable_id", null: false
     t.integer "page", default: 1, null: false
-    t.datetime "read_at", null: false
+    t.datetime "read_at", precision: nil, null: false
     t.index ["user_id", "postable_id"], name: "thredded_user_private_topic_read_states_user_postable", unique: true
   end
 
   create_table "thredded_user_topic_follows", id: :integer, charset: "utf8", collation: "utf8_unicode_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "topic_id", null: false
-    t.datetime "created_at", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.integer "reason", limit: 1
     t.index ["user_id", "topic_id"], name: "thredded_user_topic_follows_user_topic", unique: true
   end
@@ -972,7 +971,7 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.integer "user_id", null: false
     t.integer "postable_id", null: false
     t.integer "page", default: 1, null: false
-    t.datetime "read_at", null: false
+    t.datetime "read_at", precision: nil, null: false
     t.index ["user_id", "postable_id"], name: "thredded_user_topic_read_states_user_postable", unique: true
   end
 
@@ -988,15 +987,15 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
     t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
+    t.datetime "current_sign_in_at", precision: nil
+    t.datetime "last_sign_in_at", precision: nil
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "guest", default: false
     t.string "username"
     t.string "role"
@@ -1004,7 +1003,7 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.text "bio"
     t.boolean "reviewed", default: false
     t.integer "reviewed_by_id"
-    t.datetime "reviewed_at"
+    t.datetime "reviewed_at", precision: nil
     t.integer "created_by_id"
     t.integer "updated_by_id"
     t.string "fullname"
@@ -1035,7 +1034,7 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
     t.string "event", null: false
     t.string "whodunnit"
     t.text "object"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.text "object_changes"
     t.integer "transaction_id"
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"

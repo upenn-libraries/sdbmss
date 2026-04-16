@@ -44,7 +44,7 @@ class CatalogController < ApplicationController
         render_access_denied
       end
     else
-      render "not_found.html", status: 404
+      render template: "catalog/not_found", formats: [:html], status: 404
     end
   end
 

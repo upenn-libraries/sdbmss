@@ -165,7 +165,7 @@ class EntriesController < SearchableAuthorityController
   # want to format the JSON differently from how it does it.
   def show_json
     respond_to do |format|
-      format.json { render "show.json" }
+      format.json { render template: "entries/show", formats: [:json] }
     end
   end
 

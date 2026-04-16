@@ -8,10 +8,15 @@ Bundler.require(*Rails.groups)
 
 module SDBMSS
   class Application < Rails::Application
-    config.load_defaults "6.1"
+    config.load_defaults "7.2"
 
     # TODO: audit belongs_to associations for optional: true, then remove this override
     config.active_record.belongs_to_required_by_default = false
+
+    # preview_path (singular) was removed in Rails 7.2
+    initializer "sdbmss.fix_mailer_preview_path", before: "action_mailer.set_configs" do |app|
+      app.config.action_mailer.delete(:preview_path)
+    end
 
     # Disable SassC as CSS compressor because it cannot handle modern CSS var() syntax in vendor DataTables stylesheets
     config.assets.css_compressor = nil
@@ -21,7 +26,8 @@ module SDBMSS
     # HashWithIndifferentAccess) into YAML-serialized session data.
     config.active_record.yaml_column_permitted_classes = [
       ActiveSupport::HashWithIndifferentAccess,
-      Symbol
+      Symbol,
+      Time
     ]
 
     # Settings in config/environments/* take precedence over those specified here.
