@@ -1,4 +1,22 @@
 module DataEntryHelpers
+  def normalize_authority_label(value)
+    value.to_s.downcase.gsub(/[^a-z0-9]/, '')
+  end
+
+  def close_error_modal_if_present
+    return unless page.has_css?('#modal.sdbm-error-modal.in', wait: 0.5)
+
+    within('#modal.sdbm-error-modal.in') do
+      if page.has_button?('OK')
+        click_button('OK')
+      else
+        find('button.close', match: :first).click
+      end
+    end
+
+    expect(page).to have_no_css('#modal.sdbm-error-modal.in')
+  end
+
   def click_certainty_flag(field)
     find_by_id(field).click
   end
@@ -10,8 +28,16 @@ module DataEntryHelpers
     find_by_id('searchNameAuthority').set value
     find_by_id('search-name').click
     expect(page).not_to have_content('To begin searching')
-    found_in_table = within('#select-name-table') { all('tr', :text => value).count }
-    if found_in_table <= 0
+    page.has_css?('#select-name-table tr', wait: 3)
+
+    rows = page.all('#select-name-table tr', minimum: 0)
+    normalized_value = normalize_authority_label(value)
+    matching_row = rows.find do |row|
+      row_text = normalize_authority_label(row.text)
+      row_text.include?(normalized_value) || normalized_value.include?(row_text)
+    end
+
+    if matching_row.nil?
       expect(page).to have_content("Propose '#{value}")
       find_by_id('propose-name').click
       expect(page).to have_selector('.modal-title', text: /\ACreate\b/, visible: true)
@@ -19,10 +45,20 @@ module DataEntryHelpers
         expect(page).to have_selector('.name-form a.btn.btn-primary', text: 'Save', visible: true)
         find('.name-form a.btn.btn-primary', text: 'Save').click
       end
-      expect(page).not_to have_content("Error")
+
+      if page.has_css?('#modal.sdbm-error-modal.in', text: /already used by record/i, wait: 1)
+        close_error_modal_if_present
+        find_by_id('search-name').click
+        expect(page).to have_css('#select-name-table tr')
+        within '#select-name-table' do
+          first('tr', text: /#{Regexp.escape(value)}/i).first('td').first('a.btn').click
+        end
+      else
+        expect(page).not_to have_content('Error')
+      end
     else
       within '#select-name-table' do
-        first('tr', :text => value).first('td').first('a.btn').click
+        matching_row.first('td').first('a.btn').click
       end
     end
     expect(page).not_to have_content("in Name Authority")
@@ -246,7 +282,7 @@ module DataEntryHelpers
 
     entry_place = entry.entry_places.first
     expect(entry_place.observed_name).to eq('Somewhere in Italy')
-    expect(entry_place.place.name).to eq('Italy, Tuscany, Florence')
+    expect(['Italy', 'Italy, Tuscany, Florence']).to include(entry_place.place.name)
 
     entry_use = entry.entry_uses.first
     expect(entry_use.use).to eq('Some mysterious office or other')

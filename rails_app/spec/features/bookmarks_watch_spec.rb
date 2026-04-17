@@ -70,30 +70,25 @@ describe "Bookmark", :js => true do
     end
 
     it "should bookmark/watch and remove for Entries" do
-      visit entries_path
-      # Derive the target entry from the class of the first visible bookmark button
-      # Bookmark buttons have class "Bookmark_Entry_<id>"
-      bookmark_link = find('.bookmark:not(.bookmark-delete)', match: :first)
-      match_data = bookmark_link[:class].match(/Bookmark_Entry_(\d+)/)
-      expect(match_data).not_to be_nil, "Could not extract entry ID from bookmark button classes: #{bookmark_link[:class].inspect}"
-      entry_id = match_data[1].to_i
-      target = Entry.find(entry_id)
+      target = create_bookmark_watch_entry(@admin_user)
+      target.index!
+      Sunspot.commit
+      SDBMSS::Util.wait_for_solr_to_be_current
 
-      bookmark_link.click
-      # Wait for bookmark AJAX to complete (button becomes bookmark-delete)
-      expect(page).to have_css(".bookmark-delete.Bookmark_Entry_#{entry_id}")
-
-      find(".Watch_Entry_#{entry_id}").click
-      # Wait for watch AJAX to complete (button becomes watch-delete)
-      expect(page).to have_css(".watch-delete.Watch_Entry_#{entry_id}")
+      visit entry_path(target)
+      bookmark_and_watch_current_record
 
       visit entry_path(target)
       expect(page).to have_content('Bookmarked')
       expect(page).to have_content('Watched')
 
       find('.bookmark-delete', match: :first).click
+
+      visit watches_path
+      expect(page).to have_content(target.public_id)
       find('.watch-delete', match: :first).click
 
+      visit entry_path(target)
       expect(page).not_to have_content('Bookmarked')
       expect("#control-panel").not_to have_content('Watched')
     end

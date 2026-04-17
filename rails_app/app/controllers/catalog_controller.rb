@@ -31,6 +31,7 @@ class CatalogController < ApplicationController
 
         @linked = @entry.manuscript ? @entry.manuscript.entries.map(&:id) : []
         s = Sunspot.more_like_this(@entry) do
+          request_handler :select
           fields :title_search, :place_search, :author_search, :language_search
           # without :id, [collect entry_ids from manuscript]
           #minimum_term_frequency 3

@@ -55,6 +55,7 @@ describe "Linking Tool", :js => true do
 
   def persist_linking_changes
     find("#persist-entries-manuscript-link").trigger('click')
+    expect(page).to have_content("SDBM_MS")
   end
 
   def build_linking_fixture(count: 3, source_title: "Linking Tool Source", shared_title: "Linking Tool Shared Title")
@@ -110,7 +111,7 @@ describe "Linking Tool", :js => true do
     expect(page).to have_content(source.title)
     persist_linking_changes
 
-    expect(page).to have_content("Manage Manuscripts")    
+    expect(page).to have_content("Manage Manuscripts")
     #expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
     manuscript = entry.reload.manuscripts.first
@@ -130,7 +131,7 @@ describe "Linking Tool", :js => true do
 
     persist_linking_changes
 
-    expect(page).to have_content("Manage Manuscripts")    
+    expect(page).to have_content("Manage Manuscripts")
     #expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
     manuscript = entry.reload.manuscripts.first
@@ -175,7 +176,7 @@ describe "Linking Tool", :js => true do
     click_button "Yes"
 
     expect(page).not_to have_content("Manage Entries")
-    expect(page).to have_content("Manage Manuscripts")    
+    expect(page).to have_content("Manage Manuscripts")
 #    expect(find(".modal-title", visible: true).text.include?("Successfully Linked")).to be_truthy
 
     entry.reload
@@ -195,7 +196,7 @@ describe "Linking Tool", :js => true do
 
     persist_linking_changes
 
-    expect(page).not_to have_content("Add SDBM_#{candidate_entry.id}")    
+    expect(page).not_to have_content("Add SDBM_#{candidate_entry.id}")
 #    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
     entry_ids = manuscript.reload.entries.map(&:id)
@@ -216,9 +217,6 @@ describe "Linking Tool", :js => true do
 
     persist_linking_changes
 
-    sleep 2
-    expect(page).to have_content("SDBM_MS")
-
     em = manuscript.reload.entry_manuscripts.find_by(entry_id: entry_id)
     expect(em.relation_type).to eq('possible')
   end
@@ -236,14 +234,15 @@ describe "Linking Tool", :js => true do
 
     persist_linking_changes
 
-    expect(page).to have_content("Add SDBM_#{entry_id}")    
-#    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
-
-    SDBMSS::Util.wait_for_solr_to_be_current
     manuscript.reload
 
     entry_ids = manuscript.entries.map(&:id)
     expect(entry_ids.include?(entry_id)).to eq(false)
+
+    index_records(entry.reload, manuscript)
+    visit linking_tool_by_manuscript_path id: manuscript.id
+
+    expect(page).to have_content("Add SDBM_#{entry_id}")
   end
 
   it "should remove the last entry from an existing Manuscript" do
@@ -259,16 +258,15 @@ describe "Linking Tool", :js => true do
       entry_id = manuscript.entries[i].id
       find("input[name='entry_id_#{entry_id}'][value='unlink']", match: :first).trigger('click')
     end
-    
+
     persist_linking_changes
     #expect(find("div#modal.modal.fade.in")).to have_content("hasdfa")
     #click_button "Save changes"
     #expect(page).to have_content("Success")
-    expect(page).to have_content("SDBM_MS")    
+    expect(page).to have_content("SDBM_MS")
 #    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
     manuscript.reload
 
-    SDBMSS::Util.wait_for_solr_to_be_current
     # remove the last entry
 
     expect(manuscript.entries.count).to eq(1)
@@ -278,7 +276,7 @@ describe "Linking Tool", :js => true do
     find("input[name='entry_id_#{entry_id}'][value='unlink']", match: :first).trigger('click')
     persist_linking_changes
     #click_button "Save changes"
-    expect(page).to have_content("SDBM_MS")    
+    expect(page).to have_content("SDBM_MS")
 #    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
     manuscript.reload
@@ -299,8 +297,7 @@ describe "Linking Tool", :js => true do
 
     visit linking_tool_by_manuscript_path id: manuscript.id
 
-    # MUST sleep so that updating EntryManuscript changes updated_at
-    sleep(2)
+    expect(page).to have_content(last_two_entries.first.public_id)
 
     # it's crucial that we load a fresh object
     manuscript = Manuscript.find(manuscript_id)
@@ -308,8 +305,11 @@ describe "Linking Tool", :js => true do
     em.relation_type = EntryManuscript::TYPE_RELATION_PARTIAL
     em.save!
 
-    # DataTables fixed columns may duplicate inputs; click the last available one.
-    all("input[name='entry_id_#{last_two_entries[0].id}'][value='possible']").last.click
+    # Datatable/fixed-column rendering can duplicate these inputs; select any
+    # visible matching input rather than assuming a fixed index.
+    possible_inputs = all("input[name='entry_id_#{last_two_entries[0].id}'][value='possible']", minimum: 1)
+    possible_input = possible_inputs.find(&:visible?) || possible_inputs.first
+    possible_input.trigger('click')
 
     persist_linking_changes
 

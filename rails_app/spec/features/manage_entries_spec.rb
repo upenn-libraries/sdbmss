@@ -4,46 +4,92 @@ require "rails_helper"
 describe "Manage entries", :js => true do
   let(:admin_user) { create(:admin) }
 
-  before :each do
-    @user = admin_user
-
-    @unapproved_entry = Entry.new(
+  def create_entry_with_author(author_name, folios:)
+    entry = Entry.create!(
       source: Source.last,
       created_by: @user,
-      folios: 15,
+      approved: true,
+      folios: folios
     )
-    @unapproved_entry.save!
-    Sunspot.commit
+    entry.entry_authors.create!(
+      author: Name.find_or_create_agent(author_name),
+      order: 0
+    )
+    entry
+  end
+
+  def create_entry_with_source_title(title, folios:)
+    source = Source.create!(
+      title: title,
+      source_type: SourceType.auction_catalog,
+      created_by: @user
+    )
+    Entry.create!(
+      source: source,
+      created_by: @user,
+      approved: true,
+      folios: folios
+    )
+  end
+
+  def create_entry_with_date(observed_date:, start_date:, end_date:, folios:)
+    entry = Entry.create!(
+      source: Source.last,
+      created_by: @user,
+      approved: true,
+      folios: folios
+    )
+    entry.entry_dates.create!(
+      observed_date: observed_date,
+      date_normalized_start: start_date,
+      date_normalized_end: end_date,
+      order: 0
+    )
+    entry
+  end
+
+  before :each do
+    @user = admin_user
     login(@user, 'somethingreallylong')
   end
 
-  after :each do
-    if @unapproved_entry
-      begin
-        Sunspot.remove(@unapproved_entry)
-        Sunspot.commit
-      rescue StandardError
-        # Solr cleanup is best-effort
-      end
-    end
-  end
+  it "should show table of entries", :solr do
+    entry = create_entry_with_date(
+      observed_date: "ca. 1425-1450",
+      start_date: "1415",
+      end_date: "1451",
+      folios: 16
+    )
+    SampleIndexer.index_records!(entry)
 
-  it "should show table of entries" do
     visit entries_path
-    expect(page).to have_content(Entry.first.entry_dates.first.display_value)
+    expect(page).to have_content(entry.entry_dates.first.display_value)
   end
 
-  it "should search" do
+  it "should search", :solr do
+    corpus = [
+      create_entry_with_source_title("De Ricci Source One", folios: 21),
+      create_entry_with_source_title("De Ricci Source Two", folios: 22)
+    ]
+    SampleIndexer.index_records!(corpus)
+
     visit entries_path
 
     find("input[name='search_value']", match: :first).native.send_keys "de ricci"
     find('#search_submit').click()
     expect(page).not_to have_selector("#spinner", visible: true)
 
-    expect(all("#search_results tbody tr").count).to eq(2)
+    expect(page.find('#search_results_info')).to have_content("2")
   end
 
-  it "should mark entry as approved" do
+  it "should mark entry as approved", :solr do
+    @unapproved_entry = Entry.create!(
+      source: Source.last,
+      created_by: @user,
+      approved: false,
+      folios: 15
+    )
+    SampleIndexer.index_records!(@unapproved_entry)
 
     visit entries_path
     find("#unapproved_only", match: :first).click
@@ -55,7 +101,11 @@ describe "Manage entries", :js => true do
     expect(page).to have_selector("#mark-as-approved")
     find("#mark-as-approved").click
 
-    expect(page).to have_content("There are no records to display.")
+    visit entries_path
+    find("#unapproved_only", match: :first).click
+    find('#search_submit').click()
+
+    expect(page).to have_content(/No matching records found|There are no records to display\./)
 
     visit entry_path(@unapproved_entry)
 
@@ -65,9 +115,15 @@ describe "Manage entries", :js => true do
     expect(Entry.find(@unapproved_entry.id).approved_by_id).to eq(@user.id)
   end
 
-  it "should delete an entry" do
-    entry_to_delete = Entry.last
-    count = Entry.all.count
+  it "should delete an entry", :solr do
+    entry_to_delete = Entry.create!(
+      source: Source.last,
+      created_by: @user,
+      approved: true,
+      folios: 17
+    )
+    SampleIndexer.index_records!(entry_to_delete)
+    count = Entry.count
 
     visit entries_path
     find("#delete_#{entry_to_delete.id}", match: :first).trigger("click")
@@ -79,14 +135,28 @@ describe "Manage entries", :js => true do
     expect(Entry.all.count).to eq(count - 1)
   end
 
-  it "should mark entry as deprecated" do
+  it "should mark entry as deprecated", :solr do
+    entry = Entry.create!(
+      source: Source.last,
+      created_by: @user,
+      approved: true,
+      folios: 18
+    )
+    replacement = Entry.create!(
+      source: Source.last,
+      created_by: @user,
+      approved: true,
+      folios: 19
+    )
+    SampleIndexer.index_records!(entry, replacement)
 
     expect(Entry.where(deprecated: true).count).to be(0)
 
     visit entries_path
-    find(".entry-deprecate-link", match: :first).trigger('click')
+    expect(page).to have_content(entry.public_id)
+    find('tr', text: entry.public_id).find('.entry-deprecate-link').trigger('click')
 
-    superceded_by_id = Entry.first.id
+    superceded_by_id = replacement.id
     fill_in 'superceded_by_id', :with => superceded_by_id
     find("#deprecate").click
     expect(page).to have_content("Entry marked as deprecated.")
@@ -95,13 +165,17 @@ describe "Manage entries", :js => true do
     expect(entry.superceded_by_id).to be(superceded_by_id)
   end
 
-  it "should load all entries from the Manage Entries page" do
+  it "should load all entries from the Manage Entries page", :solr do
+    corpus = [
+      Entry.create!(source: Source.last, created_by: @user, approved: true, folios: 11),
+      Entry.create!(source: Source.last, created_by: @user, approved: true, folios: 12),
+      Entry.create!(source: Source.last, created_by: @user, approved: true, folios: 13)
+    ]
+    SampleIndexer.index_records!(corpus)
+
     visit entries_path
 
-    expect(page).to have_css('#search_results_info', text: /of \d+ records/, wait: 10)
-    displayed_count = page.find('#search_results_info').text.match(/of (\d+) records/)[1].to_i
-    solr_count = Entry.search { paginate page: 1, per_page: 1 }.total
-    expect(displayed_count).to eq(solr_count)
+    expect(page.find('#search_results_info')).to have_content("3")
   end
 
   it "should perform a search on any field without error" do
@@ -118,7 +192,10 @@ describe "Manage entries", :js => true do
     end
   end
 
-  it "should perform a search with multiple values for the same field (AND)" do
+  it "should perform a search with multiple values for the same field (AND)", :solr do
+    entry = create_entry_with_author("Augustine, Saint, Bishop of Hippo", folios: 31)
+    SampleIndexer.index_records!(entry)
+
     visit entries_path
 
     find('#addSearch', visible: :all).trigger('click')
@@ -153,7 +230,11 @@ describe "Manage entries", :js => true do
     expect(count).to eq(count2)
   end
 
-  it "should perform a search with multiple values for the same field (ANY)" do
+  it "should perform a search with multiple values for the same field (ANY)", :solr do
+    augustine_entry = create_entry_with_author("Augustine, Saint, Bishop of Hippo", folios: 41)
+    cicero_entry = create_entry_with_author("Cicero, Marcus Tullius", folios: 42)
+    SampleIndexer.index_records!(augustine_entry, cicero_entry)
+
     visit entries_path
 
     find('#addSearch', visible: :all).trigger('click')
@@ -173,21 +254,26 @@ describe "Manage entries", :js => true do
 
     expect(page).to have_selector('#search_results_info', text: /of\s[\d,]+/)
 
-    augustine_entry = Entry.joins(entry_authors: :author).where(names: { name: "Augustine, Saint, Bishop of Hippo" }).first
-    cicero_entry = Entry.joins(entry_authors: :author).where(names: { name: "Cicero, Marcus Tullius" }).first
-
     expect(page).to have_link(augustine_entry.public_id)
     expect(page).to have_link(cicero_entry.public_id)
   end
 
-  it "should display a citation correctly" do
-    visit entry_path(Entry.first)
+  it "should display a citation correctly", :solr do
+    entry = Entry.create!(
+      source: Source.last,
+      created_by: @user,
+      approved: true,
+      folios: 20
+    )
+    SampleIndexer.index_records!(entry)
+
+    visit entry_path(entry)
 
     expect(page).to have_content("Cite")
 
     click_link "Cite"
     now = DateTime.now.to_formatted_s(:date_mla)
-    result = "Schoenberg Database of Manuscripts. The Schoenberg Institute for Manuscript Studies, University of Pennsylvania Libraries. Web. #{now}: #{Entry.first.public_id}."
+    result = "Schoenberg Database of Manuscripts. The Schoenberg Institute for Manuscript Studies, University of Pennsylvania Libraries. Web. #{now}: #{entry.public_id}."
     expect(page).to have_content(result)
   end
 

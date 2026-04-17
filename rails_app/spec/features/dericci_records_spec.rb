@@ -110,8 +110,10 @@ describe "Browse Dericci Records", :js => true do
     open_verified_name_modal
     expect(page).to have_selector("#searchNameAuthority", visible: true)
     expect(page).to have_selector("#select-name-table", visible: true)
+    fill_in "searchNameAuthority", with: "Camillo"
+    find("#search-name").click
     expect(page).to have_content("Camillo")
-    find("tr", text: "Camillo").find(".selectName").click
+    find("tr", text: "Camillo", match: :first).find(".selectName").click
     expect(page).not_to have_selector("#searchNameAuthority", visible: true)
     expect(page).to have_content("Camillo")
     expect(page).to have_selector("a.btn.btn-success.btn-sm", text: "Save")
