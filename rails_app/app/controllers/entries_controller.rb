@@ -16,6 +16,14 @@ class EntriesController < SearchableAuthorityController
 
   include CatalogControllerConfiguration
 
+  configure_blacklight do |config|
+    manage_fields = Entry.fields.map(&:last) + Entry.filters.map(&:last) + Entry.dates.map(&:last)
+    config.search_state_fields += manage_fields.flat_map { |k| [k.to_sym, { k.to_sym => [] }, :"#{k}_option", { :"#{k}_option" => [] }] }
+    config.search_state_fields += [:draw, :offset, :order,
+                                   :complete_entry, { complete_entry: [] },
+                                   :create_entry, { create_entry: [] }]
+  end
+
   include Revert
 
   # the blacklight_advanced_search gem includes this automatically in

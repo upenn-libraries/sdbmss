@@ -11,14 +11,14 @@ module ApplicationHelper
   # should use #search_advanced_path.
   def search_by_facet_value facet_name, value
     # call helpers from BlacklightUrlHelper
-    sdbmss_search_action_path(controller.search_state_class.new({}, blacklight_config, controller).add_facet_params(facet_name, value))
+    sdbmss_search_action_path(controller.search_state_class.new({}, blacklight_config, controller).filter(facet_name).add(value).params)
   end
 
   # returns a URL for an advanced search; options is a hash that
   # should contain a key corresponding to a field name, hashed to a
   # search value
   def search_advanced_path(options)
-    sdbmss_search_action_path({ "utf8" => SDBMSS::Util::CHECKMARK, "op" => "AND", "search_field" => "advanced", "commit" => "Search" }.merge(options))
+    sdbmss_search_action_path({ "op" => "AND", "search_field" => "advanced" }.merge(options))
   end
 
   # this just takes you to a blank search, which shows you all entries ordered by most recent
@@ -27,7 +27,7 @@ module ApplicationHelper
     # search controller, breaking the link on that page
     # recent additions: right now shows additions in LAST month only
     #sdbmss_search_action_path({ "utf8" => SDBMSS::Util::CHECKMARK, "commit" => "Search", "op" => "OR"})
-    sdbmss_search_action_path({ "utf8" => SDBMSS::Util::CHECKMARK, "commit" => "Search", "op" => "OR", "added_on" => [Date.today.prev_month.strftime("%Y-%m*"), Date.today.strftime("%Y-%m*")], "search_field" => "advanced"})
+    sdbmss_search_action_path({ "op" => "OR", "added_on" => [Date.today.prev_month.strftime("%Y-%m*"), Date.today.strftime("%Y-%m*")], "search_field" => "advanced"})
 #    root_path({ "utf8" => SDBMSS::Util::CHECKMARK, "q" => Date.today.prev_month.strftime("%Y-%m*"), "search_field" => "created_at" })
 #    root_path({ "utf8" => SDBMSS::Util::CHECKMARK, "search_field" => "all_fields", "q" => "" })
   end

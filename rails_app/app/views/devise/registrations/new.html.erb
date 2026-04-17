@@ -187,7 +187,7 @@
 
                         <fieldset id="faq-required" disabled>
                             <div class="form-group">
-                                <%= devise_error_messages! %>
+                                <%= render "devise/shared/error_messages", resource: resource %>
                             </div>
                             <div class="form-group">
                                 <%= f.label :username, class: "control-label" %><br />

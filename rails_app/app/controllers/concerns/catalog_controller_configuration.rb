@@ -447,6 +447,13 @@ module CatalogControllerConfiguration
       config.add_show_tools_partial(:citation, path: 'catalog_citation_path', if: false)
       config.add_show_tools_partial(:verify_entry, partial: 'nav/verify_entry', if: :show_verify_entry?)
 
+      config.search_state_fields += config.search_fields.keys.flat_map { |k| [k.to_sym, { k.to_sym => [] }] }
+      config.search_state_fields += config.search_fields.keys.flat_map { |k| [:"#{k}_option", { :"#{k}_option" => [] }] }
+      config.search_state_fields += [:id, :letter, :utf8, :username, :user_id, :source_type, :source_id,
+                                     :sent_by, :name, :manuscript_id, :deprecated, :created_by_user, :prefix,
+                                     :linking_tool, :field, :limit, :term, :type]
+      config.search_state_fields += [{ f: { created_by: [] } }]
+
     end
 
   end

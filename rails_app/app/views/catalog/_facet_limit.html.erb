@@ -4,8 +4,12 @@
     Stock partial delegates to Blacklight::FacetFieldListComponent with modal trigger.
 %>
 <ul class="facet-values list-unstyled">
-  <% paginator = facet_paginator(facet_field, display_facet) %>
-  <%= render_facet_limit_list paginator, field_name %>
+  <% paginator = Blacklight::FacetFieldPresenter.new(facet_field, display_facet, self).paginator %>
+  <% facet_config = facet_configuration_for_field(field_name) %>
+  <%= render facet_item_component_class(facet_config).with_collection(
+        paginator.items.map { |item| facet_item_presenter(facet_config, item, field_name) },
+        wrapping_element: :li
+      ) %>
 
   <% unless paginator.last_page? || params[:action] == "facet" %>
     <li class="more_facets_link">

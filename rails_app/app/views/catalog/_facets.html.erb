@@ -22,7 +22,7 @@
     </div>
   </div>
   <% end %>
-<% if has_facet_values?  %>
+<% if @response.aggregations.any? { |_, f| f.items.present? } %>
 
   <div class="top-card-header card-header">
     <button type="button" class="facets-toggle" data-toggle="collapse" data-target="#facet-collapse">
@@ -46,7 +46,7 @@
       <a data-toggle='collapse' data-target='.more-facets' class='btn btn-outline-secondary btn-block collapse show more-facets'>Show More...</a>
       <a data-toggle='collapse' data-target='.more-facets' class='btn btn-outline-secondary btn-block collapse more-facets'>Hide...</a>
     <% else %>
-      <%= render_facet_partials %>
+      <%= render_all_facet_partials %>
     <% end %>
   </div>
 

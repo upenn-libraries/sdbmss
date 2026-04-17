@@ -197,7 +197,7 @@
   </div>
 </div>
 
-  <%= devise_error_messages! %>
+  <%= render "devise/shared/error_messages", resource: resource %>
 
 
   <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>

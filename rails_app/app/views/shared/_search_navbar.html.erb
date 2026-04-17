@@ -1,6 +1,6 @@
 <div id="search-navbar" class="navbar navbar-light navbar-expand-md" role="navigation">
   <div class="container w-100">
-    <%= render_search_bar  %>
+    <%= render 'catalog/search_form' %>
     <div class="collapse navbar-collapse catalog-search-info" id="myNavbar">
       <ul class="nav navbar-nav ml-auto">
         <% if user_signed_in? %>
