@@ -236,14 +236,16 @@ describe "Linking Tool", :js => true do
 
     persist_linking_changes
 
-    expect(page).to have_content("Add SDBM_#{entry_id}")    
-#    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
-
     SDBMSS::Util.wait_for_solr_to_be_current
     manuscript.reload
 
     entry_ids = manuscript.entries.map(&:id)
     expect(entry_ids.include?(entry_id)).to eq(false)
+
+    index_records(entry.reload, manuscript)
+    visit linking_tool_by_manuscript_path id: manuscript.id
+
+    expect(page).to have_content("Add SDBM_#{entry_id}")
   end
 
   it "should remove the last entry from an existing Manuscript" do

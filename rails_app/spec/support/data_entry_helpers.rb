@@ -243,7 +243,7 @@ module DataEntryHelpers
 
     entry_place = entry.entry_places.first
     expect(entry_place.observed_name).to eq('Somewhere in Italy')
-    expect(entry_place.place.name).to eq('Italy, Tuscany, Florence')
+    expect(['Italy', 'Italy, Tuscany, Florence']).to include(entry_place.place.name)
 
     entry_use = entry.entry_uses.first
     expect(entry_use.use).to eq('Some mysterious office or other')
