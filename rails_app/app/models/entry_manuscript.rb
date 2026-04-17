@@ -2,7 +2,7 @@
 # Note that we treat this as a "first-class" entity, similar to Entry
 # or Source, even though it is a join record. This should probably be
 # renamed to something like EntryLink.
-class EntryManuscript < ActiveRecord::Base
+class EntryManuscript < ApplicationRecord
   belongs_to :entry
   belongs_to :manuscript, counter_cache: :entries_count
 

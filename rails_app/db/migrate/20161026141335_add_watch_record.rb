@@ -1,4 +1,4 @@
-class AddWatchRecord < ActiveRecord::Migration
+class AddWatchRecord < ActiveRecord::Migration[4.2]
   def change
     create_table :watches do |t|
       t.integer :watched_id

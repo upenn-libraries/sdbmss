@@ -1,4 +1,4 @@
-class AddTagsToBookmarks < ActiveRecord::Migration
+class AddTagsToBookmarks < ActiveRecord::Migration[4.2]
   def change
     add_column :bookmarks, :tags, :text
   end

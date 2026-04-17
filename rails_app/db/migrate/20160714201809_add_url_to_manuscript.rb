@@ -1,4 +1,4 @@
-class AddUrlToManuscript < ActiveRecord::Migration
+class AddUrlToManuscript < ActiveRecord::Migration[4.2]
   def change
     add_column :manuscripts, :url, :string
   end

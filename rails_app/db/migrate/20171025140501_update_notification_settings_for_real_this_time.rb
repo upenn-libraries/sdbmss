@@ -1,4 +1,4 @@
-class UpdateNotificationSettingsForRealThisTime < ActiveRecord::Migration
+class UpdateNotificationSettingsForRealThisTime < ActiveRecord::Migration[4.2]
   def change
     change_column :notification_settings, :email_on_update, :boolean, :default => true
     change_column :notification_settings, :email_on_comment, :boolean, :default => true

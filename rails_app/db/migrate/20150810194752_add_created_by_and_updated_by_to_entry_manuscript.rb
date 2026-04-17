@@ -1,4 +1,4 @@
-class AddCreatedByAndUpdatedByToEntryManuscript < ActiveRecord::Migration
+class AddCreatedByAndUpdatedByToEntryManuscript < ActiveRecord::Migration[4.2]
   def change
     add_reference :entry_manuscripts, :created_by, :index => true
     add_reference :entry_manuscripts, :updated_by, :index => true

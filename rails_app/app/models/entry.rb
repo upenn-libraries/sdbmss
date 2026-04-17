@@ -1,4 +1,6 @@
-class Entry < ActiveRecord::Base
+require 'zip'
+
+class Entry < ApplicationRecord
 
   ALT_SIZE_TYPES = [
     ['F', 'Folio'],
@@ -988,7 +990,7 @@ class Entry < ActiveRecord::Base
     end
 
 
-    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+    ::Zip::File.open("#{path}.zip", ::Zip::File::CREATE) do |zipfile|
       zipfile.add(filename, path)
     end
 
@@ -1023,7 +1025,7 @@ class Entry < ActiveRecord::Base
       end
     end
 
-    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+    ::Zip::File.open("#{path}.zip", ::Zip::File::CREATE) do |zipfile|
       zipfile.add(filename, path)
     end
 

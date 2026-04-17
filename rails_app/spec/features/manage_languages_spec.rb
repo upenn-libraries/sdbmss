@@ -58,8 +58,8 @@ describe "Manage languages", :js => true do
       expect(Language.count).to eq(count-1)
     end
 
-    it "should export CSV", :js => false do
-      skip "language CSV export still exists, but async download polling belongs in lower-level coverage instead of this feature spec"
+    it "should export CSV", :js => false,
+      skip: "language CSV export still exists, but async download polling belongs in lower-level coverage instead of this feature spec" do
     end
   end
 

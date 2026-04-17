@@ -16,23 +16,20 @@ Rails.application.configure do
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 
+  # Use letter_opener_web to intercept outgoing mail. Browse at /letter_opener.
+  config.action_mailer.delivery_method = :letter_opener_web
+  config.action_mailer.perform_deliveries = true
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
   # Raise an error on page load if there are pending migrations.
   config.active_record.migration_error = :page_load
 
-  config.active_record.raise_in_transactional_callbacks = true
-
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
   config.assets.debug = true
-
-  # Adds additional error checking when serving assets at runtime.
-  # Checks for improperly declared sprockets dependencies.
-  # Raises helpful error messages.
-  config.assets.raise_runtime_errors = true
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
@@ -41,9 +38,12 @@ Rails.application.configure do
 
   config.logger = Logger.new(STDOUT)
 
-  config.serve_static_files = true
+  config.public_file_server.enabled = true
+
+  config.web_console.whitelisted_ips = ['172.18.0.0/16', '172.27.0.0/16', '0.0.0.0/0'] if defined?(WebConsole)
 end
 
 # allows for mailer to send correct URLS on development
+# Override with SDBMSS_HOST env var if your local domain differs.
 
-Rails.application.routes.default_url_options[:host] = 'localhost:3000'
+Rails.application.routes.default_url_options[:host] = ENV.fetch('SDBMSS_HOST', 'sdbmss.localhost')

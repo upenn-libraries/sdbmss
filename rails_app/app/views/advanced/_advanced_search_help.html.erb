@@ -1,4 +1,4 @@
-<% if params[:f] and params[:f].count > 0 %>
+<% if params[:f] and params[:f].keys.count > 0 %>
   <div class="panel panel-default facet_limit facet_limit-active">
     <div class="collapse-toggle panel-heading" data-toggle="collapse" data-target="#selected-facets">
       <h5 class="panel-title facet-field-heading">
@@ -28,11 +28,11 @@
      <li>Combine keywords and attributes to find specific items.
      </li>
 
-     <li>Use quotation marks to search as a phrase. 
-     
+     <li>Use quotation marks to search as a phrase.
+
      <li>Use "+" before a term to make it required. (Otherwise results matching only some of your terms may be included).</li>
-     
-     <li>Use "-" before a word or phrase to exclude. 
+
+     <li>Use "-" before a word or phrase to exclude.
 
      <li>Use "OR", "AND", and "NOT" to create complex boolean logic. You can use parentheses in your complex expressions. </li>
    </ul>

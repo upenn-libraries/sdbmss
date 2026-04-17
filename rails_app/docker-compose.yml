@@ -113,6 +113,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    volumes:
+    - .:/home/app/
     restart: on-failure
   interface:
     image: ${INTERFACE_IMAGE_NAME}:${INTERFACE_IMAGE_TAG}
@@ -247,12 +249,7 @@ services:
     volumes:
     - rabbitmq_data:/var/lib/rabbitmq
   solr:
-    image: ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
-    command:
-    - bundle
-    - exec
-    - rake
-    - sunspot:solr:run
+    image: solr:8.11
     deploy:
       placement:
         constraints:
@@ -261,44 +258,33 @@ services:
       update_config:
         order: start-first
         parallelism: 1
-    environment:
-    - ADMIN_PASSWORD
-    - MYSQL_DATABASE
-    - MYSQL_HOST=mysql
-    - MYSQL_PASSWORD
-    - MYSQL_USER
-    - RABBIT_PASSWORD
-    - RABBIT_USER
-    - RAILS_ENV
-    - RAILS_PASS
-    - RAILS_USER
-    - RAILS_LOG_TO_STDOUT=true
-    - RAILS_SERVE_STATIC_FILES=true
-    - SDBMSS_APP_HOST
-    - SDBMSS_SMTP_HOST
-    - SDBMSS_EMAIL_FROM
-    - SDBMSS_NOTIFY_EMAIL
-    - SDBMSS_NOTIFY_EMAIL_PASSWORD
-    - SDBMSS_EMAIL_EXCEPTIONS_TO
-    - SDBMSS_BLACKLIGHT_SECRET_KEY
-    - SDBMSS_DEVISE_SECRET_KEY
-    - SDBMSS_SECRET_KEY_BASE
-    - SDBMSS_SECRET_TOKEN
-    - SOLR_URL
-    - SOLR_TEST_URL
+    entrypoint:
+    - bash
+    - -c
+    - |
+      precreate-core development /opt/solr-config
+      precreate-core test /opt/solr-config
+      precreate-core production /opt/solr-config
+      exec solr-foreground
     networks:
-    - mysql
     - traefik
     volumes:
-    - sdbm_solr:/home/app/solr
+    - sdbm_solr:/var/solr/data
+    - ./solr/conf:/opt/solr-config:ro
     labels:
     - traefik.enable=true
     - traefik.http.routers.solr.entrypoints=web
-    - traefik.http.routers.solr.rule=Host(`` && PathPrefix(`/solr`))
+    - traefik.http.routers.solr.rule=Host(`${SDBMSS_APP_HOST}`) && PathPrefix(`/solr`)
     - traefik.http.routers.solr.service=solr
-    - traefik.http.services.solr.loadbalancer.server.port=
+    - traefik.http.services.solr.loadbalancer.server.port=8983
     ports:
     - 8983:8983
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8983/solr/development/admin/ping || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
   chrome:
     image: ${CHROME_IMAGE_NAME}:${CHROME_IMAGE_TAG}
     environment:

@@ -13,7 +13,7 @@ module DataEntryHelpers
     if page.all('tr', :text => value).count <= 0
       expect(page).to have_content("Propose '#{value}")
       find_by_id('propose-name').click
-      expect(page).to have_selector('.modal-title', text: /^Create /, visible: true)
+      expect(page).to have_selector('.modal-title', text: /\ACreate\b/, visible: true)
       within all('.modal-dialog').last do
         expect(page).to have_selector('.name-form a.btn.btn-primary', text: 'Save', visible: true)
         find('.name-form a.btn.btn-primary', text: 'Save').click

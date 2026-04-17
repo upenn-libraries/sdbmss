@@ -1,4 +1,4 @@
-class Download < ActiveRecord::Base
+class Download < ApplicationRecord
   belongs_to :user
 
   after_create { |download| download.delay(run_at: 1.days.from_now).destroy }

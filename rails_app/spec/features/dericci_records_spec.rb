@@ -111,7 +111,7 @@ describe "Browse Dericci Records", :js => true do
     expect(page).to have_selector("#searchNameAuthority", visible: true)
     expect(page).to have_selector("#select-name-table", visible: true)
     expect(page).to have_content("Camillo")
-    find(".selectName", visible: true, match: :first).click
+    find("tr", text: "Camillo").find(".selectName").click
     expect(page).not_to have_selector("#searchNameAuthority", visible: true)
     expect(page).to have_content("Camillo")
     expect(page).to have_selector("a.btn.btn-success.btn-xs", text: "Save")

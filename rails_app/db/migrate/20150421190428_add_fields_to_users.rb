@@ -1,4 +1,4 @@
-class AddFieldsToUsers < ActiveRecord::Migration
+class AddFieldsToUsers < ActiveRecord::Migration[4.2]
   def change
     add_column :users, :email_is_public, :boolean, :default => false
     add_column :users, :bio, :text

@@ -1,4 +1,4 @@
-class CreateNamePlaces < ActiveRecord::Migration
+class CreateNamePlaces < ActiveRecord::Migration[4.2]
   def change
    create_table :name_places do |t|
      t.references :name, index: true

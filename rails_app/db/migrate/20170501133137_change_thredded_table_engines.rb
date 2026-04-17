@@ -1,4 +1,4 @@
-class ChangeThreddedTableEngines < ActiveRecord::Migration
+class ChangeThreddedTableEngines < ActiveRecord::Migration[4.2]
   def change
     change_table :thredded_categories, :options => "ENGINE=MyISAM" do      
     end

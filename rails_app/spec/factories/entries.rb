@@ -1,24 +1,24 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :edit_test_entry, class: Entry do
     source { create(:edit_test_source) }
     created_by { source.created_by || create(:admin) }
-    approved false
-    catalog_or_lot_number "123"
-    folios 123
-    num_lines 3
-    num_columns 2
-    height 200
-    width 300
-    alt_size "F"
-    miniatures_fullpage 6
-    miniatures_large 7
-    miniatures_small 8
-    miniatures_unspec_size 9
-    initials_historiated 10
-    initials_decorated 11
-    manuscript_binding "Velvet"
-    manuscript_link "http://something.com"
-    other_info "Other stuff"
+    approved { false }
+    catalog_or_lot_number { "123" }
+    folios { 123 }
+    num_lines { 3 }
+    num_columns { 2 }
+    height { 200 }
+    width { 300 }
+    alt_size { "F" }
+    miniatures_fullpage { 6 }
+    miniatures_large { 7 }
+    miniatures_small { 8 }
+    miniatures_unspec_size { 9 }
+    initials_historiated { 10 }
+    initials_decorated { 11 }
+    manuscript_binding { "Velvet" }
+    manuscript_link { "http://something.com" }
+    other_info { "Other stuff" }
 
     trait :with_sale do
       after(:create) do |entry|
@@ -163,14 +163,14 @@ FactoryGirl.define do
 
   factory :edit_entry_with_titles, class: Entry do
     transient do
-      titles ["Book of Hours"]
-      include_author true
+      titles { ["Book of Hours"] }
+      include_author { true }
     end
 
     source { create(:edit_test_source) }
     created_by { source.created_by || create(:admin) }
-    approved false
-    catalog_or_lot_number "123"
+    approved { false }
+    catalog_or_lot_number { "123" }
 
     after(:create) do |entry, evaluator|
       evaluator.titles.each_with_index do |title, index|

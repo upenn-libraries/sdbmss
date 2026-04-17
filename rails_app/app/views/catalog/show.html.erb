@@ -1,3 +1,7 @@
+<%#
+  OVERRIDE Blacklight v6.9.0: wraps BL document partials with content_for :breadcrumbs, :add_entry,
+    :control_tools for Entry-specific nav and toolbar; stock is content + sidebar columns only.
+%>
 <%= render_document_main_content_partial %>
 
 <% content_for :breadcrumbs do %>

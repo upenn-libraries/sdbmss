@@ -57,8 +57,8 @@ describe "Manage places", :js => true do
       expect(Place.count).to eq(count-1)
     end
 
-    it "should export CSV", :js => false do
-      skip "place CSV export still exists, but async download polling belongs in lower-level coverage instead of this feature spec"
+    it "should export CSV", :js => false,
+      skip: "place CSV export still exists, but async download polling belongs in lower-level coverage instead of this feature spec" do
     end
   end
 

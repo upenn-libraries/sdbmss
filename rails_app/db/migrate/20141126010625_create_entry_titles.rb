@@ -1,4 +1,4 @@
-class CreateEntryTitles < ActiveRecord::Migration
+class CreateEntryTitles < ActiveRecord::Migration[4.2]
   def change
     create_table :entry_titles do |t|
       t.references :entry, index: true

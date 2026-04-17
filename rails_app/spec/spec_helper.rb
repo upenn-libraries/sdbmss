@@ -19,7 +19,8 @@ Capybara.register_driver(:better_cuprite) do |app|
   )
 end
 
-Capybara.default_driver = :rack_test
+Capybara.server = :webrick
+Capybara.default_driver = :better_cuprite
 Capybara.javascript_driver = :better_cuprite
 Capybara.default_max_wait_time = 15
 

@@ -1,4 +1,4 @@
-class AddProblemToPlacesLanguagesSources < ActiveRecord::Migration
+class AddProblemToPlacesLanguagesSources < ActiveRecord::Migration[4.2]
   def change
     add_column :places, :problem, :boolean, :default => false
     add_column :languages, :problem, :boolean, :default => false
