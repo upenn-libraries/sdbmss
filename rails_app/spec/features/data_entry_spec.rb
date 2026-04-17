@@ -745,7 +745,6 @@ describe "Data entry", :js => true do
     it "should present the option to create a personal observation from the entry public view", :solr do
       entry = Entry.create!(source: @source, created_by: @user, approved: true)
       SampleIndexer.index_records!(entry)
-      SDBMSS::Util.wait_for_solr_to_be_current
 
       visit entry_path(entry)
 
@@ -755,7 +754,6 @@ describe "Data entry", :js => true do
     it "should successfully create a manuscript record for an unlinked entry when creating a new personal observation", :solr do
       entry = Entry.create!(source: @source, created_by: @user, approved: true)
       SampleIndexer.index_records!(entry)
-      SDBMSS::Util.wait_for_solr_to_be_current
 
       visit entry_path(entry)
 

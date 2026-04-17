@@ -240,7 +240,7 @@ describe "Blacklight Search", :js => true do
 
     fill_in "q", with: "My Unique Search"
     click_button('search')
-    expect(page).to have_selector("#documents")
+    expect(page).to have_selector('#documents')
 
     visit "/search_history"
 

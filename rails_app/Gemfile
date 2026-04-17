@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.8'
+gem 'bootsnap', '>= 1.4.4', require: false
 
 gem "nokogiri", "< 1.16"
 # gem "loofah", "= 2.19.1" # updated to 2.21.1, but that calls for Nokogiri::HTML4, which is not available in 1.8.5
@@ -149,7 +150,7 @@ group :test, :development do
   gem 'capybara-screenshot'
   gem "factory_bot_rails", "~> 5.2"
   gem 'cuprite'
-  gem 'debug'
+  gem 'debug', require: false
   gem 'simplecov', :require => false
   gem 'stackprof', '>= 0.2.9', require: false
   gem 'test-prof'
