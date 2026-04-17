@@ -5,11 +5,9 @@ services:
     command:
     - bundle
     - exec
-    - rails
-    - s
-    - unicorn
-    - -b
-    - 0.0.0.0
+    - puma
+    - -C
+    - config/puma.rb
     deploy:
       placement:
         constraints:
@@ -48,7 +46,7 @@ services:
     healthcheck:
       test:
       - CMD-SHELL
-      - ps aux | grep '[r]ails worker' || exit 1
+      - ps aux | grep '[p]uma' || exit 1
       timeout: 10s
       interval: 30s
       retries: 10
@@ -249,7 +247,7 @@ services:
     volumes:
     - rabbitmq_data:/var/lib/rabbitmq
   solr:
-    image: solr:8.11
+    image: solr:9.7
     deploy:
       placement:
         constraints:
@@ -258,14 +256,16 @@ services:
       update_config:
         order: start-first
         parallelism: 1
+    user: root
     entrypoint:
     - bash
     - -c
     - |
-      precreate-core development /opt/solr-config
-      precreate-core test /opt/solr-config
-      precreate-core production /opt/solr-config
-      exec solr-foreground
+      chown -R solr:solr /var/solr/data
+      runuser -u solr -- precreate-core development /opt/solr-config
+      runuser -u solr -- precreate-core test /opt/solr-config
+      runuser -u solr -- precreate-core production /opt/solr-config
+      exec runuser -u solr -- solr-foreground
     networks:
     - traefik
     volumes:

@@ -1,18 +1,17 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.8'
+gem 'rails', '~> 7.2.0'
 
 gem "nokogiri", "< 1.16"
 # gem "loofah", "= 2.19.1" # updated to 2.21.1, but that calls for Nokogiri::HTML4, which is not available in 1.8.5
 gem "rubyzip", "~> 2.3"
 gem "ffi", ">= 1.9.24", "< 1.17"
 gem "json", ">= 2.3"
-gem "psych", "~> 3.1"
+gem "launchy", "~> 3.0.1"
 gem "rdoc", "~> 6.3.0"
 gem "sprockets", "~> 3.7"
 gem "kramdown"
-gem "sassc", ">= 2.0.0"
 gem 'autoprefixer-rails', '>= 9.1.0'
 gem 'html-pipeline', '~> 2.12.3'
 gem 'websocket-driver', '~> 0.7.7'
@@ -24,14 +23,15 @@ gem 'actionview-encoded_mail_to'
 gem 'mysql2'
 gem 'bigdecimal'
 
-# Use SCSS for stylesheets
-gem 'sassc-rails', '>= 2.0'
+# Use SCSS for stylesheets (dartsass-sprockets replaces sassc-rails)
+gem 'dartsass-sprockets', '~> 3.1'
+gem 'sass-embedded'
 
 # Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '~> 2.7.2'
+gem 'uglifier', '~> 4.2'
 
 # Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.2'
+gem 'coffee-rails', '~> 5.0'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.2.1'
@@ -43,21 +43,19 @@ gem 'turbolinks', '~> 5.2'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.7'
 
-# Use unicorn as the app server
-gem 'unicorn', '~> 4.9.0'
-gem 'unicorn-rails'
-gem 'rack-handlers'
+# Use puma as the app server
+gem 'puma'
 
 # Blacklight
-gem "blacklight", ">= 7.7", "< 7.39"
+gem "blacklight", ">= 7.7", "< 8"
 gem "rsolr", "~> 2.0"
 gem "blacklight_advanced_search", "~> 7.0"
 gem "bootstrap", "~> 4.6"
 gem "font-awesome-rails"
-gem "view_component", "~> 2.82"  # 3.x requires Ruby 3.0+; we're on Ruby 2.7
+gem "view_component", "~> 2.82"
 
 # For authentication; used by Blacklight and by SDBMSS
-gem "devise", "~> 4.7.1"
+gem "devise", "~> 4.9"
 gem "devise-guests", "~> 0.3.0"
 
 # Extracted from Rails 5; needed by Blacklight
@@ -67,16 +65,16 @@ gem "responders", "~> 3.0"
 gem "cancancan", "~> 3.5"
 
 # For indexing records in Solr
-gem 'sunspot_rails', '~> 2.5.0'
+gem 'sunspot_rails', '~> 2.7.0'
 
 # Use database as session store
-gem 'activerecord-session_store', '~> 1.1'
+gem 'activerecord-session_store', '~> 2.0'
 
 # for calculating string similarity
 gem 'levenshtein', '~> 0.2.2'
 
 # for auditing model changes
-gem 'paper_trail', '~> 10.3'
+gem 'paper_trail', '~> 16.0'
 
 # natural language date parser
 gem 'chronic', '~> 0.10.2'
@@ -114,8 +112,6 @@ gem "bunny", "~> 2.22"
 
 gem 'data-confirm-modal'
 
-# thredded removed — client confirmed forum is no longer needed (2026-04-07)
-
 gem 'whenever', :require => false
 
 # codemirror-rails removed (railties < 6.0 blocker); JS/CSS vendored in vendor/assets/
@@ -128,12 +124,14 @@ end
 
 group :development do
   # in-browser console
-  gem 'web-console', '~> 3.7'
+  gem 'web-console', '~> 4.1'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring', '~> 2.1'
   # Use Capistrano for deployment
   gem 'capistrano-rails', '~> 1.1.0'
   gem 'pry-rails'
+  # Intercept outgoing mail in development; view at /letter_opener
+  gem 'letter_opener_web'
 
   # This can autogenerate ERD diagrams from ActiveRecord models and
   # schema. This causes problems when it's enabled for anything
@@ -143,11 +141,13 @@ group :development do
 end
 
 group :test, :development do
-  gem 'rspec-rails', '~> 5.0'
+  gem 'rspec-rails', '~> 7.0'
   gem 'capybara', '~> 3.35', '< 3.40'
   gem 'capybara-screenshot'
-  gem "factory_bot_rails", "~> 5.2"
+  gem "factory_bot_rails", "~> 6.0"
   gem 'cuprite'
   gem 'simplecov', :require => false
-  gem 'byebug', '< 12'
+  gem 'debug'
+  gem 'stackprof', '>= 0.2.9', require: false
+  gem 'test-prof'
 end

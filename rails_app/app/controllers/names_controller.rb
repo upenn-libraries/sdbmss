@@ -71,7 +71,7 @@ class NamesController < SearchableAuthorityController
     end
     if params[:confirm] == "yes"
       ActiveRecord::Base.transaction do
-        @target.update_attributes(merge_params)
+        @target.update(merge_params)
         @target.save!
         id = @model.public_id
         @model.merge_into(@target)

@@ -66,7 +66,7 @@
     <!-- *** This fieldType is used by Sunspot! *** -->
     <fieldType name="string" class="solr.StrField" omitNorms="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
-    <fieldType name="tdouble" class="solr.TrieDoubleField" omitNorms="true"/>
+    <fieldType name="tdouble" class="solr.DoublePointField" docValues="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
     <fieldType name="rand" class="solr.RandomSortField" omitNorms="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
@@ -90,24 +90,24 @@
     <!-- *** This fieldType is used by Sunspot! *** -->
     <fieldType name="boolean" class="solr.BoolField" omitNorms="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
-    <fieldType name="date" class="solr.TrieDateField" omitNorms="true"/>
+    <fieldType name="date" class="solr.DatePointField" docValues="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
-    <fieldType name="sdouble" class="solr.TrieDoubleField" omitNorms="true"/>
+    <fieldType name="sdouble" class="solr.DoublePointField" docValues="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
-    <fieldType name="sfloat" class="solr.TrieFloatField" omitNorms="true"/>
+    <fieldType name="sfloat" class="solr.FloatPointField" docValues="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
-    <fieldType name="sint" class="solr.TrieIntField" omitNorms="true"/>
+    <fieldType name="sint" class="solr.IntPointField" docValues="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
-    <fieldType name="slong" class="solr.TrieLongField" omitNorms="true"/>
+    <fieldType name="slong" class="solr.LongPointField" docValues="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
-    <fieldType name="tint" class="solr.TrieIntField" omitNorms="true"/>
+    <fieldType name="tint" class="solr.IntPointField" docValues="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
-    <fieldType name="tfloat" class="solr.TrieFloatField" omitNorms="true"/>
+    <fieldType name="tfloat" class="solr.FloatPointField" docValues="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
-    <fieldType name="tdate" class="solr.TrieDateField" omitNorms="true"/>
+    <fieldType name="tdate" class="solr.DatePointField" docValues="true"/>
 
     <!-- A specialized field for geospatial search. If indexed, this fieldType must not be multivalued. -->
-    <fieldType name="location" class="solr.LatLonType" subFieldSuffix="_coordinate"/>
+    <fieldType name="location" class="solr.LatLonPointSpatialField" docValues="true"/>
 
     <!--
         These are spatial types that we use to store date ranges

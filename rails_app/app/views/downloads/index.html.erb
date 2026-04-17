@@ -18,7 +18,7 @@
         </div>
       </li>
       <% end %>
-      <% if File.exists?("public/static/docs/dump.sql.gz") %>
+      <% if File.exist?("public/static/docs/dump.sql.gz") %>
       <li class="list-group-item">
         <div class="row">
           <div class="col-sm-6 text-left">
@@ -33,7 +33,7 @@
       </li>
       <% end %>
     <% ["entries", "names", "places", "languages", "sources"].each do |model| %>
-      <% if File.exists?("public/static/docs/#{model}.csv.zip") %>
+      <% if File.exist?("public/static/docs/#{model}.csv.zip") %>
       <li class="list-group-item">
         <div class="row">
         <div class="col-sm-6 text-left"><strong><%= model.humanize %></strong> <span class="text-muted"><%= File.mtime("public/static/docs/#{model}.csv.zip").to_formatted_s(:long) %> csv dump</span></div>

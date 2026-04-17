@@ -3,8 +3,8 @@
 require "rails_helper"
 
 describe "Groups", :js => true do
-  let(:group_owner) { User.where(role: "admin").first }
-  let(:contributor) { User.where(role: "contributor").first }
+  let(:group_owner) { create(:admin) }
+  let!(:contributor) { create(:user, role: "contributor") }
   let(:group_name) { "The Society of the Friends of the Constitution" }
   let(:group_description) { "Meeting at the monastary of the Jacobins on Rue St. Honore" }
   let!(:group) do
@@ -19,7 +19,7 @@ describe "Groups", :js => true do
   context "when user is logged in " do
     before :each do
       GroupUser.create!(group: group, user: group_owner, role: 'Manager', confirmed: true)
-      login(group_owner, 'somethingunguessable')
+      login(group_owner, 'somethingreallylong')
     end
 
     it "should allow the user to create a group" do
@@ -45,7 +45,7 @@ describe "Groups", :js => true do
       # the multiselect dropdown would be a nightmare to do properly, so....
       expect(page).to have_content('None selected')
       click_button 'None selected'
-      find("input[value='#{contributor.id}']", match: :first).trigger "click"
+      find("#select_users option[value='#{contributor.id}']", visible: false).select_option
       find('.multiselect', match: :first).trigger 'click'
 
       click_button 'Invite'
@@ -56,7 +56,7 @@ describe "Groups", :js => true do
     it "should allow users to accept group invitations" do
       GroupUser.create!(group: group, user: contributor, role: 'Member', confirmed: false, created_by: group_owner)
       page.reset!
-      login(contributor, 'somethingunguessable')
+      login(contributor, 'somethingreallylong')
       visit groups_path
       expect(page).to have_content(group_name)
       find(:link, 'Accept Invitation', match: :first).click
@@ -90,7 +90,7 @@ describe "Groups", :js => true do
       GroupUser.create!(group: group, user: contributor, role: 'Member', confirmed: true, created_by: group_owner)
       GroupRecord.create!(group: group, record: Entry.first, editable: true)
       page.reset!
-      login(contributor, 'somethingunguessable')
+      login(contributor, 'somethingreallylong')
       visit entry_path(Entry.first)
       expect(page).to have_content("Edit #{Entry.first.public_id}")
 
@@ -121,7 +121,7 @@ describe "Groups", :js => true do
 
     it "should allow a user to request admission to a group" do
       page.reset!
-      login(contributor, 'somethingunguessable')
+      login(contributor, 'somethingreallylong')
       visit group_path(group)
       expect(page).to have_content('Request Membership')
       find('#collapse-control').click
@@ -129,7 +129,7 @@ describe "Groups", :js => true do
       expect(page).to have_content('You have requested membership in this group')
       
       page.reset!
-      login(group_owner, 'somethingunguessable')
+      login(group_owner, 'somethingreallylong')
       visit edit_group_path(group)
       expect(page).to have_content('Request Pending')
       click_link 'Confirm'

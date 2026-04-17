@@ -5,7 +5,7 @@
 
 <%= render 'constraints' %>
 
-<div class="facet_pagination top">
+<div class="facet_pagination top mb-2">
   <%= render :partial=>'facet_pagination' %>
 </div>
 
@@ -14,7 +14,7 @@
 
 <% if params[:"facet.sort"] == 'index' %>
 <div style="margin-bottom: 10px">
-Prefix: 
+Prefix:
 <% prefix = params[:prefix] || 'all' %>
 <% (prefixes = ['all'] + ('A'..'Z').to_a).each do |ch| %>
     <% if ch == prefix %><b><% end %><%= link_to_if(ch != prefix, ch, params_for_prefix_url(ch)) %><% if ch == prefix %></b><% end %>
@@ -31,7 +31,7 @@ Prefix:
       <% end %>
   </div>
 </div>
-  
+
 <div>
   <div class="facet_pagination bottom">
     <%= render :partial=>'facet_pagination' %>

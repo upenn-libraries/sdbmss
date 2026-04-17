@@ -2,7 +2,7 @@
   OVERRIDE Blacklight 7.11: wraps BL document partials with content_for :breadcrumbs, :add_entry,
     :control_tools for Entry-specific nav and toolbar; stock is content + sidebar columns only.
 %>
-<%= render_document_main_content_partial %>
+<%= render 'show_main_content' %>
 
 <% content_for :breadcrumbs do %>
   <%= render partial: "breadcrumbs", locals: {edit: false} %>
@@ -32,7 +32,7 @@
 <% end %>
 
 <% content_for :control_tools do %>
-  <%= render_document_sidebar_partial %>
+  <%= render 'show_sidebar', document: @document %>
   
   <!-- Add another entry for this source -->
     <% if @entry.source && (!["provenance_observation", "observation"].include?(@entry.source.source_type.name) || @entry.source.created_by == current_user) %>

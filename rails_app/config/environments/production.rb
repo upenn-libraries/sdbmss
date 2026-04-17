@@ -43,7 +43,7 @@ Rails.application.configure do
 
   # Set to :debug to see everything in the log.
   config.log_level = :warn
-  config.logger = Logger.new(STDOUT)
+  config.logger = ActiveSupport::Logger.new(STDOUT)
 
   # Prepend all log lines with the following tags.
   # config.log_tags = [ :subdomain, :uuid ]
@@ -86,6 +86,7 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
+  config.hosts << ENV.fetch('SDBMSS_APP_HOST', 'sdbm.library.upenn.edu')
 end
 
 Rails.application.config.middleware.use ExceptionNotification::Rack,

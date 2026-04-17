@@ -30,11 +30,11 @@ class PagesController < ApplicationController
       elsif uploaded_io.content_type == "application/pdf" && p.ext == "pdf"
         File.open(Rails.root.join('public', "#{p.location}", uploaded_io.original_filename), 'wb') do |file|
           file.write(uploaded_io.read)
-        end          
-        p.save      
+        end
+        p.save
         if p.errors.count > 0
           flash[:error] = p.errors.full_messages.join(", ")
-        end        
+        end
       else
         flash[:error] = "Warning: Unpermitted file type."
       end
@@ -47,16 +47,16 @@ class PagesController < ApplicationController
     if @page.nil?
       render_404
     elsif @page.ext == "pdf"
-      redirect_to "/#{@page.location}/#{URI.encode @page.filename}"
+      redirect_to "/#{@page.location}/#{URI.encode_uri_component(@page.filename)}"
     else
       @filecontents = nil
       File.open(Rails.root.join('public', "#{@page.location}", @page.filename), 'r') do |file|
         if @page.category == "sparql"
           @filecontents = file.read
-        else          
+        else
           @filecontents = sanitize(file.read)
         end
-      end 
+      end
     end
   end
 
@@ -68,7 +68,7 @@ class PagesController < ApplicationController
       File.open(Rails.root.join('public', "#{@page.location}", @page.filename), 'r') do |file|
         if @page.category == "sparql"
           @filecontents = file.read
-        else                  
+        else
           @filecontents = sanitize(file.read)
         end
       end
@@ -82,14 +82,14 @@ class PagesController < ApplicationController
         File.open(Rails.root.join('public', "#{@page.location}", uploaded_io.original_filename), 'wb') do |file|
           if @page.category == "sparql"
             file.write(uploaded_io.read)
-          else                    
+          else
             file.write(sanitize uploaded_io.read)
           end
         end
       elsif uploaded_io.content_type == "application/pdf" && @page.ext == "pdf"
         File.open(Rails.root.join('public', "#{@page.location}", uploaded_io.original_filename), 'wb') do |file|
           file.write(uploaded_io.read)
-        end          
+        end
       else
         flash[:error] = "Warning: Unpermitted file type."
       end
@@ -98,7 +98,7 @@ class PagesController < ApplicationController
       File.open(Rails.root.join('public', "#{@page.location}", @page.filename), 'wb') do |file|
         if @page.category == "sparql"
           file.write(params[:contents])
-        else                              
+        else
           file.write(sanitize params[:contents])
         end
       end
@@ -106,11 +106,11 @@ class PagesController < ApplicationController
     else
       @page.update(name: page_params[:name])
     end
-    
+
     if @page.errors.count > 0
       flash[:error] = @page.errors.full_messages.join(", ")
     end
-    
+
     redirect_to pages_path
   end
 

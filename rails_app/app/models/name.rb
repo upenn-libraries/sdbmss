@@ -101,7 +101,7 @@ class Name < ApplicationRecord
   before_validation :normalize
 
   def normalize
-    self.name = self.name.mb_chars.normalize
+    self.name = self.name.unicode_normalize(:nfc)
   end
 
   searchable :unless => :deleted do
@@ -122,12 +122,12 @@ class Name < ApplicationRecord
     integer :id
     text :name, :more_like_this => true do
       silence_warnings {
-        [name.mb_chars.normalize(:kd).gsub(/[^\x00-\x7F]/n,'').downcase.to_s, name]
+        [name.unicode_normalize(:nfkd).gsub(/[^\x00-\x7F]/n,'').downcase, name]
       }
     end
     string :name do
       silence_warnings {
-        name.mb_chars.normalize(:kd).gsub(/[^\x00-\x7F]/n,'').downcase.to_s
+        name.unicode_normalize(:nfkd).gsub(/[^\x00-\x7F]/n,'').downcase
       }
     end
     string :viaf_id

@@ -5,14 +5,10 @@ require "rails_helper"
 # There's JS on most of these pages. Not all features use JS, but
 # there's no good reason NOT to use the js driver, so we do.
 describe "Manage Pages", :js => true do
-
-  before :all do
-    @user = User.where(role: "admin").first
-
-  end
+  let(:admin_user) { create(:admin) }
 
   before :each do
-      login(@user, 'somethingunguessable')
+      login(admin_user, 'somethingreallylong')
   end
 
   after :each do

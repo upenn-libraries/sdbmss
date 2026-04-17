@@ -3,6 +3,7 @@ require "rails_helper"
 
 describe "Data entry", :js => true do
   include DataEntryHelpers
+  let(:admin_user) { create(:admin) }
 
   # Fill an autocomplete field using value in :with option. If a
   # block is given, yields to it to allow for selection.
@@ -80,19 +81,19 @@ describe "Data entry", :js => true do
   #end
 
   before :each do
-    @user = User.where(role: 'admin').first
+    @user = admin_user
 
-    @source = create_edit_test_source
+    @source = create(:edit_test_source, created_by: @user)
     Source.index
   end
 
   context "when user is logged in" do
 
     before :each do
-      login(@user, 'somethingunguessable')
+      login(@user, 'somethingreallylong')
     end
 
-    it "should find source by date on Select Source page", :flaky do
+    it "should find source by date on Select Source page" do
       visit new_entry_path
       open_source_search_modal
       expect(page).to have_field('date')
@@ -102,7 +103,7 @@ describe "Data entry", :js => true do
       expect(page).to have_content "Add an Entry"
     end
 
-    it "should find source by agent on Select Source page", :flaky do
+    it "should find source by agent on Select Source page" do
       visit new_entry_path
       open_source_search_modal
       expect(page).to have_field('agent')
@@ -120,7 +121,7 @@ describe "Data entry", :js => true do
       expect(page).to have_content "No source found matching your criteria."
     end
 
-    it "should find source by title on Select Source page", :flaky do
+    it "should find source by title on Select Source page" do
       visit new_entry_path
       open_source_search_modal
       expect(page).to have_field('title')
@@ -130,7 +131,7 @@ describe "Data entry", :js => true do
       expect(page).to have_content "Add an Entry"
     end
 
-    it "should NOT find source by title on Select Source page", :flaky do
+    it "should NOT find source by title on Select Source page" do
       visit new_entry_path
       open_source_search_modal
       expect(page).to have_field('title')

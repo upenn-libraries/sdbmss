@@ -21,7 +21,7 @@ Rails.application.config.to_prepare do
       if @facet
         @response = search_service.facet_field_response(@facet.key)
         @display_facet = @response.aggregations[@facet.field]
-        @pagination = facet_paginator(@facet, @display_facet)
+        @pagination = Blacklight::FacetFieldPresenter.new(@facet, @display_facet, view_context).paginator
         respond_to do |format|
           format.html do
             # Draw the partial for the "more" facet modal window:
@@ -125,10 +125,10 @@ module BlacklightAdvancedSearch
         content_tag(:li, :class => "facet-values list-unstyled appliedFilter") do
           content_tag(:span, :class => "facet-label") do
             content_tag(:span, facet_field_label(facet_config.key), :class => "filterName selected") +
-            content_tag(:span, facet_display_value(facet, val), :class => "selected")
+            content_tag(:span, facet_item_presenter(facet_config, val, facet).label, :class => "selected")
           end +
           # remove link
-          link_to(content_tag(:i, '', :class => "fa fa-times") + content_tag(:span, '[remove]', :class => 'sr-only'), search_action_path(search_state.remove_facet_params(facet, val)), :class=>"remove facet-count")
+          link_to(content_tag(:i, '', :class => "fa fa-times") + content_tag(:span, '[remove]', :class => 'sr-only'), search_action_path(search_state.filter(facet).remove(val).params), :class=>"remove facet-count")
         end
 
       end, "\n")
@@ -146,14 +146,10 @@ module BlacklightAdvancedSearch
           if query.kind_of? Array
             numberOfQueries += (query.length - 1)
             query.each do |q|
-              content << render_constraint_element(label, q, :remove =>  search_action_path(remove_advanced_multiple_keyword_query(field, q, my_params)))
+              content << render(partial: "catalog/constraints_element", locals: { label: label, value: q, options: { remove: search_action_path(remove_advanced_multiple_keyword_query(field, q, my_params)) } })
             end
           else
-            content << render_constraint_element(
-              label, query,
-              :remove =>
-                 search_action_path(remove_advanced_keyword_query(field,my_params))
-            )
+            content << render(partial: "catalog/constraints_element", locals: { label: label, value: query, options: { remove: search_action_path(remove_advanced_keyword_query(field, my_params)) } })
           end
         end
         if (advanced_query.keyword_op == "OR" &&
@@ -169,8 +165,8 @@ module BlacklightAdvancedSearch
     end
 
     def remove_advanced_multiple_keyword_query(field, query, params)
-      my_p = params.dup
-      my_p[field] =  my_p[field] - [query]
+      my_p = params.to_h.dup
+      my_p[field] = my_p[field] - [query]
       my_p.delete("controller")
       return my_p
     end

@@ -1,16 +1,18 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV['RAILS_ENV'] ||= 'test'
 
-require 'simplecov'
+if ENV['COVERAGE'] == '1'
+  require 'simplecov'
 
-# filter out legacy code from coverage
-SimpleCov.start 'rails' do
-  add_filter 'lib/sdbmss/legacy.rb'
-  add_filter 'lib/sdbmss/csv.rb'
-  add_filter 'lib/sdbmss/viaf_reconcilliation.rb'
+  # filter out legacy code from coverage
+  SimpleCov.start 'rails' do
+    add_filter 'lib/sdbmss/legacy.rb'
+    add_filter 'lib/sdbmss/csv.rb'
+    add_filter 'lib/sdbmss/viaf_reconcilliation.rb'
+  end
+
+  puts 'SimpleCov started'
 end
-
-puts 'SimpleCov started'
 
 require 'spec_helper'
 require File.expand_path('../config/environment', __dir__)
@@ -30,6 +32,8 @@ module TestSuiteSetupHelpers
 
   SOLR_TEST_MODELS = [Entry, Name, Source, Manuscript, Language, Place].freeze
 
+  # JS examples reseed a truncated MySQL database. Disabling FK checks keeps
+  # truncation/reseed cheap and avoids ordering every table delete manually.
   def with_foreign_key_checks_disabled
     ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
     yield
@@ -55,6 +59,9 @@ module TestSuiteSetupHelpers
     suite_logger.warn(message)
   end
 
+  # Test setup occasionally hits transient deadlocks or duplicate-key races
+  # while the browser thread and reseed path overlap. Retry only those known
+  # bootstrap failures rather than hiding unrelated setup errors.
   def with_seed_retries(label)
     attempts = 0
     begin
@@ -70,12 +77,16 @@ module TestSuiteSetupHelpers
     end
   end
 
+  # The suite depends on baseline seed data, reference data, and custom MySQL
+  # functions being present after each full truncation.
   def seed_reference_data!
     SDBMSS::SeedData.create
     SDBMSS::ReferenceData.create_all
     SDBMSS::Mysql.create_functions
   end
 
+  # JS examples rely on Solr-backed search. Clearing it explicitly is faster
+  # and more predictable than trying to keep incremental state in sync.
   def delete_all_solr_docs!
     solr_http.post(
       "#{solr_test_uri.path}/update?commit=true",
@@ -92,6 +103,8 @@ module TestSuiteSetupHelpers
     )
   end
 
+  # Most specs only need a small set of models indexed in test. Keeping that
+  # list explicit keeps suite setup cost bounded.
   def reindex_solr_models!(models = SOLR_TEST_MODELS, per_model_logging: false)
     models.each do |model|
       begin
@@ -105,12 +118,15 @@ module TestSuiteSetupHelpers
     Sunspot.commit
   end
 
+  # After JS truncation we rebuild Solr from the canonical database state
+  # instead of trusting any incremental callbacks that ran during the example.
   def flush_and_reindex_solr_after_js!
     delete_all_solr_docs!
     reindex_solr_models!(SOLR_TEST_MODELS, per_model_logging: true)
   rescue StandardError => e
     log_setup_warning("Solr flush after JS test failed: #{e.message}")
   end
+
 end
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -129,15 +145,15 @@ ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  config.fixture_paths = ["#{::Rails.root}/spec/fixtures"]
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   #
-  # must be false for DatabaseCleaner per-example strategy to work
-  # (Poltergeist is gone; project now uses Cuprite)
-  config.use_transactional_fixtures = false
+  # Browser specs run against Puma with a shared ActiveRecord connection, so
+  # examples can stay transaction-based instead of truncating per example.
+  config.use_transactional_fixtures = true
 
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and
@@ -162,6 +178,9 @@ RSpec.configure do |config|
   config.include SDBMSS::Capybara::Login
 
   config.before(:suite) do
+    # Start from a fully truncated DB, then rebuild the baseline records and
+    # a minimal Solr index once for the whole suite.
+    SharedConnection.connection = ActiveRecord::Base.connection
     TestSuiteSetupHelpers.with_foreign_key_checks_disabled do
       DatabaseCleaner.clean_with(:truncation)
       begin
@@ -188,51 +207,22 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do |example|
+    SharedConnection.connection = ActiveRecord::Base.connection if example.metadata[:js]
+
     # Replace the Sunspot session with a fresh ThreadLocalSessionProxy so that
-    # every thread (test thread AND WEBrick server thread) gets new RSolr
+    # every thread (test thread AND Puma server thread) gets new RSolr
     # connections, eliminating stale socket errors from previous tests.
     Sunspot.session = Sunspot::Rails.build_session if example.metadata[:js]
     # Suppress User#perform_index_tasks globally (patches the class, visible to
-    # ALL threads including WEBrick).  Devise login updates the User record
+    # ALL threads including the app server). Devise login updates the User record
     # (Trackable), which fires after_save :perform_index_tasks → Sunspot.index →
     # RSolr POST.  Stubbing this one callback prevents Net::ReadTimeout in
-    # WEBrick while leaving all other AR Sunspot callbacks (Comment, Place, etc.)
+    # Puma while leaving all other AR Sunspot callbacks (Comment, Place, etc.)
     # intact so those records are indexed normally and searches still work.
     allow_any_instance_of(User).to receive(:perform_index_tasks)
-    DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
-    DatabaseCleaner.start
   end
 
-  config.after(:each) do |example|
-    if example.metadata[:js]
-      # Reset browser BEFORE the slow re-seeding so Capybara's own cleanup
-      # hook (which runs after ours in LIFO order) doesn't time out waiting
-      # for a browser that has been idle during Solr callbacks.
-      Capybara.reset_sessions!
-      # Brief pause to let WEBrick finish any in-flight request that may
-      # hold a DB lock before we truncate, preventing deadlock on reseed.
-      sleep 1
-    end
-    DatabaseCleaner.clean
-    if example.metadata[:js]
-      # Suppress Solr during re-seeding: AR after_commit callbacks would try
-      # to hit Solr on every record created, causing Net::ReadTimeout on stale
-      # connections and corrupting the Sunspot connection pool for subsequent
-      # tests.
-      TestSuiteSetupHelpers.with_foreign_key_checks_disabled do
-        sunspot_session = Sunspot.session
-        Sunspot.session = Sunspot::Rails::StubSessionProxy.new(sunspot_session)
-        begin
-          TestSuiteSetupHelpers.with_seed_retries('Reseed') do
-            TestSuiteSetupHelpers.seed_reference_data!
-          end
-        ensure
-          Sunspot.session = sunspot_session
-        end
-      end
-      TestSuiteSetupHelpers.flush_and_reindex_solr_after_js!
-    end
-
+  config.append_after(:each) do |example|
     Warden.test_reset!
   end
 

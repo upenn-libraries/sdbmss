@@ -49,86 +49,6 @@ a {
   margin: -5px -20px 15px -71px;
   padding-bottom: 5px;
 }
-.thredded--main-container {
-  max-width: none;
-  padding: 0;
-  font-family: Sarala, Ubuntu, sans-serif;
-  font-size: inherit;
-  color: inherit;
-}
-.thredded--button, .thredded--form--submit {
-  background: #337ab7;
-  border-color: #2e6da4;
-}
-.thredded--button:active,
-.thredded--button:focus,
-.thredded--button:hover,
-.thredded--form--submit:active,
-.thredded--form--submit:focus,
-.thredded--form--submit:hover {
-  background: #286090;
-  border-color: #204d74;
-}
-.thredded-nav {
-  margin: -18px 0px 10px 0px;
-  background: #f5f5f5;
-  border: 1px solid #ddd;
-  border-top: none;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-}
-.thredded-nav .col-sm-4 {
-  margin-top: -18px;
-}
-li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab a:active {
-  background: #f5f5f5 !important;
-}
-.thredded--topic-header {
-  margin-bottom: 2rem;
-}
-.thredded--navigation-breadcrumbs li {
-  font-weight: normal;
-}
-.thredded--main-section {
-  padding: 10px;
-  margin-top: -10px;
-}
-.dashboard-forum-posts-count {
-  position: static;
-  margin-right: 0px;
-  height: 1rem;
-  width: 1rem;
-  line-height: 1rem;
-  font-size: 0.7rem;
-}
-.thredded--user-navigation--private-topics--unread, .thredded--user-navigation--moderation--pending-count {
-  border-radius: 50%;
-  font-weight: bold;
-}
-.thredded--navigation--search  {
-  position: relative;
-  float: right;
-  margin-right: -15px;
-}
-.thredded--topics--topic {
-  margin: 0px 50px 10px 50px;
-}
-.thredded--post {
-}
-.thredded--post--content {
-  font-size: 14px;
-}
-.thredded--navigation--search input[type="search"], .thredded--navigation--search input[type="search"]:focus {
-  margin: 0px 0px 0 0;
-  -webkit-margin-end: 0px;
-}
-.thredded--navigation-breadcrumbs a, li.thredded--navigation-breadcrumbs--item-no-link {
-  padding: 0.75rem 0 !important;
-}
-.thredded--post--user-and-topic {
-  font-size: 1rem;
-}
-
 .divider {
   border-bottom: 1px dashed #aaa;
 }
@@ -162,6 +82,9 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
 }
 #main-container {
   padding: 0px 20px;
+}
+#appliedParams {
+  align-items: center;
 }
 #main-container.container-fluid {
   position: absolute;
@@ -600,14 +523,6 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
   background: #943f42;
   color: white;
 }*/
-.thredded--post--avatar {
-  left: inherit;
-  top: inherit;
-  position: relative;
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
 .catalog-search-form {
   width: 60%;
 }
@@ -878,6 +793,9 @@ h1 { font-size: 30px; margin-top: 0; }
 }
 .pagination {
   margin: 5px 0px;
+}
+.facet_pagination .sort-options.btn-group {
+  float: right;
 }
 .page-item.active .page-link {
   background-color: #4e76b3;
@@ -1780,10 +1698,6 @@ so that gray backdrop shvows up correctly */
   .navbar-form {
     margin: 0px 8px;
     border: none;
-  }
-  .thredded--post {
-    margin: 0px 0px 0px 0px;
-    box-shadow: none;
   }
   .catalog-search-form {
     width: 100%;
@@ -2937,13 +2851,6 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
   background-color: #4d6b98;
   color: white;
 }
-.thredded--post-moderation-record--moderation-state-notice a, .thredded--post-moderation-record--content-changed-notice a, .thredded--link, .thredded--messageboard, .thredded--post--user a, .thredded--post--topic a, .thredded--post--user-and-topic a, .thredded--post--edit, .thredded--post--delete, .thredded--post--content a, .thredded--topic-header--participants--participant > a, .thredded--topic-header--started-by a, .thredded--topic-header--edit-topic, .thredded--topic-header--follow-info form input[type=submit], .thredded--topic-header--follow-info form button, .thredded--topics--title a, .thredded--topics--started-by a, .thredded--topics--updated-by a {
-  color: #4D6B97;
-}
-.thredded--messageboard {
-  padding: 0.5rem 0rem 0rem 0rem;
-  border: none;
-}
 .sdbm-error-modal {
   z-index: 2000;
 }
@@ -2953,7 +2860,6 @@ small.document-disclaimer {
 
 /* ===== Manage Entries (entries index) BS4 fixes ===== */
 
-/* 1. Search form: force inline (row) layout instead of stacked column */
 nav.navbar.navbar-light .search-form .navbar-right .search-fieldset {
   float: none;
 }
@@ -2971,7 +2877,6 @@ nav.navbar.navbar-light .search-form .search-block select.form-control {
   max-width: 130px;
 }
 
-/* 2. Manage Entries navbar-brand: grey like staging */
 nav.navbar.navbar-light .navbar-brand {
   color: #777;
   font-size: 18px;
@@ -2988,7 +2893,6 @@ nav.navbar.navbar-light .navbar-brand:hover {
   line-height: 1.5;
 }
 
-/* 2. X button: rounded on left side (prepend position — HTML uses input-group-append but visually it's a prepend) */
 .search-form .input-group-append:first-child .btn.search-remove {
   border-top-left-radius: 0.25rem !important;
   border-bottom-left-radius: 0.25rem !important;
@@ -2996,19 +2900,16 @@ nav.navbar.navbar-light .navbar-brand:hover {
   border-bottom-right-radius: 0 !important;
 }
 
-/* 3. search_op (All/Any) select: give it enough width to show text, inline with Search */
 #search_op {
   min-width: 68px;
   width: auto !important;
 }
-/* 4. All dropdown + Search button must be inline, not stacked */
 .search-form .form-submission .input-group-append {
   flex-shrink: 0;
 }
 
 /* "add term" link: keep on one line */
 
-/* 5. Show [50] entries: spacing between label text and dropdown, compact select */
 div.dataTables_length label {
   display: flex;
   align-items: center;
@@ -3024,7 +2925,6 @@ div.dataTables_length select {
   line-height: 1.5;
 }
 
-/* 6. col-sm-5 mobile-center row: all elements inline */
 .dataTables_wrapper > .row > .col-sm-5.mobile-center {
   display: flex;
   flex-wrap: nowrap;
@@ -3043,7 +2943,6 @@ div.dataTables_length select {
   justify-content: flex-end;
 }
 
-/* 7. Pagination: BS4 requires .page-item on <li> and .page-link on <a> — handled via CSS fallback */
 div.dataTables_paginate .pagination > li {
   position: relative;
   display: block;
@@ -3087,7 +2986,6 @@ div.dataTables_paginate .pagination > li:last-child > a {
   border-bottom-right-radius: 0.25rem;
 }
 
-/* 8. Column dropdown: ensure proper toggle behavior */
 .btn-table-tool .dropdown-menu {
   display: none;
 }
@@ -3095,7 +2993,6 @@ div.dataTables_paginate .pagination > li:last-child > a {
   display: block;
 }
 
-/* 5. btn-table-tool: match pagination height, outline style with borders */
 .btn-table-tool {
   display: inline-flex;
   align-items: center;
@@ -3120,7 +3017,6 @@ div.dataTables_paginate .pagination > li:last-child > a {
   margin-left: -1px;
 }
 
-/* 9. DataTable horizontal scrolling */
 div.dataTables_scroll {
   overflow-x: auto;
   width: 100%;
@@ -3131,7 +3027,6 @@ div.dataTables_wrapper {
   overflow: hidden;
 }
 
-/* 10. Bottom margin on manage page + full-width rows */
 .dataTables_wrapper {
   margin-bottom: 30px;
 }

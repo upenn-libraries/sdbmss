@@ -6,12 +6,16 @@ module Blacklight
   # OVERRIDE (customizaton to _facets.html.erb) - if on the home page, render 4 facets, # otherwise it renders them all
   module FacetsHelperBehavior
 
+    def render_all_facet_partials(fields = facet_field_names, options = {})
+      facets = fields.map { |f| @response.aggregations[facet_configuration_for_field(f).field] }.compact
+      safe_join(facets.map { |display_facet|
+        render_facet_limit(display_facet, options)
+      }.compact, "\n")
+    end
+
     def render_facet_partials_home(number, direction, fields = facet_field_names, options = {})
-      if direction == :before
-        facets = facets_from_request(fields).first(number)
-      else
-        facets = facets_from_request(fields).last(facets_from_request(fields).count - number)
-      end
+      all_facets = fields.map { |f| @response.aggregations[facet_configuration_for_field(f).field] }.compact
+      facets = direction == :before ? all_facets.first(number) : all_facets.last(all_facets.count - number)
       safe_join(facets.map do |display_facet|
         render_facet_limit(display_facet, options)
       end.compact, "\n")
@@ -23,7 +27,7 @@ module Blacklight
   StartOverButtonComponent.class_eval do
     def call
       link_to t('blacklight.search.start_over'),
-              start_over_path + "?search_field=all_fields&utf8=%E2%9C%93",
+              start_over_path + "?search_field=all_fields",
               class: 'catalog_startOverLink btn btn-primary'
     end
   end
@@ -70,7 +74,7 @@ module SDBMSS::Blacklight
         entries = entries.with_associations
 
         entries.each do |entry|
-          @ids_to_entries[normalize_id(entry.id)] = entry
+          @ids_to_entries[entry.id] = entry
         end
       end
       @ids_to_entries[object_id]

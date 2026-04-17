@@ -34,7 +34,7 @@ describe Entry do
 
     it "should get cumulative_updated_at" do
       entry = Entry.last
-      expect(entry.cumulative_updated_at).to be_a(Fixnum)
+      expect(entry.cumulative_updated_at).to be_a(Integer)
     end
 
   end

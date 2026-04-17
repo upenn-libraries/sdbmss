@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Bookmarks", type: :request do
-  let(:admin_user) { User.where(role: "admin").first || create(:admin) }
+  let(:admin_user) { create(:admin) }
   let(:entry) { Entry.last || create(:entry, source: Source.last || create(:source)) }
 
   describe "GET /bookmarks.json" do

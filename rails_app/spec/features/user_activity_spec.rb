@@ -1,11 +1,11 @@
 require "rails_helper"
 
 describe "User Activity", :js => true do
-  let(:admin_user) { User.where(role: "admin").first }
+  let(:admin_user) { create(:admin) }
   let(:entry_id) { 10 }
 
   before :each do
-    login(admin_user, 'somethingunguessable')
+    login(admin_user, 'somethingreallylong')
   end
 
   def perform_activity(id)

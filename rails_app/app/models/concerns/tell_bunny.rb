@@ -54,7 +54,7 @@ module TellBunny
   # @raise [RuntimeError] if +data_type+ is +:uri+ and +url_base+ is blank
   def format_triple_object value, data_type, url_base=nil
     return unless value.present?
-    return if value =~ %r{\A[^[:alnum:]]*\z}
+    return if value.to_s =~ %r{\A[^[:alnum:]]*\z}
     case data_type
     when :integer
       "'#{value}'^^xsd:integer"

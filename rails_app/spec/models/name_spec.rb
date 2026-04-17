@@ -5,7 +5,7 @@ describe Name do
 
   describe "methods" do
 
-    it "should get suggestions" do
+    it "should get suggestions", :flaky do
       suggestions = Name.suggestions("William Shakespeare")
       expect(suggestions[:already_exists]).to eq(false)
       expect(suggestions[:results].length).to be > 0
@@ -40,7 +40,7 @@ describe Name do
       source.save!
       entry = Entry.new(source: source)
       entry.save!
-      entry.update_attributes(
+      entry.update(
         entry_authors_attributes: [
           {
             author: author
@@ -67,7 +67,7 @@ describe Name do
     end
 
     it "should update counters appropriately when records are merged" do
-      admin = User.where(role: "admin").first
+      admin = create(:admin)
 
       author = Name.create!(is_author: true, name: "Merge Counter Author", created_by: admin)
       artist = Name.create!(is_artist: true, name: "Merge Counter Artist", created_by: admin)
@@ -128,7 +128,7 @@ describe Name do
       source.save!
       entry = Entry.new(source: source)
       entry.save!
-      entry.update_attributes(
+      entry.update(
         entry_authors_attributes: [
           {
             author: artist

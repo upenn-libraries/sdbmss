@@ -1,7 +1,7 @@
 #!/bin/sh
 set -ex
 
-if [ "$1" = "bundle" -a "$2" = "exec" -a "$3" = "rails" ]; then
+if [ "$1" = "bundle" -a "$2" = "exec" ]; then
     if [ ! -z "${APP_UID}" ] && [ ! -z "${APP_GID}" ]; then
         usermod -u ${APP_UID} app
         groupmod -g ${APP_GID} app
@@ -15,24 +15,21 @@ if [ "$1" = "bundle" -a "$2" = "exec" -a "$3" = "rails" ]; then
         bundle install -j$(nproc) --retry 3
     fi
 
-    # remove unicorn.pid
-    if [ -f ${PROJECT_ROOT}/tmp/pids/unicorn.pid ]; then
-        rm -f ${PROJECT_ROOT}/tmp/pids/unicorn.pid
-    fi
+    # remove stale pid files
+    rm -f ${PROJECT_ROOT}/tmp/pids/puma.pid
+    rm -f ${PROJECT_ROOT}/tmp/pids/server.pid
 
-    # remove server.pid
-    if [ -f ${PROJECT_ROOT}/tmp/pids/server.pid ]; then
-        rm -f ${PROJECT_ROOT}/tmp/pids/server.pid
-    fi
-
-    # run db migrations
-    if [ "$1" = "bundle" -a "$2" = "exec" -a "$3" = "rails" -a "$4" = "s" -a "$5" = "unicorn" ]; then
+    # run db migrations when starting the web server
+    if [ "$3" = "puma" ]; then
         bundle exec rake db:migrate
         if [ "${RAILS_ENV}" = "development" ] || [ "${RAILS_ENV}" = "test" ]; then
             bundle exec rake db:create RAILS_ENV=test
             bundle exec rake db:migrate RAILS_ENV=test
         fi
     fi
+
+    # ensure tmp/pids exists and is writable
+    mkdir -p ${PROJECT_ROOT}/tmp/pids
 
     # chown all dirs
     find . -type d -exec chown app:app {} \;

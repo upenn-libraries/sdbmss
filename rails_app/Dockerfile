@@ -1,21 +1,27 @@
 ARG APP_IMAGE_NAME=ruby
-ARG APP_IMAGE_TAG=2.7.8-bullseye
+ARG APP_IMAGE_TAG=3.3.11-bookworm
 
 # Bundle home
 ARG BUNDLE_HOME=vendor/bundle
 
 # Bundle version
-ARG BUNDLE_VERSION=1.17.3
+ARG BUNDLE_VERSION=2.4.22
 
 # The root of our app
 ARG PROJECT_ROOT=/home/app
+
+# Ruby major version (used in gem paths)
+ARG RUBY_MAJOR=3.3
 
 # Rails env
 ARG RAILS_ENV=development
 
 
 # Base Image
-FROM ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} as base
+FROM ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} AS base
+
+ARG RUBY_MAJOR
+ENV RUBY_MAJOR=${RUBY_MAJOR}
 
 ARG BUNDLE_HOME
 ENV BUNDLE_HOME=${BUNDLE_HOME}
@@ -57,7 +63,10 @@ RUN bundle config path ${GEM_HOME} && \
 
 
 # Development Image
-FROM ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} as development
+FROM ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} AS development
+
+ARG RUBY_MAJOR
+ENV RUBY_MAJOR=${RUBY_MAJOR}
 
 ARG BUNDLE_HOME
 ENV BUNDLE_HOME=${BUNDLE_HOME}
@@ -104,7 +113,8 @@ COPY --chown=app:app . ${PROJECT_ROOT}
 
 
 RUN gem install bundler -v ${BUNDLE_VERSION} && \
-    chmod +x -R "${GEM_HOME}/bin/"
+    chmod +x -R "${GEM_HOME}/bin/" && \
+    find "${PROJECT_ROOT}/vendor/bundle" -name dart -type f -exec chmod +x {} +
 
 WORKDIR ${PROJECT_ROOT}
 
@@ -137,11 +147,14 @@ RUN RAILS_ENV=${RAILS_ENV} \
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["bundle", "exec", "rails", "s", "unicorn", "-b", "0.0.0.0"]
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
 
 
 # Production Image
-FROM ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} as production
+FROM ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} AS production
+
+ARG RUBY_MAJOR
+ENV RUBY_MAJOR=${RUBY_MAJOR}
 
 ARG BUNDLE_VERSION
 ENV BUNDLE_VERSION=${BUNDLE_VERSION}
@@ -186,7 +199,8 @@ COPY --chmod=755 docker-entrypoint.sh /usr/local/bin/
 COPY --chown=app:app . ${PROJECT_ROOT}
 
 RUN gem install bundler -v ${BUNDLE_VERSION} && \
-    chmod +x -R "${GEM_HOME}/bin/"
+    chmod +x -R "${GEM_HOME}/bin/" && \
+    find "${PROJECT_ROOT}/vendor/bundle" -name dart -type f -exec chmod +x {} +
 
 RUN ls ${GEM_HOME}/gems
 
@@ -218,4 +232,4 @@ RUN RAILS_ENV=${RAILS_ENV} \
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["bundle", "exec", "rails", "s", "unicorn", "-b", "0.0.0.0"]
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]

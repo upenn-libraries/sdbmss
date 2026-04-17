@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Manage pages", type: :request do
-  let(:admin_user) { User.where(role: "admin").first || create(:admin) }
+  let(:admin_user) { create(:admin) }
 
   describe "GET /pages" do
     it "returns forbidden for guests" do

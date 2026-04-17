@@ -4,7 +4,7 @@ FactoryBot.define do
     title { "A Sample Test Source With a Highly Unique Name" }
     date { "2013-11-12" }
     source_type { SourceType.auction_catalog }
-    created_by { User.where(role: 'admin').first || create(:admin) }
+    created_by { create(:admin) }
 
     after(:create) do |source|
       next if source.source_agents.exists?(role: SourceAgent::ROLE_SELLING_AGENT)

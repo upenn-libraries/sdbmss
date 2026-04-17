@@ -16,6 +16,10 @@ Rails.application.configure do
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 
+  # Use letter_opener_web to intercept outgoing mail. Browse at /letter_opener.
+  config.action_mailer.delivery_method = :letter_opener_web
+  config.action_mailer.perform_deliveries = true
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
@@ -32,13 +36,18 @@ Rails.application.configure do
 
   #config.log_level = :info
 
-  config.logger = Logger.new(STDOUT)
+  config.logger = ActiveSupport::Logger.new(STDOUT)
 
   config.public_file_server.enabled = true
 
-  config.web_console.whitelisted_ips = ['172.18.0.0/16', '172.27.0.0/16', '0.0.0.0/0'] if defined?(WebConsole)
+  config.hosts << "app.sdbmss.orb.local"
+  config.hosts << "sdbmss.localhost"
+  config.hosts << "localhost"
+
+  config.web_console.permissions = ['172.18.0.0/16', '172.27.0.0/16', '0.0.0.0/0'] if defined?(WebConsole)
 end
 
 # allows for mailer to send correct URLS on development
+# Override with SDBMSS_HOST env var if your local domain differs.
 
-Rails.application.routes.default_url_options[:host] = 'localhost:3000'
+Rails.application.routes.default_url_options[:host] = ENV.fetch('SDBMSS_HOST', 'sdbmss.localhost')
