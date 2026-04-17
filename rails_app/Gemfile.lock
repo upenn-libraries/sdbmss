@@ -429,6 +429,7 @@ GEM
     sunspot_rails (2.5.0)
       rails (>= 3)
       sunspot (= 2.5.0)
+    sunspot_solr (2.7.1)
     test-prof (1.6.1)
     thor (1.5.0)
     thread_safe (0.3.6)
@@ -555,6 +556,7 @@ DEPENDENCIES
   sprockets (>= 3.7.2)
   stackprof (>= 0.2.9)
   sunspot_rails (~> 2.5.0)
+  sunspot_solr (~> 2.7.1)
   test-prof
   thredded (~> 0.16)
   turbolinks (~> 5.2)
