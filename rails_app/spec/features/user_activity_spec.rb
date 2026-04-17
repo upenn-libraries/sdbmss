@@ -15,7 +15,7 @@ describe "User Activity", :js => true do
     fill_in 'title_0', with: 'Book of Ours'
 
     find(".save-button", match: :first).trigger('click')
-    sleep 1.1
+    expect(page).to have_current_path(entry_path(id), ignore_query: true)
     original_title
   end
 
@@ -29,12 +29,12 @@ describe "User Activity", :js => true do
   it "should correctly display deleting a record associaton" do
     perform_activity(entry_id)
     visit edit_entry_path(entry_id)
-    sleep(1)
+    expect(page).to have_selector('#delete_title_0')
     find("#delete_title_0", match: :first).click
     expect(page).to have_content("Are you sure you want to remove this field and its contents?")
     click_button "Yes"    
     find(".save-button", match: :first).click
-    sleep 1.1
+    expect(page).to have_current_path(entry_path(entry_id), ignore_query: true)
     visit activities_path
     expect(page).to have_content('edited SDBM_10')
     expect(page).to have_content("Book of Ours")

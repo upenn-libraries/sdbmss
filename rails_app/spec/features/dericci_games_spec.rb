@@ -3,6 +3,27 @@ require "rails_helper"
 describe "De Ricci Game", :js => true do
   let(:admin_user) { create(:admin) }
 
+  def create_game_record(name)
+    matching_name = Name.create!(
+      name: name,
+      is_author: true,
+      created_by: admin_user
+    )
+    record = DericciRecord.create!(
+      name: name,
+      url: "about:blank",
+      cards: 2,
+      size: "<1 MB",
+      place: "London, England.",
+      dates: "(1795-1874)",
+      senate_house: "[Senate House MS901/3/11]",
+      created_by: admin_user,
+      updated_by: admin_user
+    )
+
+    [record, matching_name]
+  end
+
   def resolve_game_record(index)
     if index.zero?
       find(".selectName", match: :first).click
@@ -35,7 +56,19 @@ describe "De Ricci Game", :js => true do
       expect(page).to have_content("Is there a problem with this .pdf file")
     end
 
-    it "should allow you to continue a game previously started", :flaky do
+    it "should allow you to continue a game previously started", :flaky, :solr do
+      DericciRecord.update_all(out_of_scope: true)
+
+      records, names = [
+        "Zetland (Earl of) the 1st",
+        "Zetland (Earl of) the 4st",
+        "Zetland (Earl of) the 0st",
+        "Zetland (Earl of) the 3st"
+      ].map { |name| create_game_record(name) }.transpose
+
+      records.each { |record| record.update!(out_of_scope: false) }
+      SampleIndexer.index_records!(*names)
+
       visit dericci_games_path
       find('#new-game').click
 
@@ -51,9 +84,8 @@ describe "De Ricci Game", :js => true do
         row.find('.view-name').click
         row.find('.find-name').click
         expect(page).to have_content("in SDBM Name Authority")
-        expect(page).to have_content("Link")
+        expect(page).to have_css(".selectName", text: "Link")
         expect(page).not_to have_content("No results found")
-        sleep 1
         resolve_game_record(index)
         expect(page).not_to have_content("in SDBM Name Authority")
       end

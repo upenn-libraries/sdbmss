@@ -64,8 +64,16 @@ describe "Groups", :js => true do
       expect(page).not_to have_content 'Accept Invitation'
     end
 
-    it "should allow a user to add a single entry to a user group" do
-      visit entry_path(Entry.first)
+    it "should allow a user to add a single entry to a user group", :solr do
+      entry = create(
+        :edit_test_entry,
+        source: create(:edit_test_source, created_by: group_owner),
+        created_by: group_owner,
+        approved: true
+      )
+      SampleIndexer.index_records!(entry)
+
+      visit entry_path(entry)
       expect(page).to have_content('This entry is not being worked on by any user groups at the moment.')
       # select group.id.to_s, from: 'group_id'  # for some reason this doesn't work, but my one group is by default selected anyway so...
       check 'editable'
@@ -74,9 +82,19 @@ describe "Groups", :js => true do
       expect(page).to have_content "This entry is being edited by #{group_name} (Editable)"
     end
 
-    it "should allow many entries to be added to a group from the manage table" do
+    it "should allow many entries to be added to a group from the manage table", :solr do
+      entries = 2.times.map do
+        create(
+          :edit_test_entry,
+          source: create(:edit_test_source, created_by: group_owner),
+          created_by: group_owner,
+          approved: true
+        )
+      end
+      SampleIndexer.index_records!(*entries)
+
       visit entries_path
-      expect(page).to have_content(Entry.first.public_id)
+      expect(page).to have_content(entries.first.public_id)
       find('#select-all', match: :first).click
       click_link 'Add/Remove Groups'
 
@@ -86,27 +104,50 @@ describe "Groups", :js => true do
       expect(page).to have_content('Records Added To Group')
     end
 
-    it "should confer/restrict editing privileges on all members of a group as appropriate" do
+    it "should confer/restrict editing privileges on all members of a group as appropriate", :solr do
+      editable_entry = create(
+        :edit_test_entry,
+        source: create(:edit_test_source, created_by: group_owner),
+        created_by: group_owner,
+        approved: true
+      )
+      readonly_entry = create(
+        :edit_test_entry,
+        source: create(:edit_test_source, created_by: group_owner),
+        created_by: group_owner,
+        approved: true
+      )
       GroupUser.create!(group: group, user: contributor, role: 'Member', confirmed: true, created_by: group_owner)
-      GroupRecord.create!(group: group, record: Entry.first, editable: true)
+      GroupRecord.create!(group: group, record: editable_entry, editable: true)
+      SampleIndexer.index_records!(editable_entry, readonly_entry)
       page.reset!
       login(contributor, 'somethingreallylong')
-      visit entry_path(Entry.first)
-      expect(page).to have_content("Edit #{Entry.first.public_id}")
+      visit entry_path(editable_entry)
+      expect(page).to have_content("Edit #{editable_entry.public_id}")
 
-      visit entry_path(Entry.last)
-      expect(page).not_to have_content("Edit #{Entry.last.public_id}")
+      visit entry_path(readonly_entry)
+      expect(page).not_to have_content("Edit #{readonly_entry.public_id}")
     end
 
-    it "should allow a user to remove records from a group" do
+    it "should allow a user to remove records from a group", :solr do
+      entry = create(
+        :edit_test_entry,
+        source: create(:edit_test_source, created_by: group_owner),
+        created_by: group_owner,
+        approved: true
+      )
+      GroupRecord.create!(group: group, record: entry, editable: false)
+      SampleIndexer.index_records!(entry)
+
       visit entries_path
-      expect(page).to have_content(Entry.last.public_id)
-      find('#select-all', match: :first).click
+      expect(page).to have_content(entry.public_id)
+      find("input[name='approve'][value='#{entry.id}']", match: :first).click
       click_link 'Add/Remove Groups'
       expect(page).to have_content('Add/Remove Records From Your Groups')
       
       click_button 'Remove'
-      expect(page).to have_content("records removed from '#{group_name}'")
+      expect(page).to have_content("1 record removed from '#{group_name}'")
+      expect(GroupRecord.where(group: group, record: entry)).to be_empty
     end
 
     it "should allow a group manager to remove a user from their group" do

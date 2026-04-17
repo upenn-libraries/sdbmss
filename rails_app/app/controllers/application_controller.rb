@@ -87,6 +87,8 @@ class ApplicationController < ActionController::Base
 
   def user_activity
     current_user.try :touch
+  rescue ActiveRecord::ActiveRecordError, Mysql2::Error => e
+    Rails.logger.warn("Skipping user activity update: #{e.class}: #{e.message}")
   end
 
   protected

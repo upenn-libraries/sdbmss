@@ -151,6 +151,7 @@ describe SDBMSS::Tools do
     let(:tools) { described_class.new(env: {}) }
 
     def stub_hosts(lines)
+      allow(File).to receive(:readlines).and_call_original
       allow(File).to receive(:readlines).with('/etc/hosts').and_return(lines)
     end
 
@@ -180,6 +181,7 @@ describe SDBMSS::Tools do
     end
 
     it 'returns false when /etc/hosts raises Errno::EACCES' do
+      allow(File).to receive(:readlines).and_call_original
       allow(File).to receive(:readlines).with('/etc/hosts').and_raise(Errno::EACCES)
       expect(tools.send(:hosts_mapping_present?, 'sdbmss.localhost')).to be false
     end
