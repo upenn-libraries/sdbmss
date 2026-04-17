@@ -446,6 +446,7 @@ GEM
     sunspot_rails (2.7.1)
       rails (>= 5)
       sunspot (= 2.7.1)
+    sunspot_solr (2.7.1)
     test-prof (1.6.1)
     thor (1.5.0)
     tilt (2.7.0)
@@ -544,6 +545,7 @@ DEPENDENCIES
   sprockets (~> 3.7)
   stackprof (>= 0.2.9)
   sunspot_rails (~> 2.7.0)
+  sunspot_solr (~> 2.7.1)
   test-prof
   turbolinks (~> 5.2)
   uglifier (~> 4.2)
