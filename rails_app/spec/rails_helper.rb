@@ -30,8 +30,6 @@ Dir[Rails.root.join('spec/support/**/*.rb')].sort.each { |f| require f }
 module TestSuiteSetupHelpers
   extend self
 
-  SOLR_TEST_MODELS = [Entry, Name, Source, Manuscript, Language, Place].freeze
-
   # JS examples reseed a truncated MySQL database. Disabling FK checks keeps
   # truncation/reseed cheap and avoids ordering every table delete manually.
   def with_foreign_key_checks_disabled
@@ -39,16 +37,6 @@ module TestSuiteSetupHelpers
     yield
   ensure
     ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
-  end
-
-  def solr_test_uri
-    @solr_test_uri ||= URI(ENV['SOLR_TEST_URL'] || 'http://localhost:8983/solr/test')
-  end
-
-  def solr_http
-    http = Net::HTTP.new(solr_test_uri.host, solr_test_uri.port)
-    http.read_timeout = 30
-    http
   end
 
   def suite_logger
@@ -83,48 +71,6 @@ module TestSuiteSetupHelpers
     SDBMSS::SeedData.create
     SDBMSS::ReferenceData.create_all
     SDBMSS::Mysql.create_functions
-  end
-
-  # JS examples rely on Solr-backed search. Clearing it explicitly is faster
-  # and more predictable than trying to keep incremental state in sync.
-  def delete_all_solr_docs!
-    solr_http.post(
-      "#{solr_test_uri.path}/update?commit=true",
-      '<delete><query>*:*</query></delete>',
-      'Content-Type' => 'application/xml'
-    )
-  end
-
-  def optimize_solr_index!
-    solr_http.post(
-      "#{solr_test_uri.path}/update?optimize=true&waitFlush=false&waitSearcher=false",
-      '<optimize/>',
-      'Content-Type' => 'application/xml'
-    )
-  end
-
-  # Most specs only need a small set of models indexed in test. Keeping that
-  # list explicit keeps suite setup cost bounded.
-  def reindex_solr_models!(models = SOLR_TEST_MODELS, per_model_logging: false)
-    models.each do |model|
-      begin
-        Sunspot.index(model.all)
-      rescue => e
-        raise unless per_model_logging
-
-        log_setup_warning("Solr index #{model} after JS test failed: #{e.message}")
-      end
-    end
-    Sunspot.commit
-  end
-
-  # After JS truncation we rebuild Solr from the canonical database state
-  # instead of trusting any incremental callbacks that ran during the example.
-  def flush_and_reindex_solr_after_js!
-    delete_all_solr_docs!
-    reindex_solr_models!(SOLR_TEST_MODELS, per_model_logging: true)
-  rescue StandardError => e
-    log_setup_warning("Solr flush after JS test failed: #{e.message}")
   end
 
 end
@@ -176,6 +122,7 @@ RSpec.configure do |config|
   config.include Warden::Test::Helpers
   config.include SDBMSS::Capybara::AlertConfirmer
   config.include SDBMSS::Capybara::Login
+  config.include TestSuiteSetupHelpers
 
   config.before(:suite) do
     # Start from a fully truncated DB, then rebuild the baseline records and
@@ -184,7 +131,7 @@ RSpec.configure do |config|
     TestSuiteSetupHelpers.with_foreign_key_checks_disabled do
       DatabaseCleaner.clean_with(:truncation)
       begin
-        TestSuiteSetupHelpers.delete_all_solr_docs!
+        SolrTools.clear!
       rescue => e
         TestSuiteSetupHelpers.log_setup_warning("Solr delete-all before suite failed: #{e.message}")
       end
@@ -194,13 +141,13 @@ RSpec.configure do |config|
     end
 
     begin
-      TestSuiteSetupHelpers.reindex_solr_models!([Entry])
+      SolrTools.reindex_models!([Entry])
     rescue => e
       TestSuiteSetupHelpers.log_setup_warning("Solr index before suite failed: #{e.message}")
     end
 
     begin
-      TestSuiteSetupHelpers.optimize_solr_index!
+      SolrTools.optimize!
     rescue => e
       TestSuiteSetupHelpers.log_setup_warning("Solr optimize before suite failed: #{e.message}")
     end
@@ -222,8 +169,20 @@ RSpec.configure do |config|
     allow_any_instance_of(User).to receive(:perform_index_tasks)
   end
 
+  config.before(:each, :solr) do
+    SampleIndexer.clear!
+  end
+
   config.append_after(:each) do |example|
     Warden.test_reset!
+  end
+
+  config.after(:suite) do
+    begin
+      SolrTools.clear!
+    rescue => e
+      TestSuiteSetupHelpers.log_setup_warning("Solr delete-all after suite failed: #{e.message}")
+    end
   end
 
   # This is commented out b/c it seems the browser doesn't always hang
