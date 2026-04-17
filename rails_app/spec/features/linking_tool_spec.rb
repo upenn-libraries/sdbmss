@@ -301,8 +301,7 @@ describe "Linking Tool", :js => true do
 
     visit linking_tool_by_manuscript_path id: manuscript.id
 
-    # MUST sleep so that updating EntryManuscript changes updated_at
-    sleep(2)
+    expect(page).to have_content(last_two_entries.first.public_id)
 
     # it's crucial that we load a fresh object
     manuscript = Manuscript.find(manuscript_id)

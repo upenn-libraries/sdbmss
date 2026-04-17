@@ -86,7 +86,6 @@ describe "De Ricci Game", :js => true do
         expect(page).to have_content("in SDBM Name Authority")
         expect(page).to have_css(".selectName", text: "Link")
         expect(page).not_to have_content("No results found")
-        sleep 1
         resolve_game_record(index)
         expect(page).not_to have_content("in SDBM Name Authority")
       end
