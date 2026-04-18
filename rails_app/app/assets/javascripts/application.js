@@ -21,7 +21,6 @@
 //
 // Required by Blacklight
 //= require blacklight
-//= require 'blacklight_advanced_search'
 
 //= require bootstrap-tour.min
 //= require sdbm

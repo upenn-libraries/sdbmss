@@ -8,9 +8,9 @@ require 'zip'
 # (because the name is tied to the views directory).
 class CatalogController < ApplicationController
   include Blacklight::Catalog
-  include BlacklightAdvancedSearch::Controller
-
   include CatalogControllerConfiguration
+
+  before_action SDBMSS::BlacklightAdvancedSearch::RedirectLegacyParamsFilter, only: [:index]
 
   rescue_from Blacklight::Exceptions::InvalidRequest, with: :render_bad_search
 

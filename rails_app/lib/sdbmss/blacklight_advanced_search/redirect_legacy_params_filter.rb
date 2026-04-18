@@ -1,0 +1,50 @@
+# OVERRIDE Blacklight Advanced Search v8.0.0 to convert legacy params in-place
+#   (no redirect) with support for array values, custom operators (_option params),
+#   and date field preservation for SearchBuilder processors
+# @see https://github.com/projectblacklight/blacklight_advanced_search/blob/0e22b8e5/lib/blacklight_advanced_search/redirect_legacy_params_filter.rb
+module SDBMSS
+  module BlacklightAdvancedSearch
+    class RedirectLegacyParamsFilter
+      def self.before(controller)
+        params = controller.send(:params)
+        config = controller.blacklight_config
+
+        i = 0
+        converted = false
+        config.search_fields.each do |_key, field|
+          next unless params[field.key].present?
+
+          converted = true
+          params[:clause] ||= {}
+          values = params[field.key]
+          options = params["#{field.key}_option"]
+
+          if values.is_a?(Array)
+            values.each_with_index do |val, idx|
+              next if val.blank?
+              clause = { field: field.key, query: val }
+              clause[:op] = options[idx] if options.is_a?(Array) && options[idx].present?
+              params[:clause][i.to_s] = clause
+              i += 1
+            end
+          else
+            clause = { field: field.key, query: values }
+            clause[:op] = options if options.present? && !options.is_a?(Array)
+            params[:clause][i.to_s] = clause
+            i += 1
+          end
+
+          unless SDBMSS_DATE_FIELDS.include?(field.key)
+            params.delete(field.key)
+            params.delete("#{field.key}_option")
+          end
+        end
+
+        if converted || params[:clause].present?
+          params[:search_field] = 'advanced' if params[:search_field].blank?
+          controller.instance_variable_set(:@search_state, nil)
+        end
+      end
+    end
+  end
+end
