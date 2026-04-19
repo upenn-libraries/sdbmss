@@ -1,0 +1,35 @@
+<%# OVERRIDE Blacklight 8.12.3: add "Selected Filters" card above facets when facet
+     filters are active. Original SDBMSS feature from 2016 (51e8e7f7).
+%>
+<search>
+  <% if params[:f].present? %>
+    <div class="card facet-limit facet_limit-active mb-3">
+      <h3 class="card-header p-0 facet-field-heading" id="selected-facets-header">
+        <button type="button"
+          class="btn w-100 d-block btn-block p-2 text-start text-left collapse-toggle"
+          data-toggle="collapse" data-bs-toggle="collapse"
+          data-target="#selected-facets" data-bs-target="#selected-facets"
+          aria-expanded="true" aria-controls="selected-facets">
+          Selected Filters
+        </button>
+      </h3>
+      <div id="selected-facets" role="region" aria-labelledby="selected-facets-header"
+        class="panel-collapse facet-content collapse show">
+        <div class="card-body p-3">
+          <ul class="list-unstyled facet-values">
+            <%= helpers.render_constraints_filters_side(params) %>
+          </ul>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <% facet_group_names.each do |groupname| %>
+    <% fields = facet_fields_in_group(groupname) %>
+    <%= render group_component_class.new(id: groupname, fields: fields, response: response) do |component| %>
+      <% component.with_body do %>
+        <%= render Blacklight::FacetComponent.with_collection(fields, response: response) %>
+      <% end %>
+    <% end %>
+  <% end %>
+</search>
