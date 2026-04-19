@@ -192,7 +192,7 @@ class CatalogController < ApplicationController
       end
     else
       empty = true
-      advanced_query.config.search_fields.select do |key, field_def|
+      blacklight_config.search_fields.select do |key, field_def|
         if search.query_params[key].present?
           empty = false
         end
@@ -209,7 +209,7 @@ class CatalogController < ApplicationController
       params[:q].present? || params[:f].present?
     else
       empty = true
-      advanced_query.config.search_fields.select do |key, field_def|
+      blacklight_config.search_fields.select do |key, field_def|
         if params[key].present?
           empty = false
         end
