@@ -1,9 +1,0 @@
-<%#
-  OVERRIDE Blacklight 7.11: emit document action list items only (no BL .card wrapper); app's
-    show.html.erb supplies chrome via content_for :control_tools.
-%>
-<%= render_show_doc_actions @document do |config, inner| %>
-  <li class="<%= config.key %>">
-    <%= inner %>
-  </li>
-<% end %>

@@ -1,0 +1,9 @@
+<%# OVERRIDE Blacklight 8.12.3: no .card wrapper, app's show.html.erb supplies its own chrome
+    via content_for :control_tools.
+%>
+<%= render Blacklight::Document::ActionsComponent.new(document: document,
+                                                      tag: 'ul',
+                                                      classes: 'nav',
+                                                      wrapping_tag: 'li',
+                                                      actions: actions,
+                                                      url_opts: Blacklight::Parameters.sanitize(params.to_unsafe_h)) %>
