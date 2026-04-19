@@ -4,7 +4,7 @@
 %>
 <% # container for a single doc -%>
 <% entry = document.model_object %>
-<% if entry.nil? %>
+<% if entry.blank? || !entry.persisted? %>
     <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
 <% else %>
 <div class="card document mb-3">
@@ -178,6 +178,6 @@
     </div>
   </div>
   <div class="card-footer text-center">
-    <%= link_to "View complete record...", entry_path(entry) %>
+    <%= link_to "View complete record...", entry_path(entry) if entry.try(:id) %>
   </div>
 </div>
