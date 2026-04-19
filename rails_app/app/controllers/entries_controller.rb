@@ -190,7 +190,7 @@ class EntriesController < SearchableAuthorityController
     begin
       pinfo = pagination_info(@response)
 
-      data = @document_list.map do |doc|
+      data = @response.documents.map do |doc|
         entry = doc.model_object
         # have to add can_edit here, since this is where current_user is accessible
         !entry.nil? ? entry.as_flat_hash.merge({

@@ -50,7 +50,7 @@ class CatalogController < ApplicationController
   end
 
   def index
-    (@response, @document_list) = search_service.search_results
+    @response = search_service.search_results
 
     respond_to do |format|
       format.html { store_preferred_view }
@@ -119,7 +119,7 @@ class CatalogController < ApplicationController
 
     loop do
       svc = SDBMSS::Blacklight::SearchService.new(config: blacklight_config, user_params: params.merge({:page => page, :per_page => 100}))
-      (@response, @document_list) = svc.search_results
+      @response = svc.search_results
       #s = do_search(params.merge({:limit => 300, :offset => offset}))
       page += 1
       ids = @response.response["docs"].map { |doc| doc["entry_id"] }

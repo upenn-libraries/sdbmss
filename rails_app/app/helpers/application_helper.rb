@@ -71,7 +71,7 @@ module ApplicationHelper
 
   # only show on Bookmarks page (check for document_list)
   def show_export_csv_link?
-    user_signed_in? && @document_list.present?
+    user_signed_in? && @response&.documents&.present?
   end
 
   # this method returns a data structure used to prepopulate the
