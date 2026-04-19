@@ -116,7 +116,7 @@ Rails.application.routes.draw do
     member { post "track" }
   end
 
-  get "/advanced/", to: 'advanced#index', as: 'advanced_search'
+  get "/advanced/", to: 'catalog#advanced_search', as: 'advanced_search'
 
   resources :comments do
     collection {
