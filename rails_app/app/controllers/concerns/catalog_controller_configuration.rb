@@ -58,6 +58,7 @@ module CatalogControllerConfiguration
       config.fetch_many_document_params = { fl: '*' }
 
       # solr field configuration for search results/index views
+      config.index.document_component = SDBMSS::DocumentComponent
       config.index.title_field = ''
       config.index.display_type_field = 'format'
 

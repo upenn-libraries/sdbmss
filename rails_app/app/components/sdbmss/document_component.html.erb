@@ -1,19 +1,12 @@
-<%#
-  OVERRIDE Blacklight 7.11: single search result is a full Entry card (metadata, sources, agents,
-    titles, provenance, bookmarks) from document.model_object; stock partial wraps render_document_partials only.
-%>
-<% # container for a single doc -%>
-<% entry = document.model_object %>
-<% if entry.blank? || !entry.persisted? %>
-    <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
+<% if !entry_valid? %>
+  <p>Error: couldn't retrieve model object from database for Solr document id = <%= @document.id %></p>
 <% else %>
 <div class="card document mb-3">
   <div class="card-header">
     <div class='row'>
       <div class="col-10">
           <span class='h4'>
-            <%# data-context-href triggers an HTTP callback before loading the entry page; this makes prev/next links on individual Entry page work %>
-            <a href="<%= url_for entry %>" data-context-href="<%= session_tracking_path(document, counter: document_counter, search_id: current_search_session.try(:id)) %>"><%= entry.public_id %></a>
+            <a href="<%= url_for entry %>" data-context-href="<%= session_tracking_path(@document, counter: @counter, search_id: current_search_session.try(:id)) %>"><%= entry.public_id %></a>
             <% if !entry.approved %>
               <small class="text-muted document-disclaimer"><i class="fa fa-exclamation-triangle"></i> Unapproved</small>
             <% end %>
@@ -23,12 +16,12 @@
           </span>
       </div>
       <div class="col-2 text-right">
-          <span class="document-preview"><%= render partial: 'catalog/bookmark_control', locals: {document: document} %></span>
+          <span class="document-preview"><%= render partial: 'catalog/bookmark_control', locals: {document: @document} %></span>
       </div>
     </div>
   </div>
   <div class="card-body">
-    <div class="<%= render_document_class document %>" itemscope itemtype="<%= document.itemtype %>">
+    <div class="<%= render_document_class @document %>" itemscope itemtype="<%= @document.itemtype %>">
         <dl class="document-metadata dl-horizontal dl-invert">
             <% manuscripts_str = render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
             <% if manuscripts_str.present? %>
@@ -42,21 +35,21 @@
             <dd class='text-warning'>This entry supercedes the deprecated entry <a href="/entries/<%= superceded.id %>" class="bg-warning text-warning"><%= superceded.public_id %></a>.</dd>
           <% end %>
 
-    	    <dt>Source</dt>
-    	    <dd>
+          <dt>Source</dt>
+          <dd>
                 <%= link_to entry.source.display_value, source_path(entry.source) %> (<%= entry.source.source_type.display_name %>)
             </dd>
 
             <% if entry.catalog_or_lot_number.present? %>
-    	    <dt>Cat./Lot #</dt>
-    	    <dd><%= entry.catalog_or_lot_number %></dd>
+          <dt>Cat./Lot #</dt>
+          <dd><%= entry.catalog_or_lot_number %></dd>
             <% end %>
 
             <% if entry.institution.present? %>
-    	    <dt>Institution/Collection</dt>
-    	    <dd><%= entry.institution %></dd>
+          <dt>Institution/Collection</dt>
+          <dd><%= entry.institution %></dd>
             <% end %>
-            
+
             <% if (sale = entry.get_sale).present? %>
 
               <% if (selling_agents = sale.get_selling_agents).present? %>
@@ -102,7 +95,7 @@
 
 
             <% if entry.entry_titles.length > 0 %>
-    	    <dt>Titles</dt>
+          <dt>Titles</dt>
             <dd>
             <% entry.entry_titles.each do |entry_title| %>
               <%= entry_title.title %> <% if entry_title.common_title.present? %>[<%= entry_title.common_title %>]<% end %><br/>
@@ -142,7 +135,7 @@
             <dt>Places</dt>
             <dd>
             <% entry.entry_places.each do |entry_place| %>
-              <% if entry_place.place_id %> 
+              <% if entry_place.place_id %>
                 <%= link_to entry_place.display_value, place_path(entry_place.place) %>
               <% else %>
                 <%= entry_place.display_value %>
@@ -174,10 +167,10 @@
             </dd>
             <% end %>
         </dl>
-        <% end %>
     </div>
   </div>
   <div class="card-footer text-center">
-    <%= link_to "View complete record...", entry_path(entry) if entry.try(:id) %>
+    <%= link_to "View complete record...", entry_path(entry) %>
   </div>
 </div>
+<% end %>
