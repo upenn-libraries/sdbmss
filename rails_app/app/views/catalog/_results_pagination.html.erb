@@ -3,7 +3,7 @@
     stock partial is pagination only in a single full-width column.
 %>
 <% has_pagination = @response && @response.total_pages > 1 %>
-<div class="d-flex align-items-center record-padding">
+<div class="d-flex align-items-center record-padding mb-4">
   <% if has_pagination %>
   <div>
     <%= render Blacklight::Response::PaginationComponent.new(response: @response) %>
