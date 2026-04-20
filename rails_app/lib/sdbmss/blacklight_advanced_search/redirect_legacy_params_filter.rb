@@ -9,6 +9,18 @@ module SDBMSS
         params = controller.send(:params)
         config = controller.blacklight_config
 
+        # If the request already has clause params, this is a BL8-style URL
+        # (e.g. from a remove-constraint link). Check for orphaned date raw params
+        # whose clause was removed — strip them so the filter doesn't persist.
+        if params[:clause].present?
+          clause_fields = params[:clause].values.map { |c| c[:field] || c['field'] }.compact
+          SDBMSS::DATE_FIELDS.each do |date_field|
+            if params[date_field].present? && !clause_fields.include?(date_field)
+              params.delete(date_field)
+            end
+          end
+        end
+
         i = 0
         converted = false
         config.search_fields.each do |_key, field|
@@ -34,7 +46,9 @@ module SDBMSS
             i += 1
           end
 
-          unless SDBMSS_DATE_FIELDS.include?(field.key)
+          # Keep date field raw params for SearchBuilder processors;
+          # delete all others since they're now in clause params.
+          unless SDBMSS::DATE_FIELDS.include?(field.key)
             params.delete(field.key)
             params.delete("#{field.key}_option")
           end

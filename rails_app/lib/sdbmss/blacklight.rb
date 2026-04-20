@@ -2,39 +2,11 @@
 # This module contains customized subclasses of things used by
 # Blacklight
 
-module Blacklight
-  # OVERRIDE (customizaton to _facets.html.erb) - if on the home page, render 4 facets, # otherwise it renders them all
-  module FacetsHelperBehavior
-
-    def render_all_facet_partials(fields = facet_field_names, options = {})
-      facets = fields.map { |f| @response.aggregations[facet_configuration_for_field(f).field] }.compact
-      safe_join(facets.map { |display_facet|
-        render_facet_limit(display_facet, options)
-      }.compact, "\n")
-    end
-
-    def render_facet_partials_home(number, direction, fields = facet_field_names, options = {})
-      all_facets = fields.map { |f| @response.aggregations[facet_configuration_for_field(f).field] }.compact
-      facets = direction == :before ? all_facets.first(number) : all_facets.last(all_facets.count - number)
-      safe_join(facets.map do |display_facet|
-        render_facet_limit(display_facet, options)
-      end.compact, "\n")
-    end
-
-  end
-
-  # OVERRIDE Blacklight v7.38.0 so the Start Over button doesn't return the user back to the root page
-  StartOverButtonComponent.class_eval do
-    def call
-      link_to t('blacklight.search.start_over'),
-              start_over_path + "?search_field=all_fields",
-              class: 'catalog_startOverLink btn btn-primary'
-    end
-  end
+module SDBMSS
+  DATE_FIELDS = %w[source_date manuscript_date provenance_date].freeze
 end
 
 module SDBMSS::Blacklight
-
 
   # These hardcoded bounds MUST correspond to Solr field definition or
   # things might break or behave weirdly.
@@ -118,6 +90,8 @@ module SDBMSS::Blacklight
     include BlacklightAdvancedSearch::AdvancedSearchBuilder
 
     self.default_processor_chain += [
+      :add_advanced_parse_q_to_solr,
+      :add_advanced_search_to_solr,
       :show_all_if_no_query,
       :handle_facet_prefix,
       :show_approved,
@@ -127,7 +101,7 @@ module SDBMSS::Blacklight
       :translate_manuscript_date,
       :translate_provenance_date,
       :translate_source_date,
-      :add_advanced_search_to_solr,
+      :add_date_fields_to_solr,
       :fix_lucene_local_params,
     ]
 
@@ -234,6 +208,23 @@ module SDBMSS::Blacklight
         blacklight_params[param_name] = result
       else
         blacklight_params[param_name] = translate_date_string_to_search_query(date)
+      end
+    end
+
+    # BAS 8 no longer builds Solr queries from raw params (only clause_params).
+    # Date fields stay as raw params for the translate_* processors above.
+    # This processor takes the translated date values and adds them to the Solr query.
+    def add_date_fields_to_solr(solr_parameters)
+      SDBMSS::DATE_FIELDS.each do |field_name|
+        value = blacklight_params[field_name]
+        next if value.blank?
+
+        field_def = blacklight_config.search_fields[field_name] || {}
+        solr_field = field_def.dig(:solr_parameters, :qf) || field_name
+
+        Array(value).reject(&:blank?).each do |v|
+          (solr_parameters['fq'] ||= []) << "#{solr_field}:#{v}"
+        end
       end
     end
 

@@ -105,6 +105,35 @@ class CatalogController < ApplicationController
     end
   end
 
+  # Override Blacklight::Catalog#facet to render not_found instead of raising
+  # RoutingError when a facet field doesn't exist in the config.
+  def facet
+    @facet = blacklight_config.facet_fields[params[:id]]
+
+    unless @facet
+      return respond_to do |format|
+        format.html { render "not_found" }
+        format.json { render json: { error: "Facet could not be found." } }
+      end
+    end
+
+    @response = if params[:query_fragment].present?
+                  search_service.facet_suggest_response(@facet.key, params[:query_fragment])
+                else
+                  search_service.facet_field_response(@facet.key)
+                end
+    @display_facet = @response.aggregations[@facet.field]
+    @presenter = @facet.presenter.new(@facet, @display_facet, view_context)
+    @pagination = @presenter.paginator
+    respond_to do |format|
+      format.html do
+        return render layout: false if request.xhr?
+        return render 'facet_values', layout: false if params[:only_values]
+      end
+      format.json
+    end
+  end
+
   def do_csv_search(params, download)
     # merge per-page params
 
