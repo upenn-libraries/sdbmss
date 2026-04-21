@@ -1,6 +1,9 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Rails 8 removed config/secrets.yml support; set secret_key_base from env var directly
+  config.secret_key_base = ENV["SDBMSS_SECRET_KEY_BASE"] || ENV["SECRET_KEY_BASE"]
+
   # Code is not reloaded between requests.
   config.cache_classes = true
 

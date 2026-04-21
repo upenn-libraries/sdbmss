@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 7.2.0'
+gem 'rails', '~> 8.1.0'
 gem 'bootsnap', '>= 1.4.4', require: false
 
 gem "nokogiri", "< 1.16"
@@ -53,7 +53,7 @@ gem "rsolr", "~> 2.0"
 gem "blacklight_advanced_search", "~> 8.0"
 gem "bootstrap", "~> 4.6"
 gem "font-awesome-rails"
-gem "view_component", "~> 2.82"
+gem "view_component", "~> 3.0"
 
 # For authentication; used by Blacklight and by SDBMSS
 gem "devise", "~> 4.9"
@@ -76,7 +76,7 @@ gem 'activerecord-session_store', '~> 2.0'
 gem 'levenshtein', '~> 0.2.2'
 
 # for auditing model changes
-gem 'paper_trail', '~> 16.0'
+gem 'paper_trail', '~> 17.0'
 
 # natural language date parser
 gem 'chronic', '~> 0.10.2'
@@ -126,7 +126,7 @@ end
 
 group :development do
   # in-browser console
-  gem 'web-console', '~> 4.1'
+  gem 'web-console', '>= 4.1'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring', '~> 2.1'
   # Use Capistrano for deployment
@@ -149,8 +149,7 @@ group :test, :development do
   gem "factory_bot_rails", "~> 6.0"
   gem 'cuprite'
   gem 'debug', require: false
-  gem 'simplecov', :require => false
-  gem 'debug'
+  gem 'simplecov', require: false
   gem 'stackprof', '>= 0.2.9', require: false
   gem 'test-prof'
 end
