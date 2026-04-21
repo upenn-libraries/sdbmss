@@ -44,6 +44,7 @@ services:
     environment:
       ADMIN_PASSWORD: "{{ app_versioned_secrets.admin_password.value }}"
       MYSQL_DATABASE: "{{ mysql_database }}"
+      MYSQL_TEST_DATABASE: "{{ mysql_database }}"
       MYSQL_HOST: "mysql"
       MYSQL_PASSWORD: "{{ mysql_versioned_secrets.password.value }}"
       MYSQL_USER: "{{ mysql_user }}"
