@@ -26,7 +26,7 @@ class EntryManuscriptsController < SearchableAuthorityController
         params[:entry_manuscripts].each do |record|
           attrs = record.permit(:id, :entry_id, :manuscript_id, :relation_type, :_destroy)
           if !Entry.exists? record["entry_id"]
-            # pass
+            next
           elsif record["_destroy"]
             em = EntryManuscript.find(record["id"])
             em.destroy!
@@ -41,7 +41,7 @@ class EntryManuscriptsController < SearchableAuthorityController
             em.updated_by = current_user;
             em.save!
           end
-          @entry_manuscripts << em
+          @entry_manuscripts << em if em.present?
         end
 
         respond_to do |format|

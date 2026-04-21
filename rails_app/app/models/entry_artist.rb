@@ -62,7 +62,7 @@ class EntryArtist < ApplicationRecord
   end
 
   def format_role
-    if (found = TYPES_ROLES.select{ |r| r[0] == role })
+    if (found = TYPES_ROLES.select{ |r| r[0] == role }).present?
       found.first[1]
     else
       role

@@ -2,6 +2,7 @@
 require "rails_helper"
 
 describe Name do
+  it_behaves_like "a TellBunny-enabled model"
 
   describe "methods" do
 

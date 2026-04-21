@@ -6,6 +6,7 @@ RSpec.describe "Community", type: :request do
       get community_path
 
       expect(response).to have_http_status(:success)
+      expect(response.content_type.to_s).to include("text/html")
     end
   end
 
@@ -15,7 +16,7 @@ RSpec.describe "Community", type: :request do
     let!(:recent_entry) { create(:edit_entry_with_titles, created_by: activity_user) }
 
     it "returns json stats for the requested period" do
-      get "/community/stats.json", params: { measure: "week", quantity: 6 }
+      get community_stats_path(format: :json), params: { measure: "week", quantity: 6 }
 
       expect(response).to have_http_status(:success)
       expect(response.content_type.to_s).to include("application/json")

@@ -208,7 +208,7 @@ $(document).ready(function() {
     var getRadioButtonHTML = function(sdbmTable, data, value) {
         var entryId = data[sdbmTable.getColumnIndex("ID")];
         var checked = isInWorkspace(entryId, value) ? "checked='checked'" : "";
-        return '<input type="radio" class="toggle-entry-link" data-entry-id="' + entryId + '" name="entry_id_' + entryId + '" value="' + value + '" ' + checked + '/>';
+        return '<input type="radio" class="toggle-entry-link" data-entry-id="' + entryId + '" data-relation-type="' + value + '" name="entry_id_' + entryId + '" value="' + value + '" ' + checked + '/>';
     };
 
     var getButtonHTML = function(sdbmTable, data, value) {

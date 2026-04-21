@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :edit_test_entry, class: Entry do
+  factory :edit_test_entry, aliases: [:entry], class: Entry do
     source { create(:edit_test_source) }
     created_by { source.created_by || create(:admin) }
     approved { false }

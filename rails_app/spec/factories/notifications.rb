@@ -1,8 +1,9 @@
 FactoryBot.define do
   factory :notification do
-    message { "MyString" }
-    type { "" }
-    active { false }
-    user_id { 1 }
+    message { "A notification message" }
+    category { "test" }
+    active { true }
+    association :user
+    title { "Notification Title" }
   end
 end

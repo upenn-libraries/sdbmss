@@ -17,8 +17,8 @@ describe "Linking Tool", :js => true do
   end
 
   def choose_workspace_relation(entry_id, relation_type)
-    inputs = all("input[name='entry_id_#{entry_id}'][value='#{relation_type}']", visible: true)
-    (inputs[1] || inputs.first).trigger('click')
+    selector = "input.toggle-entry-link[data-entry-id='#{entry_id}'][data-relation-type='#{relation_type}']"
+    find(selector, match: :first, visible: :all).trigger('click')
   end
 
   def create_linking_entry(source:, title:, catalog_or_lot_number:)
@@ -214,11 +214,20 @@ describe "Linking Tool", :js => true do
     entry_id = entry.id
 
     choose_workspace_relation(entry.id, 'possible')
+    expect(page).to have_css(
+      "input.toggle-entry-link[data-entry-id='#{entry_id}'][data-relation-type='possible'][checked]",
+      visible: :all,
+      wait: 10,
+    )
 
     persist_linking_changes
 
-    em = manuscript.reload.entry_manuscripts.find_by(entry_id: entry_id)
-    expect(em.relation_type).to eq('possible')
+    visit linking_tool_by_manuscript_path(id: manuscript.id)
+    expect(page).to have_css(
+      "input.toggle-entry-link[data-entry-id='#{entry_id}'][data-relation-type='possible'][checked]",
+      visible: :all,
+      wait: 10,
+    )
   end
 
   it "should remove an entry from an existing Manuscript" do
@@ -302,18 +311,16 @@ describe "Linking Tool", :js => true do
     # it's crucial that we load a fresh object
     manuscript = Manuscript.find(manuscript_id)
     em = manuscript.entry_manuscripts[0]
+    sleep 1
     em.relation_type = EntryManuscript::TYPE_RELATION_PARTIAL
     em.save!
 
-    # Datatable/fixed-column rendering can duplicate these inputs; select any
-    # visible matching input rather than assuming a fixed index.
-    possible_inputs = all("input[name='entry_id_#{last_two_entries[0].id}'][value='possible']", minimum: 1)
-    possible_input = possible_inputs.find(&:visible?) || possible_inputs.first
-    possible_input.trigger('click')
+    choose_workspace_relation(last_two_entries.first.id, 'possible')
+    expect(page).to have_css("#changes", text: /1 changed|[2-9] changed|[1-9][0-9]+ changed/, wait: 10)
 
     persist_linking_changes
 
-    expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
+    expect(page).to have_content("Another change was made to the record while you were working", wait: 10)
   end
 
 end

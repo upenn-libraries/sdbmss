@@ -31,7 +31,7 @@ class EntryDate < ApplicationRecord
   validate do |entry_date|
     if entry_date.date_normalized_start.present? && entry_date.date_normalized_end.present? &&
        entry_date.date_normalized_start.to_i >= entry_date.date_normalized_end.to_i
-      errors[:date_normalized_start] = "date_normalized_start must be earlier than date_normalized_end"
+      errors.add(:date_normalized_start, "date_normalized_start must be earlier than date_normalized_end")
     end
   end
 

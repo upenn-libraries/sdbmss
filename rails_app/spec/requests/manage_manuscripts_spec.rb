@@ -19,6 +19,7 @@ RSpec.describe "Manage manuscripts", type: :request do
       get manuscripts_path
 
       expect(response).to have_http_status(:success)
+      expect(response.content_type.to_s).to include("text/html")
     end
   end
 
@@ -27,6 +28,7 @@ RSpec.describe "Manage manuscripts", type: :request do
       get manuscript_path(manuscript)
 
       expect(response).to have_http_status(:success)
+      expect(response.content_type.to_s).to include("text/html")
     end
   end
 
@@ -35,6 +37,42 @@ RSpec.describe "Manage manuscripts", type: :request do
       get table_manuscript_path(manuscript)
 
       expect(response).to have_http_status(:success)
+      expect(response.content_type.to_s).to include("text/html")
+    end
+  end
+
+  describe "GET /manuscripts/:id/citation" do
+    it "renders citation page" do
+      get citation_manuscript_path(manuscript)
+
+      expect(response).to have_http_status(:success)
+      expect(response.content_type.to_s).to include("text/html")
+    end
+
+    it "renders citation partial payload for xhr requests" do
+      get citation_manuscript_path(manuscript), headers: { "HTTP_X_REQUESTED_WITH" => "XMLHttpRequest" }
+
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include(manuscript.public_id)
+    end
+  end
+
+  describe "GET /manuscripts/:id/history" do
+    it "renders history page for signed-in admin" do
+      login_as(admin_user, scope: :user)
+
+      get history_manuscript_path(manuscript)
+
+      expect(response).to have_http_status(:success)
+      expect(response.content_type.to_s).to include("text/html")
+    end
+  end
+
+  describe "GET /manuscripts/:id/manage_entries" do
+    it "raises unknown action because route points to missing action (current behavior)" do
+      login_as(admin_user, scope: :user)
+
+      expect { get manage_entries_manuscript_path(manuscript) }.to raise_error(AbstractController::ActionNotFound)
     end
   end
 end

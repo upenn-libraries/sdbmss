@@ -16,6 +16,7 @@ RSpec.describe "Manage private messages", type: :request do
       get private_messages_path
 
       expect(response).to have_http_status(:success)
+      expect(response.content_type.to_s).to include("text/html")
     end
   end
 
@@ -28,6 +29,7 @@ RSpec.describe "Manage private messages", type: :request do
       get new_private_message_path, params: { user_id: [recipient.id] }
 
       expect(response).to have_http_status(:success)
+      expect(response.content_type.to_s).to include("text/html")
     end
   end
 end

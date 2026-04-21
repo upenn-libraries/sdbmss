@@ -116,8 +116,9 @@ describe "Manage entries", :js => true do
   end
 
   it "should delete an entry", :solr do
+    source = create(:edit_test_source, created_by: @user)
     entry_to_delete = Entry.create!(
-      source: Source.last,
+      source: source,
       created_by: @user,
       approved: true,
       folios: 17
@@ -136,14 +137,15 @@ describe "Manage entries", :js => true do
   end
 
   it "should mark entry as deprecated", :solr do
+    source = create(:edit_test_source, created_by: @user)
     entry = Entry.create!(
-      source: Source.last,
+      source: source,
       created_by: @user,
       approved: true,
       folios: 18
     )
     replacement = Entry.create!(
-      source: Source.last,
+      source: source,
       created_by: @user,
       approved: true,
       folios: 19
@@ -166,16 +168,28 @@ describe "Manage entries", :js => true do
   end
 
   it "should load all entries from the Manage Entries page", :solr do
+    source = create(
+      :edit_test_source,
+      created_by: @user,
+      title: "Manage entries count source #{SecureRandom.hex(4)}"
+    )
     corpus = [
-      Entry.create!(source: Source.last, created_by: @user, approved: true, folios: 11),
-      Entry.create!(source: Source.last, created_by: @user, approved: true, folios: 12),
-      Entry.create!(source: Source.last, created_by: @user, approved: true, folios: 13)
+      Entry.create!(source: source, created_by: @user, approved: true, folios: 11),
+      Entry.create!(source: source, created_by: @user, approved: true, folios: 12),
+      Entry.create!(source: source, created_by: @user, approved: true, folios: 13)
     ]
     SampleIndexer.index_records!(corpus)
 
     visit entries_path
 
-    expect(page.find('#search_results_info')).to have_content("3")
+    find("input[name='search_value']", match: :first).set source.title
+    find("select[name='search_field']", match: :first).set "Source Title"
+    find('#search_submit').click
+
+    expect(page).to have_selector('#search_results_info', text: /of\s[\d,]+/)
+    count = page.find('#search_results_info').text.match(/of\s([\d,]+)\s/)[1].gsub(",", "").to_i
+
+    expect(count).to eq(3)
   end
 
   it "should perform a search on any field without error" do
@@ -231,8 +245,9 @@ describe "Manage entries", :js => true do
   end
 
   it "should perform a search with multiple values for the same field (ANY)", :solr do
-    augustine_entry = create_entry_with_author("Augustine, Saint, Bishop of Hippo", folios: 41)
-    cicero_entry = create_entry_with_author("Cicero, Marcus Tullius", folios: 42)
+    unique_suffix = SecureRandom.hex(4)
+    augustine_entry = create_entry_with_author("Augustine #{unique_suffix}", folios: 41)
+    cicero_entry = create_entry_with_author("Cicero #{unique_suffix}", folios: 42)
     SampleIndexer.index_records!(augustine_entry, cicero_entry)
 
     visit entries_path
@@ -242,10 +257,10 @@ describe "Manage entries", :js => true do
     textInputs = page.all("input[name='search_value']")
     searchOptions = page.all("select[name='search_field']")
 
-    textInputs[0].set "Augustine"
+    textInputs[0].set "Augustine #{unique_suffix}"
     searchOptions[0].set "Author"
 
-    textInputs[1].set "Cicero"
+    textInputs[1].set "Cicero #{unique_suffix}"
     searchOptions[1].set "Author"
 
     select 'Any', from: 'op'

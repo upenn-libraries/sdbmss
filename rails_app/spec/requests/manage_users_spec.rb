@@ -16,6 +16,7 @@ RSpec.describe "Manage users", type: :request do
       get accounts_path
 
       expect(response).to have_http_status(:success)
+      expect(response.content_type.to_s).to include("text/html")
     end
   end
 
@@ -26,6 +27,7 @@ RSpec.describe "Manage users", type: :request do
       get new_account_path
 
       expect(response).to have_http_status(:success)
+      expect(response.content_type.to_s).to include("text/html")
     end
   end
 

@@ -2,6 +2,14 @@
 require "rails_helper"
 
 describe Provenance do
+  it_behaves_like "a TellBunny-enabled model"
+
+  describe "acquisition methods" do
+    it "returns the display value for an acquisition method" do
+      provenance = build(:provenance, acquisition_method: 'gift')
+      expect(provenance.get_acquisition_method_for_display).to eq('Gift')
+    end
+  end
 
   describe "#parse_observed_date" do
 
