@@ -17,7 +17,7 @@ if (Math.log10 === undefined) Math.log10 = function (n) {
 };
 
 function addNotification (message, type, permanent) {
-  var notification = $('<div><a class="close" data-dismiss="alert" aria-label="close">&times;</a>' + message + "</div>");
+  var notification = $('<div><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>' + message + "</div>");
   notification.addClass('alert').addClass('alert-' + type).addClass('alert-absolute');
 
   notification.hide();
@@ -42,13 +42,13 @@ function load_activity (url, day) {
       if (loaded.activities && loaded.activities[0]) {
 
           var date = loaded.activities[0].date;
-          var date_header = $("<h4 class='text-center'><a data-toggle='collapse' data-target='.activity-" + date + "'>" + date + " <span class='caret'></span></a></h4>");
+          var date_header = $("<h4 class='text-center'><a data-bs-toggle='collapse' data-bs-target='.activity-" + date + "'>" + date + " <span class='caret'></span></a></h4>");
           var date_body = $("<div class='collapse show mb-3'></div>");
           $("#activity-content").append(date_header);
           $("#activity-content").append(date_body);
 
           for (var user in loaded.activities[0].activities) {
-              var user_header = $("<p class='text-center' data-toggle='collapse' data-target='#activity-" + date + "-" + user + "'</p>");
+              var user_header = $("<p class='text-center' data-bs-toggle='collapse' data-bs-target='#activity-" + date + "-" + user + "'</p>");
               var user_body = $("<div class='list-group collapse show activity-" + date + "' id='activity-" + date + "-" + user + "'></div>");
 
               date_body.append(user_header);
@@ -191,7 +191,7 @@ function bindRemoteAjaxCallback (){
         }
         if(!options.allowDismiss) {
             $(selectorStr).modal({ keyboard: false, backdrop: 'static' });
-            $(selectorStr).find(".close").hide();
+            $(selectorStr).find(".btn-close").hide();
         }
         if (options.class) {
           $(selectorStr).addClass(options.class);
@@ -331,7 +331,7 @@ $(document).ready( function (e) {
 
     // disable site-wide autocomplete
     $('input').attr('autocomplete','off');
-    //$('[data-toggle="popover"]').popover();
+    //$('[data-bs-toggle="popover"]').popover();
 
     // remember control panel display from last set (localstorage memory)
     if (localStorage.getItem('sdbm_hide_panel') == "true") {

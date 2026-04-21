@@ -2129,7 +2129,7 @@ var BOOKMARK_SCOPE;
         var modelName = attrs.encourageNameAuthorityModel;
         var nameType = attrs.encourageNameAuthorityName;
 
-        $(element).html('<span class="fa fa-exclamation-triangle"></span> <span class="show-hover">You have not selected an authority name. <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a></span>');
+        $(element).html('<span class="fa fa-exclamation-triangle"></span> <span class="show-hover">You have not selected an authority name. <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button></span>');
 
         scope.$watch(modelName, function(newValue, oldValue) {
           $(element).hide();
@@ -3902,7 +3902,7 @@ var BOOKMARK_SCOPE;
           $scope.all_bookmarks[type].unshift(e);
           $scope.$apply();
           $scope.searchTag($scope.tagSearch);
-          addNotification(type + ' ' + id + ' bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'success');
+          addNotification(type + ' ' + id + ' bookmarked! <a data-bs-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'success');
         } else {
           console.log(e.error);
         }

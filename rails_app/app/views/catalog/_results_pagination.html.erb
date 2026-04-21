@@ -10,7 +10,7 @@
   </div>
   <% end %>
   <% if !@response.empty? && current_user %>
-  <div class="ml-auto" style="margin: 0px 0px 10px 0px;">
+  <div class="ms-auto" style="margin: 0px 0px 10px 0px;">
     <a class="btn btn-outline-secondary export-csv" style="white-space: nowrap;" onclick="exportCSV('<%= search_results_as_csv_path %>')">Download results as CSV</a>
   </div>
   <% end %>

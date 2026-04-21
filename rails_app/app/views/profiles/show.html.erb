@@ -42,7 +42,7 @@
         </div>
         <div class="user-info">
             <span class="dropdown">
-                <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                <a href="" class="dropdown-toggle" data-bs-toggle="dropdown">
                   <%= @user.to_s %>
                 </a>
                 <div class="dropdown-menu">
@@ -69,10 +69,10 @@
     </div>
     <div class="col-sm-8">
         <ul class="ajax-tabs nav nav-tabs custom-tabs">
-            <li class="nav-item"><a class="nav-link active" data-toggle='tab' href="#contributions">Contributions</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle='tab' href="#activity" href="">Activity</a></li>
+            <li class="nav-item"><a class="nav-link active" data-bs-toggle='tab' href="#contributions">Contributions</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle='tab' href="#activity" href="">Activity</a></li>
             <% if can? :edit, @user %>
-                <li class="nav-item"><a class="nav-link" data-toggle='tab' href="#analytics" href="">Analytics</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle='tab' href="#analytics" href="">Analytics</a></li>
             <% end %>
         </ul>
 

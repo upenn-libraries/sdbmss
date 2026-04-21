@@ -116,7 +116,7 @@
     <div class="col-sm-6">
 
 
-        <div class="text-left" style="margin-bottom: 5px;">
+        <div class="text-start" style="margin-bottom: 5px;">
             <p>Is this a real person? <%= render partial: "ratings/rate", locals: {ratable: name} %></p>
             <div><%= render partial: "ratings/rated", locals: {ratable: name} %></div>
         </div>
@@ -132,15 +132,15 @@
 
                       <% record = dericci_links.first.dericci_record %>
 
-                      <div class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#Dericci_<%= record.id %>" style="margin-bottom: 4px;">
-                        <%= record.name %> <span class="badge badge-light"><%= dericci_links.count %></span>
+                      <div class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#Dericci_<%= record.id %>" style="margin-bottom: 4px;">
+                        <%= record.name %> <span class="badge text-bg-light"><%= dericci_links.count %></span>
                       </div>
 
                       <div class="modal fade" id="Dericci_<%= record.id %>">
                         <div class="modal-dialog" role="document">
                           <div class="modal-content">
                             <div class="modal-body">
-                              <button type="button" class="close float-right" data-dismiss="modal" aria-label="Close">
+                              <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                               </button>
                               <p>This name has been linked to <%= link_to record.name, dericci_record_path(record) %> by </p>
@@ -181,15 +181,15 @@
 
                       <% record = dericci_links.first.dericci_record %>
 
-                      <div class="btn btn-info btn-sm" data-toggle="modal" data-target="#Dericci_<%= record.id %>" style="margin-bottom: 4px;">
-                        <%= record.name %> <span class="badge badge-light"><%= dericci_links.count %></span>
+                      <div class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#Dericci_<%= record.id %>" style="margin-bottom: 4px;">
+                        <%= record.name %> <span class="badge text-bg-light"><%= dericci_links.count %></span>
                       </div>
 
                       <div class="modal fade" id="Dericci_<%= record.id %>">
                         <div class="modal-dialog" role="document">
                           <div class="modal-content">
                             <div class="modal-body">
-                              <button type="button" class="close float-right" data-dismiss="modal" aria-label="Close">
+                              <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                               </button>
                               <p>This name has been linked to <%= link_to record.name, dericci_record_path(record) %> by </p>

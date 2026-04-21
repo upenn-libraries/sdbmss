@@ -41,7 +41,7 @@
             <input type="hidden" name="target_id" value="<%= @target.id %>"/>
             <p>Are you sure? <strong><%= @model.public_id %></strong> will be <strong class="text-danger">deleted.</strong></p>
             <div class="d-flex justify-content-center">
-                <button class="btn btn-primary mr-1">Yes</button>
+                <button class="btn btn-primary me-1">Yes</button>
                 <a class="btn btn-warning" href="<%= merge_name_path(@model) %>">Cancel</a>
             </div>
         </div>
@@ -61,7 +61,7 @@
                 <div class='card-header'>
                     <span class='h3'>
                         <%= link_to @target.public_id, name_path(@target) %>
-                        <small class="float-right" style="margin-top: -5px;">
+                        <small class="float-end" style="margin-top: -5px;">
                             <span id="editNameMerge" class="btn btn-success">Edit</span>
                             <span id="controlEditNameMerge" style="display: none;">
                                 <span id="confirmEditNameMerge" class="btn btn-outline-secondary">Save</span>

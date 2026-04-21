@@ -6,15 +6,15 @@
 
 <div class="row">
     <div class="col-sm-4">
-        <span data-toggle="collapse" href="#myEntries" class='h3 small-caps'>Entries You Contributed
+        <span data-bs-toggle="collapse" href="#myEntries" class='h3 small-caps'>Entries You Contributed
             <span class="caret"></span>
         </span>
     </div>
     <div class="col-sm-4 text-center d-flex justify-content-center align-items-center">
-        <a href="/entries?created_by=<%= current_user.username %>" class='btn btn-outline-secondary btn-sm mr-1'>Manage Your Entries</a>
+        <a href="/entries?created_by=<%= current_user.username %>" class='btn btn-outline-secondary btn-sm me-1'>Manage Your Entries</a>
         <a href="<%= search_by_facet_value("created_by", current_user.username) %>" class='btn btn-outline-secondary btn-sm'>See Your Public Entries</a>
     </div>
-    <div class="col-sm-4 text-right">
+    <div class="col-sm-4 text-end">
         <% if num_entries > 0 %>
             <span>You have contributed <%= "#{num_entries} entry".pluralize(num_entries) %></span><br>
             <% if num_entries_needing_approval > 0 %>

@@ -22,7 +22,7 @@
       <td><%= group.users.count %></td>
       <td><%= group.entries.count %></td>
       <td><%= group.public %></td>
-      <td class='text-right col-sm-4'>
+      <td class='text-end col-sm-4'>
         <div class="btn-group">
         <% if can?(:edit, group) %>
             <%= link_to(group_path(group, format: 'html'),  method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-sm') do %>

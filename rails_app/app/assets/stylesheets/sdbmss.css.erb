@@ -1,3 +1,9 @@
+.form-group { margin-bottom: 1rem; }
+.input-group-append, .input-group-prepend { display: flex; }
+.input-group-append .btn, .input-group-prepend .btn { border-radius: 0; }
+.input-group-append:last-child .btn { border-top-right-radius: var(--bs-border-radius); border-bottom-right-radius: var(--bs-border-radius); }
+.input-group-prepend:first-child .btn, .input-group-prepend:first-child .input-group-text { border-top-left-radius: var(--bs-border-radius); border-bottom-left-radius: var(--bs-border-radius); }
+
 html {
   height: 100%;
   width: 100%;
@@ -1960,7 +1966,7 @@ so that gray backdrop shvows up correctly */
   margin-left: 30px;
 }
 
-[data-toggle=collapse] {
+[data-bs-toggle=collapse] {
   cursor: pointer;
 }
 
@@ -2947,7 +2953,7 @@ div.dataTables_length select {
   text-align: right;
   padding: 0px;
 }
-.dataTables_wrapper > .row > .col-sm-7.text-right {
+.dataTables_wrapper > .row > .col-sm-7.text-end {
   justify-content: flex-end;
 }
 

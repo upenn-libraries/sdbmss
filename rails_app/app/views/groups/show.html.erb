@@ -20,10 +20,10 @@
                 </div>
                 <div class="row">
                     <% if group_user.created_by != current_user %>
-                    <div class="col-6 text-left">
+                    <div class="col-6 text-start">
                         <%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put %><br>
                     </div>
-                    <div class="col-6 text-right">
+                    <div class="col-6 text-end">
                         <%= link_to "Reject Invitation", group_user_path(group_user), :method => :delete, data: { confirm: "Are you sure you would like to reject this invitation?" } %>
                     </div>
                     <% else %>
@@ -98,7 +98,7 @@
     <div class="col-sm-5">
         <h4>
             Entries
-            <small class="float-right"><%= link_to(entries_path) do %> <span class="fa fa-plus"></span> Add Entries <% end %></small>
+            <small class="float-end"><%= link_to(entries_path) do %> <span class="fa fa-plus"></span> Add Entries <% end %></small>
         </h4>
         <%= render partial: "entries", locals: {entries: @model.entries} %>
         <% if @model.entries.count <= 0 %>

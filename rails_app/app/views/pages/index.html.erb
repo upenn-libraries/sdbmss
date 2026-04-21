@@ -6,7 +6,7 @@
     <%= render partial: "pages/partial", locals: {page_name: "Page Instructions"} %>
   </div>
   <div class="col-sm-12 text-center">
-    <a href="#add_page" data-toggle="modal" data-target="#add_page"><span class="fa fa-plus"></span> Click Here To Add New Page</a>
+    <a href="#add_page" data-bs-toggle="modal" data-bs-target="#add_page"><span class="fa fa-plus"></span> Click Here To Add New Page</a>
 
     <div id="add_page" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -14,7 +14,7 @@
                 <div class="modal-header">
                     <h4 class="modal-title">Create New Page</h4>
                 </div>
-                <div class="modal-body text-left">
+                <div class="modal-body text-start">
                   <%= render partial: 'form', locals: {edit: false} %>
                 </div>
             </div>

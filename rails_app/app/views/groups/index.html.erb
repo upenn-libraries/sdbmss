@@ -14,7 +14,7 @@
       </span>
     </div>
     <div class="col-sm-4 text-center"></div>
-    <div class="col-sm-4 text-right"></div>
+    <div class="col-sm-4 text-end"></div>
     <div class="col-sm-12">
       <%= render partial: "table", locals: {groups: Group.where(public: true) } %>
     </div>
@@ -26,7 +26,7 @@
         </span>
       </div>
       <div class="col-sm-4 text-center"></div>
-      <div class="col-sm-4 text-right"></div>
+      <div class="col-sm-4 text-end"></div>
       <div class="col-sm-12">
         <%= render partial: "table", locals: {groups: @groups_requests } %>
       </div>
@@ -39,7 +39,7 @@
         </span>
       </div>
       <div class="col-sm-4 text-center"></div>
-      <div class="col-sm-4 text-right"></div>
+      <div class="col-sm-4 text-end"></div>
       <div class="col-sm-12">
         <%= render partial: "table", locals: {groups: @groups_invites } %>
       </div>
@@ -51,7 +51,7 @@
       </span>
     </div>
     <div class="col-sm-4 text-center"></div>
-    <div class="col-sm-4 text-right">
+    <div class="col-sm-4 text-end">
         <%= link_to(new_group_path, class: "btn btn-outline-secondary btn-sm") do %>
           <span class="fa fa-plus"></span> Add New
         <% end %>
@@ -67,7 +67,7 @@
       </span>
     </div>
     <div class="col-sm-4 text-center"></div>
-    <div class="col-sm-4 text-right"></div>
+    <div class="col-sm-4 text-end"></div>
     <div class="col-sm-12">
       <%= render partial: "table", locals: {groups: @groups_member } %>
     </div>

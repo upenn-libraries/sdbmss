@@ -8,7 +8,7 @@
             </div>
             <div class="user-info">
               <span class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="color: white;">
+                <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" style="color: white;">
                   <%= current_user.to_s %>
                 </a>
                 <ul class="dropdown-menu">
@@ -46,7 +46,7 @@
                 <a href="/watches"><span class="fa fa-eye"></span> Watched Records</a>
             </li>
             <li class='dropdown'>
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-inbox"></span> Projects</a>
+              <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown"><span class="fa fa-inbox"></span> Projects</a>
               <ul class="dropdown-menu" role="menu">
                 <li>
                   <a href="/dericci_games"><span class="fa fa-gamepad"></span> De Ricci Name Game</a>
@@ -76,7 +76,7 @@
               <%= yield :add_entry %>
             <% else %>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-plus"></span> Add New Entry</a>
+              <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown"><span class="fa fa-plus"></span> Add New Entry</a>
               <ul class="dropdown-menu" role="menu">
                 <li>
                   <a href="/entries/new">From a Source</a>
@@ -129,7 +129,7 @@
       <div class="card-body">
         <ul class="nav">
           <li class='dropdown'>
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-inbox"></span> Projects</a>
+            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown"><span class="fa fa-inbox"></span> Projects</a>
             <ul class="dropdown-menu" role="menu">
               <li>
                 <a href="/dericci_games"><span class="fa fa-gamepad"></span> De Ricci Name Game</a>

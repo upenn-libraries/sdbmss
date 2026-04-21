@@ -40,7 +40,7 @@
     <div class="alert text-muted alert-warning" style="background: #f8f8f8; border-color: #eee; position: relative;">
         This entry is a draft and has not yet been published.
         <% if can? :edit, entry %>
-            <%= link_to(entry_path(entry.id, draft: false, cumulative_updated_at: entry.cumulative_updated_at), :method => :patch, :title => "Publish?", :class => "btn btn-sm btn-outline-secondary float-right publish-btn", :data => {:confirm => "Are you sure you wish to publish this entry?  It will become publicly viewable from this point forward."}) do %>
+            <%= link_to(entry_path(entry.id, draft: false, cumulative_updated_at: entry.cumulative_updated_at), :method => :patch, :title => "Publish?", :class => "btn btn-sm btn-outline-secondary float-end publish-btn", :data => {:confirm => "Are you sure you wish to publish this entry?  It will become publicly viewable from this point forward."}) do %>
             <span class="fa fa-file"></span>
           <% end %>
         <% end %>
@@ -77,7 +77,7 @@
     <tbody>
         <% if (source = entry.source).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label">Source</td>
+            <td class="col-sm-2 text-end record-label">Source</td>
             <td class="col-sm-10">
                 <%= link_to source.display_value, source_path(source) %> (<%= source.source_type.display_name %>)
             </td>
@@ -86,7 +86,7 @@
 
         <% if entry.catalog_or_lot_number.present? %>
         <tr>
-            <td sdbm-tooltip="entry_cat_lot_no" class="col-sm-2 text-right record-label">Cat./Lot #</td>
+            <td sdbm-tooltip="entry_cat_lot_no" class="col-sm-2 text-end record-label">Cat./Lot #</td>
             <td class="col-sm-10">
                 <%= entry.catalog_or_lot_number %>
             </td>
@@ -95,7 +95,7 @@
 
         <% if entry.institution.present? %>
         <tr>
-            <td sdbm-tooltip="entry_institution" class="col-sm-2 text-right record-label">Institution/Collection</td>
+            <td sdbm-tooltip="entry_institution" class="col-sm-2 text-end record-label">Institution/Collection</td>
             <td class="col-sm-10">
                 <%= entry.institution %>
             </td>
@@ -118,7 +118,7 @@
 
         <% if (selling_agents = sale.sale_agents.where(role: "selling_agent")).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label" sdbm-tooltip="entry_sale_agent">Selling Agent(s)</td>
+            <td class="col-sm-2 text-end record-label" sdbm-tooltip="entry_sale_agent">Selling Agent(s)</td>
             <td class="col-sm-10">
                 <% selling_agents.each do |selling_agent| %>
                     <% if selling_agent.agent %>
@@ -137,7 +137,7 @@
 
         <% if (sellers_or_holders = sale.sale_agents.where(role: "seller_or_holder")).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label" sdbm-tooltip="entry_sale_agent">Seller(s)</td>
+            <td class="col-sm-2 text-end record-label" sdbm-tooltip="entry_sale_agent">Seller(s)</td>
             <td class="col-sm-10">
                 <% sellers_or_holders.each do |seller_or_holder| %>
                     <% if seller_or_holder.agent %>
@@ -156,7 +156,7 @@
 
         <% if (buyers = sale.sale_agents.where(role: "buyer")).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label" sdbm-tooltip="entry_sale_agent">Buyer(s)</td>
+            <td class="col-sm-2 text-end record-label" sdbm-tooltip="entry_sale_agent">Buyer(s)</td>
             <td class="col-sm-10">
                 <% buyers.each do |buyer| %>
                     <% if buyer.agent %>
@@ -175,7 +175,7 @@
 
         <% if sale.sold.present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label" sdbm-tooltip="entry_sold">Sold</td>
+            <td class="col-sm-2 text-end record-label" sdbm-tooltip="entry_sold">Sold</td>
             <td class="col-sm-10">
                 <%= sale.sold %>
             </td>
@@ -184,7 +184,7 @@
 
         <% if sale.date %>
         <tr>
-            <td class="col-sm-2 text-right record-label">Date Sold</td>
+            <td class="col-sm-2 text-end record-label">Date Sold</td>
             <td class="col-sm-10">
                 <%= format_fuzzy_date(sale.date) %>
             </td>
@@ -193,7 +193,7 @@
 
         <% if sale.get_complete_price_for_display.present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label" sdbm-tooltip="entry_price">Price</td>
+            <td class="col-sm-2 text-end record-label" sdbm-tooltip="entry_price">Price</td>
             <td class="col-sm-10">
                 <%= sale.get_complete_price_for_display %>
             </td>
@@ -216,7 +216,7 @@
 
         <% if (entry_titles = entry.entry_titles.order(:order)).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_common_title">Titles</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_common_title">Titles</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_titles.each do |entry_title| %>
                     <%= entry_title.display_value %>  <%= entry_title.certainty_flags %><br/>
@@ -227,7 +227,7 @@
 
         <% if (entry_authors = entry.entry_authors.order(:order)).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_author">Authors</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_author">Authors</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_authors.each do |entry_author| %>
                     <%= render partial: "shared/entry_author", object: entry_author %>
@@ -239,7 +239,7 @@
 
         <% if (entry_dates = entry.entry_dates.order(:order)).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label" colspan="2">Manuscript Dates</td>
+            <td class="col-sm-2 text-end record-label" colspan="2">Manuscript Dates</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_dates.each do |entry_date| %>
                     <%= entry_date.display_value %>  <%= entry_date.certainty_flags %><br/>
@@ -250,7 +250,7 @@
 
         <% if (entry_artists = entry.entry_artists.order(:order)).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_artist">Artists</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_artist">Artists</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_artists.each do |entry_artist| %>
                     <%= render partial: "shared/entry_artist", object: entry_artist %>
@@ -262,7 +262,7 @@
 
         <% if (entry_scribes = entry.entry_scribes.order(:order)).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_scribe">Scribes</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_scribe">Scribes</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_scribes.each do |entry_scribe| %>
                     <%= render partial: "shared/entry_scribe", object: entry_scribe %>
@@ -274,7 +274,7 @@
 
         <% if (entry_languages = entry.entry_languages.order(:order)).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_language">Languages</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_language">Languages</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_languages.each do |entry_language| %>
                     <%= render partial: "shared/language", locals: {entry_language: entry_language} %>
@@ -286,7 +286,7 @@
 
         <% if (entry_materials = entry.entry_materials.order(:order)).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_material">Materials</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_material">Materials</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_materials.each do |entry_material| %>
                     <%= entry_material.display_value %> <%= entry_material.certainty_flags %><br>
@@ -297,7 +297,7 @@
 
         <% if (entry_places = entry.entry_places.order(:order)).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_place">Places</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_place">Places</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_places.each do |entry_place| %>
                     <%= render partial: "shared/place", locals: {entry_place: entry_place} %>
@@ -309,7 +309,7 @@
 
         <% if (entry_uses = entry.entry_uses.order(:order)).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_use">Manuscript Uses</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_use">Manuscript Uses</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_uses.each do |entry_use| %>
                 <%= entry_use.use %><br/>
@@ -320,15 +320,15 @@
 
         <% if entry.folios || entry.num_lines || entry.num_columns %>
         <tr>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_folios">Folios</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_folios">Folios</td>
             <td class="col-sm-2" colspan="2">
                 <%= entry.folios||'' %>
             </td>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_lines">Lines</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_lines">Lines</td>
             <td class="col-sm-2" colspan="2">
                 <%= entry.num_lines||'' %>
             </td>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_columns">Columns</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_columns">Columns</td>
             <td class="col-sm-2" colspan="2">
                 <%= entry.num_columns||'' %>
             </td>
@@ -337,15 +337,15 @@
 
         <% if entry.height || entry.width || entry.alt_size %>
         <tr>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_height">Height</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_height">Height</td>
             <td class="col-sm-2" colspan="2">
                 <%= entry.height||'' %>
             </td>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_width">Width</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_width">Width</td>
             <td class="col-sm-2" colspan="2">
                 <%= entry.width||'' %>
             </td>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_alt_size">Alt Size</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_alt_size">Alt Size</td>
             <td class="col-sm-2" colspan="2">
                 <%= entry.alt_size||'' %>
             </td>
@@ -354,15 +354,15 @@
 
         <% if entry.miniatures_fullpage || entry.miniatures_large || entry.miniatures_small %>
         <tr>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_min_fl">Full-Page Miniatures</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_min_fl">Full-Page Miniatures</td>
             <td class="col-sm-2" colspan="2">
                 <%= entry.miniatures_fullpage||'' %>
             </td>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_min_lg">Large Miniatures</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_min_lg">Large Miniatures</td>
             <td class="col-sm-2" colspan="2">
                 <%= entry.miniatures_large||'' %>
             </td>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_min_sm">Small Miniatures</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_min_sm">Small Miniatures</td>
             <td class="col-sm-2" colspan="2">
                 <%= entry.miniatures_small||'' %>
             </td>
@@ -372,7 +372,7 @@
         <% if entry.miniatures_unspec_size %>
         <tr>
             <td class="col-sm-8" colspan="8"></td>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_min_un">Unspec. Size Miniatures</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_min_un">Unspec. Size Miniatures</td>
             <td class="col-sm-2" colspan="2">
                 <%= entry.miniatures_unspec_size %>
             </td>
@@ -381,11 +381,11 @@
 
         <% if entry.initials_historiated || entry.initials_decorated %>
         <tr>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_initials_historiated">Hist. Initials</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_initials_historiated">Hist. Initials</td>
             <td class="col-sm-2" colspan="2">
                 <%= entry.initials_historiated %>
             </td>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_initials_decorated">Decor. Initials</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_initials_decorated">Decor. Initials</td>
             <td class="col-sm-2" colspan="2">
                 <%= entry.initials_decorated %>
             </td>
@@ -395,7 +395,7 @@
 
         <% if entry.manuscript_binding %>
         <tr>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_binding">Binding</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_binding">Binding</td>
             <td class="col-sm-10" colspan="10">
                 <%= entry.manuscript_binding %>
             </td>
@@ -404,7 +404,7 @@
 
         <% if entry.manuscript_link %>
         <tr>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_link">URL</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_link">URL</td>
             <td class="col-sm-10" colspan="10">
                 <%= link_to(entry.manuscript_link, SDBMSS::Util.link_protocol(entry.manuscript_link)) %>
             </td>
@@ -413,7 +413,7 @@
 
         <% if entry.other_info %>
         <tr>
-            <td class="col-sm-2 text-right record-label" colspan="2" sdbm-tooltip="entry_other_info">Other Info</td>
+            <td class="col-sm-2 text-end record-label" colspan="2" sdbm-tooltip="entry_other_info">Other Info</td>
             <td class="col-sm-10" colspan="10">
                 <%= simple_format(entry.other_info) %>
             </td>
@@ -435,7 +435,7 @@
         <% if (provenance_all = entry.provenance.order(:order)).present? %>
         <% provenance_all.each do |provenance| %>
         <tr>
-            <td class="col-sm-2 text-right record-label">
+            <td class="col-sm-2 text-end record-label">
                 <% if provenance.start_date.present? %>
                     <%= format_fuzzy_date(provenance.start_date) %> <span class="text-muted"> (Start) </span>
                 <% end %>
@@ -474,7 +474,7 @@
 
     <tbody>
         <tr>
-            <td class="col-sm-2 text-right record-label">Created</td>
+            <td class="col-sm-2 text-end record-label">Created</td>
             <td class="col-sm-10">
                 by <%= render partial: "shared/username_with_profile_link", locals: { user: entry.created_by } %>
                 on <%= entry.created_at.to_formatted_s(:date_and_time) %>
@@ -482,7 +482,7 @@
         </tr>
         <% if entry.updated_at.present? && entry.updated_at != entry.created_at %>
         <tr>
-            <td class="col-sm-2 text-right record-label">Last Updated</td>
+            <td class="col-sm-2 text-end record-label">Last Updated</td>
             <td class="col-sm-10">
                 by <%= render partial: "shared/username_with_profile_link", locals: { user: entry.updated_by } %>
                 on <%= entry.updated_at %>
@@ -492,7 +492,7 @@
         <% editors = ModelHistory.new(entry).editors %>
         <% if editors.length > 0 %>
         <tr>
-            <td class="col-sm-2 text-right record-label">Editors</td>
+            <td class="col-sm-2 text-end record-label">Editors</td>
             <td class="col-sm-10">
                 <% editors.each_with_index do |editor, index| %>
                     <%= render partial: "shared/username_with_profile_link", locals: { user: editor } %><% if index != editors.size - 1 %>, <% end %>
@@ -501,7 +501,7 @@
         </tr>
         <% end %>
         <tr>
-            <td class="col-sm-2 text-right record-label">User Groups</td>
+            <td class="col-sm-2 text-end record-label">User Groups</td>
             <td class="col-sm-10">
                 <div class="row">
                     <div class="col-sm-6">
@@ -526,7 +526,7 @@
                         <% end %>
                         </span>
                     </div>
-                    <div class="col-sm-6 text-right">
+                    <div class="col-sm-6 text-end">
                         <%= render partial: "entries/group_form", locals: {entry: entry} %>
                     </div>
                 </div>

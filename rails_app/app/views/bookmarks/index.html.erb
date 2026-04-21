@@ -12,12 +12,12 @@
   </div>
   <div class="col-sm-12">
     <ul class="nav nav-tabs">
-      <li class="nav-item"><a class="nav-link active" href="#Entry" data-toggle="tab">Entries <span class="badge badge-secondary">{{ all_bookmarks_display["Entry"].length }}</span></a></li>
-      <li class="nav-item"><a class="nav-link" href="#Manuscript" data-toggle="tab">Manuscript Records <span class="badge badge-secondary">{{ all_bookmarks_display["Manuscript"].length }}</span></a></li>
-      <li class="nav-item"><a class="nav-link" href="#Source" data-toggle="tab">Sources <span class="badge badge-secondary">{{ all_bookmarks_display["Source"].length }}</span></a></li>
-      <li class="nav-item"><a class="nav-link" href="#Name" data-toggle="tab">Names <span class="badge badge-secondary">{{ all_bookmarks_display["Name"].length }}</span></a></li>
-      <li class="nav-item"><a class="nav-link" href="#DericciRecord" data-toggle="tab">De Ricci Record <span class="badge badge-secondary">{{ all_bookmarks_display["DericciRecord"].length }}</span></a></li>
-      <li class="ml-auto" style="max-width: 30%;">
+      <li class="nav-item"><a class="nav-link active" href="#Entry" data-bs-toggle="tab">Entries <span class="badge text-bg-secondary">{{ all_bookmarks_display["Entry"].length }}</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#Manuscript" data-bs-toggle="tab">Manuscript Records <span class="badge text-bg-secondary">{{ all_bookmarks_display["Manuscript"].length }}</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#Source" data-bs-toggle="tab">Sources <span class="badge text-bg-secondary">{{ all_bookmarks_display["Source"].length }}</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#Name" data-bs-toggle="tab">Names <span class="badge text-bg-secondary">{{ all_bookmarks_display["Name"].length }}</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#DericciRecord" data-bs-toggle="tab">De Ricci Record <span class="badge text-bg-secondary">{{ all_bookmarks_display["DericciRecord"].length }}</span></a></li>
+      <li class="ms-auto" style="max-width: 30%;">
         <span class="input-group">
           <input type="text" class="form-control" name="tag-search" placeholder="Filter By Tag..." size=32 ng-model="search_term" ng-keyup="$event.keyCode == 13 && searchTag(search_term)">
           <span class="input-group-append">
@@ -41,7 +41,7 @@
           <div class="card">
             <div class="card-header">
               <strong><a href="{{ bookmark.link }}">{{ bookmark.public_id }}</a></strong>
-              <a class='remove-bookmark control-bookmark float-right' ng-click="removeBookmark(name, bookmark)" title="Remove bookmark">
+              <a class='remove-bookmark control-bookmark float-end' ng-click="removeBookmark(name, bookmark)" title="Remove bookmark">
                 <span class="fa fa-times"></span>
               </a>
             </div>
@@ -63,7 +63,7 @@
                     </li>
                   </ul>
                 </div>
-                <div class="col-sm-5 text-right">
+                <div class="col-sm-5 text-end">
                   <a ng-show="!bookmark.showAddTag" href="" class="btn btn-sm btn-outline-secondary btn-add-tag" ng-click="bookmark.showAddTag = !bookmark.showAddTag">
                     <span class="fa fa-plus"></span> Add Tag
                   </a>

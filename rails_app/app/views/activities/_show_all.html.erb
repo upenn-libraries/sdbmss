@@ -19,7 +19,7 @@
       <% activities.group_by { |a| a.user }.each do |user, user_activities| %>
         <h5 class='text-center'>
             <%= render partial: "shared/username_with_profile_link", locals: { user: user } %>
-            <span data-toggle='collapse' href='#activity_<%= date %>_<%= user.id %>'>modified <%= "#{user_activities.count} record".pluralize(user_activities.count) %> <span class="caret"></span></span>
+            <span data-bs-toggle='collapse' href='#activity_<%= date %>_<%= user.id %>'>modified <%= "#{user_activities.count} record".pluralize(user_activities.count) %> <span class="caret"></span></span>
         </h5>
         <div class="collapse activity_date_<%= date %> <%= (collapsed && index > 0) ? '' : 'show' %>" id="activity_<%= date %>_<%= user.id %>">
         <% user_activities.each do |activity| %>
@@ -38,7 +38,7 @@
                     <span class="text-danger"><%= link_text %></span>
                   <% end %>
                 </div>
-                <div class="col-6 text-right">
+                <div class="col-6 text-end">
                   <%= activity.created_at.strftime("%l:%M %P") %>
                 </div>
               </div>
@@ -64,7 +64,7 @@
       </div>
     </div>
     <div class="col-sm-2">
-      <div class='h4' data-toggle='collapse' href='.activity_date_<%= date %>'>
+      <div class='h4' data-bs-toggle='collapse' href='.activity_date_<%= date %>'>
         <span class="caret"></span>
         <% days = (Date.today - date).to_i %>
         <% if days == 0 %>

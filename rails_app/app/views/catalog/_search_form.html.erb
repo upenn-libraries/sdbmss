@@ -17,14 +17,14 @@
           <div class="input-group-append">
             <button type="submit" class="btn btn-primary search-btn align-items-center" id="search">
               <span class="submit-search-text"><%=t('blacklight.search.form.submit')%></span>
-              <i class="fa fa-search ml-1"></i>
+              <i class="fa fa-search ms-1"></i>
             </button>
             <a href="<%= main_app.advanced_search_path(request.query_parameters) %>" class="btn btn-light advanced_search">Advanced</a>
           </div>
         </div>
       </div>
       <div class="col-1 text-center show-mobile" style="padding: 0px">
-        <a class='btn btn-blank navbar-toggler' data-toggle="collapse" data-target="#myNavbar">
+        <a class='btn btn-blank navbar-toggler' data-bs-toggle="collapse" data-bs-target="#myNavbar">
           <i class="fa fa-ellipsis-h"></i>
         </a>
       </div>

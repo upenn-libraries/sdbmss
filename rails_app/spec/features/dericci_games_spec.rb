@@ -74,7 +74,7 @@ describe "De Ricci Game", :js => true do
 
       visit dericci_games_path
       expect(page).to have_content("In Progress")
-      find("[data-target='#in-progress']").click
+      find("[data-bs-target='#in-progress']").click
       within("#in-progress") do
         first(".play-game").click
       end

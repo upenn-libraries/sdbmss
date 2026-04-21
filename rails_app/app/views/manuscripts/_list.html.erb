@@ -12,7 +12,7 @@
             <!-- using partials makes this take longer?? -->
             <% if user.present? %>
               <span class="<%= defined?(up) ? 'dropup' : 'dropdown' %>">
-                <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                <a href="" class="dropdown-toggle" data-bs-toggle="dropdown">
                   <%= user.to_s %>
                 </a>
                 <div class="dropdown-menu">
@@ -28,7 +28,7 @@
               Unknown
             <% end %>
 
-            <span data-toggle='collapse' href='#activity_<%= date %>_<%= user_id %>'>made <%= "#{details.count} change".pluralize(details.count) %></span>
+            <span data-bs-toggle='collapse' href='#activity_<%= date %>_<%= user_id %>'>made <%= "#{details.count} change".pluralize(details.count) %></span>
           </span>
         </h5>
         

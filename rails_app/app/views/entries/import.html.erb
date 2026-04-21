@@ -46,7 +46,7 @@
         <div class="col-sm-8 label-alignment source-name">
           <a href="/sources/{{ source.id }}">SDBM_SOURCE_{{ source.id }}</a> - {{ source.display_value }} ({{ source.source_type.display_name }})
         </div>
-        <div class="col-sm-4 text-right">
+        <div class="col-sm-4 text-end">
             <a href="" class="btn btn-danger" ng-click="selectSourceModal();">Change Source</a>
         </div>
       </div>
@@ -59,7 +59,7 @@
       <div class="modal-content">
         <div class="modal-header text-center">
             <span class="h3">CSV Formatting Requirements</span>
-            <a href="#Welcome" id="dismiss-welcome" data-dismiss="modal" data-target="#Welcome" class='float-right' style="color: #333;"><span class="fa fa-times"></span></a>
+            <a href="#Welcome" id="dismiss-welcome" data-bs-dismiss="modal" data-bs-target="#Welcome" class='float-end' style="color: #333;"><span class="fa fa-times"></span></a>
         </div>
         <div class="modal-body">
           <h4>
@@ -88,7 +88,7 @@
       <div class="input-group">
         <input type="file" class="form-control" id="file" accept=".csv" ng-upload-change="handleFile($event)" ng-disabled="!source"></input>
         <span class="input-group-append">
-          <a class="btn btn-outline-secondary" data-toggle="modal" data-target="#csvInfo" href="#csvInfo" ng-disabled="!source">
+          <a class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#csvInfo" href="#csvInfo" ng-disabled="!source">
             <span class="fa fa-question-circle"></span>
           </a>
         </span>
@@ -105,7 +105,7 @@
 
   <div class="row" ng-if="csv_parse_error">
     <div class="col-sm-12">
-      <div class="alert alert-danger"><span class="fa fa-exclamation-triangle"></span> There was an error parsing your CSV file! Make sure it conforms to the <a href="#csvInfo" data-toggle="modal" data-target="#csvInfo">formatting standards</a>.</div>
+      <div class="alert alert-danger"><span class="fa fa-exclamation-triangle"></span> There was an error parsing your CSV file! Make sure it conforms to the <a href="#csvInfo" data-bs-toggle="modal" data-bs-target="#csvInfo">formatting standards</a>.</div>
     </div>
   </div>
 

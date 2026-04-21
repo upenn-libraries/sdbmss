@@ -212,7 +212,7 @@ function relation (type) {
         $('.spinner').replaceWith('<span id="spinner" style="display: none;"><img alt="working..." src="' + $("#spinner-src").attr('src') + '"> loading...</span>');
         $('.csv').replaceWith('<a id="export-csv" class="btn btn-outline-secondary" title="Export to CSV"><span class="fa fa-floppy-o"></span></a>');
         $('.columns').replaceWith('<div class="btn-group">' +
-            '<a class="btn btn-outline-secondary dropdown-toggle" title="Show/Hide Columns" data-toggle="dropdown"><span class="fa fa-edit"></span></a>' +
+            '<a class="btn btn-outline-secondary dropdown-toggle" title="Show/Hide Columns" data-bs-toggle="dropdown"><span class="fa fa-edit"></span></a>' +
             '<div id="column-control" class="dropdown-menu list-group">' +
             '</div>' +
             '</div>'

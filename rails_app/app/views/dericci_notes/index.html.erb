@@ -5,7 +5,7 @@
   <div class="col-sm-6">
     <h3>Archive of Miscellaneous Notes</h3>
   </div>
-  <div class="col-sm-6 text-right">
+  <div class="col-sm-6 text-end">
     <ul class="pagination justify-content-end">
       <% (1 + DericciNote.count / 20).times do |i| %>
         <li class="page-item <%= @page == i ? 'active' : '' %>"><%= link_to (i + 1), dericci_notes_path(page: i), class: "page-link" %></li>
@@ -20,7 +20,7 @@
             <td><%= link_to note.name, note.link %></td>
             <td><%= note.cards %></td>
             <td><%= note.size %></td>
-            <td class='text-right'><%= note.senate_house %></td>
+            <td class='text-end'><%= note.senate_house %></td>
           </tr>
         <% end %>
       </tbody>

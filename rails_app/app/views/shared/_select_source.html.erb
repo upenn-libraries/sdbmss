@@ -15,7 +15,7 @@
             </div>
             <div class="col-sm-4">
                 <label class="control-label text-muted" sdbm-tooltip="identify_source_selling_agent"><span>Selling Agent or Institution/Collection</span></label>
-                <input class="form-control" name="agent" ng-model="agent" data-toggle='tooltip' title='You must type at least 2 characters to begin searching.'/>
+                <input class="form-control" name="agent" ng-model="agent" data-bs-toggle='tooltip' title='You must type at least 2 characters to begin searching.'/>
                 <div class="label-alignment">
                     <span class="source-explain">e.g. Sothebys, University of Pennsylvania</span>
                 </div>
@@ -33,16 +33,16 @@
             <div class="col-sm-12 d-flex align-items-center">
                 <span style='line-height: 34px;'>Showing {{ sources.length }}
                 of {{ total || 0 }} results.</span>
-                <span class="ml-auto d-flex align-items-center flex-nowrap">
+                <span class="ms-auto d-flex align-items-center flex-nowrap">
                     <span class="text-nowrap">Sort by</span>
-                    <select name="" id="find_order" class="form-control ml-1 mr-2" ng-model="order" ng-change="findSourceCandidates()">
+                    <select name="" id="find_order" class="form-control ms-1 me-2" ng-model="order" ng-change="findSourceCandidates()">
                         <option value="id asc">Id (asc)</option>
                         <option value="id desc">Id (desc)</option>
                         <option value="date asc">Date (asc)</option>
                         <option value="date desc">Date (desc)</option>
                     </select>
                     Show
-                    <select class="form-control ml-1 mr-1" name="find_limit" id="" ng-model="limit" ng-change="findSourceCandidates()">
+                    <select class="form-control ms-1 me-1" name="find_limit" id="" ng-model="limit" ng-change="findSourceCandidates()">
                         <option value="20">20</option>
                         <option value="50">50</option>
                         <option value="100">100</option>

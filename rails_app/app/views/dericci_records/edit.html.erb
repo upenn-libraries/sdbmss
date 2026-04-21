@@ -47,7 +47,7 @@
           <%= ff.object.reason %>
           <strong> - <%= link_to ff.object.created_by.to_s, profile_path(ff.object.created_by.username) %></strong>
           <%= ff.hidden_field :id %>
-          <label for="flag<%= ff.object.id %>" class="float-right">Remove 
+          <label for="flag<%= ff.object.id %>" class="float-end">Remove 
             <%= ff.check_box :_destroy, {id: "flag#{ff.object.id}", class: ''} %>
           </label>
       </div>

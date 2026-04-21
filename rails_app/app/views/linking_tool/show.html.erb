@@ -339,8 +339,8 @@ $(document).ready(function() {
     };
 
     var resultsTable = new SDBM.EntryTable("#search_results", {
-        dom: '<"clear"><"H linking_table_header"<"row"<"col-sm-3"l><"col-sm-9 text-right"<"spinner">rip>>>JRt<"F">',
-        //dom: '<"row"<"col-sm-5"li><"col-sm-7 text-right" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t',
+        dom: '<"clear"><"H linking_table_header"<"row"<"col-sm-3"l><"col-sm-9 text-end"<"spinner">rip>>>JRt<"F">',
+        //dom: '<"row"<"col-sm-5"li><"col-sm-7 text-end" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t',
         height: function() {
             // height gets passed into dataTables constructor before
             // it's had a chance to construct all its crazy DOM bits,
@@ -764,7 +764,7 @@ $(document).ready(function() {
 <% end %>
 <div id="linking-tool">
     <div class="row">
-        <div class='text-left col-sm-6 form-inline' style="margin-bottom: 6px">
+        <div class='text-start col-sm-6 form-inline' style="margin-bottom: 6px">
             <!--<span style="font-size: 14px; font-weight: bold;"><span id="workspace-table-title"></span></span>-->
             <div class="input-group">
                 <button id="persist-entries-manuscript-link" class="form-control"></button>
@@ -775,13 +775,13 @@ $(document).ready(function() {
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 text-right">
+        <div class="col-sm-6 text-end">
             <div class="btn-group">
                 <a href="" class="btn btn-outline-secondary" id="load-bookmarks">
                     <span class="fa fa-bookmark"></span> Load Bookmarks
                 </a>
                 <% if @entry.present? %>
-                    <a class='btn btn-warning' title="IN DEVELOPMENT" href="" data-toggle="modal" data-target="#suggestions-modal"><span class="fa fa-exclamation-circle"></span> Find Suggested Links</a>
+                    <a class='btn btn-warning' title="IN DEVELOPMENT" href="" data-bs-toggle="modal" data-bs-target="#suggestions-modal"><span class="fa fa-exclamation-circle"></span> Find Suggested Links</a>
                 <% else %>
                     <a href="" class="btn btn-outline-secondary disabled">Find Suggested Links</a>
                 <% end %>
@@ -801,7 +801,7 @@ $(document).ready(function() {
 
     <nav class="navbar navbar-light bg-light" style="margin: 10px 0px 9px 0px;">
         <%= form_tag(request.path, method: :get, id: "link-search", class: "search-form d-flex flex-row flex-wrap align-items-center w-100") do %>
-        <ul class="nav navbar-nav navbar-left mr-auto">
+        <ul class="nav navbar-nav navbar-left me-auto">
              <li>
                 <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_search_tips" href="#"><span class="fa fa-search"></span> Search Tips</a>
             </li>
@@ -825,7 +825,7 @@ $(document).ready(function() {
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title h3 text-center">Find Suggested Links</div>
-                <button type="button" class="close" data-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -839,7 +839,7 @@ $(document).ready(function() {
                         <ul class="list-inline">
                         <% Entry.similar_fields.each_with_index do |field, index| %>
                             <li class="list-inline-item">
-                                <label class="mr-2">
+                                <label class="me-2">
                                     <input id="suggestion-field-<%= field %>" type="checkbox" value="<%= field %>" class="suggestion-field">
                                     <%= field.to_s.gsub("_search", "").humanize %>
                                 </label>
@@ -852,7 +852,7 @@ $(document).ready(function() {
                         <ul class="list-inline">
                             <% [:folios, :num_columns, :num_lines, :height, :width].each do |field, index| %>
                                 <li class="list-inline-item">
-                                    <label class="mr-2">
+                                    <label class="me-2">
                                         <input type="checkbox" id="suggestion-range-<%= field %>" value="<%= field %>" class="suggestion-field">
                                         <%= field.to_s.gsub("num_", "").humanize %>
                                     </label>
@@ -881,7 +881,7 @@ $(document).ready(function() {
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title h3 text-center">Load Bookmarked Entries To Table</div>
-                <button type="button" class="close" data-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div class="row">

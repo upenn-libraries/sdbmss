@@ -8,10 +8,10 @@
               <span class="text-warning"><span class="fa fa-exclamation-triangle"></span> Unapproved</span>
         <% end %>
         <% if entry.draft && can?(:edit, entry) %>
-          <%= link_to(entry_path(entry.id, draft: false, cumulative_updated_at: entry.cumulative_updated_at), :method => :patch, :title => "Publish Draft", :class => "btn btn-sm btn-outline-secondary float-right publish-btn", :data => {:confirm => "Are you sure you wish to publish this entry?  It will become publicly viewable from this point forward."}) do %>
+          <%= link_to(entry_path(entry.id, draft: false, cumulative_updated_at: entry.cumulative_updated_at), :method => :patch, :title => "Publish Draft", :class => "btn btn-sm btn-outline-secondary float-end publish-btn", :data => {:confirm => "Are you sure you wish to publish this entry?  It will become publicly viewable from this point forward."}) do %>
             <span class="fa fa-file"></span>
           <% end %>
-          <%= link_to entry_path(entry), :format => :html, :method => :delete, :title => "Delete Draft", :class => "btn btn-sm btn-outline-secondary float-right delete-draft-btn", :data => {:confirm => "Are you sure you wish to delete this entry?  All data entered will be lost permanently."} do %>
+          <%= link_to entry_path(entry), :format => :html, :method => :delete, :title => "Delete Draft", :class => "btn btn-sm btn-outline-secondary float-end delete-draft-btn", :data => {:confirm => "Are you sure you wish to delete this entry?  All data entered will be lost permanently."} do %>
             <span class="fa fa-trash"></span>
           <% end %>
         <% end %>

@@ -5,10 +5,8 @@
   <h3 class="card-header p-0 facet-field-heading" id="<%= header_html_id %>">
     <button
       type="button"
-      class="btn w-100 d-block btn-block p-2 text-start text-left collapse-toggle <%= "collapsed" if @facet_field.collapsed? %>"
-      data-toggle="collapse"
+      class="btn w-100 d-block p-2 text-start collapse-toggle <%= "collapsed" if @facet_field.collapsed? %>"
       data-bs-toggle="collapse"
-      data-target="#<%= html_id %>"
       data-bs-target="#<%= html_id %>"
       aria-expanded="<%= @facet_field.collapsed? ? 'false' : 'true' %>"
       aria-controls="<%= html_id %>"

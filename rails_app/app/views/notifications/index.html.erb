@@ -30,7 +30,7 @@
   <div class="col-sm-6">
     <%= render partial: "shared/pagination", locals: {page: @page, pages: @pages, model_class: Notification, action: nil } %>
   </div>
-  <div class="col-sm-6 text-right">
+  <div class="col-sm-6 text-end">
     <div class="btn-group">
       <%= link_to read_many_notifications_path(ids: @notifications.map(&:id), active: false, page: @page), class: 'btn btn-outline-secondary' do %>
         <span class="fa fa-check-circle"></span> Mark All On Page As Read
@@ -47,7 +47,7 @@
 <% @notifications.each do |notification| %>
   <div class="btn-group notification-btn">
     <% if notification.title %>
-      <div class="btn-outline-secondary btn one-line text-left">
+      <div class="btn-outline-secondary btn one-line text-start">
         <% if notification.notified %>
           <%
             if notification.notified.class == User

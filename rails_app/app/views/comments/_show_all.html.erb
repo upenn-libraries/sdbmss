@@ -33,7 +33,7 @@
               <% end %>
             <% end %>
           </div>
-          <div class="col-5 text-right">
+          <div class="col-5 text-end">
             <%= comment.created_at.to_formatted_s(:date_and_time) %>
           </div>
           <div class="col-sm-12 comment-toggle">
@@ -69,7 +69,7 @@
             <div class="col-sm-6">
               <%= render partial: "shared/username_with_profile_link", locals: { user: reply.created_by } %><br/>
             </div>
-            <div class="col-sm-6 text-right">
+            <div class="col-sm-6 text-end">
               <%= reply.created_at.to_formatted_s(:date_and_time) %>
             </div>
             <div class="col-sm-12 reply-toggle">
@@ -101,7 +101,7 @@
       <% end %>
       <% if !comment.deleted %>
         <div class="row collapse add-reply-toggle show text-center">
-           <div class="col-sm-12"><a href="#comment_<%= comment.id %> .add-reply-toggle" data-toggle="collapse">Add a reply...</a></div>
+           <div class="col-sm-12"><a href="#comment_<%= comment.id %> .add-reply-toggle" data-bs-toggle="collapse">Add a reply...</a></div>
          </div>
         <div class="add-reply-toggle row collapse form form-inline">
           <div class="col-sm-12">
@@ -111,7 +111,7 @@
               <%= text_area_tag :reply, '', class: 'form-control', rows: 1, placeholder: "Begin your reply here..." %>
               <div class="input-group-append textarea-group-btn d-flex">
                 <%= submit_tag 'Add Reply', class: 'btn btn-outline-secondary textarea-btn' %>
-                <a href="#comment_<%= comment.id %> .add-reply-toggle" data-toggle="collapse" class='btn btn-outline-secondary textarea-btn'>Cancel</a>
+                <a href="#comment_<%= comment.id %> .add-reply-toggle" data-bs-toggle="collapse" class='btn btn-outline-secondary textarea-btn'>Cancel</a>
               </div>
             </div>
           <% end %>

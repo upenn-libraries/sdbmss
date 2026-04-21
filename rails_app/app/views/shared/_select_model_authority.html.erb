@@ -29,7 +29,7 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th class='text-center'># Entries</th>
-                            <th class='text-right'>Reviewed</th>
+                            <th class='text-end'>Reviewed</th>
                         </tr>
                     </thead>
                     <tbody class=''>
@@ -43,7 +43,7 @@
                                 <span class="" ng-if="s.problem" sdbm-tooltip="problemModel"></span>
                             </td>
                             <td class='text-center'>{{ s.entries_count }}</td>
-                            <td class='text-right'>{{ s.reviewed ? "Yes" : "No" }}
+                            <td class='text-end'>{{ s.reviewed ? "Yes" : "No" }}
                                 <!--<span class='fa' ng-class="s.reviewed ? 'fa-check' : 'fa-times'"></span>-->
                             </td>
                         </tr>

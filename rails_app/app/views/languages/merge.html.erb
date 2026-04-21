@@ -19,7 +19,7 @@
           </dd>
           <dt># Entries</dt>
           <dd>
-              This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge badge-secondary"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
+              This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge text-bg-secondary"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
           </dd>
         </dl>
       </div>
@@ -65,7 +65,7 @@
             </dd>
             <dt># Entries</dt>
             <dd>
-                This <%= @target.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@target.class.to_s.underscore, @target.name) %>" class="badge badge-secondary"><%= SDBMSS::Util.to_many(@target.entries_count, "entry") %></a>
+                This <%= @target.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@target.class.to_s.underscore, @target.name) %>" class="badge text-bg-secondary"><%= SDBMSS::Util.to_many(@target.entries_count, "entry") %></a>
             </dd>
           </dl>
         </div>
@@ -95,7 +95,7 @@
                 <tr>
                   <td><%= link_to " #{suggestion.public_id}", language_path(suggestion), :target => "_blank" %></td>
                   <td class='text-center'><%= suggestion.name %></td>
-                  <td class='text-right'><%= link_to "Merge", merge_language_path(@model, :target_id => suggestion.id), class: "btn btn-primary btn-sm" %></td>
+                  <td class='text-end'><%= link_to "Merge", merge_language_path(@model, :target_id => suggestion.id), class: "btn btn-primary btn-sm" %></td>
                 </tr>
               <% end %>
             </tbody>

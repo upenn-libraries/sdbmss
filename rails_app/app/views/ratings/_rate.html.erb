@@ -5,7 +5,7 @@
             <%= link_to rating_path(r), :method => :delete, class: 'ratings rated btn btn-outline-secondary btn-sm' do %>
               <span class="fa fa-thumbs-up"></span>
             <% end %>
-            <a class="ratings btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#dispute_<%= ratable.class.name %>_<%= ratable.id %>">
+            <a class="ratings btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#dispute_<%= ratable.class.name %>_<%= ratable.id %>">
                 <span class="fa fa-thumbs-down"></span>
             </a>
         <% else %>
@@ -20,7 +20,7 @@
         <%= link_to(ratings_path(ratable_id: ratable.id, ratable_type: ratable.class.name, qualifier: "confirm"), method: :post, class: "btn btn-outline-secondary btn-sm ratings") do %>
             <span class="fa fa-thumbs-up"></span>
         <% end %>
-        <a class='ratings btn btn-outline-secondary btn-sm' data-toggle="modal" data-target="#dispute_<%= ratable.class.name %>_<%= ratable.id %>">
+        <a class='ratings btn btn-outline-secondary btn-sm' data-bs-toggle="modal" data-bs-target="#dispute_<%= ratable.class.name %>_<%= ratable.id %>">
             <span class="fa fa-thumbs-down"></span>
         </a>
     <% end %>
@@ -33,7 +33,7 @@
         <div class="modal-content">
           <div class="modal-header text-center">
             <span class="modal-title h4">What is your reason for disputing this record?</span>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>

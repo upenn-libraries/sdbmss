@@ -33,7 +33,7 @@
             <% institutions.each do |institution| %>
                 <dd>
                     <% if institution.agent %>
-                        <a class='badge badge-secondary' href="<%= url_for institution.agent %>"><%= institution.agent.name %></a>
+                        <a class='badge text-bg-secondary' href="<%= url_for institution.agent %>"><%= institution.agent.name %></a>
                     <% end %>
                     <%= "(#{institution.observed_name})" if institution.observed_name %></dd>
             <% end %>
@@ -44,7 +44,7 @@
             <% selling_agents.each do |selling_agent| %>
                 <dd>
                     <% if selling_agent.agent %>
-                        <a class='badge badge-secondary' href="<%= url_for selling_agent.agent %>"><%= selling_agent.agent.name %></a>
+                        <a class='badge text-bg-secondary' href="<%= url_for selling_agent.agent %>"><%= selling_agent.agent.name %></a>
                     <% end %>
                     <%= "(#{selling_agent.observed_name})" if selling_agent.observed_name %></dd>
             <% end %>
@@ -55,7 +55,7 @@
             <% sellers_or_holders.each do |seller_or_holder| %>
                 <dd>
                     <% if seller_or_holder.agent %>
-                        <a class='badge badge-secondary' href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a>
+                        <a class='badge text-bg-secondary' href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a>
                     <% end %>
                     <%= "(#{seller_or_holder.observed_name})" if seller_or_holder.observed_name %></dd>
             <% end %>
@@ -65,7 +65,7 @@
             <dd><%= source.whether_mss||"Unknown" %></dd>-->
 
         <dt># Entries</dt>
-            <dd>This source has <a target="_blank" class='badge badge-secondary' href="<%= search_advanced_path(source: source.public_id) %>"><%= SDBMSS::Util.to_many(source.entries.count, "entry") %></a> in the database.</dd>
+            <dd>This source has <a target="_blank" class='badge text-bg-secondary' href="<%= search_advanced_path(source: source.public_id) %>"><%= SDBMSS::Util.to_many(source.entries.count, "entry") %></a> in the database.</dd>
 <% if !defined?(abbreviate) || !abbreviate %>
 <% if source.medium.present? || source.date_accessed.present? || source.location_institution.present? || source.location.present? || source.link.present? %>
         <% if source.medium.present? %>

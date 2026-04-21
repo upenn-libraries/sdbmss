@@ -22,7 +22,7 @@
                                 <a href="" ng-click="nextPage()" class="btn btn-sm btn-outline-secondary"><span class="fa fa-chevron-right"></span></a>
                             </div>
                         </th>
-                        <th class='text-left'>Name</th>
+                        <th class='text-start'>Name</th>
                         <th>VIAF ID</th>
                         <th title="As Author">Auth.</th>
                         <th title="As Artist">Art.</th>
@@ -39,7 +39,7 @@
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index" >
                         <td><a class='selectName btn btn-success btn-sm' id="select_name_{{ $index }}" ng-click='selectSuggestion(s)'><span class='fa fa-check'></span> Link</a></td>
-                        <td class='text-left'><a href="/names/{{ s.id }}" target="_blank">{{ s.name }}</a></td>
+                        <td class='text-start'><a href="/names/{{ s.id }}" target="_blank">{{ s.name }}</a></td>
                         <td>{{ s.viaf_id }}</td>
                         <td>{{ s.authors_count }}</td>
                         <td>{{ s.artists_count }}</td>
@@ -63,7 +63,7 @@
     </div>
     <div class="modal-footer">
         <div class='row'>
-            <div class='col-sm-12 text-right'>
+            <div class='col-sm-12 text-end'>
                 <span class="btn-group">
                     <button class="btn btn-outline-secondary" ng-click="cancel()">Cancel</button>
                 </span>

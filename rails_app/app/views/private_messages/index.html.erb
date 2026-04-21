@@ -32,7 +32,7 @@
           </strong>
           <%= sanitize simple_format(m.message), tags: %w(code b i br strong em a), attributes: %w(href) %>
         </div>
-        <div class="col-sm-3 text-right">
+        <div class="col-sm-3 text-end">
           <%= m.created_at.to_formatted_s(:long) %>
         </div>
       <% end %>

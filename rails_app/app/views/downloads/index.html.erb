@@ -7,10 +7,10 @@
       <% Dir["public/static/docs/output*.ttl.gz"].each do |ttl| %>
       <li class="list-group-item">
         <div class="row">
-          <div class="col-sm-6 text-left">
+          <div class="col-sm-6 text-start">
             <strong>RDF Dataset (.ttl)</strong> <span class="text-muted"><%= File.basename ttl %></span>
           </div>
-          <div class="col-sm-6 text-right">
+          <div class="col-sm-6 text-end">
             <%= link_to(ttl.sub(%r{^public/}, ''), class: 'btn btn-outline-secondary btn-sm') do %>
               <span class="fa fa-download"></span> Download
             <% end %>
@@ -21,10 +21,10 @@
       <% if File.exist?("public/static/docs/dump.sql.gz") %>
       <li class="list-group-item">
         <div class="row">
-          <div class="col-sm-6 text-left">
+          <div class="col-sm-6 text-start">
             <strong>MYSQL DUMP</strong> <span class="text-muted">dump.sql.gz</span>
           </div>
-          <div class="col-sm-6 text-right">
+          <div class="col-sm-6 text-end">
             <%= link_to("static/docs/dump.sql.gz", class: 'btn btn-outline-secondary btn-sm') do %>
               <span class="fa fa-download"></span> Download
             <% end %>
@@ -36,8 +36,8 @@
       <% if File.exist?("public/static/docs/#{model}.csv.zip") %>
       <li class="list-group-item">
         <div class="row">
-        <div class="col-sm-6 text-left"><strong><%= model.humanize %></strong> <span class="text-muted"><%= File.mtime("public/static/docs/#{model}.csv.zip").to_formatted_s(:long) %> csv dump</span></div>
-        <div class="col-sm-6 text-right">
+        <div class="col-sm-6 text-start"><strong><%= model.humanize %></strong> <span class="text-muted"><%= File.mtime("public/static/docs/#{model}.csv.zip").to_formatted_s(:long) %> csv dump</span></div>
+        <div class="col-sm-6 text-end">
           <%= link_to("static/docs/#{model}.csv.zip", class: 'btn btn-outline-secondary btn-sm') do %>
             <span class="fa fa-download"></span> Download
           <% end %>

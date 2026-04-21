@@ -169,7 +169,7 @@
       <ul class="game-nav nav nav-pills flex-column" style="margin-top: 15px;">
         <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }" class="mb-1">
           <span class="btn-group my-btn-group">
-            <a href="" class="btn btn-outline-secondary btn-sm one-line text-left view-name" ng-class="{'active': current_record == record}" ng-click="selectRecord(record)">
+            <a href="" class="btn btn-outline-secondary btn-sm one-line text-start view-name" ng-class="{'active': current_record == record}" ng-click="selectRecord(record)">
               {{ record.name }}
             </a>
             <a href="" class="btn btn-sm find-name" ng-class="getButton(record)" ng-disabled="record != current_record" ng-click="record == current_record ? findName(record) : ''" style="width: 90px;">
@@ -184,7 +184,7 @@
       </a>
     </div>
     <div class="col-sm-8" style="">
-      <p class="text-right text-danger">
+      <p class="text-end text-danger">
         Is there a problem with this .pdf file?
         <a href="" class="btn btn-danger btn-sm" ng-click="flag_review(current_record)" ng-if="current_record && !needsWork(current_record)">
           <span class="fa fa-exclamation-triangle"></span> Flag For Review
@@ -236,7 +236,7 @@
                 <div class="col-6">
                   {{ comment.created_by }}
                 </div>
-                <div class="col-6 text-right">
+                <div class="col-6 text-end">
                   {{ comment.created_at }}
                 </div>
               </div>

@@ -20,7 +20,7 @@
         <br><span class="text-success">(Request Pending)</span>
       <% end %>
     </div>
-    <div class="col-7 text-right form-inline">
+    <div class="col-7 text-end form-inline">
       <% if g.object.confirmed %>
         <%= g.select :role, [["Manager", "Manager"], ["Member", "Member"]], {}, {class: "form-control"} %>
       <% elsif g.object.created_by == g.object.user %>

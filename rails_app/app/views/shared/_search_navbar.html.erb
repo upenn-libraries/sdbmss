@@ -2,7 +2,7 @@
   <div class="container w-100">
     <%= render 'catalog/search_form' %>
     <div class="collapse navbar-collapse catalog-search-info" id="myNavbar">
-      <ul class="nav navbar-nav ml-auto">
+      <ul class="nav navbar-nav ms-auto">
         <% if user_signed_in? %>
           <li class="nav-item text-nowrap">
             <%= link_to t('blacklight.header_links.search_history'), blacklight.search_history_path, class: "nav-link" %>

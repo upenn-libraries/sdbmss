@@ -23,7 +23,7 @@
             <!-- using partials makes this take longer?? -->
             <% if user.present? %>
               <span class="<%= defined?(up) ? 'dropup' : 'dropdown' %>">
-                <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                <a href="" class="dropdown-toggle" data-bs-toggle="dropdown">
                   <%= user.to_s %>
                 </a>
                 <div class="dropdown-menu">
@@ -39,7 +39,7 @@
               Unknown
             <% end %>
 
-            <span data-toggle='collapse' href='#activity_<%= date %>_<%= user_id %>'>modified <%= "#{details.count} record".pluralize(details.count) %> <span class="caret"></span>
+            <span data-bs-toggle='collapse' href='#activity_<%= date %>_<%= user_id %>'>modified <%= "#{details.count} record".pluralize(details.count) %> <span class="caret"></span>
           </span>
         </h5>
         
@@ -60,7 +60,7 @@
                     <span class="text-danger"><%= link_text %></span>
                   <% end %>
                 </div>
-                <div class="col-6 text-right">
+                <div class="col-6 text-end">
                   <span class="text-muted"><%= activity.created_at.to_formatted_s(:long) %></span>
                 </div>
               </div>
@@ -85,7 +85,7 @@
       <% end %>
     </div>
     <div class="col-sm-2">
-      <div class='h4' data-toggle='collapse' href='.activity_date_<%= date %>'>
+      <div class='h4' data-bs-toggle='collapse' href='.activity_date_<%= date %>'>
         <span class="caret"></span>
         <%= date %>
       </div>

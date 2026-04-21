@@ -1,6 +1,6 @@
 <% new_count = current_user.new_notifications.count %>
 <li class="dropdown">
-<a id='notifications-dropdown-control' href="#notifications-dropdown" data-toggle="collapse" class='<%= new_count > 0 ? 'notifications-count' : ''%>' new-notifications="<%= current_user.new_notifications.count %>">
+<a id='notifications-dropdown-control' href="#notifications-dropdown" data-bs-toggle="collapse" class='<%= new_count > 0 ? 'notifications-count' : ''%>' new-notifications="<%= current_user.new_notifications.count %>">
   <span class="fa fa-bell"></span> Notifications
   <span class="fa fa-caret-down"></span>
 </a>

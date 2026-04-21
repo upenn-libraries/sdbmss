@@ -106,7 +106,7 @@
     </p>
 
   </div>
-  <div class="col-sm-6 float-right">
+  <div class="col-sm-6 float-end">
 
     <div id="map">
     </div>
@@ -121,7 +121,7 @@
       <dt># Entries</dt>
       <dd>
           <% if @model.entries_count > 0 %>
-            This <%= @model.class.to_s.underscore %> is used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge badge-secondary"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
+            This <%= @model.class.to_s.underscore %> is used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge text-bg-secondary"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
           <% else %>
             <span class="text-muted">This place is not directly used in any entries.</span>
           <% end %>
@@ -209,7 +209,7 @@
       </dd>
     <% else %>
       <dd style="padding: 0px;">
-        <ul class="list-inline text-left">
+        <ul class="list-inline text-start">
         <% @model.children.order(:name).each do |child| %>
           <li class="list-inline-item" style="font-size: <%= 12 + [10, child.children.count].min %>px;"><span class="text-muted"></span>  <%= link_to child.name, place_path(child) %></li>
         <% end %>

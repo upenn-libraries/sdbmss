@@ -3,7 +3,7 @@
       <ul class="nav nav-tabs">
         <li ng-repeat="(name, bookmarks) in all_bookmarks" class="nav-item bookmark-nav-button" ng-class="{active: (name == active) }">
           <a class="nav-link" ng-class="{active: (name == active) }" ng-click="addTabToStorage(name);">{{ name }}
-          <span class="badge badge-secondary">{{ (bookmarks | filter:hasTag).length }}</span></a>
+          <span class="badge text-bg-secondary">{{ (bookmarks | filter:hasTag).length }}</span></a>
         </li>
       </ul>
     <div class="tab-content bookmark-panes">
@@ -21,7 +21,7 @@
                   <dt class='h4'>
                     <strong><a href="{{ bookmark.link }}"> {{ bookmark.public_id }}</a></strong>
                     <span ng-bind-html="actionButton(bookmark)"></span> 
-                    <a href="" class='remove-bookmark control-bookmark float-right' ng-click="removeBookmark(name, bookmark)">
+                    <a href="" class='remove-bookmark control-bookmark float-end' ng-click="removeBookmark(name, bookmark)">
                       <span class="fa fa-times"></span>
                     </a>
                   </dt>
@@ -60,7 +60,7 @@
         <input type="text" class="form-control" name="tag-search" placeholder="Filter By Tag..." size=12 ng-model="tagSearch" ng-keyup="$event.keyCode == 13 && searchTag(tagSearch)">
         <a href="" class="input-group-addon" ng-click="searchTag('')"><span>Clear</span></a>
       </div>
-      <a href='/bookmarks' class="float-right text-right text-invert">Manage<br>Bookmarks</a>
+      <a href='/bookmarks' class="float-end text-end text-invert">Manage<br>Bookmarks</a>
     </div>
   </div>
 <% end %>

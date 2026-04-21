@@ -33,7 +33,7 @@
     <div class="col-sm-3 label-alignment" ng-if="name.viaf_id">
         <a target="_blank" href="http://viaf.org/viaf/{{ name.viaf_id }}/">View VIAF record</a>
     </div>
-    <div class="col-sm-3 text-right" ng-if="!name.viaf_id">
+    <div class="col-sm-3 text-end" ng-if="!name.viaf_id">
       <button type="button" ng-click="findSuggestions(name.name, true)" ng-disabled="loading" class="btn btn-primary one-line" style="max-width: 100%;">Find Suggestions in VIAF</button>
     </div>
   </div>

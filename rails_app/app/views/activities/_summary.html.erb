@@ -2,8 +2,8 @@
   <% summary.each_with_index do | (field, value), index| %>
     <div class="col-sm-4">
       <div class="card">
-        <div class="card-header" data-toggle='collapse' href="#id_<%= field %>">
-          <div class="card-title"><span class="h4"><%= field.to_s.humanize %>: <%= value[:total] %><span class="float-right fa fa-chevron-down"></span></span></div>
+        <div class="card-header" data-bs-toggle='collapse' href="#id_<%= field %>">
+          <div class="card-title"><span class="h4"><%= field.to_s.humanize %>: <%= value[:total] %><span class="float-end fa fa-chevron-down"></span></span></div>
         </div>
         <div class="collapse" id="id_<%= field %>">
           <ul class="list-group list-group-no-border">

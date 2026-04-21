@@ -5,7 +5,7 @@
     <% manuscripts =  Manuscript.where(created_by: current_user).last(num_manuscripts_to_show) %>
 <div class="row">
     <div class="col-sm-4">
-        <span class='h3 small-caps' data-toggle="collapse" href="#myManuscripts">
+        <span class='h3 small-caps' data-bs-toggle="collapse" href="#myManuscripts">
             Manuscript Records You Contributed
             <span class="caret"></span>
         </span>
@@ -13,7 +13,7 @@
     <div class="col-sm-4 text-center">
         <a class='btn btn-outline-secondary' href="/manuscripts?created_by_user=1">Manage Your Manuscripts</a>
     </div>
-    <div class="col-sm-4 text-right">
+    <div class="col-sm-4 text-end">
         <span>You have contributed <%= "#{num_manuscripts} manuscript record".pluralize(num_manuscripts) %></span>
         <% if num_manuscripts_unreviewed > 0 %>
             <br><span class='text-warning'><%= num_manuscripts_unreviewed %> unapproved</span>

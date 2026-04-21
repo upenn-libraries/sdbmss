@@ -21,7 +21,7 @@
     <% end %>
     <% if resource_name == "entries" %>
     <li>
-        <a href="#group_modal" data-toggle="modal" data-target="#group_modal">
+        <a href="#group_modal" data-bs-toggle="modal" data-bs-target="#group_modal">
             <span class="fa fa-globe"></span> Add/Remove Groups
         </a>
     </li>
@@ -49,7 +49,7 @@
 
 <nav class="navbar navbar-light bg-light" style="margin: 0px 0px 9px 0px;">
     <%= form_tag(request.path, method: :get, class: 'search-form d-flex flex-row flex-wrap align-items-center w-100') do %>
-    <a class='navbar-brand' href="#manage_records_info" data-toggle="modal" data-target="#manage_records_info">
+    <a class='navbar-brand' href="#manage_records_info" data-bs-toggle="modal" data-bs-target="#manage_records_info">
     <% if @page_title %>
             <%= @page_title %>
     <% else %>
