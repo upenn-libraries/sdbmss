@@ -2,8 +2,7 @@ version: '3.8'
 
 services:
   solr:
-    image: "{{ app_image_name }}:{{ app_image_tag }}"
-    command: ["bundle", "exec", "rake", "sunspot:solr:run"]
+    image: solr:8.11
     deploy:
       labels:
         - "traefik.enable=true"
@@ -14,11 +13,35 @@ services:
         - "traefik.http.services.solr.loadbalancer.server.port={{ solr_port }}"
       placement:
         constraints:
-          - "node.labels.solr == true"
-      replicas: {{ solr_replicas }}
+          - node.labels.solr == true
+      replicas: 1
       update_config:
-        order: "start-first"
+        order: start-first
         parallelism: 1
+    entrypoint:
+      - bash
+      - -c
+      - |
+        precreate-core development /opt/solr-config
+        precreate-core test /opt/solr-config
+        precreate-core production /opt/solr-config
+        exec solr-foreground
+    networks:
+      - mysql
+      - traefik
+    volumes:
+      - sdbm_solr:/home/app/solr
+#    volumes:
+#      - sdbm_solr:/var/solr/data
+#      - ./solr/conf:/opt/solr-config:ro
+#    ports:
+#      - 8983:8983
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -sf http://localhost:8983/solr/development/admin/ping || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     environment:
       ADMIN_PASSWORD: "{{ app_versioned_secrets.admin_password.value }}"
       MYSQL_DATABASE: "{{ mysql_database }}"
@@ -47,38 +70,12 @@ services:
       SDBMSS_SECRET_TOKEN: "{{ app_versioned_secrets.secret_token.value }}"
 
       SOLR_URL: "{{ app_solr_url }}"
-    #healthcheck:
-    #  test:
-    #    [
-    #      "CMD-SHELL",
-    #      "curl -fsSL localhost:{{ app_port }} || exit 1",
-    #    ]
-    #  interval: 10s
-    #  retries: 6
-    #  start_period: 10s
-    #  timeout: 10s
-    networks:
-      - mysql
-      - traefik
-    secrets:
-      - source: rails_master_key
-        target: /home/app/config/credentials/{{ app_rails_env }}.key
-        uid: "1000"
-        gid: "1000"
-        mode: 0440
-    volumes:
-      - sdbm_solr:/home/app/solr
 
 networks:
   mysql:
     external: true
   traefik:
     external: true
-
-secrets:
-  rails_master_key:
-    external: true
-    name: "{{ 'app_rails_master_key_v' ~ app_versioned_secrets.rails_master_key.version }}"
 
 volumes:
   sdbm_solr:
