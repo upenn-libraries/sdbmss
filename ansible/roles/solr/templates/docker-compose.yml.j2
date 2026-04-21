@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   solr:
-    image: solr:8.11
+    image: "{{ solr_image_name }}:{{ solr_image_tag }}"
     deploy:
       labels:
         - "traefik.enable=true"
