@@ -157,4 +157,123 @@ RSpec.describe "EntriesController", type: :request do
       end
     end
   end
+
+  # ---------------------------------------------------------------------------
+  # GET /entries/types
+  # ---------------------------------------------------------------------------
+  describe "GET /entries/types" do
+    it "returns JSON of type constants" do
+      get types_entries_path, as: :json
+      expect(response).to have_http_status(:ok)
+      json = JSON.parse(response.body)
+      expect(json).to have_key("sale_agent_role")
+      expect(json).to have_key("transaction_type")
+      expect(json).to have_key("currency")
+    end
+  end
+
+  # ---------------------------------------------------------------------------
+  # GET /entries/import
+  # ---------------------------------------------------------------------------
+  describe "GET /entries/import" do
+    it "responds with 200" do
+      get import_entries_path
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  # ---------------------------------------------------------------------------
+  # GET /entries/new
+  # ---------------------------------------------------------------------------
+  describe "GET /entries/new" do
+    it "responds with 200" do
+      get new_entry_path
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  # ---------------------------------------------------------------------------
+  # GET /entries/:id/edit
+  # ---------------------------------------------------------------------------
+  describe "GET /entries/:id/edit" do
+    it "responds with 200" do
+      get edit_entry_path(entry)
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  # ---------------------------------------------------------------------------
+  # GET /entries/:id.json (show_json)
+  # ---------------------------------------------------------------------------
+  describe "GET /entries/:id.json" do
+    it "returns JSON representation of the entry" do
+      get "/entries/#{entry.id}.json"
+      expect(response).to have_http_status(:ok)
+      expect(response.content_type).to match(%r{application/json})
+    end
+  end
+
+  # ---------------------------------------------------------------------------
+  # GET /entries/:id/history
+  # ---------------------------------------------------------------------------
+  describe "GET /entries/:id/history" do
+    it "responds with 200" do
+      get history_entry_path(entry)
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  # ---------------------------------------------------------------------------
+  # GET /entries/:id/verify
+  # ---------------------------------------------------------------------------
+  describe "GET /entries/:id/verify" do
+    it "marks entry as verified and redirects to entry" do
+      entry.update_columns(unverified_legacy_record: true)
+      get verify_entry_path(entry)
+      expect(response).to redirect_to(entry_path(entry))
+      expect(entry.reload.unverified_legacy_record).to eq(false)
+    end
+  end
+
+  # ---------------------------------------------------------------------------
+  # POST /entries (create)
+  # ---------------------------------------------------------------------------
+  describe "POST /entries" do
+    it "creates a new entry and returns JSON" do
+      expect {
+        post entries_path,
+             params: { source_id: source.id, draft: false },
+             as: :json
+      }.to change(Entry, :count).by(1)
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "redirects to edit page for HTML format" do
+      post entries_path, params: { source_id: source.id }
+      new_entry = Entry.last
+      expect(response).to redirect_to(edit_entry_path(new_entry))
+    end
+  end
+
+  # ---------------------------------------------------------------------------
+  # PATCH /entries/:id (update)
+  # ---------------------------------------------------------------------------
+  describe "PATCH /entries/:id" do
+    it "updates entry and returns JSON" do
+      patch entry_path(entry),
+            params: { draft: true, cumulative_updated_at: entry.cumulative_updated_at },
+            as: :json
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "returns 422 when cumulative_updated_at is stale" do
+      patch entry_path(entry),
+            params: { draft: true, cumulative_updated_at: "1970-01-01 00:00:00" },
+            as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      json = JSON.parse(response.body)
+      expect(json["errors"]).to be_present
+    end
+  end
 end
