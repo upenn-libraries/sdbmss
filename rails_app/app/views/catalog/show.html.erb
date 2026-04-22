@@ -32,7 +32,8 @@
 <% end %>
 
 <% content_for :control_tools do %>
-  <%= render 'show_sidebar', document: @document %>
+  <% presenter = document_presenter(@document) %>
+  <%= render presenter.view_config.sidebar_component.new(presenter: presenter) %>
   
   <!-- Add another entry for this source -->
     <% if @entry.source && (!["provenance_observation", "observation"].include?(@entry.source.source_type.name) || @entry.source.created_by == current_user) %>
