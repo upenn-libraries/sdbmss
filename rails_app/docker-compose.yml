@@ -247,7 +247,7 @@ services:
     volumes:
     - rabbitmq_data:/var/lib/rabbitmq
   solr:
-    image: solr:9.7
+    image: solr:9.6
     deploy:
       placement:
         constraints:
