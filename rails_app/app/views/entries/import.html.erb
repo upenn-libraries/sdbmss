@@ -6,7 +6,7 @@
     .input-group-label {
       border-right: 1px solid #cccccc !important;
     }
-    .input-group-label + .input-group-addon {
+    .input-group-label + .input-group-text {
       background: white;
       color: #777;
       white-space: normal;
@@ -117,7 +117,7 @@
     <div class="col-sm-12">
       <div class="form-group">
         <div class="input-group">
-          <span class="input-group-addon">Select Entry (For Review)</span>
+          <span class="input-group-text">Select Entry (For Review)</span>
           <input type="number" ng-model="entry_index" min="0" max="{{ entries.length - 1 }}" class="form-control">
         </div>
       </div>
@@ -137,16 +137,16 @@
         <h4>Transaction Information</h4>
         <ul class="list-inline">
           <li class='list-inline-item input-group'>
-            <span class='input-group-addon input-group-label'>Cat. or Lot Number </span>
-            <span class="input-group-addon">{{ entries[entry_index].source_catalog_or_lot_number }}</span>
+            <span class='input-group-text input-group-label'>Cat. or Lot Number </span>
+            <span class="input-group-text">{{ entries[entry_index].source_catalog_or_lot_number }}</span>
           </li>
           <li class='list-inline-item input-group'>
-            <span class='input-group-addon input-group-label'>Transaction Type </span>
-            <span class="input-group-addon">{{ entries[entry_index].source_transaction_type }}</span>
+            <span class='input-group-text input-group-label'>Transaction Type </span>
+            <span class="input-group-text">{{ entries[entry_index].source_transaction_type }}</span>
           </li>
           <li class='list-inline-item input-group'>
-            <span class='input-group-addon input-group-label'>Sale Price</span>
-            <span class="input-group-addon">{{ entries[entry_index].sale_price }}</span>
+            <span class='input-group-text input-group-label'>Sale Price</span>
+            <span class="input-group-text">{{ entries[entry_index].sale_price }}</span>
           </li>
         </ul>
         <h4>Selling Agent(s)</h4>
@@ -209,64 +209,64 @@
         <h4>Other Info</h4>
         <ul class="list-inline">
           <li class="list-inline-item input-group">
-              <span class='input-group-addon input-group-label'>Historiated Initials</span>
-              <span class='input-group-addon'>{{ entries[entry_index].initials_historiated }}</span>
+              <span class='input-group-text input-group-label'>Historiated Initials</span>
+              <span class='input-group-text'>{{ entries[entry_index].initials_historiated }}</span>
           </li>
            <li class="list-inline-item input-group">
-              <span class='input-group-addon input-group-label'>Decorated Initials</span>
-              <span class='input-group-addon'>{{ entries[entry_index].initials_decorated }}</span>
+              <span class='input-group-text input-group-label'>Decorated Initials</span>
+              <span class='input-group-text'>{{ entries[entry_index].initials_decorated }}</span>
           </li>
            <li class="list-inline-item input-group">
-              <span class='input-group-addon input-group-label'>Fullpage Miniatures</span>
-              <span class='input-group-addon'>{{ entries[entry_index].miniatures_fullpage }}</span>
+              <span class='input-group-text input-group-label'>Fullpage Miniatures</span>
+              <span class='input-group-text'>{{ entries[entry_index].miniatures_fullpage }}</span>
           </li>
             <li class="list-inline-item input-group">
-              <span class='input-group-addon input-group-label'>Large Miniatures</span>
-              <span class='input-group-addon'>{{ entries[entry_index].miniatures_large }}</span>
+              <span class='input-group-text input-group-label'>Large Miniatures</span>
+              <span class='input-group-text'>{{ entries[entry_index].miniatures_large }}</span>
             </li>
             <li class="list-inline-item input-group">
-              <span class='input-group-addon input-group-label'>Small Miniatures</span>
-              <span class='input-group-addon'>{{ entries[entry_index].miniatures_small }}</span>
+              <span class='input-group-text input-group-label'>Small Miniatures</span>
+              <span class='input-group-text'>{{ entries[entry_index].miniatures_small }}</span>
             </li>
             <li class="list-inline-item input-group">
-              <span class='input-group-addon input-group-label'>Unspec. Miniatures</span>
-              <span class='input-group-addon'>{{ entries[entry_index].miniatures_unspec_size }}</span>
+              <span class='input-group-text input-group-label'>Unspec. Miniatures</span>
+              <span class='input-group-text'>{{ entries[entry_index].miniatures_unspec_size }}</span>
             </li>
             <li class="list-inline-item input-group">
-              <span class='input-group-addon input-group-label'>Folios</span>
-              <span class='input-group-addon'>{{ entries[entry_index].folios }}</span>
+              <span class='input-group-text input-group-label'>Folios</span>
+              <span class='input-group-text'>{{ entries[entry_index].folios }}</span>
             </li>
             <li class="list-inline-item input-group">
-              <span class='input-group-addon input-group-label'>Lines</span>
-              <span class='input-group-addon'>{{ entries[entry_index].lines }}</span>
+              <span class='input-group-text input-group-label'>Lines</span>
+              <span class='input-group-text'>{{ entries[entry_index].lines }}</span>
             </li>
             <li class="list-inline-item input-group">
-              <span class='input-group-addon input-group-label'>Columns</span>
-              <span class='input-group-addon'>{{ entries[entry_index].columns }}</span>
+              <span class='input-group-text input-group-label'>Columns</span>
+              <span class='input-group-text'>{{ entries[entry_index].columns }}</span>
             </li>
             <li class="list-inline-item input-group">
-              <span class='input-group-addon input-group-label'>Height(mm)</span>
-              <span class='input-group-addon'>{{ entries[entry_index].height }}</span>
+              <span class='input-group-text input-group-label'>Height(mm)</span>
+              <span class='input-group-text'>{{ entries[entry_index].height }}</span>
             </li>
             <li class="list-inline-item input-group">
-              <span class='input-group-addon input-group-label'>Width(mm)</span>
-              <span class='input-group-addon'>{{ entries[entry_index].width }}</span>
+              <span class='input-group-text input-group-label'>Width(mm)</span>
+              <span class='input-group-text'>{{ entries[entry_index].width }}</span>
             </li>
             <li class="list-inline-item input-group">
-              <span class='input-group-addon input-group-label'>Alt. Size</span>
-              <span class='input-group-addon'>{{ entries[entry_index].alt_size }}</span>
+              <span class='input-group-text input-group-label'>Alt. Size</span>
+              <span class='input-group-text'>{{ entries[entry_index].alt_size }}</span>
             </li>
             <li class="list-inline-item input-group">
-              <span class='input-group-addon input-group-label'>Binding</span>
-              <span class='input-group-addon'>{{ entries[entry_index].manuscript_binding }}</span>
+              <span class='input-group-text input-group-label'>Binding</span>
+              <span class='input-group-text'>{{ entries[entry_index].manuscript_binding }}</span>
             </li>
             <li class="list-inline-item input-group">
-              <span class='input-group-addon input-group-label'>Manuscript URL</span>
-              <span class='input-group-addon'><a href="{{ entries[entry_index].manuscript_link }}" target="_blank">{{ entries[entry_index].manuscript_link }}</a></span>
+              <span class='input-group-text input-group-label'>Manuscript URL</span>
+              <span class='input-group-text'><a href="{{ entries[entry_index].manuscript_link }}" target="_blank">{{ entries[entry_index].manuscript_link }}</a></span>
             </li>
             <li class="list-inline-item input-group">
-              <span class='input-group-addon input-group-label'>Other Info</span>
-              <span class='input-group-addon'>{{ entries[entry_index].other_info }}</span>
+              <span class='input-group-text input-group-label'>Other Info</span>
+              <span class='input-group-text'>{{ entries[entry_index].other_info }}</span>
             </li>
         </ul>
       </div>
