@@ -335,19 +335,16 @@ $(document).ready( function (e) {
 
     // remember control panel display from last set (localstorage memory)
     if (localStorage.getItem('sdbm_hide_panel') == "true") {
-        $('#control-panel').removeClass('in');
-        $('.main-content').addClass('in');
+        $('#control-panel').removeClass('show');
+        $('.main-content').addClass('show');
     } else {
 
     }
 
     // set control panel display (localstorage) memory
     $('#collapse-control').click( function (e) {
-        if ($('#control-panel').hasClass('in')) {
-            localStorage.setItem('sdbm_hide_panel', true);
-        } else {
-            localStorage.setItem('sdbm_hide_panel', false);
-        }
+        var hidden = localStorage.getItem('sdbm_hide_panel') === 'true';
+        localStorage.setItem('sdbm_hide_panel', !hidden);
     });
 
 });
