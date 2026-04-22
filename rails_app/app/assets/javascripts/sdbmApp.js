@@ -3918,7 +3918,7 @@ var BOOKMARK_SCOPE;
         var type = $scope.tabs[i];
         for (var j = 0; j < $scope.all_bookmarks[type].length; j++) {
           var link = $scope.all_bookmarks[type][j].link;
-          $('.bookmark-link[in_bookmarks="' + link + '"]').css({color: "gold"});
+          $('.bookmark-link[in_bookmarks="' + link + '"]').css({color: "darkgoldenrod"});
         }
       }
 
