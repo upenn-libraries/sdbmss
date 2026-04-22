@@ -8,6 +8,7 @@ gem "nokogiri", "< 1.16"
 # gem "loofah", "= 2.19.1" # updated to 2.21.1, but that calls for Nokogiri::HTML4, which is not available in 1.8.5
 gem "rubyzip", "~> 2.3"
 gem "ffi", ">= 1.9.24", "< 1.17"
+gem "csv"
 gem "json", ">= 2.3"
 gem "launchy", "~> 3.0.1"
 gem "rdoc", "~> 6.3.0"
@@ -53,10 +54,10 @@ gem "rsolr", "~> 2.0"
 gem "blacklight_advanced_search", "~> 8.0"
 gem "bootstrap", "~> 5.3"
 gem "font-awesome-rails"
-gem "view_component", "~> 3.0"
+gem "view_component", "~> 4.0"
 
 # For authentication; used by Blacklight and by SDBMSS
-gem "devise", "~> 4.9"
+gem "devise", "~> 5.0"
 gem "devise-guests", "~> 0.3.0"
 
 # Extracted from Rails 5; needed by Blacklight

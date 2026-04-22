@@ -291,7 +291,7 @@ Rails.application.routes.draw do
     end
   end
 
-  devise_for :users, :controllers => { :registrations => "registrations" }
+  devise_for :users, controllers: { registrations: "registrations" }
 
   # matches unmatched path - needs to remain as LAST route
 

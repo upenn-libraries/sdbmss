@@ -25,7 +25,7 @@ class AccountsController < SearchableAuthorityController
     if can? :manage, User
       user = User.find_by(username: params[:username])
       if user.present?
-        sign_in(:user, user)
+        sign_in(user)
         redirect_to dashboard_contributions_path
       else
         render body: "ERROR: User not found: #{params[:username]}"
