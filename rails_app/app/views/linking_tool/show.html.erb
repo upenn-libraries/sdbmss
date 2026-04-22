@@ -799,8 +799,8 @@ $(document).ready(function() {
         </tbody>
     </table>
 
-    <nav class="navbar navbar-light bg-light" style="margin: 10px 0px 9px 0px;">
-        <%= form_tag(request.path, method: :get, id: "link-search", class: "search-form d-flex flex-row flex-wrap align-items-center w-100") do %>
+    <nav class="navbar navbar-expand navbar-light bg-light" style="margin: 10px 0px 9px 0px;">
+        <%= form_tag(request.path, method: :get, id: "link-search", class: "search-form d-flex flex-column flex-md-row flex-wrap align-items-stretch align-items-md-start w-100 px-3") do %>
         <ul class="nav navbar-nav navbar-left me-auto">
              <li>
                 <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_search_tips" href="#"><span class="fa fa-search"></span> Search Tips</a>
