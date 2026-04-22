@@ -139,14 +139,14 @@ class SourcesController < SearchableAuthorityController
     respond_to do |format|
       format.html {
         if error.blank?
-          render nothing: true
+          head :ok
         else
           render status: :unprocessable_entity, html: "Invalid status"
         end
       }
       format.json {
         if error.blank?
-          render nothing: true
+          head :ok
         else
           render status: :unprocessable_entity, json: { "errors" => { base: "Invalid status" } }
         end
