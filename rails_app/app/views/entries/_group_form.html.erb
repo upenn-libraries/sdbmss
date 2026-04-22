@@ -5,7 +5,7 @@
   <% groups = Group.joins(:group_users).where(:group_users => {user: current_user, role: "Manager"}) %>
   <% if groups.count > 0 %>
   <div class="input-group-prepend">
-    <input type="submit" value="Add" class='btn btn-outline-secondary'/>
+    <input type="submit" value="Add" class='btn btn-outline-secondary rounded-start'/>
   </div>
   <select class='form-select' name="group_id">
     <% groups.each do |group| %>

@@ -2,7 +2,8 @@
 .input-group-append, .input-group-prepend { display: flex; }
 .input-group-append .btn, .input-group-prepend .btn, .input-group-append .input-group-text, .input-group-prepend .input-group-text { border-radius: 0; }
 .input-group-append:last-child .btn:last-child, .input-group-append:last-child .input-group-text:last-child { border-top-right-radius: var(--bs-border-radius); border-bottom-right-radius: var(--bs-border-radius); }
-.input-group-prepend:first-child .btn, .input-group-prepend:first-child .input-group-text { border-top-left-radius: var(--bs-border-radius); border-bottom-left-radius: var(--bs-border-radius); }
+.input-group-prepend:first-child .btn:first-child, .input-group-prepend:first-child .input-group-text:first-child { border-top-left-radius: var(--bs-border-radius); border-bottom-left-radius: var(--bs-border-radius); }
+.input-group-prepend .btn + .btn, .input-group-append .btn + .btn { margin-left: -1px; }
 select.form-control { background-image: var(--bs-form-select-bg-img, url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e")); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding-right: 2.25rem; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
 .form-inline { display: flex; flex-flow: row wrap; align-items: center; }
 .ui-sortable { position: relative; }
