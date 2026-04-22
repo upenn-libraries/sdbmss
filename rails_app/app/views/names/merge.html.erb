@@ -84,17 +84,13 @@
             <% end %>
             </div>
         <% end %>
-        <%= form_tag(request.path, method: :get, class: "sdbmss-form") do %>
-            <div class="row">
-                <label class="col-md-3 col-form-label">Find by unique ID</label>
-                <div class="col-md-6">
-                    <input type="text" name="target_id" class="form-control">
-                </div>
-                <div class="col-md-3">
-                    <button class="btn btn-primary">Select</button>
-                </div>
-            </div>
+        <div class="text-center d-flex justify-content-center align-items-center">
+        <%= form_tag(request.path, method: :get, class: "d-flex align-items-center") do %>
+                <label class="form-label me-1 text-nowrap">Find by unique ID</label>
+                <button class="btn btn-primary me-1">Select</button>
+                <input type="text" name="target_id" class="form-control" placeholder="Enter Name ID here...">
         <% end %>
+        </div>
         <div class='card mt-3'>
             <% if @similar.present? %>
                 <div class='card-header'><b>Suggestions</b></div>
