@@ -45,8 +45,8 @@
                 <div class="form-inline">
                   <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
                     <input type='text' class='form-control' placeholder="add tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
-                    <a href="" class="input-group-addon add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="fa fa-plus"></span></a>
-                    <a href="" class="input-group-addon add-bookmark-tag-confirm" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Cancel</a>
+                    <a href="" class="input-group-text add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="fa fa-plus"></span></a>
+                    <a href="" class="input-group-text add-bookmark-tag-confirm" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Cancel</a>
                   </div>
                 </div> 
               </dl>
@@ -55,10 +55,10 @@
       </div>
   
     </div>
-    <div class="form-inline clearfix navbar-form">
+    <div class="form-inline clearfix">
       <div class="input-group">
         <input type="text" class="form-control" name="tag-search" placeholder="Filter By Tag..." size=12 ng-model="tagSearch" ng-keyup="$event.keyCode == 13 && searchTag(tagSearch)">
-        <a href="" class="input-group-addon" ng-click="searchTag('')"><span>Clear</span></a>
+        <a href="" class="input-group-text" ng-click="searchTag('')"><span>Clear</span></a>
       </div>
       <a href='/bookmarks' class="float-end text-end text-invert">Manage<br>Bookmarks</a>
     </div>

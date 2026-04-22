@@ -3,7 +3,7 @@
     button, and responsive navbar layout. Stock partial delegates to Blacklight::SearchBarComponent.
 %>
 <div class="navbar-header catalog-search-form w-100">
-  <%= form_tag sdbmss_search_action_path, :method => :get, :class => 'form-inline clearfix navbar-form', :style => 'width: 100%;' do %>
+  <%= form_tag sdbmss_search_action_path, :method => :get, :class => 'form-inline clearfix', :style => 'width: 100%;' do %>
     <%= render Blacklight::HiddenSearchStateComponent.new(params: search_state.params_for_search.except(:q, :search_field, :qt)) %>
 
     <% unless blacklight_config.search_fields.empty? %>

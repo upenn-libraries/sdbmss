@@ -13,7 +13,7 @@ json.activities @details do |(date, users)|
       else
         link_text = "<span class='text-danger'>#{link_text}</span>"
       end
-      link_text += "<small class='float-right'>#{activity.created_at.to_formatted_s(:long)}</small>"
+      link_text += "<small class='float-end'>#{activity.created_at.to_formatted_s(:long)}</small>"
 
       ["#{activity.format_event} #{link_text}", version[:details]] 
     }.to_h] 
