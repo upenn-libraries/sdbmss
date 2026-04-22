@@ -1,4 +1,5 @@
 <% if (page = Page.find_by(name: page_name)) %>
+  <div class="position-relative">
   <% if can? :edit, page %>
     <%= link_to(edit_page_path(page.name), class: 'edit-page btn btn-success btn-sm') do %>
       <span class="fa fa-edit"></span> Edit Page
@@ -6,6 +7,7 @@
   <% end %>
   <div class="page-partial">
     <%= page.contents %>
+  </div>
   </div>
 <% else %>
     <p class="text-muted">Missing Partial Page: "<%= page_name %>"</p>
