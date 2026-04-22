@@ -11,9 +11,9 @@
     <% if can? :manage, model_class %>
     <li>
         <% if resource_name == "entries" %>
-            <a href="" id="mark-as-approved"><span class="fa fa-check"></span> Mark as approved</a>                            
+            <a href="" id="mark-as-approved"><span class="fa fa-check"></span> Mark as approved</a>
         <% elsif resource_name == "names" %>
-            <a href="" id="mark-as-reviewed"><span class="fa fa-check"></span> Mark as approved</a>                            
+            <a href="" id="mark-as-reviewed"><span class="fa fa-check"></span> Mark as approved</a>
         <% else %>
             <a href="" id="mark-as-reviewed"><span class="fa fa-check"></span> Mark as approved</a>
         <% end %>
@@ -47,8 +47,8 @@
 
 <span id="spinner-src" src="<%= asset_path "spinner.gif" %>" style="display: none;"></span>
 
-<nav class="navbar navbar-light bg-light" style="margin: 0px 0px 9px 0px;">
-    <%= form_tag(request.path, method: :get, class: 'search-form d-flex flex-row flex-wrap align-items-center w-100') do %>
+<nav class="navbar navbar-expand navbar-light bg-light" style="margin: 0px 0px 9px 0px;">
+    <%= form_tag(request.path, method: :get, class: 'search-form d-flex flex-column flex-md-row flex-wrap align-items-stretch align-items-md-start w-100 px-3') do %>
     <a class='navbar-brand' href="#manage_records_info" data-bs-toggle="modal" data-bs-target="#manage_records_info">
     <% if @page_title %>
             <%= @page_title %>
@@ -57,19 +57,19 @@
             <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
             Manage Your <%= resource_name.pluralize.capitalize %>
         <% elsif resource_name == "manuscripts" %>
-            <% @page_title = "Manage " + resource_name.singularize + " records - " + application_name %>            
+            <% @page_title = "Manage " + resource_name.singularize + " records - " + application_name %>
             Manage <%= resource_name.singularize.capitalize %> Records
         <% else %>
-            <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>            
+            <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
             Manage <%= resource_name.capitalize %>
         <% end %>
-    <% end %>                    
+    <% end %>
         <span class="fa fa-info-circle"></span>
     </a>
     <!---->
     <%= render partial: "search_form" %>
     <% end %>
-</nav>      
+</nav>
 
 <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
     <thead>
@@ -101,7 +101,7 @@ function setOptions (p) {
         if (results.length > 0) {
             // nothing -> if there's already a 'valid' selected filter option
         } else {
-            p.find("." + type + "_option").first().attr("selected", true);            
+            p.find("." + type + "_option").first().attr("selected", true);
             // redundancy for FIREFOX, set value as well as 'selected'
             var val = p.find("." + type + "_option").first().val();
             p.find("select[name=search_option]").val(val);
@@ -125,7 +125,7 @@ $("#addSearch").click( function (e) {
     p.find(".search-remove").click( function (e) {
         //var p = $(this).closest('.search-block');
         if ($('.search-block').length > 1) {
-            $(".search-fieldset").find(p).remove();            
+            $(".search-fieldset").find(p).remove();
         } else {                                    // otherwise, clear all the fields
             p.find("input").each(function (e) {
                 $(this).val("");
@@ -136,7 +136,7 @@ $("#addSearch").click( function (e) {
     setOptions(p);
 });
 $(document).ready( function () {
-    
+
     var p = $('.search-block').eq(0);
     p.find(".search-remove").click( function (e) {
         if ($('.search-block').length > 1) {     // if there are others, remove it

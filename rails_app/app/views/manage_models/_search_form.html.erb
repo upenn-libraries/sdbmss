@@ -1,20 +1,20 @@
-<ul class="nav navbar-left navbar-nav me-auto">
+<ul class="nav navbar-left navbar-nav">
     <li>
         <% if can? :review, model_class %>
-            <label>
+            <label class="text-nowrap">
                 <% if model_class == Entry %>
                     <%= check_box_tag :unapproved_only, 1, params[:unapproved_only] %> Limit to records needing approval
                 <% else %>
                     <%= check_box_tag :unreviewed_only, 1, params[:unreviewed_only] %> Limit to records needing review
                 <% end %>
             </label>
-        <% end %>            
+        <% end %>
     </li>
 </ul>
 
-<div class="navbar-right d-flex flex-row flex-nowrap align-items-center">
+<div class="navbar-right d-flex flex-column flex-md-row flex-md-wrap align-items-stretch align-items-md-start ms-md-auto">
 
-<ul class="nav navbar-nav float-start">
+<ul class="nav navbar-nav float-start mt-1">
     <li>
         <a href="" class="text-nowrap" id="addSearch">
             <span class="fa fa-plus"></span> add term
@@ -23,18 +23,18 @@
 </ul>
 
 
-<div class="search-form form-inline search-fieldset flex-column float-start navbar-form" id="table-search-form">
-    <div class="search-block input-group">
+<div class="search-form form-inline search-fieldset d-flex flex-column float-start navbar-form" id="table-search-form">
+    <div class="search-block input-group flex-column flex-md-row">
         <div class="input-group-append">
             <button type='button' class="btn btn-warning search-remove"> <span class="fa fa-times"></span> </button>
         </div>
-        <%= text_field_tag :search_value, params[:search_value], size: 18, placeholder: "Enter your search term...", class: "form-control" %>
-        <select class="form-control" name="search_field">
-        <% Array(@search_fields).each do |field| %>  
+        <%= text_field_tag :search_value, params[:search_value], placeholder: "Enter your search term...", class: "form-control form-control-sm" %>
+        <select class="form-select form-select-sm w-auto" name="search_field">
+        <% Array(@search_fields).each do |field| %>
             <option value="<%= field[1] %>" type="<%= @fields.include?(field) ? 'field' : (@filters.include?(field) ? 'filter' : 'date') %>"><%= field[0] %></option>
         <% end -%>
         </select>
-        <select class="form-control" name="search_option">
+        <select class="form-select form-select-sm w-auto me-md-2" name="search_option">
         <% Array(@filter_options).each do |option| %>
             <option value="<%= option %>" class="option filter_option">
                 <% if option == 'with' %>
@@ -49,7 +49,7 @@
         <% Array(@field_options).each do |option| %>
             <option value="<%= option %>" class="option field_option"><%= option.humanize %></option>
         <% end %>
-        <% Array(@date_options).each do |option| %>                
+        <% Array(@date_options).each do |option| %>
             <option value="<%= option %>" class="option date_option"><%= option.humanize %></option>
         <% end %>
         </select>
@@ -58,7 +58,7 @@
 
 <div class="form-inline float-start navbar-form">
     <div class="input-group form-submission d-flex flex-nowrap align-items-center">
-        <select name="op" id="search_op" class="form-control">
+        <select name="op" id="search_op" class="form-select form-select-sm">
             <option value="AND">All</option>
             <option value="OR">Any</option>
         </select>
