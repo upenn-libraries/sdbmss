@@ -27,7 +27,7 @@
     </div>
 
     <div class="form-group row">
-        <label for="source_type" class="col-sm-2 control-label"><span sdbm-tooltip="source_type">Source Type</span></label>
+        <label for="source_type" class="col-sm-2 form-label"><span sdbm-tooltip="source_type">Source Type</span></label>
         <div class="col-sm-4">
             <select class="form-control" id="source_type" ng-model="source.source_type" ng-change="sourceTypeChange()" ng-options="option as option.display_name for option in optionsSourceType" ng-disabled="source.id">
                 <option value="">Select One</option>
@@ -42,7 +42,7 @@
     <div class="source-fields-container" ng-show="showFields()">
 
         <div class="form-group row" ng-show="source.source_type.name != 'online'">
-            <label for="source_date" class="col-sm-2 control-label"><span sdbm-tooltip="source_date">Source Date</span></label>
+            <label for="source_date" class="col-sm-2 form-label"><span sdbm-tooltip="source_date">Source Date</span></label>
             <div class="col-sm-3">
                 <input type="text" class="form-control" placeholder="YYYY-MM-DD" name="source_date" id="source_date" ng-model="source.date" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" />
             </div>
@@ -54,14 +54,14 @@
         <div class="auction-source-container" ng-show="source.source_type.name == 'auction_catalog'">
 
             <div class="form-group row">
-                <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_title">Publication Title</span></label>
+                <label for="cat_title" class="col-sm-2 form-label"><span sdbm-tooltip="source_publication_title">Publication Title</span></label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="title" ng-model="source.title" required />
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-2 control-label">
+                <label class="col-sm-2 form-label">
                   <span><span sdbm-tooltip="source_selling_agent">Selling Agent(s)</span></span>  
                   <div class="add-link-container text-nowrap">
                     <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
@@ -78,14 +78,14 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-2">
-                                <label class='control-label'>
+                                <label class='form-label'>
                                     As Recorded
                                 </label>
                             </div>
                             <div class='col-sm-4'>
                                 <input class="form-control" ng-model="source_agent.observed_name" ng-init="source_agent.role = 'selling_agent'">
                             </div>
-                            <label class="col-sm-2 control-label">
+                            <label class="col-sm-2 form-label">
                                 <span>Authority Name</span>
                             </label>
                             <div class="col-sm-4">                            
@@ -103,7 +103,7 @@
             <!-- I added this to support catalogs whose entire contents are the sale of a single person; but per 10/30 meeting, Lynn says we dont need this -->
             <!--
             <div class="form-group row">
-                <label for="institution" class="col-sm-2 control-label">Seller</label>
+                <label for="institution" class="col-sm-2 form-label">Seller</label>
                 <div class="col-sm-10">
                 </div>
             </div>
@@ -113,14 +113,14 @@
 
         <div class="auction-source-container" ng-show="source.source_type.name == 'online'">
             <div class="form-group row">
-                <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_website_name">Website Name</span></label>
+                <label for="cat_title" class="col-sm-2 form-label"><span sdbm-tooltip="source_website_name">Website Name</span></label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="title" ng-model="source.title" required />
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-2 control-label">
+                <label class="col-sm-2 form-label">
                   <span><span sdbm-tooltip="source_selling_agent">Selling Agent(s)</span></span>  
                   <div class="add-link-container text-nowrap">
                     <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
@@ -137,14 +137,14 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-2">
-                                <label class='control-label'>
+                                <label class='form-label'>
                                     As Recorded
                                 </label>
                             </div>
                             <div class='col-sm-4'>
                                 <input class="form-control" ng-model="source_agent.observed_name" ng-init="source_agent.role = 'selling_agent'">
                             </div>
-                            <label class="col-sm-2 control-label">
+                            <label class="col-sm-2 form-label">
                                 <span>Authority Name</span>
                             </label>
                             <div class="col-sm-4">                            
@@ -163,7 +163,7 @@
         <div class="auction-source-container" ng-show="source.source_type.name == 'collection_catalog'">
 
             <div class="form-group row">
-                <label class="col-sm-2 control-label">
+                <label class="col-sm-2 form-label">
                   <span><span sdbm-tooltip="source_institution">Institution/ Collection(s)</span></span>  
                   <div class="add-link-container text-nowrap">
                     <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
@@ -180,14 +180,14 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-2">
-                                <label class='control-label'>
+                                <label class='form-label'>
                                     As Recorded
                                 </label>
                             </div>
                             <div class='col-sm-4'>
                                 <input class="form-control" ng-model="source_agent.observed_name" ng-init="source_agent.role = 'institution'">
                             </div>
-                            <label class="col-sm-2 control-label">
+                            <label class="col-sm-2 form-label">
                                 <span>Authority Name</span>
                             </label>
                             <div class="col-sm-4">                             
@@ -203,14 +203,14 @@
             </div>
 
             <div class="form-group row">
-                <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_title">Publication Title</span></label>
+                <label for="cat_title" class="col-sm-2 form-label"><span sdbm-tooltip="source_publication_title">Publication Title</span></label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="title" ng-model="source.title">
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_author">Publication Author</span></label>
+                <label for="cat_author" class="col-sm-2 form-label"><span sdbm-tooltip="source_publication_author">Publication Author</span></label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="author" ng-model="source.author">
                 </div>
@@ -221,14 +221,14 @@
         <div class="auction-source-container" ng-show="source.source_type.name == 'observation'">
 
             <div class="form-group row">
-                <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_source_name">Source Name</label>
+                <label for="cat_title" class="col-sm-2 form-label"><span sdbm-tooltip="source_source_name">Source Name</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="title" ng-model="source.title">
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="source_observer">Observer</span></label>
+                <label for="cat_author" class="col-sm-2 form-label"><span sdbm-tooltip="source_observer">Observer</span></label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="author" ng-model="source.author">
                 </div>
@@ -239,7 +239,7 @@
         <div class="auction-source-container" ng-show="source.source_type.name == 'unpublished' || source.source_type.name == 'other_published'">
 
             <div class="form-group row">
-                <label class="col-sm-2 control-label">
+                <label class="col-sm-2 form-label">
                   <span><span sdbm-tooltip="source_institution">Institution/ Collection(s)</span></span>  
                   <div class="add-link-container text-nowrap">
                     <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
@@ -256,14 +256,14 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-2">
-                                <label class='control-label'>
+                                <label class='form-label'>
                                     As Recorded
                                 </label>
                             </div>
                             <div class='col-sm-4'>
                                     <input class="form-control" ng-model="source_agent.observed_name" ng-init="source_agent.role = 'institution'">
                             </div>
-                            <label class="col-sm-2 control-label">
+                            <label class="col-sm-2 form-label">
                                 <span>Authority Name</span>
                             </label>
                             <div class="col-sm-4">                            
@@ -280,14 +280,14 @@
             </div>
 
             <div class="form-group row">
-                <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_source_name">Source Name</span></label>
+                <label for="cat_title" class="col-sm-2 form-label"><span sdbm-tooltip="source_source_name">Source Name</span></label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="title" ng-model="source.title">
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="source_author_creator">Author/Creator</span></label>
+                <label for="cat_author" class="col-sm-2 form-label"><span sdbm-tooltip="source_author_creator">Author/Creator</span></label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="author" ng-model="source.author">
                 </div>
@@ -296,7 +296,7 @@
         </div>
 
 <!--        <div class="form-group row">
-            <label for="whether_mss" class="col-sm-2 control-label"><span sdbm-tooltip="source_has_manuscripts">Has Manuscripts</span></label>
+            <label for="whether_mss" class="col-sm-2 form-label"><span sdbm-tooltip="source_has_manuscripts">Has Manuscripts</span></label>
             <div class="col-sm-3">
                 <select class="form-control" name="whether_mss" id="whether_mss" ng-model="source.whether_mss">
                     <%= options_for_select(Source::HAS_MANUSCRIPT_TYPES) %>
@@ -304,7 +304,7 @@
             </div>-->
 
         <div class="form-group row" ng-show="source.id">
-            <label for="status" class="col-sm-2 control-label"><span sdbm-tooltip="source_status">Status</span></label>
+            <label for="status" class="col-sm-2 form-label"><span sdbm-tooltip="source_status">Status</span></label>
             <div class="col-sm-3">
                 <select class="form-control" name="status" id="status" ng-model="source.status" >
                     <%= options_for_select(Source::STATUS_TYPES) %>
@@ -325,7 +325,7 @@
         </div>
 
         <div class="form-group row">
-            <label for="location" class="col-sm-2 control-label"><span sdbm-tooltip="source_location_type">Location Type</span></label>
+            <label for="location" class="col-sm-2 form-label"><span sdbm-tooltip="source_location_type">Location Type</span></label>
             <div class="col-sm-3">
                 <select class="form-control" id="medium" ng-model="source.medium" ng-options="option[0] as option[1] for option in optionsMedium" ng-disabled="source.source_type.name == 'online'">
                     <option value="">Select One</option>
@@ -334,7 +334,7 @@
         </div>
 
         <div class="form-group row">
-            <label for="city" class="col-sm-2 control-label"><span sdbm-tooltip="source_date_accessed">Date Accessed</span></label>
+            <label for="city" class="col-sm-2 form-label"><span sdbm-tooltip="source_date_accessed">Date Accessed</span></label>
             <div class="col-sm-3">
                 <input type="text" class="form-control" name="date_accessed" id="date_accessed" ng-model="source.date_accessed" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/"/>
             </div>
@@ -344,7 +344,7 @@
         </div>
 
         <div class="form-group row" ng-show="source.medium != 'internet' && source.medium != 'personal_communication'">
-            <label for="city" class="col-sm-2 control-label">
+            <label for="city" class="col-sm-2 form-label">
                 <span sdbm-tooltip="source_institution_location_seen" ng-show="source.medium != 'private_collection'">Institution</span>
                 <span sdbm-tooltip="source_institution_location_seen" ng-show="source.medium == 'private_collection'">Collection</span>
             </label>
@@ -354,14 +354,14 @@
         </div>
 
         <div class="form-group row" ng-show="source.medium != 'internet'">
-            <label for="city" class="col-sm-2 control-label"><span sdbm-tooltip="source_location_seen">Location (City, Country)</span></label>
+            <label for="city" class="col-sm-2 form-label"><span sdbm-tooltip="source_location_seen">Location (City, Country)</span></label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" name="location" id="location" ng-model="source.location" />
             </div>
         </div>
                 
         <div class="form-group row" ng-show="source.source_type.name != 'observation'">
-            <label for="location" class="col-sm-2 control-label"><span sdbm-tooltip="source_link">Online Link / Call Num.</span></label>
+            <label for="location" class="col-sm-2 form-label"><span sdbm-tooltip="source_link">Online Link / Call Num.</span></label>
             <div class="col-sm-9">
                 <input type="text" class="form-control" name="link" id="link" ng-model="source.link" />
             </div>
@@ -374,7 +374,7 @@
         </div>
 
         <div class="form-group row">
-            <label for="editorial_comments" class="col-sm-2 control-label">
+            <label for="editorial_comments" class="col-sm-2 form-label">
                 <span sdbm-tooltip="source_comments">Other Info</span>
             </label>
             <div class="col-sm-9">

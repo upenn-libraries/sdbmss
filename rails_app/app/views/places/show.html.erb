@@ -164,7 +164,7 @@
 
         <p class="text-muted"><%= @model.name %> is associated with <%= "#{@model.names.count} #{'name'.pluralize(@model.names.count)}" %> </p>
 
-        <label for="" class="control-label">Page: <input id="page-selector" type="number" class="form-control" value="0" min="0" max="<%= (@name_places.count / @page_size.to_f).ceil - 1 %>"></label>
+        <label for="" class="form-label">Page: <input id="page-selector" type="number" class="form-control" value="0" min="0" max="<%= (@name_places.count / @page_size.to_f).ceil - 1 %>"></label>
 
         <% i = 0 %>
         <div class="tab-content">

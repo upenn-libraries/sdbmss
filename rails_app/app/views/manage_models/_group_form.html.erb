@@ -9,13 +9,13 @@
     </div>
     <% groups = Group.joins(:group_users).where(:group_users => {user: current_user}) %> <!-- don't have to be a manager to add records... -->
     <% if groups.count > 0 %>
-    <select class='custom-select' id="group-select">
+    <select class='form-select' id="group-select">
       <% groups.each do |group| %>
         <option value="<%= group.id %>"><%= group.name %></option>
       <% end %>
     </select>
     <% else %>
-    <select name="" id="" class="custom-select" disabled>
+    <select name="" id="" class="form-select" disabled>
       <option value="nil">You have no user groups.</option>
     </select>
     <% end %>

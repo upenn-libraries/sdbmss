@@ -7,7 +7,7 @@
   <div class="input-group-prepend">
     <input type="submit" value="Add" class='btn btn-outline-secondary'/>
   </div>
-  <select class='custom-select' name="group_id">
+  <select class='form-select' name="group_id">
     <% groups.each do |group| %>
       <option value="<%= group.id %>"><%= group.name %></option>
     <% end %>
@@ -16,7 +16,7 @@
   <div class="input-group-prepend">
     <input type="submit" value="Add" class='btn btn-outline-secondary disabled' disabled/>
   </div>
-  <select name="" id="" class="custom-select disabled" disabled>
+  <select name="" id="" class="form-select disabled" disabled>
     <option value="nil">You have no user groups.</option>
   </select>
   <% end %>

@@ -1,11 +1,11 @@
     <div class="field form-group row">
-        <%= label :name, "Name", class: "col-sm-3 control-label" %>
+        <%= label :name, "Name", class: "col-sm-3 form-label" %>
         <div class="col-sm-9">
             <%= text_field_tag :name, name.name, :class => 'form-control'  %>
         </div>
     </div>
     <div class="field form-group row">
-        <%= label_tag :viaf_id, 'VIAF ID', class: "col-sm-3 control-label" %>
+        <%= label_tag :viaf_id, 'VIAF ID', class: "col-sm-3 form-label" %>
         <div class="col-sm-9">
             <%= text_field_tag :viaf_id, name.viaf_id, :class => 'form-control' %>
         </div>
@@ -17,7 +17,7 @@
         <% end %>
     </div>
     <div class="field form-group row">
-        <%= label_tag :flags, "Flags", class: "col-sm-3 control-label" %>
+        <%= label_tag :flags, "Flags", class: "col-sm-3 form-label" %>
         <div class="col-sm-9">
             Specify this name to be used as:<br/>
             <label>
@@ -38,7 +38,7 @@
         </div>
     </div>
     <div class="field form-group row">
-        <%= label_tag :other_info, "Comment", class: "col-sm-3 control-label" %>
+        <%= label_tag :other_info, "Comment", class: "col-sm-3 form-label" %>
         <div class="col-sm-9">
             <%= text_field_tag :other_info, name.other_info, :class => 'form-control' %>
         </div>

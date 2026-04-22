@@ -3,25 +3,25 @@
   <%= render partial: "errors" %>
 
   <div class="field form-group row">
-      <%= f.label :username, class: "col-sm-2 control-label" %>
+      <%= f.label :username, class: "col-sm-2 form-label" %>
       <div class="col-sm-4">
           <%= f.text_field :username, :class => 'form-control' %>
       </div>
   </div>
   <div class="field form-group row">
-      <%= f.label :fullname, "Full Name", class: "col-sm-2 control-label" %>
+      <%= f.label :fullname, "Full Name", class: "col-sm-2 form-label" %>
       <div class="col-sm-4">
           <%= f.text_field :fullname, :class => 'form-control' %>
       </div>
   </div>
   <div class="field form-group row">
-      <%= f.label :institutional_affiliation, class: "col-sm-2 control-label" %>
+      <%= f.label :institutional_affiliation, class: "col-sm-2 form-label" %>
       <div class="col-sm-4">
           <%= f.text_field :institutional_affiliation, :class => 'form-control' %>
       </div>
   </div>
   <div class="field form-group row">
-      <%= f.label :email, class: "col-sm-2 control-label" %>
+      <%= f.label :email, class: "col-sm-2 form-label" %>
       <div class="col-sm-4">
           <%= f.email_field :email, :class => 'form-control' %>
       </div>
@@ -35,7 +35,7 @@
       </div>
   </div>
   <div class="field form-group row">
-      <%= f.label :password, class: "col-sm-2 control-label" %>
+      <%= f.label :password, class: "col-sm-2 form-label" %>
       <div class="col-sm-4">
           <%= f.password_field :password, :class => 'form-control' %>
       </div>
@@ -44,25 +44,25 @@
       </div>
   </div>
   <div class="field form-group row">
-      <%= f.label :password_confirmation, class: "col-sm-2 control-label" %>
+      <%= f.label :password_confirmation, class: "col-sm-2 form-label" %>
       <div class="col-sm-4">
           <%= f.password_field :password_confirmation, :class => 'form-control' %>
       </div>
   </div>
   <div class="field form-group row">
-      <%= f.label :bio, class: "col-sm-2 control-label" %>
+      <%= f.label :bio, class: "col-sm-2 form-label" %>
       <div class="col-sm-4">
           <%= f.text_area :bio, :class => 'form-control' %>
       </div>
   </div>
   <div class="field form-group row">
-      <%= f.label :role, class: "col-sm-2 control-label" %>
+      <%= f.label :role, class: "col-sm-2 form-label" %>
       <div class="col-sm-2">
           <%= f.collection_select :role, User::ROLES, :to_s, :to_s, {}, { :class => 'form-control' } %>
       </div>
   </div>
   <div class="field form-group row">
-      <%= f.label :active, "Active", class: "col-sm-2 control-label" %>
+      <%= f.label :active, "Active", class: "col-sm-2 form-label" %>
       <div class="col-sm-4">
           <label>
               <%= f.check_box :active %> User is allowed to log in

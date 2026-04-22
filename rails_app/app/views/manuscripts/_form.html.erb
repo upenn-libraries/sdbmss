@@ -3,19 +3,19 @@
 <%= form_for(@model, html: { class: "form-horizontal" }) do |f| %>
   <%= render partial: "errors" %>
   <div class="field form-group row">
-      <%= f.label :name, "Common Name", class: "col-sm-2 control-label" %>
+      <%= f.label :name, "Common Name", class: "col-sm-2 form-label" %>
       <div class="col-sm-5">
           <%= f.text_field :name, :class => 'form-control', :placeholder => "e.g. Archimedes Palimpsest, Book of Kells" %>
       </div>
   </div>
   <div class="field form-group row">
-      <%= f.label :location, "Last Known Location", class: "col-sm-2 control-label" %>
+      <%= f.label :location, "Last Known Location", class: "col-sm-2 form-label" %>
       <div class="col-sm-5">
           <%= f.text_field :location, :class => 'form-control', :placeholder => "e.g. Philadelphia, University of Pennsylvania Libraries, LJS 101" %>
       </div>
   </div>
   <div class="field form-group row">
-      <%= f.label :entries, class: "col-sm-2 control-label" %>
+      <%= f.label :entries, class: "col-sm-2 form-label" %>
       <div class="col-sm-6 label-alignment">
           <p>This manuscript record has the following entries linked to it:</p>
           <p>

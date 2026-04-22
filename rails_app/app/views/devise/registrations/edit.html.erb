@@ -97,7 +97,7 @@
               <tbody>
                 <tr>
                   <td>
-                    <label class='control-label'>On Update To My Watched Records</label>
+                    <label class='form-label'>On Update To My Watched Records</label>
                     <span class="text-muted">Note: Records you create are 'watched' by default</span>
                   </td>
                   <td class=''>
@@ -109,7 +109,7 @@
                 </tr>
                 <tr>
                   <td>
-                    <label class='control-label'>On Comment To My Watched Records</label>
+                    <label class='form-label'>On Comment To My Watched Records</label>
                     <span class="text-muted">Note: Records you create are 'watched' by default</span>                    
                   </td>
                   <td class=''>
@@ -121,7 +121,7 @@
                 </tr>
                 <tr>
                   <td>
-                    <label class='control-label'>On Reply To My Comments</label>
+                    <label class='form-label'>On Reply To My Comments</label>
                   </td>
                   <td class=''>
                     <%= notification_f.check_box :on_reply, class: 'form-control'  %>
@@ -132,7 +132,7 @@
                 </tr>
                 <tr>
                   <td>
-                    <label class='control-label'>On Private Message</label>
+                    <label class='form-label'>On Private Message</label>
                   </td>
                   <td class=''>
                     <%= notification_f.check_box :on_message, class: 'form-control'  %>
@@ -143,7 +143,7 @@
                 </tr>
                 <tr>
                   <td>
-                    <label class='control-label'>On Group Invite</label>
+                    <label class='form-label'>On Group Invite</label>
                   </td>
                   <td class=''>
                     <%= notification_f.check_box :on_group, class: 'form-control'  %>
@@ -155,7 +155,7 @@
                 <% if resource.role == 'admin' %>
                 <tr>
                   <td>
-                    <label class='control-label'>On New User Registration</label>
+                    <label class='form-label'>On New User Registration</label>
                   </td>
                   <td class=''>
                     <%= notification_f.check_box :on_new_user, class: 'form-control'  %>
@@ -166,7 +166,7 @@
                 </tr>
                 <tr>
                   <td>
-                    <label class='control-label'>On Any Comment</label>
+                    <label class='form-label'>On Any Comment</label>
                   </td>
                   <td class=''>
                     <%= notification_f.check_box :on_all_comment, class: 'form-control'  %>
@@ -177,7 +177,7 @@
                 </tr>
                 <tr>
                   <td>
-                    <label class='control-label'>On Forum Post</label>
+                    <label class='form-label'>On Forum Post</label>
                     <span class="text-muted">When someone posts to a forum topic you are following.</span>
                   </td>
                   <td class=''>
