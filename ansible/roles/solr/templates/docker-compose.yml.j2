@@ -30,12 +30,7 @@ services:
       - mysql
       - traefik
     volumes:
-      - sdbm_solr:/home/app/solr
-#    volumes:
-#      - sdbm_solr:/var/solr/data
-#      - ./solr/conf:/opt/solr-config:ro
-#    ports:
-#      - 8983:8983
+      - sdbm_solr:/var/solr/data
     healthcheck:
       test: [ "CMD-SHELL", "curl -sf http://localhost:8983/solr/development/admin/ping || exit 1" ]
       interval: 30s
