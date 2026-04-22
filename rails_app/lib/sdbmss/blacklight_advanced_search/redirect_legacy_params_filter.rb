@@ -5,6 +5,29 @@
 module SDBMSS
   module BlacklightAdvancedSearch
     class RedirectLegacyParamsFilter
+      # Convert a legacy params hash (e.g. all_fields[]=maggs) to BL8 clause
+      # format. Returns a new hash — does not mutate the input. Used by the
+      # search history / saved searches views to render constraints for
+      # searches that were stored before the before_action converted them.
+      def self.normalize(params, config)
+        params = params.to_h.with_indifferent_access
+        return params unless params[:search_field] == 'advanced' && params[:clause].blank?
+
+        normalized = params.dup
+        i = 0
+        config.search_fields.each do |_key, field|
+          next unless normalized[field.key].present?
+          normalized[:clause] ||= {}
+          Array(normalized[field.key]).each do |val|
+            next if val.blank?
+            normalized[:clause][i.to_s] = { field: field.key, query: val }
+            i += 1
+          end
+          normalized.delete(field.key)
+        end
+        normalized
+      end
+
       def self.before(controller)
         params = controller.send(:params)
         config = controller.blacklight_config

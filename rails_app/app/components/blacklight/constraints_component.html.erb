@@ -19,6 +19,10 @@
     <%= query_constraints %>
   <% end %>
 
+  <% unless @start_over_component %>
+    <%= facet_constraints %>
+  <% end %>
+
   <% additional_constraints.each do |constraints| %>
     <%= constraints %>
   <% end %>

@@ -23,7 +23,9 @@
     <%-  @searches.each_with_index do |search,index| -%>
     <li class="list-group-item">
       <div class="row">
-        <span class="col-sm-12"><%= link_to_previous_search(search.query_params) %></span>
+        <% normalized = SDBMSS::BlacklightAdvancedSearch::RedirectLegacyParamsFilter.normalize(search.query_params, blacklight_config) %>
+        <% search_state = controller.search_state_class.new(normalized, blacklight_config, self) %>
+        <span class="col-sm-12"><%= link_to(render(Blacklight::ConstraintsComponent.for_search_history(search_state: search_state)), search_action_path(search.query_params)) %></span>
       </div>
     </li>
   <%- end -%>

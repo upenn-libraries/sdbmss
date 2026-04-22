@@ -42,7 +42,9 @@
   <ul class="list-group">
     <%- @searches.each do |search| -%>
       <li class='list-group-item row'>
-        <div class='col-sm-10'><%= link_to_previous_search(search.query_params) %></div>
+        <% normalized = SDBMSS::BlacklightAdvancedSearch::RedirectLegacyParamsFilter.normalize(search.query_params, blacklight_config) %>
+        <% search_state = controller.search_state_class.new(normalized, blacklight_config, self) %>
+        <div class='col-sm-10'><%= link_to(render(Blacklight::ConstraintsComponent.for_search_history(search_state: search_state)), search_action_path(search.query_params)) %></div>
         <div class='col-sm-2 text-end'><%= button_to 'Delete', blacklight.forget_search_path(search.id), :class => 'btn btn-outline-secondary' %></div>
       </li>
     <%- end -%>
