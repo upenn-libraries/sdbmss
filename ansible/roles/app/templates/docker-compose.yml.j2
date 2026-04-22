@@ -100,7 +100,6 @@ services:
       {% if is_development == true %}
       - /sdbmss/ansible/roles/app/files/src/:/home/app/
       {% else %}
-      - sdbm_assets:/home/app/public/assets
       - sdbm_docs:/home/app/public/static
       {% endif %}
 
@@ -119,6 +118,5 @@ secrets:
 
 {% if is_development != true %}
 volumes:
-  sdbm_assets:
   sdbm_docs:
 {% endif %}
