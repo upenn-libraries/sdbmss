@@ -136,7 +136,6 @@ Rails.application.routes.draw do
 
   get '/dashboard/contributions'
   get '/dashboard/activity'
-  get '/dashboard/forum'
 
 #  resources :delayed_jobs, only: [:index]
 
