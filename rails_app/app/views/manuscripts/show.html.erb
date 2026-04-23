@@ -96,7 +96,7 @@
 <% content_for :add_entry do %>
     <li>
         <%= link_to(new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4})) do %>
-            <span class="fa fa-plus"></span> Create Linked Personal Observation
+            <span class="fas fa-fw fa-plus"></span> Create Linked Personal Observation
         <% end %>
     </li>
     <li class="divider"></li>
@@ -252,7 +252,7 @@
                                                             (No date entered)
                                                         <% end %>
                                                     </div>
-                                                    <span class="fa fa-times provenance_remove"></span>
+                                                    <span class="fas fa-fw fa-times provenance_remove"></span>
                                                 </div>
                                             </li>
                                         <% end %>

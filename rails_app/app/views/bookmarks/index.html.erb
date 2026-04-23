@@ -5,7 +5,7 @@
 <div ng-controller="ManageBookmarks" ng-init='search_term = "<%= params[:tag] %>"'>
 <div class="row">
   <div class="col-sm-12 text-center">
-    <h1><span class="fa fa-bookmark"></span> Bookmarks</h1>
+    <h1><span class="fas fa-fw fa-bookmark"></span> Bookmarks</h1>
   </div>
   <div class="col-sm-12">
     <%= render partial: "pages/partial", locals: {page_name: "Bookmark Instructions"} %>
@@ -21,7 +21,7 @@
         <span class="input-group">
           <input type="text" class="form-control" name="tag-search" placeholder="Filter By Tag..." size=32 ng-model="search_term" ng-keyup="$event.keyCode == 13 && searchTag(search_term)">
           <span class="input-group-append">
-            <a href="" class="btn btn-primary bookmark-search" ng-click="searchTag(search_term)"><span class="fa fa-tag"></span> Filter</a>
+            <a href="" class="btn btn-primary bookmark-search" ng-click="searchTag(search_term)"><span class="fas fa-fw fa-tag"></span> Filter</a>
             <a href="" class="btn btn-outline-secondary" ng-click="searchTag('')"><span>Clear</span></a>
           </span>
         </span>
@@ -42,7 +42,7 @@
             <div class="card-header">
               <strong><a href="{{ bookmark.link }}">{{ bookmark.public_id }}</a></strong>
               <a class='remove-bookmark control-bookmark float-end' ng-click="removeBookmark(name, bookmark)" title="Remove bookmark">
-                <span class="fa fa-times"></span>
+                <span class="fas fa-fw fa-times"></span>
               </a>
             </div>
             <div class="card-body">
@@ -55,17 +55,17 @@
               <div class="row">
                 <div class="col-sm-7">
                   <ul class="list-inline" style="margin-bottom: 0px;">
-                    <li class="list-inline-item"><span class="btn btn-sm"><span class="fa fa-tag"></span> Tags</span> </li>
+                    <li class="list-inline-item"><span class="btn btn-sm"><span class="fas fa-fw fa-tag"></span> Tags</span> </li>
                     <li ng-if="bookmark.tags.length <= 0" class="list-inline-item text-muted">This bookmark has no tags.</li>
                     <li ng-repeat="tag in bookmark.tags" class="list-inline-item btn-group">
                       <a class="btn btn-outline-secondary btn-sm" ng-class="{'btn-primary' : tag == tagSearch}" href="" ng-click="searchTag(tag);">{{ tag }}</a>
-                      <a href="" class='btn btn-outline-secondary btn-sm remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)" title="Remove tag '{{ tag }}'"><span class="fa fa-times"></span></a>
+                      <a href="" class='btn btn-outline-secondary btn-sm remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)" title="Remove tag '{{ tag }}'"><span class="fas fa-fw fa-times"></span></a>
                     </li>
                   </ul>
                 </div>
                 <div class="col-sm-5 text-end">
                   <a ng-show="!bookmark.showAddTag" href="" class="btn btn-sm btn-outline-secondary btn-add-tag" ng-click="bookmark.showAddTag = !bookmark.showAddTag">
-                    <span class="fa fa-plus"></span> Add Tag
+                    <span class="fas fa-fw fa-plus"></span> Add Tag
                   </a>
                   <div class="form-inline" style="position: absolute; right: 10px; top: -6px;">
                     <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
@@ -74,7 +74,7 @@
                       </div>
                       <input type='text' class='form-control new-bookmark-tag' placeholder="New tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
                       <div class="input-group-append">
-                        <a href="" class="btn btn-outline-secondary add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="fa fa-plus"></span> Add</a>
+                        <a href="" class="btn btn-outline-secondary add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="fas fa-fw fa-plus"></span> Add</a>
                         <a href="" class="btn btn-warning add-bookmark-tag-confirm" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Cancel</a>
                       </div>
                     </div>

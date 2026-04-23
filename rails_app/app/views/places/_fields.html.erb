@@ -24,13 +24,13 @@
       </select>
     </div>
     <label for="" class="form-label col-sm-2" ng-click="queryURL()" href="">
-      <span class="fa fa-upload"></span> Authority Id
+      <span class="fas fa-fw fa-upload"></span> Authority Id
     </label>
     <div class="col-sm-4">
       <div class="input-group">
         <span class="input-group-append">
           <a href="" class="btn btn-outline-secondary" ng-click="queryAuthority()">
-            <span class="fa fa-globe"></span>
+            <span class="fas fa-fw fa-globe-americas"></span>
           </a>
         </span>
         <input type="text" class="form-control" ng-model="place.authority_id">
@@ -50,7 +50,7 @@
         Find or Create Parent Place
       </a>
       <div ng-if='place.parent !== undefined && place.parent.id !== undefined' class="well well-sm well-name-authority">
-          <a class="fa fa-times" ng-click="removeNameAuthority(place, 'parent')"></a> <!-- remove name! -->
+          <a class="fas fa-fw fa-times" ng-click="removeNameAuthority(place, 'parent')"></a> <!-- remove name! -->
           <a href="/places/{{ place.parent.id }}" target="_blank">{{ place.parent.name }}</a>
       </div>
     </div>

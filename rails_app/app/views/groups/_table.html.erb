@@ -26,17 +26,17 @@
         <div class="btn-group">
         <% if can?(:edit, group) %>
             <%= link_to(group_path(group, format: 'html'),  method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-sm') do %>
-              <span class="fa fa-times"></span> Delete
+              <span class="fas fa-fw fa-times"></span> Delete
             <% end %>
             <%= link_to(edit_group_path(group), class: 'btn btn-success btn-sm') do %>
-              <span class="fa fa-edit"></span> Manage
+              <span class="fas fa-fw fa-edit"></span> Manage
             <% end %>
         <% end %>
 
         <% if not group.users.include? current_user %>
             <p class='text-center'>
                 <%= link_to(add_to_group_accounts_path(ids: [current_user.id], group_id: group.id), :method => :post) do %>
-                    <span class="fa fa-pencil"></span> Request Membership
+                    <span class="fas fa-fw fa-pencil-alt"></span> Request Membership
                 <% end %>
             </p>
         <% end %>

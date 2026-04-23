@@ -24,7 +24,7 @@ class WatchesController < ApplicationController
           render json: { success: 'success', status_code: '200', results: results, method: 'post' } 
         }
         format.html {
-          flash[:notice] = "<span class='fa fa-eye-slash'></span> #{watched.count} Records <b>Unwatched</b>".html_safe
+          flash[:notice] = "<span class='fas fa-fw fa-eye-slash'></span> #{watched.count} Records <b>Unwatched</b>".html_safe
           redirect_to watches_path          
         }
       end

@@ -12,7 +12,7 @@
     <!--
     <div class="col-sm-1">
       <%#= link_to(private_message_path(m, format: 'html'),  method: :delete, format: 'json', data: { confirm: 'Are you sure?' }) do %>
-        <span class="fa fa-times"></span> Delete
+        <span class="fas fa-fw fa-times"></span> Delete
       <%# end %>
     </div-->
     <% if chain.users(current_user).include? nil %>
@@ -24,7 +24,7 @@
         </div>
         <div class="col-sm-7 private_message_preview">
           <% if um > 0 %>
-            <strong class="fa fa-exclamation-circle text-success"></strong>
+            <strong class="fas fa-fw fa-exclamation-circle text-success"></strong>
           <% end %>
           (<%= chain.messages.count %>)
           <strong>

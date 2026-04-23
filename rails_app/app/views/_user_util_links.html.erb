@@ -1,14 +1,14 @@
 <div class="ms-auto mobile-left">
   <ul class="nav navbar-nav">
     <!-- INTERACTIVE TUTORIAL -->
-    <!--<li><a href="" class="fa fa-question-circle" onclick="t.restart();"></a></li>-->
+    <!--<li><a href="" class="fas fa-fw fa-question-circle" onclick="t.restart();"></a></li>-->
     <!--<li class="dropdown">
         <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">The New SDBM <span class="caret"></span></a>-->
     <!--</li>-->
 
     <li class="nav-item dropdown">
         <a href="#" class='nav-link dropdown-toggle' data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-          <span class="fa fa-info-circle"></span> <span class="">About</span>
+          <span class="fas fa-fw fa-info-circle"></span> <span class="">About</span>
         </a>
         <div class="dropdown-menu dropdown-menu-end" role="menu">
             <%= link_to "Home", main_app.root_path, class: "dropdown-item" %>
@@ -21,7 +21,7 @@
 
     <li class="nav-item dropdown">
         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-          <span class="fa fa-question-circle"></span>
+          <span class="fas fa-fw fa-question-circle"></span>
           <span class="">Help</span>
         </a>
         <div class="dropdown-menu dropdown-menu-end" role="menu">
@@ -40,13 +40,13 @@
       <% if current_user && !current_user.to_s.blank? %>
       <li>
         <%= link_to(main_app.destroy_user_session_path, :onclick => "localStorage.clear();") do %>
-          <span class="fa fa-sign-out"></span> <%= t('blacklight.header_links.logout') %>
+          <span class="fas fa-fw fa-sign-out-alt"></span> <%= t('blacklight.header_links.logout') %>
         <% end %>
       </li>
       <% else %>
       <li>
         <%= link_to(main_app.new_user_session_path) do %>
-          <span class="fa fa-sign-in"></span> <%= t('blacklight.header_links.login') %>
+          <span class="fas fa-fw fa-sign-in-alt"></span> <%= t('blacklight.header_links.login') %>
         <% end %>
       </li>
       <% end %>

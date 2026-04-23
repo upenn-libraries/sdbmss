@@ -46,10 +46,10 @@
                   <%= @user.to_s %>
                 </a>
                 <div class="dropdown-menu">
-                  <span class="dropdown-item-text text-muted"><em><span class="fa fa-fw fa-briefcase"></span> <%= @user.role %></em></span>
-                  <a class="dropdown-item" href="<%= new_private_message_path(user_id: [@user.id]) %>"><span class="fa fa-fw fa-envelope"></span> Send Message</a>
+                  <span class="dropdown-item-text text-muted"><em><span class="fas fa-fw fa-briefcase"></span> <%= @user.role %></em></span>
+                  <a class="dropdown-item" href="<%= new_private_message_path(user_id: [@user.id]) %>"><span class="fas fa-fw fa-envelope"></span> Send Message</a>
                   <% if current_user == @user %>
-                  <%= link_to edit_user_registration_path, class: "dropdown-item" do %><span class="fa fa-fw fa-cog"></span> My Settings<% end %>
+                  <%= link_to edit_user_registration_path, class: "dropdown-item" do %><span class="fas fa-fw fa-cog"></span> My Settings<% end %>
                   <% end %>
                 </div>
             </span>
@@ -63,7 +63,7 @@
         <p class="text-muted"><%= @display[:biography] %></p>
         <strong><%= @display[:institution] %></strong>
         <div class='text-center text-muted' style="border-top: 1px solid #ddd; margin-top: 8px; padding-top: 8px;">
-            <span class="fa fa-clock-o"></span> Last Active <%= @display[:last_seen] %>
+            <span class="far fa-fw fa-clock"></span> Last Active <%= @display[:last_seen] %>
         </div>
 
     </div>

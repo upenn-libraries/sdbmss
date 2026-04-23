@@ -33,13 +33,13 @@
             </div>
         <% end %>
         <h2>
-            <span class="fa fa-graduation-cap"></span>
+            <span class="fas fa-fw fa-graduation-cap"></span>
             <%= @model.name %>
         </h2>
         <% if not @model.users.include? current_user %>
             <p class='text-center'>
                 <%= link_to(add_to_group_accounts_path(ids: [current_user.id], group_id: @model.id), :method => :post) do %>
-                    <span class="fa fa-pencil"></span> Request Membership
+                    <span class="fas fa-fw fa-pencil-alt"></span> Request Membership
                 <% end %>
             </p>
         <% end %>
@@ -85,7 +85,7 @@
         <% end %>
         <% end %>
 
-        <h3 class='text-center'><span class="fa fa-comment"></span> Discussion</h3>
+        <h3 class='text-center'><span class="fas fa-fw fa-comment"></span> Discussion</h3>
         <% if @model.public or @model.users.include? current_user %>
             <p class='text-muted text-center'>Leave a comment to contribute to the ongoing discussion.</p>
             <%= render partial: "comments/show_all", locals: {comments: @model.comments.where(public: true), record: @model} %>
@@ -98,7 +98,7 @@
     <div class="col-sm-5">
         <h4>
             Entries
-            <small class="float-end"><%= link_to(entries_path) do %> <span class="fa fa-plus"></span> Add Entries <% end %></small>
+            <small class="float-end"><%= link_to(entries_path) do %> <span class="fas fa-fw fa-plus"></span> Add Entries <% end %></small>
         </h4>
         <%= render partial: "entries", locals: {entries: @model.entries} %>
         <% if @model.entries.count <= 0 %>

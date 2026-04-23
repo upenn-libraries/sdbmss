@@ -112,13 +112,13 @@ label.col-sm-2-and-half {
       <% if @entry.id %>
         <%= render partial: "nav/bookmark_watch", locals: {model: @entry } %>
       <% else %>
-        <li class="disabled"><a href=""><span class="fa fa-bookmark"></span> Bookmark</a></li>
-        <li class="disabled"><a href=""><span class="fa fa-eye"></span> Watch</a></li>
+        <li class="disabled"><a href=""><span class="fas fa-fw fa-bookmark"></span> Bookmark</a></li>
+        <li class="disabled"><a href=""><span class="fas fa-fw fa-eye"></span> Watch</a></li>
       <% end %>
       <% if @entry.source && can?(:edit, @entry.source) %>
         <li role="presentation">
           <a role="menuitem" tabindex="-1" href="/sources/<%= @entry.source.id %>/edit" target="_blank">
-            <span class="fa fa-edit"></span>
+            <span class="fas fa-fw fa-edit"></span>
             Edit source <%= @entry.source.public_id %>
           </a>
         </li>
@@ -126,7 +126,7 @@ label.col-sm-2-and-half {
         <!-- disabled -->
         <li role="presentation" class='disabled'>
           <a role="menuitem" tabindex="-1" href="" target="">
-            <span class="fa fa-edit"></span>
+            <span class="fas fa-fw fa-edit"></span>
             Edit Source
           </a>
         </li>
@@ -134,13 +134,13 @@ label.col-sm-2-and-half {
       <% if @entry.id %>
         <li role="presentation">
           <a role="menuitem" tabindex="-1" href="/entries/<%= @entry.id %>/history" target="_blank">
-            <span class="fa fa-list-alt"></span>
+            <span class="fas fa-fw fa-list-alt"></span>
             View history
           </a>
         </li>
         <li role="presentation">
           <a href="/linkingtool/entry/<%= @entry.id %>" target="_blank">
-            <span class="fa fa-link"></span>
+            <span class="fas fa-fw fa-link"></span>
             Linking Tool for <%= @entry.public_id %>
           </a>
         </li>
@@ -148,13 +148,13 @@ label.col-sm-2-and-half {
         <!-- disabled -->
         <li role="presentation" class='disabled'>
           <a role="menuitem" tabindex="-1" href="">
-            <span class="fa fa-list-alt"></span>
+            <span class="fas fa-fw fa-list-alt"></span>
             View history
           </a>
         </li>
         <li role="presentation" class='disabled'>
           <a href="">
-            <span class="fa fa-link"></span>
+            <span class="fas fa-fw fa-link"></span>
             Linking Tool
           </a>
         </li>
@@ -163,7 +163,7 @@ label.col-sm-2-and-half {
         <li class="divider"></li>
         <li>
           <%= link_to(new_entry_path(source_id: @entry.source)) do %>
-            <span class="fa fa-plus"></span> Add Entry From <%= @entry.source.public_id %>
+            <span class="fas fa-fw fa-plus"></span> Add Entry From <%= @entry.source.public_id %>
           <% end %>
         </li>
       <% end %>
@@ -174,7 +174,7 @@ label.col-sm-2-and-half {
     <% if @entry.manuscript %>
       <li>
         <%= link_to(new_source_path({create_entry: 1, manuscript_id: @entry.manuscript.id, source_type: 4})) do %>
-          <span class="fa fa-plus"></span> Create Linked Personal Observation
+          <span class="fas fa-fw fa-plus"></span> Create Linked Personal Observation
         <% end %>
       </li>
       <li class="divider"></li>
@@ -270,7 +270,7 @@ label.col-sm-2-and-half {
             <div class="btn-group" role="group">
               <a id="find_institution_name_authority_0" ng-if='entry.institution.id == undefined' ng-init="entry.institution = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.institution, 'is_provenance_agent')">Find or Create Authority Name</a>
               <div id='show_institution_name_authority_0' ng-if='entry.institution != undefined && entry.institution.id != undefined' class="well well-sm well-name-authority btn btn-info">
-                <a id='remove_institution_name_authority_0' class="fa fa-times" ng-click="removeNameAuthority(entry, 'institution')"></a>
+                <a id='remove_institution_name_authority_0' class="fas fa-fw fa-times" ng-click="removeNameAuthority(entry, 'institution')"></a>
                 {{ entry.institution.name }}
               </div>
             </div>
@@ -337,7 +337,7 @@ label.col-sm-2-and-half {
                     <span class='h4'>Sale Agent(s)</span>
                     <span class="add-link-container text-nowrap">
                       <a a id="add_sale_agent" class="clickable" data-ng-click="addRecord(entry.sale.sale_agents)" title="Add">
-                        Add new <span class="fa fa-plus"></span>
+                        Add new <span class="fas fa-fw fa-plus"></span>
                       </a>
                     </span>
                   </div>
@@ -345,7 +345,7 @@ label.col-sm-2-and-half {
                     <div class="row input-block" data-ng-repeat="sale_agent in entry.sale.sale_agents | filter: activeRecords">
                       <div class="remove-link-container">
                         <a class="clickable" data-ng-click="removeRecord(entry.sale.sale_agents, sale_agent)" title="Remove">
-                          <span class="fa fa-times"></span>
+                          <span class="fas fa-fw fa-times"></span>
                         </a>
                       </div>
                       <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
@@ -361,10 +361,10 @@ label.col-sm-2-and-half {
                         <div class="btn-group name-authority-group" role="group">
                           <a id='find_sale_agent_name_authority_{{ $index }}' ng-if='sale_agent.agent.id == undefined' ng-init="sale_agent.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', sale_agent.agent, 'is_provenance_agent', sale_agent.observed_name)">Find or Create Authority Name</a>
                           <div id='show_selling_agent_name_authority_0' ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
-                            <a id='remove_selling_agent_name_authority_0' class="fa fa-times" ng-click="removeNameAuthority(sale_agent, 'agent')"></a>
+                            <a id='remove_selling_agent_name_authority_0' class="fas fa-fw fa-times" ng-click="removeNameAuthority(sale_agent, 'agent')"></a>
                             <a href="/names/{{ sale_agent.agent.id }}" target="_blank"><span id="sale_agent_{{ $index }}">{{ sale_agent.agent.name }}</span></a>
                           </div>
-                          <span id="sale_selling_agent_certainty_flags" ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="sale_agent"><span class="fa"></span></span>
+                          <span id="sale_selling_agent_certainty_flags" ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="sale_agent"><span class="fas"></span></span>
                         </div>
 
                         <span class='form-label' sdbm-tooltip="entry_sale_agent_role">Role</span>
@@ -393,7 +393,7 @@ label.col-sm-2-and-half {
       <span class='h4'>Text Title(s)</span>
       <span class="add-link-container text-nowrap">
         <a id="add_title" class="clickable" data-ng-click="addRecord(entry.entry_titles);" title="Add">
-          <span class="fa fa-plus"></span>
+          <span class="fas fa-fw fa-plus"></span>
           add new
         </a>
       </span>
@@ -402,7 +402,7 @@ label.col-sm-2-and-half {
       <div class="row input-block" data-ng-repeat="entry_title in entry.entry_titles | filter: activeRecords | orderBy: 'order'">
         <div class="remove-link-container">
           <a id="delete_title_{{ $index }}" class="clickable" data-ng-click="removeRecord(entry.entry_titles, entry_title)" title="Remove">
-            <span class="fa fa-times"></span>
+            <span class="fas fa-fw fa-times"></span>
           </a>
         </div>
           <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
@@ -410,7 +410,7 @@ label.col-sm-2-and-half {
               <span class="expandable-table">
                 <span sdbm-tooltip="entry_title_as_recorded">As Recorded</span>
                 <input maxlength="255" id="title_{{ $index }}" type="text" ng-focus="expand($event)" ng-blur="reduce($event)" class="form-control entry-title before-certainty" data-ng-model="entry_title.title">
-                <div id="title_certainty_flags_{{ $index }}" class="input-group-text clickable certainty" sdbm-certainty-flags="entry_title"><span class="fa"></span></div>
+                <div id="title_certainty_flags_{{ $index }}" class="input-group-text clickable certainty" sdbm-certainty-flags="entry_title"><span class="fas"></span></div>
               </span>
             </span>
 
@@ -430,7 +430,7 @@ label.col-sm-2-and-half {
       <span class='h4'>Author(s)</span>
       <span class="add-link-container text-nowrap">
         <a id="add_author" class="clickable" data-ng-click="addRecord(entry.entry_authors)" title="Add">
-          <span class="fa fa-plus"></span>
+          <span class="fas fa-fw fa-plus"></span>
           add new
         </a>
       </span>
@@ -439,7 +439,7 @@ label.col-sm-2-and-half {
       <div class='row input-block' data-ng-repeat="entry_author in entry.entry_authors | filter: activeRecords">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_authors, entry_author)" title="Remove">
-            <span class="fa fa-times"></span>
+            <span class="fas fa-fw fa-times"></span>
           </a>
         </div>
         <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
@@ -455,11 +455,11 @@ label.col-sm-2-and-half {
             <div class="btn-group name-authority-group" role="group">
               <a id="find_author_name_authority_{{ $index }}" ng-if='entry_author.author.id == undefined' ng-init="entry_author.author = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_author.author, 'is_author', entry_author.observed_name)">Find or Create Authority Name</a>
               <span ng-if='entry_author.author != undefined && entry_author.author.id != undefined' class="btn btn-info well-name-authority form-control">
-                <a id="remove_author_name_authority_{{ $index }}" class="fa fa-times" ng-click="removeNameAuthority(entry_author, 'author')"></a>
+                <a id="remove_author_name_authority_{{ $index }}" class="fas fa-fw fa-times" ng-click="removeNameAuthority(entry_author, 'author')"></a>
                 <a href="/names/{{ entry_author.author.id }}" target="_blank">{{ entry_author.author.name }}</a>
               </span>
               <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_author" encourage-name-authority-name="author"></span>
-              <span ng-if='entry_author.author != undefined && entry_author.author.id != undefined' id="author_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_author"><span class="fa"></span></span>
+              <span ng-if='entry_author.author != undefined && entry_author.author.id != undefined' id="author_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_author"><span class="fas"></span></span>
             </div>
 
             <span class='form-label'><span sdbm-tooltip="entry_author_role">Role</span>
@@ -479,7 +479,7 @@ label.col-sm-2-and-half {
       </span>
       <span class="add-link-container text-nowrap">
         <a id="add_date" class="clickable" data-ng-click="addRecord(entry.entry_dates)" title="Add">
-          <span class="fa fa-plus"></span>
+          <span class="fas fa-fw fa-plus"></span>
           add new
         </a>
       </span>
@@ -488,7 +488,7 @@ label.col-sm-2-and-half {
       <div class="row input-block" data-ng-repeat="entry_date in entry.entry_dates | filter: activeRecords">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_dates, entry_date)" title="Remove">
-            <span class="fa fa-times"></span>
+            <span class="fas fa-fw fa-times"></span>
           </a>
         </div>
         <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
@@ -496,7 +496,7 @@ label.col-sm-2-and-half {
             <span class="expandable-table">
               <span sdbm-tooltip="entry_date_as_recorded">As Recorded</span>
                <input id="date_observed_date_{{ $index }}" type="text" class="form-control before-certainty" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/entry_dates/parse_observed_date.json" ng-focus="expand($event)" ng-blur="reduce($event)">
-                <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-text clickable certainty" sdbm-certainty-flags="entry_date"><span class="fa"></span></div>
+                <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-text clickable certainty" sdbm-certainty-flags="entry_date"><span class="fas"></span></div>
             </span>
           </span>
           <span class='form-label'><span sdbm-tooltip="entry_date_for_search">Range for Search</span>
@@ -518,7 +518,7 @@ label.col-sm-2-and-half {
       <span class='h4'>Artist(s)</span>
       <span class="add-link-container text-nowrap">
         <a id="add_artist" class="clickable" data-ng-click="addRecord(entry.entry_artists)" title="Add">
-          <span class="fa fa-plus"></span>
+          <span class="fas fa-fw fa-plus"></span>
           add new
         </a>
       </span>
@@ -527,7 +527,7 @@ label.col-sm-2-and-half {
       <div class='row input-block' data-ng-repeat="entry_artist in entry.entry_artists | filter: activeRecords">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_artists, entry_artist)" title="Remove">
-            <span class="fa fa-times"></span>
+            <span class="fas fa-fw fa-times"></span>
           </a>
         </div>
         <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
@@ -542,11 +542,11 @@ label.col-sm-2-and-half {
           <div class="btn-group name-authority-group" role="group">
             <a id="find_artist_name_authority_{{ $index }}" ng-if='entry_artist.artist.id == undefined' ng-init="entry_artist.artist = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_artist.artist, 'is_artist', entry_artist.observed_name)">Find or Create Authority Name</a>
             <div ng-if='entry_artist.artist != undefined && entry_artist.artist.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
-              <a id="remove_artist_name_authority_{{ $index }}" class="fa fa-times" ng-click="removeNameAuthority(entry_artist, 'artist')"></a>
+              <a id="remove_artist_name_authority_{{ $index }}" class="fas fa-fw fa-times" ng-click="removeNameAuthority(entry_artist, 'artist')"></a>
               <a href="/names/{{ entry_artist.artist.id }}" target="_blank">{{ entry_artist.artist.name }}</a>
             </div>
             <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_artist" encourage-name-authority-name="artist"></span>
-            <span ng-if='entry_artist.artist != undefined && entry_artist.artist.id != undefined' id="artist_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_artist"><span class="fa"></span></span>
+            <span ng-if='entry_artist.artist != undefined && entry_artist.artist.id != undefined' id="artist_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_artist"><span class="fas"></span></span>
           </div>
 
           <span class='form-label'><span sdbm-tooltip="entry_artist_role">Role</span>
@@ -564,7 +564,7 @@ label.col-sm-2-and-half {
       <span class='h4'>Scribe(s)</span>
       <span class="add-link-container text-nowrap">
         <a id="add_scribe" class="clickable" data-ng-click="addRecord(entry.entry_scribes)" title="Add">
-          <span class="fa fa-plus"></span>
+          <span class="fas fa-fw fa-plus"></span>
           add new
         </a>
       </span>
@@ -573,7 +573,7 @@ label.col-sm-2-and-half {
       <div class='row input-block' data-ng-repeat="entry_scribe in entry.entry_scribes | filter: activeRecords">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_scribes, entry_scribe)" title="Remove">
-            <span class="fa fa-times"></span>
+            <span class="fas fa-fw fa-times"></span>
           </a>
         </div>
         <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
@@ -588,11 +588,11 @@ label.col-sm-2-and-half {
           <div class="btn-group name-authority-group" role="group">
             <a id="find_scribe_name_authority_{{ $index }}" ng-if='entry_scribe.scribe.id == undefined' ng-init="entry_scribe.scribe = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_scribe.scribe, 'is_scribe', entry_scribe.observed_name)">Find or Create Authority Name</a>
             <div ng-if='entry_scribe.scribe != undefined && entry_scribe.scribe.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
-              <a id="remove_scribe_name_authority_{{ $index }}" class="fa fa-times" ng-click="removeNameAuthority(entry_scribe, 'scribe')"></a>
+              <a id="remove_scribe_name_authority_{{ $index }}" class="fas fa-fw fa-times" ng-click="removeNameAuthority(entry_scribe, 'scribe')"></a>
               <a href="/names/{{ entry_scribe.scribe.id }}" target="_blank">{{ entry_scribe.scribe.name }}</a>
             </div>
             <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_scribe" encourage-name-authority-name="scribe"></span>
-            <span ng-if='entry_scribe.scribe != undefined && entry_scribe.scribe.id != undefined'  id="scribe_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_scribe"><span class="fa"></span></span>
+            <span ng-if='entry_scribe.scribe != undefined && entry_scribe.scribe.id != undefined'  id="scribe_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_scribe"><span class="fas"></span></span>
           </div>
         </div>
       </div>
@@ -604,7 +604,7 @@ label.col-sm-2-and-half {
       <span class='h4'>Place(s)</span>
       <span class="add-link-container text-nowrap">
         <a a id="add_place" class="clickable" data-ng-click="addRecord(entry.entry_places)" title="Add">
-          <span class="fa fa-plus"></span>
+          <span class="fas fa-fw fa-plus"></span>
           add new
         </a>
       </span>
@@ -613,7 +613,7 @@ label.col-sm-2-and-half {
       <div class="row input-block" data-ng-repeat="entry_place in entry.entry_places | filter: activeRecords">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_places, entry_place)" title="Remove">
-            <span class="fa fa-times"></span>
+            <span class="fas fa-fw fa-times"></span>
           </a>
         </div>
           <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
@@ -628,11 +628,11 @@ label.col-sm-2-and-half {
             <div class="btn-group name-authority-group" role="group">
               <a id="find_place_name_authority_{{ $index }}" ng-if='entry_place.place.id == undefined' ng-init="entry_place.place = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('places', entry_place.place, 'place', entry_place.observed_name)">Find or Create Authority Name</a>
               <div ng-if='entry_place.place != undefined && entry_place.place.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
-                <a class="fa fa-times" ng-click="removeNameAuthority(entry_place, 'place')"></a>
+                <a class="fas fa-fw fa-times" ng-click="removeNameAuthority(entry_place, 'place')"></a>
                 <a href="/places/{{ entry_place.place.id }}" target="_blank">{{ entry_place.place.name }}</a>
               </div>
               <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_place" encourage-name-authority-name="place"></span>
-              <span ng-if='entry_place.place != undefined && entry_place.place.id != undefined' id="place_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_place"><span class="fa"></span></span>
+              <span ng-if='entry_place.place != undefined && entry_place.place.id != undefined' id="place_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_place"><span class="fas"></span></span>
             </div>
           </div>
       </div>
@@ -644,7 +644,7 @@ label.col-sm-2-and-half {
       <span class='h4'>Language(s)</span>
       <span class="add-link-container text-nowrap">
         <a id="add_language" class="clickable" data-ng-click="addRecord(entry.entry_languages)" title="Add">
-          <span class="fa fa-plus"></span>
+          <span class="fas fa-fw fa-plus"></span>
           add new
         </a>
       </span>
@@ -653,7 +653,7 @@ label.col-sm-2-and-half {
       <div class="row input-block" data-ng-repeat="entry_language in entry.entry_languages | filter: activeRecords">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_languages, entry_language)" title="Remove">
-            <span class="fa fa-times"></span>
+            <span class="fas fa-fw fa-times"></span>
           </a>
         </div>
         <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
@@ -668,10 +668,10 @@ label.col-sm-2-and-half {
           <div class="btn-group name-authority-group" role="group">
             <a id="find_language_name_authority_{{ $index }}" ng-if='entry_language.language.id == undefined' ng-init="entry_language.language = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('languages', entry_language.language, 'language', entry_language.observed_name)">Find or Create Authority Name</a>
             <div ng-if='entry_language.language != undefined && entry_language.language.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
-              <a class="fa fa-times" ng-click="removeNameAuthority(entry_language, 'language')"></a>
+              <a class="fas fa-fw fa-times" ng-click="removeNameAuthority(entry_language, 'language')"></a>
               <a href="/languages/{{ entry_language.language.id }}" target="_blank">{{ entry_language.language.name }}</a>
             </div>
-            <span ng-if='entry_language.language != undefined && entry_language.language.id != undefined' id="language_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_language"><span class="fa"></span></span>
+            <span ng-if='entry_language.language != undefined && entry_language.language.id != undefined' id="language_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_language"><span class="fas"></span></span>
           </div>
 
         </div>
@@ -684,7 +684,7 @@ label.col-sm-2-and-half {
       <span class='h4'>Use(s)</span>
       <span class="add-link-container text-nowrap">
         <a a id="add_use" class="clickable" data-ng-click="addRecord(entry.entry_uses)" title="Add">
-          <span class="fa fa-plus"></span>
+          <span class="fas fa-fw fa-plus"></span>
           add new
         </a>
       </span>
@@ -693,7 +693,7 @@ label.col-sm-2-and-half {
       <div class="row input-block" data-ng-repeat="entry_use in entry.entry_uses | filter: activeRecords">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_uses, entry_use)" title="Remove">
-            <span class="fa fa-times"></span>
+            <span class="fas fa-fw fa-times"></span>
           </a>
         </div>
         <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
@@ -715,7 +715,7 @@ label.col-sm-2-and-half {
       </span>
       <span class="add-link-container text-nowrap">
         <a a id="add_material" class="clickable" data-ng-click="addRecord(entry.entry_materials)" title="Add">
-          <span class="fa fa-plus"></span>
+          <span class="fas fa-fw fa-plus"></span>
           add new
         </a>
       </span>
@@ -724,7 +724,7 @@ label.col-sm-2-and-half {
       <div class="row input-block" data-ng-repeat="entry_material in entry.entry_materials | filter: activeRecords">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_materials, entry_material)" title="Remove">
-            <span class="fa fa-times"></span>
+            <span class="fas fa-fw fa-times"></span>
           </a>
         </div>
         <div class="col-sm-12 d-md-flex flex-wrap align-items-center" style="gap: 4px;">
@@ -739,7 +739,7 @@ label.col-sm-2-and-half {
               <select ng-model="entry_material.material" id="material_{{ $index }}" class="form-control before-certainty">
                 <option value="{{material.value}}" ng-repeat="material in optionsMaterial" ng-selected="entry_material.material == material.value">{{ material.label }}</option>
               </select>
-              <div id="material_certainty_flags_{{ $index }}" class="input-group-text clickable certainty" sdbm-certainty-flags="entry_scribe"><span class="fa"></span></div>
+              <div id="material_certainty_flags_{{ $index }}" class="input-group-text clickable certainty" sdbm-certainty-flags="entry_scribe"><span class="fas"></span></div>
           </div>
         </div>
       </div>
@@ -809,7 +809,7 @@ label.col-sm-2-and-half {
           <div class="input-group">
             <input ng-class="{ 'has-error': !entryForm['height'].$valid }" type="text" class="form-control" id="height" name="height" ng-pattern="/^[0-9]*$/" data-ng-model="entry.height">
             <span class="input-group-append">
-              <a href="" ng-click="convertInchesToMillimeter(entry, 'height')" class="btn btn-outline-secondary"><span class="fa fa-th"></span></a>
+              <a href="" ng-click="convertInchesToMillimeter(entry, 'height')" class="btn btn-outline-secondary"><span class="fas fa-fw fa-th"></span></a>
             </span>
           </div>
         </div>
@@ -819,7 +819,7 @@ label.col-sm-2-and-half {
           <div class="input-group">
             <input ng-class="{ 'has-error': !entryForm['width'].$valid }" type="text" class="form-control" id="width" name="width" ng-pattern="/^[0-9]*$/" data-ng-model="entry.width">
             <span class="input-group-append">
-              <a href="" ng-click="convertInchesToMillimeter(entry, 'width')" class="btn btn-outline-secondary"><span class="fa fa-th"></span></a>
+              <a href="" ng-click="convertInchesToMillimeter(entry, 'width')" class="btn btn-outline-secondary"><span class="fas fa-fw fa-th"></span></a>
             </span>
           </div>
         </div>
@@ -883,7 +883,7 @@ label.col-sm-2-and-half {
       <span class='h4' sdbm-tooltip="entry_provenance">Agent(s)</span>
       <span class="add-link-container text-nowrap">
         <a id="add_provenance" class="clickable" data-ng-click="addRecord(entry.provenance)" title="Add">
-          <span class="fa fa-plus"></span>
+          <span class="fas fa-fw fa-plus"></span>
           add new
         </a>
       </span>
@@ -893,7 +893,7 @@ label.col-sm-2-and-half {
       <div class="input-block provenance-block row" data-ng-repeat="prov in entry.provenance | filter: activeRecords">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.provenance, prov)" title="Remove">
-            <span class="fa fa-times"></span>
+            <span class="fas fa-fw fa-times"></span>
           </a>
         </div>
         <div class="col-sm-12">
@@ -915,10 +915,10 @@ label.col-sm-2-and-half {
               <div class="btn-group name-authority-group d-flex align-items-center flex-nowrap w-100">
                 <a id='find_provenance_name_authority_{{ $index }}' ng-if='prov.provenance_agent.id == undefined' ng-init="prov.provenance_agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', prov.provenance_agent, 'is_provenance_agent', prov.observed_name)" style="width: 100%">Find or Create Authority Name</a>
                 <div ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
-                  <a class="fa fa-times" ng-click="removeNameAuthority(prov, 'provenance_agent')"></a>
+                  <a class="fas fa-fw fa-times" ng-click="removeNameAuthority(prov, 'provenance_agent')"></a>
                   <a href="/names/{{ prov.provenance_agent.id }}" target="_blank">{{ prov.provenance_agent.name }}</a>
                 </div>
-                <span ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' id="provenance_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="prov" ng-if="prov.provenance_agent != undefined && prov.provenance_agent.id != undefined"><span class="fa"></span></span>
+                <span ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' id="provenance_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="prov" ng-if="prov.provenance_agent != undefined && prov.provenance_agent.id != undefined"><span class="fas"></span></span>
                 <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="prov" encourage-name-authority-name="provenance_agent"></span>
               </div>
             </div>
@@ -971,7 +971,7 @@ label.col-sm-2-and-half {
     <div class="col-sm-12">
       <span class="add-link-container text-nowrap">
         <a id="add_provenance" class="clickable" data-ng-click="addRecord(entry.provenance)" title="Add">
-          <span class="fa fa-plus"></span>
+          <span class="fas fa-fw fa-plus"></span>
           add new
         </a>
       </span>
@@ -999,14 +999,14 @@ label.col-sm-2-and-half {
       <div class="col-sm-12">
         <span class="h4">User Groups</span>
         <a a id="add_group_record" class="clickable" data-ng-click="addRecord(entry.group_records)" title="Add">
-          Add <span class="fa fa-plus"></span>
+          Add <span class="fas fa-fw fa-plus"></span>
         </a>
       </div>
     </div>
     <div class="row input-block" ng-repeat="group_record in entry.group_records | filter: {permission: true} | filter: activeRecords">
       <div class="remove-link-container">
         <a class="clickable" data-ng-click="removeRecord(entry.group_records, group_record)" title="Remove">
-          <span class="fa fa-times"></span>
+          <span class="fas fa-fw fa-times"></span>
         </a>
       </div>
       <div class="col-sm-12">
@@ -1021,7 +1021,7 @@ label.col-sm-2-and-half {
     <div class="row input-block" ng-repeat="group_record in entry.group_records | filter: {permission: false}">
       <div class="remove-link-container">
         <a class="disabled" disabled="disabled">
-          <span class="fa fa-times"></span>
+          <span class="fas fa-fw fa-times"></span>
         </a>
       </div>
       <div class="col-sm-12">

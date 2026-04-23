@@ -24,7 +24,7 @@
     <li class="divider"></li>
     <li>
         <%= link_to(new_entry_path(source_id: @source)) do %>
-          <span class="fa fa-plus"></span> Add Entry From <%= @source.public_id %>
+          <span class="fas fa-fw fa-plus"></span> Add Entry From <%= @source.public_id %>
         <% end %>
     </li>
     <% end %>
@@ -122,7 +122,7 @@
                   <span><span sdbm-tooltip="source_selling_agent">Selling Agent(s)</span></span>  
                   <div class="add-link-container text-nowrap">
                     <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
-                      Add new <span class="fa fa-plus"></span>
+                      Add new <span class="fas fa-fw fa-plus"></span>
                     </a>
                   </div>
                 </label>
@@ -130,7 +130,7 @@
                     <div class="input-block form-group" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
                         <div class="remove-link-container">
                           <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
-                            <span class="fa fa-times"></span>
+                            <span class="fas fa-fw fa-times"></span>
                           </a>
                         </div>
                         <div class="row">
@@ -146,7 +146,7 @@
                             <div class="col-md-4">
                                 <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'selling_agent', 'is_provenance_agent')">Find or Create Authority Name</a>
                                 <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
-                                    <a class="fa fa-times" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                    <a class="fas fa-fw fa-times" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
                                     {{ source_agent.agent.name }}
                                 </div>
                             </div>
@@ -179,7 +179,7 @@
                   <span><span sdbm-tooltip="source_selling_agent">Selling Agent(s)</span></span>  
                   <div class="add-link-container text-nowrap">
                     <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
-                      Add new <span class="fa fa-plus"></span>
+                      Add new <span class="fas fa-fw fa-plus"></span>
                     </a>
                   </div>
                 </label>
@@ -187,7 +187,7 @@
                     <div class="input-block form-group" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
                         <div class="remove-link-container">
                           <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
-                            <span class="fa fa-times"></span>
+                            <span class="fas fa-fw fa-times"></span>
                           </a>
                         </div>
                         <div class="row">
@@ -203,7 +203,7 @@
                             <div class="col-md-4">
                                 <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'selling_agent', 'is_provenance_agent')">Find or Create Authority Name</a>
                                 <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
-                                    <a class="fa fa-times" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                    <a class="fas fa-fw fa-times" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
                                     {{ source_agent.agent.name }}
                                 </div>
                             </div>
@@ -220,7 +220,7 @@
                   <span><span sdbm-tooltip="source_institution">Institution/Collection(s)</span></span>  
                   <div class="add-link-container text-nowrap">
                     <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
-                      Add new <span class="fa fa-plus"></span>
+                      Add new <span class="fas fa-fw fa-plus"></span>
                     </a>
                   </div>
                 </label>
@@ -228,7 +228,7 @@
                     <div class="input-block form-group" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
                         <div class="remove-link-container">
                           <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
-                            <span class="fa fa-times"></span>
+                            <span class="fas fa-fw fa-times"></span>
                           </a>
                         </div>
                         <div class="row">
@@ -244,7 +244,7 @@
                             <div class="col-md-4">
                                 <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find or Create Authority Name</a>
                                 <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
-                                    <a class="fa fa-times" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                    <a class="fas fa-fw fa-times" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
                                     <a href="/names/{{ source_agent.agent.id }}" target="_blank">{{ source_agent.agent.name }}</a>
                                 </div>
                             </div>
@@ -296,7 +296,7 @@
                   <span><span sdbm-tooltip="source_institution">Institution/Location(s)</span></span>  
                   <div class="add-link-container text-nowrap">
                     <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
-                      Add new <span class="fa fa-plus"></span>
+                      Add new <span class="fas fa-fw fa-plus"></span>
                     </a>
                   </div>
                 </label>
@@ -304,7 +304,7 @@
                     <div class="input-block form-group row" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
                         <div class="remove-link-container">
                           <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
-                            <span class="fa fa-times"></span>
+                            <span class="fas fa-fw fa-times"></span>
                           </a>
                         </div>
                         <div class="row">
@@ -320,7 +320,7 @@
                             <div class="col-md-4">
                                 <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find or Create Authority Name</a>
                                 <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
-                                    <a class="fa fa-times" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                    <a class="fas fa-fw fa-times" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
                                     <a href="/names/{{ source_agent.agent.id }}" target="_blank">{{ source_agent.agent.name }}</a>
                                 </div>
                             </div>
@@ -338,7 +338,7 @@
                   <span><span sdbm-tooltip="source_institution">Institution/Collection(s)</span></span>  
                   <div class="add-link-container text-nowrap">
                     <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
-                      Add new <span class="fa fa-plus"></span>
+                      Add new <span class="fas fa-fw fa-plus"></span>
                     </a>
                   </div>
                 </label>
@@ -346,7 +346,7 @@
                     <div class="input-block form-group" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
                         <div class="remove-link-container">
                           <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
-                            <span class="fa fa-times"></span>
+                            <span class="fas fa-fw fa-times"></span>
                           </a>
                         </div>
                         <div class="row">
@@ -362,7 +362,7 @@
                             <div class="col-md-4">
                                 <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find or Create Authority Name</a>
                                 <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
-                                    <a class="fa fa-times" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                    <a class="fas fa-fw fa-times" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
                                     {{ source_agent.agent.name }}
                                 </div>
                             </div>
@@ -483,7 +483,7 @@
           <div class="col-sm-12 text-center">
             <% if !params[:create_entry].nil? %>
                 <button class="btn btn-primary btn-lg" id="savesource" ng-click="save()" ng-disabled="form.$invalid || currentlySaving">
-                    <span class="fa fa-arrow-right"></span> Continue to Entry Details
+                    <span class="fas fa-fw fa-arrow-right"></span> Continue to Entry Details
                 </button>
             <% else %>
                 <button class="btn btn-primary btn-lg" id="savesource" ng-click="save()" ng-disabled="form.$invalid || currentlySaving">Save</button>

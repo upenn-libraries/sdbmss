@@ -11,18 +11,18 @@
     <% if can? :manage, model_class %>
     <li>
         <% if resource_name == "entries" %>
-            <a href="" id="mark-as-approved"><span class="fa fa-check"></span> Mark as approved</a>
+            <a href="" id="mark-as-approved"><span class="fas fa-fw fa-check"></span> Mark as approved</a>
         <% elsif resource_name == "names" %>
-            <a href="" id="mark-as-reviewed"><span class="fa fa-check"></span> Mark as approved</a>
+            <a href="" id="mark-as-reviewed"><span class="fas fa-fw fa-check"></span> Mark as approved</a>
         <% else %>
-            <a href="" id="mark-as-reviewed"><span class="fa fa-check"></span> Mark as approved</a>
+            <a href="" id="mark-as-reviewed"><span class="fas fa-fw fa-check"></span> Mark as approved</a>
         <% end %>
     </li>
     <% end %>
     <% if resource_name == "entries" %>
     <li>
         <a href="#group_modal" data-bs-toggle="modal" data-bs-target="#group_modal">
-            <span class="fa fa-globe"></span> Add/Remove Groups
+            <span class="fas fa-fw fa-globe-americas"></span> Add/Remove Groups
         </a>
     </li>
     <% end %>
@@ -64,7 +64,7 @@
             Manage <%= resource_name.capitalize %>
         <% end %>
     <% end %>
-        <span class="fa fa-info-circle"></span>
+        <span class="fas fa-fw fa-info-circle"></span>
     </a>
     <!---->
     <%= render partial: "search_form" %>

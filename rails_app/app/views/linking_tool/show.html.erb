@@ -727,7 +727,7 @@ $(document).ready(function() {
 
 <div class="row">
     <div class="col-sm-12">
-        <p><a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_instructions" href="#"><span class="fa fa-info-circle"></span> Click here for instructions</a> on how to link entries to manuscript records</p>
+        <p><a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_instructions" href="#"><span class="fas fa-fw fa-info-circle"></span> Click here for instructions</a> on how to link entries to manuscript records</p>
         <% if @mode == 'by_entry' %>
             <%= render partial: "pages/partial", locals: {page_name: "Linking Tool Entry Instructions"} %>
         <% else %>
@@ -739,13 +739,13 @@ $(document).ready(function() {
     <% if @entry %>
         <li>
             <%= link_to(new_source_path({create_entry: 1, new_manuscript: true, original_entry: @entry.id, source_type: 4})) do %>
-                <span class="fa fa-plus"></span> Create Linked Personal Observation
+                <span class="fas fa-fw fa-plus"></span> Create Linked Personal Observation
             <% end %>
         </li>
     <% elsif @manuscript %>
         <li>
             <%= link_to(new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4})) do %>
-                <span class="fa fa-plus"></span> Create Linked Personal Observation
+                <span class="fas fa-fw fa-plus"></span> Create Linked Personal Observation
             <% end %>
         </li>
     <% end %>
@@ -778,10 +778,10 @@ $(document).ready(function() {
         <div class="col-sm-6 text-end">
             <div class="btn-group">
                 <a href="" class="btn btn-outline-secondary" id="load-bookmarks">
-                    <span class="fa fa-bookmark"></span> Load Bookmarks
+                    <span class="fas fa-fw fa-bookmark"></span> Load Bookmarks
                 </a>
                 <% if @entry.present? %>
-                    <a class='btn btn-warning' title="IN DEVELOPMENT" href="" data-bs-toggle="modal" data-bs-target="#suggestions-modal"><span class="fa fa-exclamation-circle"></span> Find Suggested Links</a>
+                    <a class='btn btn-warning' title="IN DEVELOPMENT" href="" data-bs-toggle="modal" data-bs-target="#suggestions-modal"><span class="fas fa-fw fa-exclamation-circle"></span> Find Suggested Links</a>
                 <% else %>
                     <a href="" class="btn btn-outline-secondary disabled">Find Suggested Links</a>
                 <% end %>
@@ -803,7 +803,7 @@ $(document).ready(function() {
         <%= form_tag(request.path, method: :get, id: "link-search", class: "search-form d-flex flex-column flex-md-row flex-wrap align-items-stretch align-items-md-start w-100 px-3") do %>
         <ul class="nav navbar-nav navbar-left me-auto">
              <li>
-                <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_search_tips" href="#"><span class="fa fa-search"></span> Search Tips</a>
+                <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_search_tips" href="#"><span class="fas fa-fw fa-search"></span> Search Tips</a>
             </li>
         </ul>
         <%= render partial: "linking_tool/show_form" %>

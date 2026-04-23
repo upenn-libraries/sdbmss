@@ -4,27 +4,27 @@
         <% if can?(:edit, source) %> 
             <li class="<%= edit ? 'disabled' : '' %>">
                 <a href="<%= merge_source_path(source_id: source) %>" class="<%= source.source_type.id == 8 ? 'disabled text-muted' : '' %>">
-                <span class="fa fa-exchange"></span> 
+                <span class="fas fa-fw fa-exchange-alt"></span> 
                 Merge this source
               </a>
             </li>
             <% if !source.reviewed %>
               <li class="link">
                   <%= link_to(source_path(source, reviewed: true), :method => :put, :data => {:confirm => "Can you confirm that the #{source.class.name} conforms to the SDBM Data Standards</a>?"}) do %>
-                      <span class="fa fa-check"></span> Approve
+                      <span class="fas fa-fw fa-check"></span> Approve
                   <% end %>
               </li>
             <% end %>
             <% if !source.problem %>
               <li class="link">
                   <%= link_to(source_path(source, reviewed: true, problem: true), :method => :put, :data => {:confirm => "Would you like to flag this #{source.class.name} as being problematic?"}) do %>
-                      <span class="fa fa-check"></span> Flag Problem
+                      <span class="fas fa-fw fa-check"></span> Flag Problem
                   <% end %>
               </li>
             <% elsif source.problem %>
               <li class="link">
                   <%= link_to(source_path(source, problem: false), :method => :put, :data => {:confirm => "Has this name been improved so that it is a valid #{source.class.name} resource?"}) do %>
-                      <span class="fa fa-check"></span> Unflag Problem
+                      <span class="fas fa-fw fa-check"></span> Unflag Problem
                   <% end %>
               </li>
             <% end %>

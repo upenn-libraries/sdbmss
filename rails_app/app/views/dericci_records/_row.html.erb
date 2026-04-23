@@ -2,11 +2,11 @@
   <td>
     <% record.dericci_record_flags.each do |flag| %>
       <% if flag.reason == DericciRecordFlag.reasons[0] %>
-        <span class="fa fa-flag text-danger"></span>
+        <span class="fas fa-fw fa-flag text-danger"></span>
       <% elsif flag.reason == DericciRecordFlag.reasons[1] %>
-        <span class="fa fa-flag text-success"></span>
+        <span class="fas fa-fw fa-flag text-success"></span>
       <% else %>
-        <span class="fa fa-flag text-warning"></span>
+        <span class="fas fa-fw fa-flag text-warning"></span>
       <% end %>
     <% end %>
     <%= link_to record.name, dericci_record_path(record) %>
@@ -23,12 +23,12 @@
   <td>
   <% record.dericci_links.where(approved: [false, nil]).group_by(&:name_id).each do |name_id, links| %>
     <span class="btn btn-info btn-sm">
-      <span class="fa fa-link" title="This record is linked to a name is the SDBM name authority (possible)"></span>
+      <span class="fas fa-fw fa-link" title="This record is linked to a name is the SDBM name authority (possible)"></span>
     </span>
   <% end %>
   <% record.dericci_links.where(approved: true).group_by(&:name_id).each do |name_id, links| %>
     <span class="btn btn-sm btn-success">
-      <span class="fa fa-link" title="This record is linked to a name is the SDBM name authority (verified)"></span>
+      <span class="fas fa-fw fa-link" title="This record is linked to a name is the SDBM name authority (verified)"></span>
     </span>
   <% end %>
   </td>

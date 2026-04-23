@@ -21,7 +21,7 @@ module SdbmssConstraintsHelper
           content_tag(:span, facet_config.item_presenter.new(val, facet_config, self, facet).label)
         end +
         link_to(
-          content_tag(:i, '', class: "fa fa-times") + content_tag(:span, '[remove]', class: 'visually-hidden'),
+          content_tag(:i, '', class: "fas fa-fw fa-times") + content_tag(:span, '[remove]', class: 'visually-hidden'),
           search_action_path(search_state.filter(facet).remove(val).params),
           class: "remove ms-2"
         )

@@ -137,7 +137,7 @@
     <% end %>
     <!-- -->
     <%= link_to new_dericci_game_path, class: 'btn btn-sm btn-outline-secondary', id: "new-game" do %>
-      <span class="fa fa-gamepad"></span> Start a <strong>New Game</strong>
+      <span class="fas fa-fw fa-chess-rook"></span> Start a <strong>New Game</strong>
     <% end %>
 
     <% completed = @games.select { |g| g.completed.to_i + g.skipped.to_i + g.flagged.to_i >= 100 } %>

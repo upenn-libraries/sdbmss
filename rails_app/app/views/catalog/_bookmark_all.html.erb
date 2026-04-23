@@ -6,7 +6,7 @@
 <div class="btn-group">
   <% valid_docs = @response.documents.select { |d| d.model_object&.id.present? } %>
   <%= link_to(bookmarks_path(documents: valid_docs.map{ |d| {id: d.model_object.id, type: d.model_object.class.to_s}}), remote: true, id: "bookmark_all", method: :post, "data-type" => "json", class: "btn btn-outline-secondary") do %>
-    <span class="fa fa-bookmark"></span> Bookmark All</span>
+    <span class="fas fa-fw fa-bookmark"></span> Bookmark All</span>
   <% end %>
   <%= link_to(delete_all_bookmarks_path(ids: Bookmark.where(document: valid_docs.map(&:model_object), user: current_user).map(&:id)), :method => :delete, remote: true, class: "btn btn-outline-secondary", id: "unbookmark_all") do %>
     <span class="bookmark-text">Clear</span>

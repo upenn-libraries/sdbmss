@@ -17,7 +17,7 @@
 <ul class="nav navbar-nav float-start mt-1">
     <li>
         <a href="" class="text-nowrap" id="addSearch">
-            <span class="fa fa-plus"></span> add term
+            <span class="fas fa-fw fa-plus"></span> add term
         </a>
     </li>
 </ul>
@@ -26,7 +26,7 @@
 <div class="search-form form-inline search-fieldset d-flex flex-column float-start" id="table-search-form">
     <div class="search-block input-group flex-column flex-md-row">
         <div class="input-group-append">
-            <button type='button' class="btn btn-warning search-remove"> <span class="fa fa-times"></span> </button>
+            <button type='button' class="btn btn-warning search-remove"> <span class="fas fa-fw fa-times"></span> </button>
         </div>
         <%= text_field_tag :search_value, params[:search_value], placeholder: "Enter your search term...", class: "form-control form-control-sm" %>
         <select class="form-select form-select-sm w-auto" name="search_field">
@@ -65,7 +65,7 @@
         <div class="input-group-append">
             <button id="search_submit" type="submit" class="btn btn-primary">
                 <span class="hide-mobile">Search</span>
-                <span class="fa fa-search"></span>
+                <span class="fas fa-fw fa-search"></span>
             </button>
         </div>
     </div>

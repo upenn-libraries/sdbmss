@@ -437,7 +437,7 @@ var BOOKMARK_SCOPE;
       // display based on status of record in game
       $scope.getClass = function (record) {
         if ($scope.isLinked(record)) return 'fa-check';
-        else if (record.skipped) return 'fa-square-o';
+        else if (record.skipped) return 'fa-square';
         else if ($scope.needsWork(record)) return 'fa-exclamation-triangle';
         else if (record.dericci_record_flags.length > 0) return 'fa-flag';
         else return 'fa-search';
@@ -2129,7 +2129,7 @@ var BOOKMARK_SCOPE;
         var modelName = attrs.encourageNameAuthorityModel;
         var nameType = attrs.encourageNameAuthorityName;
 
-        $(element).html('<span class="fa fa-exclamation-triangle"></span> <span class="show-hover">You have not selected an authority name. <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button></span>');
+        $(element).html('<span class="fas fa-fw fa-exclamation-triangle"></span> <span class="show-hover">You have not selected an authority name. <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button></span>');
 
         scope.$watch(modelName, function(newValue, oldValue) {
           $(element).hide();
@@ -2513,11 +2513,11 @@ var BOOKMARK_SCOPE;
                 var uncertain_in_source = $parse(modelName + ".uncertain_in_source")(scope);
                 var supplied_by_data_entry = $parse(modelName + ".supplied_by_data_entry")(scope);
                 if(uncertain_in_source) {
-                    $(element).find("span").removeClass().addClass("fa fa-question-circle");
+                    $(element).find("span").removeClass().addClass("fas fa-fw fa-question-circle");
                 } else if(supplied_by_data_entry) {
-                    $(element).find("span").removeClass().addClass("fa fa-asterisk");
+                    $(element).find("span").removeClass().addClass("fas fa-fw fa-asterisk");
                 } else {
-                    $(element).find("span").removeClass().addClass("fa fa-check");
+                    $(element).find("span").removeClass().addClass("fas fa-fw fa-check");
                 }
             };
 

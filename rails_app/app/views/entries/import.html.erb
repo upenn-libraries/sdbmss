@@ -59,7 +59,7 @@
       <div class="modal-content">
         <div class="modal-header text-center">
             <span class="h3">CSV Formatting Requirements</span>
-            <a href="#Welcome" id="dismiss-welcome" data-bs-dismiss="modal" data-bs-target="#Welcome" class='float-end' style="color: #333;"><span class="fa fa-times"></span></a>
+            <a href="#Welcome" id="dismiss-welcome" data-bs-dismiss="modal" data-bs-target="#Welcome" class='float-end' style="color: #333;"><span class="fas fa-fw fa-times"></span></a>
         </div>
         <div class="modal-body">
           <h4>
@@ -89,7 +89,7 @@
         <input type="file" class="form-control" id="file" accept=".csv" ng-upload-change="handleFile($event)" ng-disabled="!source"></input>
         <span class="input-group-append">
           <a class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#csvInfo" href="#csvInfo" ng-disabled="!source">
-            <span class="fa fa-question-circle"></span>
+            <span class="fas fa-fw fa-question-circle"></span>
           </a>
         </span>
       </div>
@@ -105,7 +105,7 @@
 
   <div class="row" ng-if="csv_parse_error">
     <div class="col-sm-12">
-      <div class="alert alert-danger"><span class="fa fa-exclamation-triangle"></span> There was an error parsing your CSV file! Make sure it conforms to the <a href="#csvInfo" data-bs-toggle="modal" data-bs-target="#csvInfo">formatting standards</a>.</div>
+      <div class="alert alert-danger"><span class="fas fa-fw fa-exclamation-triangle"></span> There was an error parsing your CSV file! Make sure it conforms to the <a href="#csvInfo" data-bs-toggle="modal" data-bs-target="#csvInfo">formatting standards</a>.</div>
     </div>
   </div>
 

@@ -16,13 +16,13 @@
         <% if @entry.manuscript %>
           <li>
             <%= link_to(new_source_path({create_entry: 1, manuscript_id: @entry.manuscript.id, source_type: 4})) do %>
-              <span class="fa fa-plus"></span> Create Linked Personal Observation
+              <span class="fas fa-fw fa-plus"></span> Create Linked Personal Observation
             <% end %>
           </li>
         <% else %>
           <li>
             <%= link_to(new_source_path({create_entry: 1, new_manuscript: true, original_entry: @entry.id, source_type: 4})) do %>
-              <span class="fa fa-plus"></span> Create Linked Personal Observation
+              <span class="fas fa-fw fa-plus"></span> Create Linked Personal Observation
             <% end %>
           </li>
           <li class='divider'></li>
@@ -40,7 +40,7 @@
       <li class='divider'></li>
       <li>
         <%= link_to (new_entry_path(source_id: @entry.source)) do %>
-          <span class="fa fa-plus"></span> Add Entry From <%= @entry.source.public_id %>
+          <span class="fas fa-fw fa-plus"></span> Add Entry From <%= @entry.source.public_id %>
         <% end %>
       </li>
     <% end %>

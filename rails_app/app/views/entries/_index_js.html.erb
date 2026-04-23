@@ -83,15 +83,15 @@
                             var result = '<span class="btn-group options-btn-group">';
 /*
                             if (!full[sdbmTable.getColumnIndex("Bookmarked")]) {
-                                result += '<a data-type="json" class="bookmark btn btn-sm btn-outline-secondary" data-remote="true" rel="nofollow" data-method="post" href="/bookmarks?document_id=' + entryId + '&amp;document_type=Entry"><span class="fa fa-bookmark"></span></a>';
+                                result += '<a data-type="json" class="bookmark btn btn-sm btn-outline-secondary" data-remote="true" rel="nofollow" data-method="post" href="/bookmarks?document_id=' + entryId + '&amp;document_type=Entry"><span class="fas fa-fw fa-bookmark"></span></a>';
                             }*/
                             /*if (!full[sdbmTable.getColumnIndex("Watched")]) {
-                                result += '<a data-type="json" class="btn btn-sm btn-outline-secondary" data-remote="true" rel="nofollow" data-method="post" href="/watches?watched_id=' + entryId + '&amp;watched_type=Entry&user_id=' + user_id + '&button=true"><span class="fa fa-eye"></span></a>';
+                                result += '<a data-type="json" class="btn btn-sm btn-outline-secondary" data-remote="true" rel="nofollow" data-method="post" href="/watches?watched_id=' + entryId + '&amp;watched_type=Entry&user_id=' + user_id + '&button=true"><span class="fas fa-fw fa-eye"></span></a>';
                             }*/
                             result += full[sdbmTable.getColumnIndex("BookmarkWatch")];
                             // bookmark button
 
-                            //result += '<a onclick="addBookmark(' + entryId + ', \'Entry\');" class="btn btn-sm btn-outline-secondary control-bookmark bookmark-link" in_bookmarks="/entries/' + entryId + '"><span class="fa fa-bookmark"></span></a>';
+                            //result += '<a onclick="addBookmark(' + entryId + ', \'Entry\');" class="btn btn-sm btn-outline-secondary control-bookmark bookmark-link" in_bookmarks="/entries/' + entryId + '"><span class="fas fa-fw fa-bookmark"></span></a>';
 
                             // edit
                             if (editable) {

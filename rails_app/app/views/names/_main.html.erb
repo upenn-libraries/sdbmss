@@ -6,7 +6,7 @@
 
 <% if name.viaf_id.present? %>
 <tr><td sdbm-tooltip="edit_entry_viaf>
-    <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="fa fa-globe"></span> VIAF ID</a>
+    <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="fas fa-fw fa-globe-americas"></span> VIAF ID</a>
 </td>
 <td>
     <a href="http://viaf.org/viaf/<%= name.viaf_id %>/"><%= name.viaf_id %></a>
@@ -61,7 +61,7 @@
 <% count_scribes = name.scribes_count || 0 %>
 <% has_entries = (count_authors + count_artists + count_scribes) > 0 %>
 
-<% if (!name.is_provenance_agent) || has_entries %>                
+<% if (!name.is_provenance_agent) || has_entries %>
 <tr><td># Entries</td>
 <td>
     <% if count_authors > 0 %>
@@ -98,7 +98,7 @@
         <% if count_seller_or_holder > 0 %>
         This agent is used as a seller <a class='badge text-bg-secondary' href="<%= search_by_facet_value('sale_seller', name.name) %>"><%= "#{count_seller_or_holder} times".pluralize(count_seller_or_holder) %></a> in our entries<br/>
         <% end %>
-        
+
         <% if count_buyer > 0 %>
         This agent is used as a buyer <a class='badge text-bg-secondary' href="<%= search_by_facet_value('sale_buyer', name.name) %>"><%= "#{count_buyer} times".pluralize(count_buyer) %> </a> in our entries
         <% end %>

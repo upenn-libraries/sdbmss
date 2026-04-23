@@ -9,58 +9,58 @@
     <ul class="nav">
       <li>
         <%= link_to(main_app.entries_path) do %>
-        <span class="fa fa-th"></span> Entries
+        <span class="fas fa-fw fa-th"></span> Entries
         <% end %>
       </li>
       <li>
         <%= link_to(main_app.sources_path) do %>
-        <span class="fa fa-th-large"></span> <%= can?(:index, Source) ? '' : 'My ' %>Sources
+        <span class="fas fa-fw fa-th-large"></span> <%= can?(:index, Source) ? '' : 'My ' %>Sources
         <% end %>
       </li>
       <li>
         <%= link_to(main_app.manuscripts_path) do %>
-        <span class="fa fa-th"></span> <%= can?(:index, Manuscript) ? '' : 'My ' %>Manuscript Records
+        <span class="fas fa-fw fa-th"></span> <%= can?(:index, Manuscript) ? '' : 'My ' %>Manuscript Records
         <% end %>
       </li>
       <% if can? :manage, Comment %>
       <li>
         <%= link_to(main_app.comments_path) do %>
-        <span class="fa fa-th-large"></span> <%= can?(:index, Comment) ? '' : 'My ' %>Comments
+        <span class="fas fa-fw fa-th-large"></span> <%= can?(:index, Comment) ? '' : 'My ' %>Comments
         <% end %>
       </li>
       <% end %>
       <% if can? :manage, Name %>
       <li>
         <%= link_to(main_app.names_path) do %>
-        <span class="fa fa-th"></span> Names
+        <span class="fas fa-fw fa-th"></span> Names
         <% end %>
       </li>
       <% end %>      
       <% if can? :manage, Place %>
       <li>
         <%= link_to(main_app.places_path) do %>
-        <span class="fa fa-th-large"></span> Places
+        <span class="fas fa-fw fa-th-large"></span> Places
         <% end %>
       </li>
       <% end %>
       <% if can? :manage, Language %>      
       <li>
         <%= link_to(main_app.languages_path) do %>
-        <span class="fa fa-th"></span> Languages
+        <span class="fas fa-fw fa-th"></span> Languages
         <% end %>
       </li>
       <% end %>
       <% if can? :manage, User %> 
       <li>
         <%= link_to(main_app.accounts_path) do %>
-        <span class="fa fa-th-large"></span> Users
+        <span class="fas fa-fw fa-th-large"></span> Users
         <% end %>
       </li>
       <% end %>
       <% if can? :manage, Page %> 
       <li>
         <%= link_to(main_app.pages_path) do %>
-        <span class="fa fa-tasks"></span> Pages & Tooltips
+        <span class="fas fa-fw fa-tasks"></span> Pages & Tooltips
         <% end %>
       </li>
       <% end %>

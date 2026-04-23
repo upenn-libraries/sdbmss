@@ -1,26 +1,26 @@
 <% if user_signed_in? %>
     <% disabled = edit ? 'disabled' : '' %>
     <%= render partial: "nav/bookmark_watch", locals: {model: @model } %>
-    <li class="history <%= disabled %>"><a href="<%= history_name_path(@model.id) %>"><span class="fa fa-list-alt"></span> View change history</a></li>
+    <li class="history <%= disabled %>"><a href="<%= history_name_path(@model.id) %>"><span class="fas fa-fw fa-list-alt"></span> View change history</a></li>
     <% if can? :merge, Name %>
-        <li class="link <%= disabled %>"><a href="<%= merge_name_path(@model.id) %>"><span class="fa fa-exchange"></span> Merge</a></li>
+        <li class="link <%= disabled %>"><a href="<%= merge_name_path(@model.id) %>"><span class="fas fa-fw fa-exchange-alt"></span> Merge</a></li>
         <% if !@model.reviewed %>
             <li class="link <%= disabled %>">
                 <%= link_to(name_path(@model, reviewed: true), :method => :put, :data => {:confirm => "Can you confirm that the name conforms to the <a href='/pages/SDBM%20Naming%20Standards' target='_blank'>SDBM Naming Standards</a>?"}) do %>
-                    <span class="fa fa-check"></span> Approve
+                    <span class="fas fa-fw fa-check"></span> Approve
                 <% end %>
             </li>
         <% end %>
         <% if !@model.problem and can? :edit, @model%>
             <li class="link <%= disabled %>">
                 <%= link_to(name_path(@model, problem: true, reviewed: true), :method => :put, :data => {:confirm => "Would you like to flag this name as being problematic?"}) do %>
-                    <span class="fa fa-check"></span> Flag Problem
+                    <span class="fas fa-fw fa-check"></span> Flag Problem
                 <% end %>
             </li>
         <% elsif @model.problem and can? :edit, @model%>
             <li class="link <%= disabled %>">
                 <%= link_to(name_path(@model, problem: false), :method => :put, :data => {:confirm => "Has this name been improved so that it is a valid Name Authority resource?"}) do %>
-                    <span class="fa fa-check"></span> Unflag Problem
+                    <span class="fas fa-fw fa-check"></span> Unflag Problem
                 <% end %>
             </li>
         <% end %>

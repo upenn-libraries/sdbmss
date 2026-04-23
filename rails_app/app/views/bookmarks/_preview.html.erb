@@ -2,7 +2,7 @@
 <div class="card-header">
     <strong class="h4"><%= link_to manuscript.public_id, manuscript_path(manuscript) %></strong>
     <% if !manuscript.reviewed %>
-          <span class="alert alert-warning alert-sm"><span class="fa fa-exclamation-triangle"></span> Unapproved</span>
+          <span class="alert alert-warning alert-sm"><span class="fas fa-fw fa-exclamation-triangle"></span> Unapproved</span>
     <% end %>
 </div>
 <div class="card-body">
@@ -15,6 +15,6 @@
   <dd>This Manuscript is linked to <%= manuscript.entries.count %> entries.</dd>
 </dl>
 <div class="text-center text-muted">
-  <span class="fa fa-clock-o"></span> Added On <%= manuscript.created_at.to_formatted_s(:long) %>
+  <span class="far fa-fw fa-clock"></span> Added On <%= manuscript.created_at.to_formatted_s(:long) %>
 </div>
 </div>

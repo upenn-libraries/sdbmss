@@ -7,7 +7,7 @@
 <% if name.confirmed %>
 <dt></dt>
 <dd>
-    <strong class="text-success">Confirmed <span class="fa fa-check"></span></strong>
+    <strong class="text-success">Confirmed <span class="fas fa-fw fa-check"></span></strong>
 </dd>
 <% end %>
 
@@ -18,7 +18,7 @@
 
 <% if name.viaf_id.present? %>
 <dt>
-    <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="fa fa-globe"></span> VIAF ID</a>
+    <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="fas fa-fw fa-globe-americas"></span> VIAF ID</a>
 </dt>
 <dd>
     <a href="http://viaf.org/viaf/<%= name.viaf_id %>/"><%= name.viaf_id %></a>
@@ -38,7 +38,7 @@
 <% count_scribes = name.scribe_entries.count || 0 %>
 <% has_entries = (count_authors + count_artists + count_scribes) > 0 %>
 
-<% if (!name.is_provenance_agent) || has_entries %>                
+<% if (!name.is_provenance_agent) || has_entries %>
 <dt># Entries</dt>
 <dd>
     <% if count_authors > 0 %>
@@ -75,7 +75,7 @@
         <% if count_seller_or_holder > 0 %>
         This agent is the seller in <a class='badge text-bg-secondary' href="<%= search_by_facet_value('sale_seller', name.name) %>"><%= "#{count_seller_or_holder} entry".pluralize(count_seller_or_holder) %></a><br/>
         <% end %>
-        
+
         <% if count_buyer > 0 %>
         This agent is the buyer in <a class='badge text-bg-secondary' href="<%= search_by_facet_value('sale_buyer', name.name) %>"><%= "#{count_buyer} entry".pluralize(count_buyer) %></a>
         <% end %>

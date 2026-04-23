@@ -27,11 +27,11 @@
                   <%= user.to_s %>
                 </a>
                 <div class="dropdown-menu">
-                  <span class="dropdown-item-text text-muted"><em><span class="fa fa-fw fa-briefcase"></span> <%= user.role %></em></span>
-                  <a class="dropdown-item" href="<%= main_app.profile_path(username: user.username) %>"><span class="fa fa-fw fa-user"></span> Profile</a>
-                  <a class="dropdown-item" href="<%= main_app.new_private_message_path(user_id: [user.id]) %>"><span class="fa fa-fw fa-envelope"></span> Send Message</a>
+                  <span class="dropdown-item-text text-muted"><em><span class="fas fa-fw fa-briefcase"></span> <%= user.role %></em></span>
+                  <a class="dropdown-item" href="<%= main_app.profile_path(username: user.username) %>"><span class="fas fa-fw fa-user"></span> Profile</a>
+                  <a class="dropdown-item" href="<%= main_app.new_private_message_path(user_id: [user.id]) %>"><span class="fas fa-fw fa-envelope"></span> Send Message</a>
                   <% if current_user == user %>
-                  <%= link_to main_app.edit_user_registration_path, class: "dropdown-item" do %><span class="fa fa-fw fa-cog"></span> My Settings<% end %>
+                  <%= link_to main_app.edit_user_registration_path, class: "dropdown-item" do %><span class="fas fa-fw fa-cog"></span> My Settings<% end %>
                   <% end %>
                 </div>
               </span>

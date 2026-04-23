@@ -42,10 +42,10 @@
           <div class="comment-controls">
             <% if can? :edit, comment %>
               <%= link_to(comment_path(comment, format: 'html'),  method: :delete, data: { confirm: 'Are you sure?' }) do %>
-                <span class="fa fa-times"></span>
+                <span class="fas fa-fw fa-times"></span>
               <% end %>
               <a onclick="$('#comment_<%= comment.id %> .comment-toggle').toggleClass('hide');" class='comment-toggle'>
-                <span class="fa fa-edit"></span>
+                <span class="fas fa-fw fa-edit"></span>
               </a><br>
             <% end %>
           </div>
@@ -78,10 +78,10 @@
             <div class="comment-controls">
               <% if can? :edit, reply %>
               <%= link_to(reply_path(reply, format: 'html'),  method: :delete, format: 'json', data: { confirm: 'Are you sure?' }) do %>
-                <span class="fa fa-times"></span>
+                <span class="fas fa-fw fa-times"></span>
               <% end %>
               <a onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');">
-                <span class="fa fa-edit"></span></a>
+                <span class="fas fa-fw fa-edit"></span></a>
               <% end %>
             </div>
 

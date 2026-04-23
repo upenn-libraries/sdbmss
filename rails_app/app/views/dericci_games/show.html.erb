@@ -165,7 +165,7 @@
   </div>
   <div class="row">
     <div class="col-sm-4" style="">
-      <p class='text-center'>Select a <span class='lead'>Record</span> and click <span class="lead text-primary"><span class="fa fa-search"></span> Find</span></p>
+      <p class='text-center'>Select a <span class='lead'>Record</span> and click <span class="lead text-primary"><span class="fas fa-fw fa-search"></span> Find</span></p>
       <ul class="game-nav nav nav-pills flex-column" style="margin-top: 15px;">
         <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }" class="mb-1">
           <span class="btn-group my-btn-group">
@@ -173,13 +173,13 @@
               {{ record.name }}
             </a>
             <a href="" class="btn btn-sm find-name" ng-class="getButton(record)" ng-disabled="record != current_record" ng-click="record == current_record ? findName(record) : ''" style="width: 90px;">
-              <span class="fa" ng-class="getClass(record)"></span> {{ getText(record) }}
+              <span class="fas" ng-class="getClass(record)"></span> {{ getText(record) }}
             </a>
           </span>
         </li>
       </ul>
       <a href="" class="btn btn-outline-secondary btn-lg btn-full" id='save-game' ng-class="{ 'disabled': !canSubmit() }" ng-click="save()">
-        <span class="fa fa-check-sign"></span>
+        <span class="fas fa-fw fa-check-circle"></span>
         Submit
       </a>
     </div>
@@ -187,10 +187,10 @@
       <p class="text-end text-danger">
         Is there a problem with this .pdf file?
         <a href="" class="btn btn-danger btn-sm" ng-click="flag_review(current_record)" ng-if="current_record && !needsWork(current_record)">
-          <span class="fa fa-exclamation-triangle"></span> Flag For Review
+          <span class="fas fa-fw fa-exclamation-triangle"></span> Flag For Review
         </a>
         <a href="" class="btn btn-outline-secondary btn-sm" ng-click="unflag(current_record)" ng-if="current_record && needsWork(current_record)">
-          <span class="fa fa-exclamation-triangle"></span> Unflag Record
+          <span class="fas fa-fw fa-exclamation-triangle"></span> Unflag Record
         </a>
       </p>
       <iframe id="current-card" ng-src="{{ current_url }}" frameborder="0" style="height: 400px; width: 100%; background: #525659; margin-bottom: -5px;">Hello!</iframe>
@@ -253,7 +253,7 @@
                 SDBM_NAME_{{ dericci_link.name_id }}
               </a>
               <a href="" class="" ng-click="removeLink(current_record, dericci_link)">
-                <span class="fa fa-times-circle"></span>
+                <span class="fas fa-fw fa-times-circle"></span>
               </a>
             </span>
           </div>

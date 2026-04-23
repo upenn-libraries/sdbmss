@@ -7,14 +7,14 @@
     <%= render partial: "tools", locals: {source: @source, edit: false} %>
     <li>
         <%= link_to history_source_path(@source) do %>
-            <span class="fa fa-list-alt"></span> View change history
+            <span class="fas fa-fw fa-list-alt"></span> View change history
         <% end %>
     </li>
     <li class="divider"></li>
     <% if !["provenance_observation", "observation"].include?(@model.source_type.name) || @model.created_by == current_user %>
     <li>
         <%= link_to (new_entry_path(source_id: @source.id)) do %>
-            <span class="fa fa-plus"></span> Add Entry From <%= @source.public_id %>
+            <span class="fas fa-fw fa-plus"></span> Add Entry From <%= @source.public_id %>
         <% end %>
     </li>
     <% end %>
@@ -27,7 +27,7 @@
 <div class="row">
     <div class="col-sm-12">
         <% if @source.problem === true %>
-          <div class="alert alert-danger"><span class="lead"><span class="fa fa-exclamation-triangle"></span> Warning!</span> This source has been flagged as problematic because the purpose or data recorded is uncertain. Use only if you have no other options. If you have information to help us better identify this Source, please leave a comment.</div>
+          <div class="alert alert-danger"><span class="lead"><span class="fas fa-fw fa-exclamation-triangle"></span> Warning!</span> This source has been flagged as problematic because the purpose or data recorded is uncertain. Use only if you have no other options. If you have information to help us better identify this Source, please leave a comment.</div>
         <% end %>
     </div>
 </div>
@@ -43,7 +43,7 @@
         
     </div>
     <div class="col-sm-6 comments">
-        <h2 class='text-center'><span class="fa fa-comment"></span> Discussion</h2>
+        <h2 class='text-center'><span class="fas fa-fw fa-comment"></span> Discussion</h2>
         <p class='text-muted text-center'>Share additional information about this source - your comments will be displayed publicly.</p>
         <%= render partial: "comments/show_all", locals: {comments: @source.comments.where(public: true), record: @source} %>
     </div>

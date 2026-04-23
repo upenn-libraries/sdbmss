@@ -8,7 +8,7 @@
                 <% confirms.each do |rating| %>
                     <li>
                         <%= link_to profile_path(rating.user.username) do %>
-                            <span class="fa fa-user"></span> <%= rating.user.to_s %>
+                            <span class="fas fa-fw fa-user"></span> <%= rating.user.to_s %>
                         <% end %>
                     </li>
                 <% end %>
@@ -29,7 +29,7 @@
               <% ratings.each do |rating| %>
                 <li>
                     <%= link_to profile_path(rating.user.username) do%>
-                        <span class="fa fa-user"></span> <%= rating.user.to_s %>
+                        <span class="fas fa-fw fa-user"></span> <%= rating.user.to_s %>
                     <% end %>
                 </li>
               <% end %>

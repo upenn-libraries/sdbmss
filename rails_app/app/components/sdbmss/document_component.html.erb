@@ -8,10 +8,10 @@
           <span class='h4'>
             <a href="<%= url_for entry %>" data-context-href="<%= session_tracking_path(@document, counter: @counter, search_id: current_search_session.try(:id)) %>"><%= entry.public_id %></a>
             <% if !entry.approved %>
-              <small class="text-muted document-disclaimer"><i class="fa fa-exclamation-triangle"></i> Unapproved</small>
+              <small class="text-muted document-disclaimer"><i class="fas fa-fw fa-exclamation-triangle"></i> Unapproved</small>
             <% end %>
             <% if entry.unverified_legacy_record %>
-              <small class="text-warning document-disclaimer"><i class="fa fa-exclamation-circle"></i> Unverified Legacy Record</small>
+              <small class="text-warning document-disclaimer"><i class="fas fa-fw fa-exclamation-circle"></i> Unverified Legacy Record</small>
             <% end %>
           </span>
       </div>

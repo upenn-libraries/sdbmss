@@ -1,10 +1,10 @@
 <% if can? :link, @manuscript %>
 <li class="manage_entry">
-    <a href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>"><span class="fa fa-link"></span> Linking Tool for <%= @manuscript.public_id %></a>
+    <a href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>"><span class="fas fa-fw fa-link"></span> Linking Tool for <%= @manuscript.public_id %></a>
 </li>
 <li>
     <a href="#proposed-history" class='toggle-propose-history' data-bs-toggle="collapse">
-      <span class="fa fa-header"></span>
+      <span class="fas fa-fw fa-heading"></span>
       Construct History<span sdbm-tooltip="manuscript_propose_history"></span>
     </a>
 </li>

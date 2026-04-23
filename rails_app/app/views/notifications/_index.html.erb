@@ -16,19 +16,19 @@
               %>
               <%= link_to url, :title => notification.title do %>
                 <% if notification.active %>
-                  <span class="fa fa-exclamation-circle" style="color: #2196F3"></span>
+                  <span class="fas fa-fw fa-exclamation-circle" style="color: #2196F3"></span>
                   <span class="title"><%= notification.title %></span>
                 <% else %>
                   <span class="title"><%= notification.title %></span>
                 <% end %>
               <% end %>
             <% else %>
-              <span class="title text-muted"><span class="fa fa-exclamation-triangle text-warning"></span> <%= notification.title %></span>
+              <span class="title text-muted"><span class="fas fa-fw fa-exclamation-triangle text-warning"></span> <%= notification.title %></span>
             <% end %>
           </div>
           <div class="col-12 text-end text-invert one-line">
             <%= notification.created_at.to_formatted_s(:long) %>
-            <span class="fa fa-check-circle" data-id="<%= notification.id %>"></span>
+            <span class="fas fa-fw fa-check-circle" data-id="<%= notification.id %>"></span>
           </div>
         <% end %>
       </li>

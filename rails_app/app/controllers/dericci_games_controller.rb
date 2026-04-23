@@ -38,7 +38,7 @@ class  DericciGamesController < ApplicationController
       game = DericciGame.find(params[:id])
       game.update!(game_params)
     end
-    flash[:success] = '<span class="fa fa-gamepad"></span><span class="fa fa-chess-bishop"></span><span class="fa fa-chess-queen"></span><span class="fa fa-chess-pawn"></span>Thank you for playing the Dericci Archives Game!'.html_safe
+    flash[:success] = '<span class="fas fa-fw fa-chess-rook"></span><span class="fas fa-fw fa-chess-bishop"></span><span class="fas fa-fw fa-chess-queen"></span><span class="fas fa-fw fa-chess-pawn"></span>Thank you for playing the Dericci Archives Game!'.html_safe
     respond_to do |format|
       format.json { render json: {message: "Success!"} }
     end

@@ -5,14 +5,14 @@
     <div class="card-header">
         <strong class="h4"><%= link_to entry.public_id, entry_path(entry) %></strong>
         <% if !entry.approved %>
-              <span class="text-warning"><span class="fa fa-exclamation-triangle"></span> Unapproved</span>
+              <span class="text-warning"><span class="fas fa-fw fa-exclamation-triangle"></span> Unapproved</span>
         <% end %>
         <% if entry.draft && can?(:edit, entry) %>
           <%= link_to(entry_path(entry.id, draft: false, cumulative_updated_at: entry.cumulative_updated_at), :method => :patch, :title => "Publish Draft", :class => "btn btn-sm btn-outline-secondary float-end publish-btn", :data => {:confirm => "Are you sure you wish to publish this entry?  It will become publicly viewable from this point forward."}) do %>
-            <span class="fa fa-file"></span>
+            <span class="fas fa-fw fa-file"></span>
           <% end %>
           <%= link_to entry_path(entry), :format => :html, :method => :delete, :title => "Delete Draft", :class => "btn btn-sm btn-outline-secondary float-end delete-draft-btn", :data => {:confirm => "Are you sure you wish to delete this entry?  All data entered will be lost permanently."} do %>
-            <span class="fa fa-trash"></span>
+            <span class="fas fa-fw fa-trash"></span>
           <% end %>
         <% end %>
     </div>
@@ -152,7 +152,7 @@
         <% end %>
     </dl>
     <div class="text-center text-muted">
-      <span class="fa fa-clock-o"></span> Added On <%= entry.created_at.to_formatted_s(:long) %>
+      <span class="far fa-fw fa-clock"></span> Added On <%= entry.created_at.to_formatted_s(:long) %>
     </div>
     </div>
     <% end %>

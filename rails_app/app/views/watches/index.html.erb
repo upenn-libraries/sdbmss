@@ -13,7 +13,7 @@
         </td>
         <td class="text-end col-sm-2">
           <%= link_to delete_many_watches_path(ids: @watches.map(&:id)), :method => :delete, id: "Unwatch_All", class: "btn btn-outline-secondary btn-sm text-nowrap" do %>
-            <span class="fa fa-eye-slash"></span> Unwatch All (On Page)
+            <span class="fas fa-fw fa-eye-slash"></span> Unwatch All (On Page)
           <% end %>
         </td>
       </tr>
@@ -34,7 +34,7 @@
         </td>
         <td class='text-end col-sm-2'>
           <%= link_to watch_path(watch), :method => :delete, class: 'watch-delete btn btn-outline-secondary btn-sm' do %>
-            <span class="fa fa-eye-slash"></span> Unwatch
+            <span class="fas fa-fw fa-eye-slash"></span> Unwatch
           <% end %>
         </td>
       </tr>

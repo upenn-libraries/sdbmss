@@ -32,7 +32,7 @@
       <% end %>
         <%= link_to(group_user_path(g.object, {format: 'html', admin: true}),  method: :delete, class: "btn btn-outline-secondary", data: { confirm: 'Are you sure you want to remove this user?' }) do %>
           <span class="text-danger">
-            <span class="fa fa-times"></span>
+            <span class="fas fa-fw fa-times"></span>
             <% if g.object.user == current_user %>
               Leave
             <% else %>
