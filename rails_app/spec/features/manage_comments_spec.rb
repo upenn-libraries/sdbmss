@@ -8,7 +8,7 @@ describe "Manage Comments", :js => true do
     SampleIndexer.index_records!(@entry)
     Comment.create!(comment: "This is an interesting observation!", commentable: @entry, created_by: admin_user)
     Sunspot.commit
-    login(admin_user, 'somethingreallylong')
+    fast_login(admin_user)
   end
 
   it "should add a comment to an entry", :solr do
