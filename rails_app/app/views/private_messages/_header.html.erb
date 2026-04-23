@@ -1,10 +1,3 @@
-<% content_for :head do %>
-<style>
-  .nav .pagination a {
-    padding: 4px 12px;
-  }
-</style>
-<% end %>
 <div class="row">
   <div class="col-sm-12">
 
@@ -32,20 +25,22 @@
           <span class="fas fa-fw fa-envelope"></span> NEW
         <% end %>
       </li>
-      <% if defined?(@chains) %>
-        <ul class="pagination navbar-right">
+    </div>
+    <% if defined?(@chains) && (@total.to_f / @per_page).ceil > 1 %>
+      <nav aria-label="Message pagination" class="d-flex justify-content-end mt-2">
+        <ul class="pagination pagination-sm mb-0">
           <% (@total.to_f / @per_page).ceil.times do |p| %>
-            <li class="<%= @page == p ? 'active' : '' %>">
+            <li class="page-item <%= @page == p ? 'active' : '' %>">
               <% if @sent_by %>
-                <%= link_to (p + 1), private_messages_path(page: p, sent_by: true) %>
+                <%= link_to (p + 1), private_messages_path(page: p, sent_by: true), class: "page-link" %>
               <% else %>
-                <%= link_to (p + 1), private_messages_path(page: p) %>
+                <%= link_to (p + 1), private_messages_path(page: p), class: "page-link" %>
               <% end %>
             </li>
           <% end %>
         </ul>
-      <% end %>    
-    </div>
+      </nav>
+    <% end %>
   </div>
 </div>
 
