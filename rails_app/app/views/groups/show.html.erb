@@ -78,7 +78,7 @@
                 <%= hidden_field_tag :group_id, @model.id %>
                 <%= render partial: "shared/user_select_form", locals: {users: User.where.not(id: @model.users.map(&:id))} %>
                 <div class="input-group-append">
-                  <input type='submit' class="form-control" value="Invite" />
+                  <input type='submit' class="btn btn-outline-secondary" value="Invite" />
                 </div>
               </div>
           </div>

@@ -67,16 +67,12 @@
                   <a ng-show="!bookmark.showAddTag" href="" class="btn btn-sm btn-outline-secondary btn-add-tag" ng-click="bookmark.showAddTag = !bookmark.showAddTag">
                     <span class="fas fa-fw fa-plus"></span> Add Tag
                   </a>
-                  <div class="form-inline" style="position: absolute; right: 10px; top: -6px;">
-                    <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text text-muted">Tag:</span>
-                      </div>
+                  <div class="form-inline">
+                    <div class="input-group input-group-sm add-bookmark-tag" ng-show="bookmark.showAddTag">
+                      <span class="input-group-text text-muted">Tag:</span>
                       <input type='text' class='form-control new-bookmark-tag' placeholder="New tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
-                      <div class="input-group-append">
-                        <a href="" class="btn btn-outline-secondary add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="fas fa-fw fa-plus"></span> Add</a>
-                        <a href="" class="btn btn-warning add-bookmark-tag-confirm" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Cancel</a>
-                      </div>
+                      <a href="" class="btn btn-outline-secondary btn-sm add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="fas fa-fw fa-plus"></span> Add</a>
+                      <a href="" class="btn btn-warning btn-sm add-bookmark-tag-confirm" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Cancel</a>
                     </div>
                   </div>
                 </div>
