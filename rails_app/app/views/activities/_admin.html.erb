@@ -3,12 +3,12 @@
 <div class="row">
     <div class="col-sm-10">
         <div class="form-inline">
-            <div class="form-group">
-                <%= text_field 'users[username]', "", class: 'form-control', placeholder: 'Username...',value: (params[:users][:username] if params[:users] ) %>            
+            <div class="form-group d-flex flex-wrap gap-1 align-items-center">
+                <%= text_field 'users[username]', "", class: 'form-control', placeholder: 'Username...',value: (params[:users][:username] if params[:users] ) %>
                 <%= select_tag :event, options_for_select([['Action', ''], ['Edit', 'update'], ['Add', 'create'], ['Delete', 'destroy']], params[:event]), class: 'form-control', placeholder: 'Event' %>
                 <%= select_tag :item_type, options_for_select([['Type', ''], 'Entry', 'Name', 'Source', 'Language', 'Place', 'Manuscript', 'DericciGame'], params[:item_type]), class: 'form-control', placeholder: 'Record Type'%>
-                <%= date_field :start_date, "", class: 'form-control', value: params[:start_date] || (Date.today - 100.years).to_s %> to 
-                <%= date_field :end_date, "", class: 'form-control', value: params[:end_date] || (Date.today + 1.day).to_s %>            
+                <%= date_field :start_date, "", class: 'form-control', value: params[:start_date] || (Date.today - 100.years).to_s %> to
+                <%= date_field :end_date, "", class: 'form-control', value: params[:end_date] || (Date.today + 1.day).to_s %>
             </div>
         </div>
     </div>
@@ -26,24 +26,24 @@
 
 <%= render partial: "activities/summary", locals: {summary: @summary} %>
 
-<div class="row">
+<div class="row mt-4 mb-2">
     <div class="col-sm-12 text-center">
-        <ul class="pagination">
+        <ul class="pagination justify-content-center">
             <% first = [@page - 3, 2].max %>
             <% last = [@page + 3, @num_pages].min %>
-            <li class="<%= 'active' if @page == 1 %>"><%= link_to "First", request.params.merge(:page => 1) %></li>
+            <li class="page-item <%= 'active' if @page == 1 %>"><%= link_to "First", request.params.merge(:page => 1), class: "page-link" %></li>
             <% if @page > 4 %>
-                <li><a class="disabled text-muted">...</a></li>
+                <li class="page-item disabled"><span class="page-link">...</span></li>
             <% end %>
             <% (last - first).times do |i| %>
-                <li class="<%= first + i == @page ? 'active' : '' %>">
-                    <%= link_to first + i, request.params.merge(:page => first + i) %>
+                <li class="page-item <%= first + i == @page ? 'active' : '' %>">
+                    <%= link_to first + i, request.params.merge(:page => first + i), class: "page-link" %>
                 </li>
             <% end %>
             <% if @page < @num_pages - 3 %>
-                <li><a class="disabled text-muted">...</a></li>
+                <li class="page-item disabled"><span class="page-link">...</span></li>
             <% end %>
-            <li class="<%= 'active' if @page == @num_pages %>"><%= link_to "Last", request.params.merge(:page => @num_pages) %></li>
+            <li class="page-item <%= 'active' if @page == @num_pages %>"><%= link_to "Last", request.params.merge(:page => @num_pages), class: "page-link" %></li>
         </ul>
     </div>
 </div>
