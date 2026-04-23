@@ -68,7 +68,7 @@ function relation (type) {
             height: 'full',
             heightBuffer: 280,
             responsive: true,
-            dom: '<"row"<"col-sm-5 mobile-center"li><"col-sm-7 text-right mobile-center"<"spinner"> p<"btn-group btn-table-tool"<"reset"><"wide"><"csv"><"columns">J>>>t'
+            dom: '<"row"<"col-sm-5 mobile-center"li><"col-sm-7 text-end mobile-center"<"spinner"> p<"btn-group btn-table-tool"<"reset"><"wide"><"csv"><"columns">J>>>t'
         };
 
         this.options = $.extend({}, defaults, options);

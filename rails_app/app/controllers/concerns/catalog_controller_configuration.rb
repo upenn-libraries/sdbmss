@@ -13,9 +13,6 @@ module CatalogControllerConfiguration
 
     configure_blacklight do |config|
 
-      # TODO: upgrade to Bootstrap 5 and remove this line
-      config.bootstrap_version = 4
-
       config.max_per_page = Rails.configuration.sdbmss_max_search_results
 
       config.response_model = SDBMSS::Blacklight::SolrResponse
