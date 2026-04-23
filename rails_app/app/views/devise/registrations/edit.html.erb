@@ -98,25 +98,25 @@
                 <tr>
                   <td>
                     <label class='form-label'>On Update To My Watched Records</label>
-                    <span class="text-muted">Note: Records you create are 'watched' by default</span>
+                    <br><span class="text-muted">Note: Records you create are 'watched' by default</span>
                   </td>
                   <td class=''>
-                    <%= notification_f.check_box :on_update, class: 'form-control' %>
+                    <%= notification_f.check_box :on_update, class: 'form-check-input' %>
                   </td>
                   <td class=''>
-                    <%= notification_f.check_box :email_on_update, class: 'form-control' %>
+                    <%= notification_f.check_box :email_on_update, class: 'form-check-input' %>
                   </td>
                 </tr>
                 <tr>
                   <td>
                     <label class='form-label'>On Comment To My Watched Records</label>
-                    <span class="text-muted">Note: Records you create are 'watched' by default</span>                    
+                    <br><span class="text-muted">Note: Records you create are 'watched' by default</span>                    
                   </td>
                   <td class=''>
-                    <%= notification_f.check_box :on_comment, class: 'form-control'  %>
+                    <%= notification_f.check_box :on_comment, class: 'form-check-input'  %>
                   </td>
                   <td class=''>
-                    <%= notification_f.check_box :email_on_comment, class: 'form-control'  %>
+                    <%= notification_f.check_box :email_on_comment, class: 'form-check-input'  %>
                   </td>
                 </tr>
                 <tr>
@@ -124,10 +124,10 @@
                     <label class='form-label'>On Reply To My Comments</label>
                   </td>
                   <td class=''>
-                    <%= notification_f.check_box :on_reply, class: 'form-control'  %>
+                    <%= notification_f.check_box :on_reply, class: 'form-check-input'  %>
                   </td>
                   <td class=''>
-                    <%= notification_f.check_box :email_on_reply, class: 'form-control'  %>
+                    <%= notification_f.check_box :email_on_reply, class: 'form-check-input'  %>
                   </td>
                 </tr>
                 <tr>
@@ -135,10 +135,10 @@
                     <label class='form-label'>On Private Message</label>
                   </td>
                   <td class=''>
-                    <%= notification_f.check_box :on_message, class: 'form-control'  %>
+                    <%= notification_f.check_box :on_message, class: 'form-check-input'  %>
                   </td>
                   <td class=''>
-                    <%= notification_f.check_box :email_on_message, class: 'form-control'  %>
+                    <%= notification_f.check_box :email_on_message, class: 'form-check-input'  %>
                   </td>
                 </tr>
                 <tr>
@@ -146,10 +146,10 @@
                     <label class='form-label'>On Group Invite</label>
                   </td>
                   <td class=''>
-                    <%= notification_f.check_box :on_group, class: 'form-control'  %>
+                    <%= notification_f.check_box :on_group, class: 'form-check-input'  %>
                   </td>
                   <td class=''>
-                    <%= notification_f.check_box :email_on_group, class: 'form-control'  %>
+                    <%= notification_f.check_box :email_on_group, class: 'form-check-input'  %>
                   </td>
                 </tr>
                 <% if resource.role == 'admin' %>
@@ -158,10 +158,10 @@
                     <label class='form-label'>On New User Registration</label>
                   </td>
                   <td class=''>
-                    <%= notification_f.check_box :on_new_user, class: 'form-control'  %>
+                    <%= notification_f.check_box :on_new_user, class: 'form-check-input'  %>
                   </td>
                   <td class=''>
-                    <%= notification_f.check_box :email_on_new_user, class: 'form-control'  %>
+                    <%= notification_f.check_box :email_on_new_user, class: 'form-check-input'  %>
                   </td>
                 </tr>
                 <tr>
@@ -169,22 +169,22 @@
                     <label class='form-label'>On Any Comment</label>
                   </td>
                   <td class=''>
-                    <%= notification_f.check_box :on_all_comment, class: 'form-control'  %>
+                    <%= notification_f.check_box :on_all_comment, class: 'form-check-input'  %>
                   </td>
                   <td class=''>
-                    <%= notification_f.check_box :email_on_all_comment, class: 'form-control'  %>
+                    <%= notification_f.check_box :email_on_all_comment, class: 'form-check-input'  %>
                   </td>
                 </tr>
                 <tr>
                   <td>
                     <label class='form-label'>On Forum Post</label>
-                    <span class="text-muted">When someone posts to a forum topic you are following.</span>
+                    <br><span class="text-muted">When someone posts to a forum topic you are following.</span>
                   </td>
                   <td class=''>
-                    <%= notification_f.check_box :on_forum_post, class: 'form-control'  %>
+                    <%= notification_f.check_box :on_forum_post, class: 'form-check-input'  %>
                   </td>
                   <td class=''>
-                    <%= notification_f.check_box :email_on_forum_post, class: 'form-control'  %>
+                    <%= notification_f.check_box :email_on_forum_post, class: 'form-check-input'  %>
                   </td>
                 </tr>
                 <% end %>

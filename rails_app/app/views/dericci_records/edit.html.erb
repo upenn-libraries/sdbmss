@@ -47,7 +47,7 @@
           <%= ff.object.reason %>
           <strong> - <%= link_to ff.object.created_by.to_s, profile_path(ff.object.created_by.username) %></strong>
           <%= ff.hidden_field :id %>
-          <label for="flag<%= ff.object.id %>" class="float-end">Remove 
+          <label for="flag<%= ff.object.id %>" class="float-end">Remove
             <%= ff.check_box :_destroy, {id: "flag#{ff.object.id}", class: ''} %>
           </label>
       </div>
@@ -61,32 +61,32 @@
     <dl class="document-metadata dl-horizontal dl-invert">
       <dt>Name</dt>
       <dd><%= f.text_field :name, class: 'form-control' %></dd>
-    
+
       <dt>Dates</dt>
       <dd><%= f.text_field :dates, class: 'form-control' %></dd>
 
       <dt>Place</dt>
       <dd><%= f.text_field :place, class: 'form-control' %></dd>
- 
+
       <dt>PDF</dt>
       <dd><%= f.text_field :url, class: 'form-control', id: 'url-input' %></dd>
 
       <dt>Number of Cards</dt>
       <dd><%= f.text_field :cards, class: 'form-control' %></dd>
-      
+
       <dt>File Size</dt>
       <dd><%= f.text_field :size, class: 'form-control' %></dd>
-      
+
       <dt>Other Info</dt>
       <dd><%= f.text_field :other_info, class: 'form-control' %></dd>
 
       <dt>Senate House ID#</dt>
       <dd><%= f.text_field :senate_house, class: 'form-control' %></dd>
-            
+
       <dt>
-        Out of Scope 
+        Out of Scope
       </dt>
-      <dd><%= f.check_box :out_of_scope, class: 'form-control' %></dd>
+      <dd><%= f.check_box :out_of_scope, class: 'form-check-input' %></dd>
 
       <dt></dt>
       <dd><%= f.submit "#{@record.id ? 'Update' : 'Save New'} De Ricci Record", class: 'form-control', id: 'save-dericci' %></dd>
