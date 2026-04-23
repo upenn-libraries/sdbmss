@@ -57,7 +57,7 @@ RUN bundle config path ${GEM_HOME} && \
   else \
   bundle config set without "development:test:assets"; \
   fi && \
-  MAKE="make -j $(nproc)" bundle install && \
+  bundle install --jobs 4 --retry 3 && \
   rm -rf ${PROJECT_ROOT}/vendor/bundle/ruby/${RUBY_MAJOR}.0/cache/*.gem && \
   find ${PROJECT_ROOT}/vendor/bundle/ruby/${RUBY_MAJOR}.0/gems/ \( -name "*.c" -o -name "*.o" \) -delete
 
