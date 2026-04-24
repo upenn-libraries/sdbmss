@@ -1,11 +1,11 @@
 <%#
-  OVERRIDE Blacklight 8.12.3: "more" link navigates to full-page facet browse (no modal)
+  OVERRIDE Blacklight v9.0.0: "more" link navigates to full-page facet browse (no modal)
 %>
-<div class="card facet-limit blacklight-<%= @facet_field.key %> <%= 'facet-limit-active' if @facet_field.active? %>">
-  <h3 class="card-header p-0 facet-field-heading" id="<%= header_html_id %>">
+<div class="accordion-item facet-limit blacklight-<%= @facet_field.key %> <%= 'facet-limit-active' if @facet_field.active? %>">
+  <h3 class="accordion-header p-0 facet-field-heading h6" id="<%= header_html_id %>">
     <button
       type="button"
-      class="btn w-100 d-block p-2 text-start collapse-toggle <%= "collapsed" if @facet_field.collapsed? %>"
+      class="btn accordion-button <%= "collapsed" if @facet_field.collapsed? %>"
       data-bs-toggle="collapse"
       data-bs-target="#<%= html_id %>"
       aria-expanded="<%= @facet_field.collapsed? ? 'false' : 'true' %>"
@@ -15,13 +15,13 @@
     </button>
   </h3>
   <div id="<%= html_id %>" role="region" aria-labelledby="<%= header_html_id %>" class="panel-collapse facet-content collapse <%= "show" unless @facet_field.collapsed? %>">
-    <div class="card-body">
+    <div class="accordion-body">
       <%= body %>
 
       <% if @facet_field.modal_path %>
-        <div class="more_facets_link"> <%# OVERRIDE %>
+        <div class="more_facets_link">
           <%= link_to t("more_#{@facet_field.key}_html", scope: 'blacklight.search.facets', default: :more_html, field_name: @facet_field.label),
-            @facet_field.modal_path %> <%# OVERRIDE %>
+            @facet_field.modal_path %>
         </div>
       <% end %>
     </div>
