@@ -49,7 +49,7 @@ gem 'jbuilder', '~> 2.7'
 gem 'puma'
 
 # Blacklight
-gem "blacklight", "~> 8.0"
+gem "blacklight", "~> 9.0"
 gem "rsolr", "~> 2.0"
 gem "blacklight_advanced_search", "~> 8.0"
 gem "bootstrap", "~> 5.3"
