@@ -32,7 +32,7 @@ table.sdbm-table { margin-top: 0px !important; }
 
 .sdbm-table { font-size: 12px; width: 100% !important; }
 
-.sdbm-table tbody tr.selected { background-color: #b0bed9; }
+.sdbm-table tbody tr.selected { background-color: #b0bed9; --dt-row-selected: 176, 190, 217; --dt-row-selected-text: 0, 0, 0; }
 
 /*
  * FixedColumns 4.x sets background-color:white on sticky cells, which

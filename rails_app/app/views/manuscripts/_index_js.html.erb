@@ -25,7 +25,7 @@
             {
                 title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',
                 orderable: false,
-                className: 'text-center unreviewed_only',
+                className: 'text-center align-middle unreviewed_only',
                 render: function (data, type, full, meta) {
                     if(manageManuscripts.getUnreviewedOnly() === 1) {
                         return '<input type="checkbox" name="review" value="' + full[manageManuscripts.dataTable.getColumnIndex("ID")] + '"/>';

@@ -447,7 +447,7 @@ var load_session = false;
             {
                 title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',//'<a href="#" class="btn btn-outline-secondary btn-blank btn-sm far fa-square hideIfReviewed" id="select-all"></a>',
                 orderable: false,
-                className: "text-center unreviewed_only",
+                className: "text-center align-middle unreviewed_only",
                 render: function (data, type, full, meta) {
                     //if(manageRecords.getUnreviewedOnly() === 1) {
                         /*return  '' +

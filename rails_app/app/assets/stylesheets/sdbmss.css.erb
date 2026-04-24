@@ -784,8 +784,19 @@ h1 { font-size: 30px; margin-top: 0; }
   background: none;
 }
 
-.options-btn-group .btn {
+.sdbm-table .options-btn-group {
+  display: inline-flex;
+  align-items: stretch;
+}
+.sdbm-table .options-btn-group .btn,
+.sdbm-table .btn.btn-sm {
   float: none;
+  padding: 1px 5px;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .btn-blank, .btn-blank:hover, .btn-blank:active, .btn-blank:focus {
     border: none;
