@@ -1,12 +1,12 @@
 <%#
-  OVERRIDE Blacklight 8: full-page facet browse (not modal): constraints, pagination, custom A–Z
+  OVERRIDE Blacklight 9.0.0: full-page facet browse (not modal): constraints, pagination, custom A–Z
     prefix strip, and FacetComponent. Stock facet.html.erb uses Blacklight::System::ModalComponent.
 %>
 
-<%= render 'constraints' %>
+<%= render blacklight_config.view_config(document_index_view_type).constraints_component.new(search_state: search_state) %>
 
 <div class="facet_pagination top mb-2">
-  <%= render :partial=>'facet_pagination' %>
+  <%= render Blacklight::FacetFieldPaginationComponent.new(facet_field: @presenter) %>
 </div>
 
 <h3>Browsing facet: <%= facet_field_label(@facet.key) %></h3>
@@ -33,7 +33,6 @@ Prefix:
 
 <div>
   <div class="facet_pagination bottom">
-    <%= render :partial=>'facet_pagination' %>
+    <%= render Blacklight::FacetFieldPaginationComponent.new(facet_field: @presenter) %>
   </div>
 </div>
-
