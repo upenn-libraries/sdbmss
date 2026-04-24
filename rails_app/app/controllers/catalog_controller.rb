@@ -31,6 +31,7 @@ class CatalogController < ApplicationController
 
         @linked = @entry.manuscript ? @entry.manuscript.entries.map(&:id) : []
         s = Sunspot.more_like_this(@entry) do
+          request_handler :select
           fields :title_search, :place_search, :author_search, :language_search
           # without :id, [collect entry_ids from manuscript]
           #minimum_term_frequency 3
@@ -115,7 +116,7 @@ class CatalogController < ApplicationController
     filename = download.filename
     user = download.user
     id = download.id
-    path = "tmp/#{id}_#{user}_#{filename}"
+    path = "tmp/downloads/#{id}_#{user}_#{filename}"
     headers = nil
 
     loop do

@@ -51,6 +51,8 @@ services:
     #  retries: 6
     #  start_period: 10s
     #  timeout: 10s
+    volumes:
+      - downloads:/home/app/tmp/downloads
     networks:
       - mysql
       - traefik
@@ -66,6 +68,9 @@ networks:
     external: true
   traefik:
     external: true
+
+volumes:
+  downloads:
 
 secrets:
   rails_master_key:

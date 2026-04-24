@@ -7,10 +7,16 @@ describe "Blacklight Advanced Search", :js => true do
   include SearchHelpers
   let(:admin_user) { create(:admin) }
 
+  def rebuild_advanced_search_corpus!
+    SampleIndexer.clear!
+    Sunspot.index(Entry.all)
+    Sunspot.commit
+  end
+
   before :each do
     @user = admin_user
-    e = Entry.create!({source: latest_seeded_source, created_by: @user})
-    e.index!
+    Entry.create!({source: latest_seeded_source, created_by: @user})
+    rebuild_advanced_search_corpus!
   end
 
   def perform_two_author_search

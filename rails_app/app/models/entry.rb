@@ -149,15 +149,15 @@ class Entry < ApplicationRecord
       # validate transaction_type based on source_type
       transaction_field = source_type.entries_transaction_field
       if transaction_field != 'choose' && entry.transaction_type != transaction_field
-        errors[:transaction_type] = "transaction_type '#{entry.transaction_type}' isn't valid for source type '#{entry.source.source_type.name}'"
+        errors.add(:transaction_type, "transaction_type '#{entry.transaction_type}' isn't valid for source type '#{entry.source.source_type.name}'")
       end
       entries_have_institution_field = source_type.entries_have_institution_field
       if !entries_have_institution_field && entry.institution
-        errors[:institution] = "institution field has '#{entry.institution}' but isn't allowed to be populated for source type '#{entry.source.source_type.name}'"
+        errors.add(:institution, "institution field has '#{entry.institution}' but isn't allowed to be populated for source type '#{entry.source.source_type.name}'")
       end
       # make sure it's one of the listed values
       if !TYPES_TRANSACTION.map(&:first).member?(entry.transaction_type)
-        errors[:transaction_type] = "transaction_type '#{entry.transaction_type}' isn't in the list of valid values"
+        errors.add(:transaction_type, "transaction_type '#{entry.transaction_type}' isn't in the list of valid values")
       end
     end
   end
@@ -1006,7 +1006,7 @@ class Entry < ApplicationRecord
     filename = download.filename
     user = download.user
     id = download.id
-    path = "tmp/#{id}_#{user}_#{filename}"
+    path = "tmp/downloads/#{id}_#{user}_#{filename}"
     headers = nil
     loop do
       s = do_search(params.merge({:limit => 300, :offset => offset}))
@@ -1103,7 +1103,7 @@ class Entry < ApplicationRecord
   end
 
   def self.search_fields
-    super - ["Deprecated", "deprecated"] - ["Draft", "draft"]
+    super - [["Deprecated", "deprecated"]] - [["Draft", "draft"]]
   end
 
   def self.similar_fields
