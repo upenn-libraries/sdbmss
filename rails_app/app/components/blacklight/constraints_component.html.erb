@@ -3,7 +3,8 @@
      Use SDBMSS::StartOverButtonComponent instead of default.
 %>
 <%= content_tag @tag || :div, id: @id, class: @classes do %>
-  <%= constraints_heading %>
+  <% has_query = @search_state.query_param.present? || @search_state.clause_params.any? %>
+  <%= constraints_heading if has_query %>
 
   <% if query_constraints_area.present? %>
     <% query_constraints_area.each do |constraint| %>
