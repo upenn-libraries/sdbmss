@@ -116,7 +116,7 @@ class CatalogController < ApplicationController
     filename = download.filename
     user = download.user
     id = download.id
-    path = "tmp/#{id}_#{user}_#{filename}"
+    path = "tmp/downloads/#{id}_#{user}_#{filename}"
     headers = nil
 
     loop do
