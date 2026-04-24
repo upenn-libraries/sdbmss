@@ -9,7 +9,7 @@ describe "Manage Private Messages", :js => true do
   let(:contributor_user) { create(:user, role: "contributor") }
 
   before :each do
-      login(admin_user, 'somethingreallylong')
+      fast_login(admin_user)
   end
 
   after :each do
@@ -55,7 +55,7 @@ describe "Manage Private Messages", :js => true do
     expect(page).to have_content(contributor_user.username)
 
     page.reset!
-    login(contributor_user, "somethingreallylong")
+    fast_login(contributor_user)
     visit private_messages_path
     expect(page).to have_content("Welcome!")
 
@@ -76,7 +76,7 @@ describe "Manage Private Messages", :js => true do
     expect(page).to have_content(contributor_user.username)
 
     page.reset!
-    login(contributor_user, "somethingreallylong")
+    fast_login(contributor_user)
 
     visit private_message_path(contributor_user.private_messages.last)
     expect(page).to have_content('Reply')

@@ -108,7 +108,7 @@ describe "Data entry", :js => true do
   context "when user is logged in" do
 
     before :each do
-      login(@user, 'somethingreallylong')
+      fast_login(@user)
     end
 
     after :each do

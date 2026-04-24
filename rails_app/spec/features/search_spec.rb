@@ -60,7 +60,7 @@ describe "Blacklight Search", :js => true do
   end
 
   it "should show my public entries" do
-    login(@user, 'somethingreallylong')
+    fast_login(@user)
 
     source = Source.create!(
       title: "Test Source for Public Entries",
@@ -215,7 +215,10 @@ describe "Blacklight Search", :js => true do
   it "should load show Name page" do
     name = latest_seeded_name
     visit name_path(name)
-    expect(page).to have_content("#{name.public_id}")
+    # Wait for the h3 that contains the public_id — more stable than have_content
+    # when the Name page loads external JS (Leaflet, Timeline) that can race
+    # with Capybara's DOM evaluation and cause NodeNotFoundError.
+    expect(page).to have_css("h3", text: name.public_id)
   end
 
   it "should load show Manuscript page" do
@@ -234,7 +237,7 @@ describe "Blacklight Search", :js => true do
   end
 
   it "should add search to History" do
-    login(@user, 'somethingreallylong')
+    fast_login(@user)
     visit root_path
     find('#dismiss-welcome').click if page.has_css?('#dismiss-welcome')
 

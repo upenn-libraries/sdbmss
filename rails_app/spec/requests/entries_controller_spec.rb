@@ -276,4 +276,23 @@ RSpec.describe "EntriesController", type: :request do
       expect(json["errors"]).to be_present
     end
   end
+
+  # ---------------------------------------------------------------------------
+  # Unauthenticated access
+  # ---------------------------------------------------------------------------
+  describe "when not logged in" do
+    before { Warden.test_reset! }
+
+    it "redirects GET /entries/new and sets sign-in flash" do
+      get new_entry_path
+      expect(response).to redirect_to(root_path)
+      expect(flash[:alert]).to match(/sign in/i)
+    end
+
+    it "redirects GET /entries/new with source_id and sets sign-in flash" do
+      get new_entry_path(source_id: source.id)
+      expect(response).to redirect_to(root_path)
+      expect(flash[:alert]).to match(/sign in/i)
+    end
+  end
 end

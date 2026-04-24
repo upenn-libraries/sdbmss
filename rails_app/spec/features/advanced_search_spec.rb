@@ -5,7 +5,7 @@ require "rails_helper"
 # there's no good reason NOT to use the js driver, so we do.
 describe "Blacklight Advanced Search", :js => true do
   include SearchHelpers
-  let(:admin_user) { create(:admin) }
+  let_it_be(:admin_user) { create(:admin) }
 
   def rebuild_advanced_search_corpus!
     SampleIndexer.clear!

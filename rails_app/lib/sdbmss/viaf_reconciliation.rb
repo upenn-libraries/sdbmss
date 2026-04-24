@@ -29,7 +29,7 @@ module SDBMSS::VIAFReconciliation
       names.find_each(batch_size: 100) do |name|
         # for some reason, the 'Ardabili' name causes VIAF request to never return!
         if names_and_viaf_ids[name.name].blank? && name.name != 'Ardabili, Mu?ammad ibn Ya?yá ibn A?mad'
-          puts "checking #{name}"
+          Rails.logger.debug "VIAFReconciliation: checking #{name}"
 
           try = 0
           request_successful = false
@@ -44,7 +44,7 @@ module SDBMSS::VIAFReconciliation
               # 1st pass: find an exact match, by str equality or substring
               suggestions[:results].each do |result|
                 if !found && (name.name.upcase == result[:name].upcase || result[:name].upcase.include?(name.name.upcase))
-                  puts "exact match: #{result[:name]}, viaf id=#{result[:viaf_id]}"
+                  Rails.logger.debug "VIAFReconciliation: exact match: #{result[:name]}, viaf id=#{result[:viaf_id]}"
                   names_and_viaf_ids[name.name] = result[:viaf_id]
                   found = true
                 end
@@ -58,7 +58,7 @@ module SDBMSS::VIAFReconciliation
                     result[:score] = Levenshtein.normalized_distance(name.name, result[:name])
                   }
                   best = suggestions[:results].min { |a, b| a[:score] <=> b[:score] }
-                  puts "best match: #{best[:name]}, viaf id=#{best[:viaf_id]}"
+                  Rails.logger.debug "VIAFReconciliation: best match: #{best[:name]}, viaf id=#{best[:viaf_id]}"
                   names_and_viaf_ids[name.name] = best[:viaf_id]
                   found = true
                 end
@@ -74,7 +74,7 @@ module SDBMSS::VIAFReconciliation
               # write out to disk every 30 records
               write_file(names_and_viaf_ids, filename) if count % 30 == 0
             else
-              puts "got http error, sleeping and trying again"
+              Rails.logger.warn "VIAFReconciliation: got http error, sleeping and trying again"
               sleep 5
               try += 1
             end
@@ -97,16 +97,16 @@ module SDBMSS::VIAFReconciliation
         if viaf_id != "-1"
           if (name_record = Name.find_by(name: name)).present?
             if name_record.viaf_id.blank?
-              puts "Updating Name ##{name_record.id}: #{name_record.name}"
+              Rails.logger.debug "VIAFReconciliation: Updating Name ##{name_record.id}: #{name_record.name}"
               name_record.viaf_id = viaf_id
               if !name_record.save
-                puts "Error updating name ##{name_record.id}: #{name_record.name}: #{name_record.errors.messages}"
+                Rails.logger.error "VIAFReconciliation: Error updating name ##{name_record.id}: #{name_record.name}: #{name_record.errors.messages}"
               end
             else
-              puts "Skipping Name ##{name_record.id}: #{name_record.name}, already has a VIAF ID"
+              Rails.logger.debug "VIAFReconciliation: Skipping Name ##{name_record.id}: #{name_record.name}, already has a VIAF ID"
             end
           else
-            puts "Warning! Name not found in database: #{name}"
+            Rails.logger.warn "VIAFReconciliation: Name not found in database: #{name}"
           end
         end
       end

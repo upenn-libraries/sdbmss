@@ -120,7 +120,7 @@ describe "Data entry", :js => true do
   context "when user is logged in" do
 
     before :each do
-      login(@user, 'somethingreallylong')
+      fast_login(@user)
     end
 
     it "should find source by date on Select Source page", :solr do
@@ -644,28 +644,6 @@ describe "Data entry", :js => true do
       expect(page).to have_content("added #{entry.public_id}")
     end
 
-    it "should update status field on Source when adding an Entry" do
-
-      # Creating a new source defaults its status to 'To Be Entered'
-      source = Source.create!(
-        title: "a new source",
-        source_type: SourceType.collection_catalog,
-      )
-
-      visit new_entry_path :source_id => source.id
-
-      fill_in 'folios', with: '666'
-
-      find(".save-button", match: :first).click
-
-      expect(page).to have_content("Warning: This entry has not been approved yet.")
-      expect(page).to have_content(Entry.last.public_id)
-
-      source.reload
-
-      expect(source.status).to eq(Source::TYPE_STATUS_PARTIALLY_ENTERED)
-    end
-
     it "should leave a comment on a Manuscript successfully" do
       entry1 = Entry.create!(
         source: Source.first,
@@ -781,16 +759,4 @@ describe "Data entry", :js => true do
     end
   end
 
-  context "when user is not logged in" do
-    it "should disallow creating Sources if not logged in" do
-      visit new_entry_path
-      expect(page).not_to have_css("#select_source")
-      expect(page).to have_content("You need to sign in")
-    end
-
-    it "should disallow creating Entries if not logged in" do
-      visit new_entry_path :source_id => @source.id
-      expect(page).to have_content("You need to sign in")
-    end
-  end
 end

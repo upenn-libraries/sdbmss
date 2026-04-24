@@ -19,7 +19,7 @@ describe "Groups", :js => true do
   context "when user is logged in " do
     before :each do
       GroupUser.create!(group: group, user: group_owner, role: 'Manager', confirmed: true)
-      login(group_owner, 'somethingreallylong')
+      fast_login(group_owner)
     end
 
     it "should allow the user to create a group" do
@@ -56,7 +56,7 @@ describe "Groups", :js => true do
     it "should allow users to accept group invitations" do
       GroupUser.create!(group: group, user: contributor, role: 'Member', confirmed: false, created_by: group_owner)
       page.reset!
-      login(contributor, 'somethingreallylong')
+      fast_login(contributor)
       visit groups_path
       expect(page).to have_content(group_name)
       find(:link, 'Accept Invitation', match: :first).click
@@ -121,7 +121,7 @@ describe "Groups", :js => true do
       GroupRecord.create!(group: group, record: editable_entry, editable: true)
       SampleIndexer.index_records!(editable_entry, readonly_entry)
       page.reset!
-      login(contributor, 'somethingreallylong')
+      fast_login(contributor)
       visit entry_path(editable_entry)
       expect(page).to have_content("Edit #{editable_entry.public_id}")
 
@@ -162,7 +162,7 @@ describe "Groups", :js => true do
 
     it "should allow a user to request admission to a group" do
       page.reset!
-      login(contributor, 'somethingreallylong')
+      fast_login(contributor)
       visit group_path(group)
       expect(page).to have_content('Request Membership')
       find('#collapse-control').click
@@ -170,7 +170,7 @@ describe "Groups", :js => true do
       expect(page).to have_content('You have requested membership in this group')
       
       page.reset!
-      login(group_owner, 'somethingreallylong')
+      fast_login(group_owner)
       visit edit_group_path(group)
       expect(page).to have_content('Request Pending')
       click_link 'Confirm'
