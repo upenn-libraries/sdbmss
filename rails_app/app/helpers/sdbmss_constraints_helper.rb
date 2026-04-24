@@ -17,11 +17,11 @@ module SdbmssConstraintsHelper
       next if val.blank?
       content_tag(:li, class: "d-flex justify-content-between align-items-start py-1 appliedFilter") do
         content_tag(:span, class: "facet-label") do
-          content_tag(:span, facet_field_label(facet_config.key), class: "filterName me-1") +
-          content_tag(:span, facet_config.item_presenter.new(val, facet_config, self, facet).label)
+          content_tag(:span, facet_field_label(facet_config.key), class: "filterName fw-bold me-1 selected") +
+          content_tag(:span, facet_config.item_presenter.new(val, facet_config, self, facet).label, class: "selected")
         end +
         link_to(
-          content_tag(:i, '', class: "fas fa-fw fa-times") + content_tag(:span, '[remove]', class: 'visually-hidden'),
+          render(Blacklight::Icons::RemoveComponent.new(aria_hidden: true)) + content_tag(:span, '[remove]', class: 'visually-hidden'),
           search_action_path(search_state.filter(facet).remove(val).params),
           class: "remove ms-2"
         )

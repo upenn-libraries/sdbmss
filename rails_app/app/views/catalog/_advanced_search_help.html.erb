@@ -1,15 +1,22 @@
 <% if params[:f] and params[:f].keys.count > 0 %>
-  <div class="card facet_limit facet_limit-active mb-3">
-    <div class="collapse-toggle card-header" data-bs-toggle="collapse" data-bs-target="#selected-facets">
-      <h5 class="card-title facet-field-heading mb-0">
-        Selected Filters
-      </h5>
-    </div>
-    <div id="selected-facets" class="collapse facet-content collapse show">
-      <div class="card-body">
-        <ul class="list-unstyled facet-values">
-          <%= render_constraints_filters_side(params) %>
-        </ul>
+  <div class="facets accordion">
+    <div class="accordion-item facet-limit facet-limit-active">
+      <h3 class="accordion-header p-0 facet-field-heading h6" id="adv-selected-facets-header">
+        <button type="button"
+          class="btn accordion-button"
+          data-bs-toggle="collapse"
+          data-bs-target="#adv-selected-facets"
+          aria-expanded="true" aria-controls="adv-selected-facets">
+          Selected Filters
+        </button>
+      </h3>
+      <div id="adv-selected-facets" role="region" aria-labelledby="adv-selected-facets-header"
+        class="panel-collapse facet-content collapse show">
+        <div class="accordion-body">
+          <ul class="list-unstyled facet-values">
+            <%= render_constraints_filters_side(params) %>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
