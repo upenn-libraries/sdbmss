@@ -7,7 +7,7 @@
 select.form-control { background-image: var(--bs-form-select-bg-img, url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e")); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding-right: 2.25rem; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
 .form-inline { display: flex; flex-flow: row wrap; align-items: center; }
 .ui-sortable { position: relative; }
-.caret { display: inline-block; width: 0; height: 0; vertical-align: middle; border-top: 4px dashed; border-right: 4px solid transparent; border-left: 4px solid transparent; }
+.caret { display: none; }
 .form-inline .form-control, .form-inline .form-select { width: auto; }
 .form-inline .form-label { margin-bottom: 0; display: inline-flex; align-items: center; gap: 4px; }
 
@@ -2152,12 +2152,6 @@ so that gray backdrop shvows up correctly */
   display: inline-block;
 }
 
-.collapsed .caret {
-  border-top: 0;
-  border-left: 4px dashed;
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-}
 
 .vertical-breadcrumbs .breadcrumb {
   background: none;
