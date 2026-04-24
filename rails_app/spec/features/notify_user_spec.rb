@@ -1,29 +1,29 @@
 require "rails_helper"
 
 describe "User Notifications", :js => true do
-  let(:actor) { create(:admin, password: "somethingunguessable") }
-  let(:recipient) { create(:user, password: "totallysecure") }
-  let(:source) { create(:edit_test_source, created_by: actor) }
-  let!(:recipient_entry) do
+  let_it_be(:actor)     { create(:admin, password: "somethingunguessable") }
+  let_it_be(:recipient) { create(:user, password: "totallysecure") }
+  let_it_be(:source)    { create(:edit_test_source, created_by: actor) }
+  let_it_be(:recipient_entry, reload: true) do
     Entry.create!(
       source: source,
       created_by_id: recipient.id,
       approved: true
     )
   end
-  let!(:watched_entry) do
+  let_it_be(:watched_entry, reload: true) do
     Entry.create!(
       source: source,
       created_by_id: recipient.id,
       approved: true
     )
   end
-  let!(:actor_notification_setting) do
+  let_it_be(:actor_notification_setting) do
     actor.notification_setting.tap do |setting|
       setting.update!(on_update: true, on_comment: true, on_reply: true)
     end
   end
-  let!(:recipient_notification_setting) do
+  let_it_be(:recipient_notification_setting) do
     recipient.notification_setting.tap do |setting|
       setting.update!(on_update: true, on_comment: true, on_reply: true)
     end
@@ -33,7 +33,7 @@ describe "User Notifications", :js => true do
     before :each do
       recipient.watches.create!(watched: watched_entry)
       Sunspot.commit
-      login(actor, 'somethingunguessable')
+      fast_login(actor)
     end
 
     it "should be associated with a given user" do

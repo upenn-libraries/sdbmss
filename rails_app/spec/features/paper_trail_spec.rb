@@ -29,7 +29,7 @@ describe "Paper trail", :js => true do
     let(:entry) { Entry.last }
 
     before :each do
-      login(@user, 'somethingreallylong')
+      fast_login(@user)
     end
 
     after :each do

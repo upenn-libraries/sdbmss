@@ -45,7 +45,7 @@ describe "De Ricci Game", :js => true do
 
   context "when user is logged in " do
     before do
-      login(admin_user, "somethingreallylong")
+      fast_login(admin_user)
     end
 
     it "should load the dericci game landing page and start a new game" do

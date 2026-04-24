@@ -7,7 +7,7 @@ describe "Bookmark", :js => true do
       @admin_user = create(:admin)
       @bookmark_entry = create_bookmark_watch_entry(@admin_user)
       Bookmark.create!(user_id: @admin_user.id, user_type: 'User', document_id: @bookmark_entry.id.to_s, document_type: 'Entry', tags: 'new tag')
-      login(@admin_user, 'somethingreallylong')
+      fast_login(@admin_user)
     end
 
     it "should allow a user to bookmark an entry from a public search" do
