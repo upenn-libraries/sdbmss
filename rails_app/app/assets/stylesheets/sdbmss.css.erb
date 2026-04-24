@@ -1396,20 +1396,18 @@ fieldset[disabled=disabled] a {
 .blacklight-entries-edit .remove-link-container {
   height: 30px;
   line-height: 30px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 .remove-link-container:before {
-  width: 40vw;
-  content: '';
-  border-bottom: 1px dashed #ddd;
-  height: 10px;
-  display: block;
-  position: absolute;
-  left: -40vw;
-  top: calc(50% - 10px);
-  z-index: 0;
+  display: none;
 }
-.blacklight-entries-edit .remove-link-container:before {
-  top: 5px;
+.blacklight-entries-edit .input-block > .d-md-flex::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px dashed #ddd;
+  align-self: center;
+  min-width: 10px;
 }
 .provenance-block .remove-link-container:before {
   display: none;

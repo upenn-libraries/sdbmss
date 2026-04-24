@@ -367,10 +367,12 @@ label.col-sm-2-and-half {
                           <span id="sale_selling_agent_certainty_flags" ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="sale_agent"><span class="fas"></span></span>
                         </div>
 
-                        <span class='form-label' sdbm-tooltip="entry_sale_agent_role">Role</span>
-                        <select id="sale_agent_role_{{ $index }}" name="sale_agent_role" class="form-control" ng-model="sale_agent.role" ng-options="option[0] as option[1] for option in optionsSaleAgentRole" required='required'>
-                          <option value=""></option>
-                        </select>
+                        <span class="d-flex align-items-center gap-1">
+                          <span class='form-label' sdbm-tooltip="entry_sale_agent_role">Role</span>
+                          <select id="sale_agent_role_{{ $index }}" name="sale_agent_role" class="form-control w-auto" ng-model="sale_agent.role" ng-options="option[0] as option[1] for option in optionsSaleAgentRole" required='required'>
+                            <option value=""></option>
+                          </select>
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -462,8 +464,9 @@ label.col-sm-2-and-half {
               <span ng-if='entry_author.author != undefined && entry_author.author.id != undefined' id="author_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_author"><span class="fas"></span></span>
             </div>
 
-            <span class='form-label'><span sdbm-tooltip="entry_author_role">Role</span>
-              <select id="author_role_{{ $index }}" name="author_role" class="form-control" ng-model="entry_author.role" ng-options="option[0] as option[1] for option in optionsAuthorRole">
+            <span class="d-flex align-items-center gap-1">
+              <span class='form-label' sdbm-tooltip="entry_author_role">Role</span>
+              <select id="author_role_{{ $index }}" name="author_role" class="form-control w-auto" ng-model="entry_author.role" ng-options="option[0] as option[1] for option in optionsAuthorRole">
                 <option value=""></option>
               </select>
             </span>
@@ -499,14 +502,15 @@ label.col-sm-2-and-half {
                 <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-text clickable certainty" sdbm-certainty-flags="entry_date"><span class="fas"></span></div>
             </span>
           </span>
-          <span class='form-label'><span sdbm-tooltip="entry_date_for_search">Range for Search</span>
-          <span ng-class="{ 'has-error': !entryForm['date_normalized_start_' + $index].$valid }">
-              <input id="date_normalized_start_{{ $index }}" name="date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_start">
-          </span>
-          to
-          <span ng-class="{ 'has-error': !entryForm['date_normalized_end_' + $index].$valid }">
-              <input id="date_normalized_end_{{ $index }}" name="date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_end">
-          </span>
+          <span class="d-flex align-items-center gap-1">
+            <span class='form-label' sdbm-tooltip="entry_date_for_search">Range for Search</span>
+            <span ng-class="{ 'has-error': !entryForm['date_normalized_start_' + $index].$valid }">
+              <input id="date_normalized_start_{{ $index }}" name="date_normalized_start_{{ $index }}" type="text" class="form-control w-auto" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_start">
+            </span>
+            to
+            <span ng-class="{ 'has-error': !entryForm['date_normalized_end_' + $index].$valid }">
+              <input id="date_normalized_end_{{ $index }}" name="date_normalized_end_{{ $index }}" type="text" class="form-control w-auto" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_end">
+            </span>
           </span>
         </div>
       </div>
@@ -549,8 +553,9 @@ label.col-sm-2-and-half {
             <span ng-if='entry_artist.artist != undefined && entry_artist.artist.id != undefined' id="artist_certainty_flags_{{ $index }}" class="btn btn-outline-secondary certainty-flag clickable" sdbm-certainty-flags="entry_artist"><span class="fas"></span></span>
           </div>
 
-          <span class='form-label'><span sdbm-tooltip="entry_artist_role">Role</span>
-            <select id="artist_role_{{ $index }}" name="artist_role" class="form-control" ng-model="entry_artist.role" ng-options="option[0] as option[1] for option in optionsArtistRole">
+          <span class="d-flex align-items-center gap-1">
+            <span class='form-label' sdbm-tooltip="entry_artist_role">Role</span>
+            <select id="artist_role_{{ $index }}" name="artist_role" class="form-control w-auto" ng-model="entry_artist.role" ng-options="option[0] as option[1] for option in optionsArtistRole">
               <option value=""></option>
             </select>
           </span>
@@ -735,7 +740,7 @@ label.col-sm-2-and-half {
             </span>
           </span>
           <span class='form-label' sdbm-tooltip="entry_material">Authority Name</span>
-          <div class="input-group">
+          <div class="input-group w-auto">
               <select ng-model="entry_material.material" id="material_{{ $index }}" class="form-control before-certainty">
                 <option value="{{material.value}}" ng-repeat="material in optionsMaterial" ng-selected="entry_material.material == material.value">{{ material.label }}</option>
               </select>
@@ -941,10 +946,11 @@ label.col-sm-2-and-half {
               </div>
             </div>
             <div class="col-md-5 text-end form-inline prov-date-range">
-              <span class='form-label'><span sdbm-tooltip="entry_provenance_date_range_for_search">Suggested Range</span>
-                <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date_normalized_start" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">
+              <span class="d-flex align-items-center gap-1">
+                <span class='form-label' sdbm-tooltip="entry_provenance_date_range_for_search">Suggested Range</span>
+                <input id="provenance_start_date_{{ $index }}" type="text" class="form-control w-auto" ng-model="prov.start_date_normalized_start" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">
                 to
-                <input id="provenance_end_date_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date_normalized_end" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">
+                <input id="provenance_end_date_{{ $index }}" type="text" class="form-control w-auto" ng-model="prov.end_date_normalized_end" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">
               </span>
             </div>
           </div>
