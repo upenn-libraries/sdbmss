@@ -11,7 +11,7 @@
   <% end %>
 </p>
 <% comments.each do |comment| %>
-  <div class="panel-default panel panel-comment" id="comment_<%= comment.id %>" name="comment_<%= comment.id %>">
+  <div class="card panel-comment mb-3" id="comment_<%= comment.id %>" name="comment_<%= comment.id %>">
     <div class="card-body comment">
       <% if comment.deleted %>
         <div class="row">
@@ -21,8 +21,8 @@
         </div>
       <% else %>
         <div class="row">
-          <div class="col-5">
-            <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %><br/>
+          <div class="col-4">
+            <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %>
           </div>
           <div class="col-2 text-center">
             <% if current_user %>
@@ -33,21 +33,21 @@
               <% end %>
             <% end %>
           </div>
-          <div class="col-5 text-end">
+          <div class="col-4 text-end">
             <%= comment.created_at.to_formatted_s(:date_and_time) %>
           </div>
-          <div class="col-sm-12 comment-toggle">
-            <%= sanitize simple_format(comment.comment), tags: %w(code b i br strong em a), attributes: %w(href) %>
-          </div>
-          <div class="comment-controls">
+          <div class="col-2 text-end">
             <% if can? :edit, comment %>
               <%= link_to(comment_path(comment, format: 'html'),  method: :delete, data: { confirm: 'Are you sure?' }) do %>
                 <span class="fas fa-fw fa-times"></span>
               <% end %>
               <a onclick="$('#comment_<%= comment.id %> .comment-toggle').toggleClass('hide');" class='comment-toggle'>
                 <span class="fas fa-fw fa-edit"></span>
-              </a><br>
+              </a>
             <% end %>
+          </div>
+          <div class="col-sm-12 comment-toggle">
+            <%= sanitize simple_format(comment.comment), tags: %w(code b i br strong em a), attributes: %w(href) %>
           </div>
           <% if can? :edit, comment %>
             <div class="col-sm-12">
@@ -66,23 +66,24 @@
               <p class="text-muted">This reply has been deleted.</p>
             </div>
           <% else %>
-            <div class="col-sm-6">
-              <%= render partial: "shared/username_with_profile_link", locals: { user: reply.created_by } %><br/>
+            <div class="col-sm-5">
+              <%= render partial: "shared/username_with_profile_link", locals: { user: reply.created_by } %>
             </div>
-            <div class="col-sm-6 text-end">
+            <div class="col-sm-5 text-end">
               <%= reply.created_at.to_formatted_s(:date_and_time) %>
+            </div>
+            <div class="col-sm-2 text-end">
+              <% if can? :edit, reply %>
+                <%= link_to(reply_path(reply, format: 'html'),  method: :delete, format: 'json', data: { confirm: 'Are you sure?' }) do %>
+                  <span class="fas fa-fw fa-times"></span>
+                <% end %>
+                <a class="clickable" onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');">
+                  <span class="fas fa-fw fa-edit"></span>
+                </a>
+              <% end %>
             </div>
             <div class="col-sm-12 reply-toggle">
               <p><%= sanitize simple_format(reply.reply), tags: %w(code b i br strong em a), attributes: %w(href) %></p>
-            </div>
-            <div class="comment-controls">
-              <% if can? :edit, reply %>
-              <%= link_to(reply_path(reply, format: 'html'),  method: :delete, format: 'json', data: { confirm: 'Are you sure?' }) do %>
-                <span class="fas fa-fw fa-times"></span>
-              <% end %>
-              <a onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');">
-                <span class="fas fa-fw fa-edit"></span></a>
-              <% end %>
             </div>
 
             <%= form_tag reply_path(reply), :method => 'put', :class => 'reply-toggle hide' do %>
