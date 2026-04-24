@@ -4,13 +4,15 @@ describe "Manage Comments", :js => true do
   let(:admin_user) { create(:admin) }
 
   before :each do
-    Comment.create!(comment: "This is an interesting observation!", commentable: Entry.first, created_by: admin_user)
+    @entry = create(:edit_test_entry, source: create(:edit_test_source, created_by: admin_user), created_by: admin_user, approved: true)
+    SampleIndexer.index_records!(@entry)
+    Comment.create!(comment: "This is an interesting observation!", commentable: @entry, created_by: admin_user)
     Sunspot.commit
     login(admin_user, 'somethingreallylong')
   end
 
-  it "should add a comment to an entry" do
-    visit entry_path(Entry.first)
+  it "should add a comment to an entry", :solr do
+    visit entry_path(@entry)
 
     find("#comment").set "This is an interesting observation!"
     click_button "Post"
@@ -22,7 +24,7 @@ describe "Manage Comments", :js => true do
     expect(page).to have_content("This is an interesting observation!")
   end
 
-  it "should allow a user to edit their comments" do
+  it "should allow a user to edit their comments", :solr do
     visit comments_path
 
     find('#search_results a', match: :first).click
@@ -38,7 +40,7 @@ describe "Manage Comments", :js => true do
     expect(page).to have_content("That's ridiculous.")
   end
 
-  it "should allow a user to delete their comments" do
+  it "should allow a user to delete their comments", :solr do
     visit comments_path
 
     find('#search_results a', match: :first).click

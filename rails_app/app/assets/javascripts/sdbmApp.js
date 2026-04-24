@@ -8,7 +8,7 @@
 
 /* Hints for eslint: */
 /* eslint camelcase:0, no-underscore-dangle:0 */
-/* global alert, angular, console, window, setTimeout, $, SDBM, URI */
+/* global angular, console, window, setTimeout, $, SDBM, URI */
 
 
 var EntryScope;
@@ -27,7 +27,7 @@ var BOOKMARK_SCOPE;
             $http.defaults.headers.put['X-CSRF-Token'] = csrf_token;
             $http.defaults.headers.post['X-CSRF-Token'] = csrf_token;
         } else {
-            alert("Error: no meta tag found with csrf-token. Ajax calls won't work.");
+            console.warn("Error: no meta tag found with csrf-token. Ajax calls won't work.");
         }
     });
 

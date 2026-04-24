@@ -83,6 +83,10 @@ module SDBMSS::SeedData
       ["Manuscript Instructions", "manuscript_instructions.html"],
       ["Watches Instructions", "watches_instructions.html"],
       ["De Ricci Archive", "de_ricci_archive.html"],
+      ["De Ricci Game Description", "de_ricci_game_description.html"],
+      ["De Ricci Game Instructions", "de_ricci_game_instructions.html"],
+      ["De Ricci Game Results", "de_ricci_game_results.html"],
+      ["De Ricci Game FAQ", "de_ricci_game_faq.html"],
       ["Exports Instructions", "exports_instructions.html"]
     ].each do |name, filename|
       find_or_create_page(name, filename)

@@ -124,7 +124,7 @@ class SearchableAuthorityController < ManageModelsController
       params[:qf] = boost_fields if boost_fields
     }
     search.request_handler = :select
-      search.execute
+    search.execute
   end
 
 end

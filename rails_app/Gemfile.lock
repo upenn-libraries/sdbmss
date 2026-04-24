@@ -81,6 +81,8 @@ GEM
     blacklight_advanced_search (6.4.1)
       blacklight (~> 6.0, >= 6.0.1)
       parslet
+    bootsnap (1.23.0)
+      msgpack (~> 1.2)
     bootstrap-sass (3.4.1)
       autoprefixer-rails (>= 5.2.1)
       sassc (>= 2.0.0)
@@ -140,6 +142,9 @@ GEM
     date (3.5.1)
     db_text_search (0.3.2)
       activerecord (>= 4.1.15, < 7.0)
+    debug (1.11.1)
+      irb (~> 1.10)
+      reline (>= 0.3.8)
     delayed_job (4.1.13)
       activesupport (>= 3.0, < 9.0)
     delayed_job_active_record (4.1.11)
@@ -196,6 +201,11 @@ GEM
     invisible_captcha (2.3.0)
       rails (>= 5.2)
     io-console (0.8.2)
+    irb (1.17.0)
+      pp (>= 0.6.0)
+      prism (>= 1.3.0)
+      rdoc (>= 4.0.0)
+      reline (>= 0.4.2)
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
@@ -249,6 +259,7 @@ GEM
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
     minitest (5.26.1)
+    msgpack (1.8.0)
     multi_json (1.15.0)
     mustache (1.1.2)
     mysql2 (0.5.7)
@@ -285,7 +296,11 @@ GEM
       activerecord (>= 4.2)
       request_store (~> 1.1)
     parslet (2.0.0)
+    pp (0.6.3)
+      prettyprint
     pr_geohash (1.0.0)
+    prettyprint (0.2.0)
+    prism (1.9.0)
     pry (0.16.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -504,6 +519,7 @@ DEPENDENCIES
   bigdecimal
   blacklight (~> 6.25)
   blacklight_advanced_search (~> 6.4.1)
+  bootsnap (>= 1.4.4)
   bunny (~> 2.22)
   byebug (< 12)
   cancancan (~> 3.5)
@@ -517,6 +533,7 @@ DEPENDENCIES
   daemons (~> 1.2.2)
   data-confirm-modal
   database_cleaner (~> 2.0)
+  debug
   delayed_job (~> 4.1.0)
   delayed_job_active_record
   devise (~> 4.7.1)

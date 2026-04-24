@@ -1,4 +1,5 @@
-<%= message[:message] %>
-<% if message[:message].include?("name is already used") && can?(:merge, @model) %>
+<% msg_text = message.is_a?(Hash) ? message[:message] : message %>
+<%= msg_text %>
+<% if msg_text.include?("name is already used") && can?(:merge, @model) && message.is_a?(Hash) %>
   <%= link_to "Merge #{@model.class.name}?", polymorphic_path(@model, :action => "merge", :target_id => message[:name][:id]) %>
 <% end %>

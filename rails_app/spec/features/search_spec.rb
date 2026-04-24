@@ -7,6 +7,38 @@ describe "Blacklight Search", :js => true do
   include SearchHelpers
   let(:admin_user) { create(:admin) }
 
+  def create_search_entry(title:, author:, catalog_number:, height: nil)
+    source = Source.create!(
+      title: "Source for #{title}",
+      source_type: SourceType.auction_catalog,
+      created_by: @user
+    )
+    entry_attributes = {
+      source: source,
+      created_by: @user,
+      approved: true,
+      catalog_or_lot_number: catalog_number
+    }
+    entry_attributes[:height] = height if height.present?
+
+    entry = Entry.create!(entry_attributes)
+    entry.entry_titles.create!(title: title, order: 0)
+    entry.entry_authors.create!(author: Name.find_or_create_agent(author), order: 0)
+    entry
+  end
+
+  def author_facet_corpus
+    [
+      create_search_entry(title: "Author Corpus A", author: "Augustine", catalog_number: "A1"),
+      create_search_entry(title: "Author Corpus B", author: "Bernard", catalog_number: "B1"),
+      create_search_entry(title: "Author Corpus C", author: "Cicero", catalog_number: "C1"),
+      create_search_entry(title: "Author Corpus D", author: "Dokeianos", catalog_number: "D1"),
+      create_search_entry(title: "Author Corpus E", author: "Erasmus", catalog_number: "E1"),
+      create_search_entry(title: "Author Corpus F", author: "Francis", catalog_number: "F1"),
+      create_search_entry(title: "Author Corpus G", author: "Gregory", catalog_number: "G1")
+    ]
+  end
+
   before :all do
     # since we already have a set of reference data, we use that here
     # instead of creating another set of test data. The consequence is
@@ -44,12 +76,15 @@ describe "Blacklight Search", :js => true do
     expect(page).to have_content(e.public_id)
   end
 
-  it "should display all entries" do
+  it "should display all entries", :solr do
+    entries = author_facet_corpus
+    SampleIndexer.index_records!(entries)
+
     visit root_path
     click_button('search')
     expect(page).to have_selector("#documents")
 
-    latest_seeded_entries(5).each do |entry|
+    entries.each do |entry|
       expect(page).to have_link(entry.public_id)
     end
 
@@ -57,7 +92,9 @@ describe "Blacklight Search", :js => true do
     #expect(page).to have_selector(".export-csv")
   end
 
-  it "should display results for an Author facet" do
+  it "should display results for an Author facet", :solr do
+    SampleIndexer.index_records!(author_facet_corpus)
+
     visit root_path
     click_button('search')
     expect(page).to have_selector("#documents")
@@ -66,7 +103,9 @@ describe "Blacklight Search", :js => true do
     expect(page).to have_selector("#documents")
   end
 
-  it "should display list of Author facet values" do
+  it "should display list of Author facet values", :solr do
+    SampleIndexer.index_records!(author_facet_corpus)
+
     visit root_path
     click_button('search')
     expect(page).to have_selector("#documents")
@@ -116,7 +155,21 @@ describe "Blacklight Search", :js => true do
     )
   end
 
-  it "should do advanced search using numeric range on Height" do
+  it "should do advanced search using numeric range on Height", :solr do
+    entry_one = create_search_entry(
+      title: "Height Search One",
+      author: "Height Author One",
+      catalog_number: "H1",
+      height: 251
+    )
+    entry_two = create_search_entry(
+      title: "Height Search Two",
+      author: "Height Author Two",
+      catalog_number: "H2",
+      height: 259
+    )
+    SampleIndexer.index_records!(entry_one, entry_two)
+
     visit advanced_search_path
 
     fill_in "numeric_start_0", with: 250
@@ -125,15 +178,18 @@ describe "Blacklight Search", :js => true do
 
     find_by_id('advanced-search-submit').click
 
-    entry_one = Entry.where("height > 250").where("height < 260").first
-    entry_nine = Entry.where("height > 250").where("height < 260").last
-
     expect(page).to have_link(entry_one.public_id)
-    expect(page).to have_link(entry_nine.public_id)
+    expect(page).to have_link(entry_two.public_id)
   end
 
-  it "should load show Entry page" do
-    entry = latest_seeded_entry
+  it "should load show Entry page", :solr do
+    entry = create_search_entry(
+      title: "Direct Show Entry",
+      author: "Direct Show Author",
+      catalog_number: "SHOW1"
+    )
+    SampleIndexer.index_records!(entry)
+
     visit entry_path(entry)
     expect(page).to have_xpath("//h1[contains(.,'#{entry.public_id}')]")
   end
@@ -184,7 +240,7 @@ describe "Blacklight Search", :js => true do
 
     fill_in "q", with: "My Unique Search"
     click_button('search')
-    expect(page).to have_selector("#documents")
+    expect(page).to have_selector('#documents')
 
     visit "/search_history"
 

@@ -1,5 +1,6 @@
 
 require 'sdbmss/util'
+require 'json'
 
 describe "SDBMSS::Util" do
 
@@ -66,8 +67,29 @@ describe "SDBMSS::Util" do
        expect(SDBMSS::Util.range_bucket(1, bucket_size)).to eq("1 - 50")
        expect(SDBMSS::Util.range_bucket(189, bucket_size)).to eq("151 - 200")
        expect(SDBMSS::Util.range_bucket(9999, bucket_size)).to eq("9951 - 10000")
-     end
+    end
 
-   end
+    describe "#wait_for_solr_to_be_current" do
+      it "returns quickly when Solr is already current" do
+        fake_response = JSON.generate({
+          "status" => {
+            "test" => {
+              "index" => {
+                "current" => true
+              }
+            }
+          }
+        })
+
+        allow(Net::HTTP).to receive(:get).and_return(fake_response)
+        allow(SDBMSS::Util).to receive(:sleep)
+
+        SDBMSS::Util.wait_for_solr_to_be_current
+
+        expect(SDBMSS::Util).not_to have_received(:sleep)
+      end
+    end
+
+end
 
 end
