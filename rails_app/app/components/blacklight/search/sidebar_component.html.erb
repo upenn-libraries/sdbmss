@@ -1,4 +1,4 @@
-<%# OVERRIDE Blacklight 8.12.3: add "Selected Filters" card above facets when facet
+<%# OVERRIDE Blacklight 9.0.0: add "Selected Filters" card above facets when facet
      filters are active. Original SDBMSS feature from 2016 (51e8e7f7).
 %>
 <search>
@@ -26,7 +26,7 @@
 
   <% facet_group_names.each do |groupname| %>
     <% fields = facet_fields_in_group(groupname) %>
-    <%= render group_component_class.new(id: groupname, fields: fields, response: response) do |component| %>
+    <%= render group_component_class.new(id: groupname) do |component| %>
       <% component.with_body do %>
         <%= render Blacklight::FacetComponent.with_collection(fields, response: response) %>
       <% end %>
