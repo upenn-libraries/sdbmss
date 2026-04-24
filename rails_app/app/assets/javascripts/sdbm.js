@@ -159,6 +159,23 @@ function bindRemoteAjaxCallback (){
         if (errors.length > 0) {
           console.log("ERRORS: ", errors);
         }
+
+        // Update Clear href with bookmark IDs extracted from the newly replaced delete links
+        var $unbookmark = $('#unbookmark_all');
+        if ($unbookmark.length && result.responseJSON.results) {
+          var ids = [];
+          $('a.bookmark-delete[data-remote]').each(function () {
+            var href = $(this).attr('href') || '';
+            var match = href.match(/ids%5B%5D=(\d+)/g);
+            if (match) {
+              match.forEach(function (m) { ids.push(m.replace('ids%5B%5D=', '')); });
+            }
+          });
+          if (ids.length > 0) {
+            var newHref = '/bookmarks/delete_all?' + ids.map(function (id) { return 'ids%5B%5D=' + id; }).join('&');
+            $unbookmark.attr('href', newHref);
+          }
+        }
       }
       $('a[data-remote]').unbind('ajax:success');
       bindRemoteAjaxCallback();
