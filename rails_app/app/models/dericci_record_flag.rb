@@ -1,4 +1,4 @@
-class DericciRecordFlag < ActiveRecord::Base
+class DericciRecordFlag < ApplicationRecord
   belongs_to :dericci_record
 
   include UserFields

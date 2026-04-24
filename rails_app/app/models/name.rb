@@ -14,7 +14,7 @@ require 'set'
 # There are a number of counter_cache fields on this model, which
 # usually get updated when there are changes to related data, but NOT
 # always. In particular, note that #update_all skips callbacks.
-class Name < ActiveRecord::Base
+class Name < ApplicationRecord
 
   include UserFields
   include Watchable

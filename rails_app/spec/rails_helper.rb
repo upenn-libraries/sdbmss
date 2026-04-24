@@ -1,28 +1,80 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
-ENV["RAILS_ENV"] ||= 'test'
+ENV['RAILS_ENV'] ||= 'test'
+ENV['DEBUGGER__::DISABLE'] ||= '1'
 
-require 'simplecov'
+if ENV['COVERAGE'] == '1'
+  require 'simplecov'
 
-# filter out legacy code from coverage
-SimpleCov.start 'rails' do
-  add_filter 'lib/sdbmss/legacy.rb'
-  add_filter 'lib/sdbmss/csv.rb'
-  add_filter 'lib/sdbmss/viaf_reconcilliation.rb'
+  # filter out legacy code from coverage
+  SimpleCov.start 'rails' do
+    add_filter 'lib/sdbmss/legacy.rb'
+    add_filter 'lib/sdbmss/csv.rb'
+    add_filter 'lib/sdbmss/viaf_reconcilliation.rb'
+  end
+
+  puts 'SimpleCov started'
 end
 
-puts "SimpleCov started"
-
 require 'spec_helper'
-require File.expand_path("../../config/environment", __FILE__)
+require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 require 'capybara/rails'
-require 'factory_girl_rails'
+require 'factory_bot_rails'
+require 'warden/test/helpers'
 
 require 'capybara-screenshot/rspec'
 
-require_relative './helpers'
+Dir[Rails.root.join('spec/support/**/*.rb')].sort.each { |f| require f }
+
+module TestSuiteSetupHelpers
+  extend self
+
+  # JS examples reseed a truncated MySQL database. Disabling FK checks keeps
+  # truncation/reseed cheap and avoids ordering every table delete manually.
+  def with_foreign_key_checks_disabled
+    ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
+    yield
+  ensure
+    ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
+  end
+
+  def suite_logger
+    Rails.logger
+  end
+
+  def log_setup_warning(message)
+    suite_logger.warn(message)
+  end
+
+  # Test setup occasionally hits transient deadlocks or duplicate-key races
+  # while the browser thread and reseed path overlap. Retry only those known
+  # bootstrap failures rather than hiding unrelated setup errors.
+  def with_seed_retries(label)
+    attempts = 0
+    begin
+      yield
+    rescue Mysql2::Error => e
+      attempts += 1
+      if e.message =~ /Deadlock|Duplicate entry/ && attempts <= 3
+        log_setup_warning("#{label} attempt #{attempts} failed (#{e.message.split(':').first}), retrying...")
+        sleep(0.5 * attempts)
+        retry
+      end
+      raise
+    end
+  end
+
+  # The suite depends on baseline seed data, reference data, and custom MySQL
+  # functions being present after each full truncation.
+  def seed_reference_data!
+    SDBMSS::SeedData.create
+    SDBMSS::ReferenceData.create_all
+    SDBMSS::Mysql.create_functions
+  end
+
+end
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -32,12 +84,7 @@ require_relative './helpers'
 # end with _spec.rb. You can configure this pattern with the --pattern
 # option on the command line or in ~/.rspec, .rspec or `.rspec-local`.
 #
-# The following line is provided for convenience purposes. It has the downside
-# of increasing the boot-up time by auto-requiring all files in the support
-# directory. Alternatively, in the individual `*_spec.rb` files, manually
-# require only the support files necessary.
-#
-# Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+# Shared test-support code is auto-required from spec/support.
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -51,9 +98,9 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   #
-  # set this to false so that any writes to the db can be seen by
-  # poltergeist driver
-  config.use_transactional_fixtures = false
+  # Browser specs run against Puma with a shared ActiveRecord connection, so
+  # examples can stay transaction-based instead of truncating per example.
+  config.use_transactional_fixtures = true
 
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and
@@ -70,20 +117,73 @@ RSpec.configure do |config|
   # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
 
-  # FactoryGirl support
-  config.include FactoryGirl::Syntax::Methods
+  # FactoryBot support
+  config.include FactoryBot::Syntax::Methods
 
+  config.include Warden::Test::Helpers
   config.include SDBMSS::Capybara::AlertConfirmer
   config.include SDBMSS::Capybara::Login
+  config.include TestSuiteSetupHelpers
 
-  DatabaseCleaner.strategy = :truncation
-  DatabaseCleaner.start
-  DatabaseCleaner.clean
-  Sunspot::remove_all!
-  SDBMSS::SeedData.create
-  SDBMSS::ReferenceData.create_all
-  SDBMSS::Mysql.create_functions
-  config.before(:all) do
+  config.before(:suite) do
+    # Start from a fully truncated DB, then rebuild the baseline records and
+    # a minimal Solr index once for the whole suite.
+    SharedConnection.connection = ActiveRecord::Base.connection
+    TestSuiteSetupHelpers.with_foreign_key_checks_disabled do
+      DatabaseCleaner.clean_with(:truncation)
+      begin
+        SolrTools.clear!
+      rescue => e
+        TestSuiteSetupHelpers.log_setup_warning("Solr delete-all before suite failed: #{e.message}")
+      end
+      TestSuiteSetupHelpers.with_seed_retries('Before-suite seed') do
+        TestSuiteSetupHelpers.seed_reference_data!
+      end
+    end
+
+    begin
+      SolrTools.reindex_models!([Entry])
+    rescue => e
+      TestSuiteSetupHelpers.log_setup_warning("Solr index before suite failed: #{e.message}")
+    end
+
+    begin
+      SolrTools.optimize!
+    rescue => e
+      TestSuiteSetupHelpers.log_setup_warning("Solr optimize before suite failed: #{e.message}")
+    end
+  end
+
+  config.before(:each) do |example|
+    SharedConnection.connection = ActiveRecord::Base.connection if example.metadata[:js]
+
+    # Replace the Sunspot session with a fresh ThreadLocalSessionProxy so that
+    # every thread (test thread AND Puma server thread) gets new RSolr
+    # connections, eliminating stale socket errors from previous tests.
+    Sunspot.session = Sunspot::Rails.build_session if example.metadata[:js]
+    # Suppress User#perform_index_tasks globally (patches the class, visible to
+    # ALL threads including the app server). Devise login updates the User record
+    # (Trackable), which fires after_save :perform_index_tasks → Sunspot.index →
+    # RSolr POST.  Stubbing this one callback prevents Net::ReadTimeout in
+    # Puma while leaving all other AR Sunspot callbacks (Comment, Place, etc.)
+    # intact so those records are indexed normally and searches still work.
+    allow_any_instance_of(User).to receive(:perform_index_tasks)
+  end
+
+  config.before(:each, :solr) do
+    SampleIndexer.clear!
+  end
+
+  config.append_after(:each) do |example|
+    Warden.test_reset!
+  end
+
+  config.after(:suite) do
+    begin
+      SolrTools.clear!
+    rescue => e
+      TestSuiteSetupHelpers.log_setup_warning("Solr delete-all after suite failed: #{e.message}")
+    end
   end
 
   # This is commented out b/c it seems the browser doesn't always hang
@@ -101,5 +201,4 @@ RSpec.configure do |config|
   #     puts meta[:full_description] + "\n Screenshot: #{screenshot_path}"
   #   end
   # end
-
 end

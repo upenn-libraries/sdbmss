@@ -1,4 +1,4 @@
-class CreateLegacyDataIssues < ActiveRecord::Migration
+class CreateLegacyDataIssues < ActiveRecord::Migration[4.2]
   def change
     create_table :legacy_data_issues do |t|
       t.string :table_name

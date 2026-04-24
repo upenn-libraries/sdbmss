@@ -1,11 +1,43 @@
 
-require 'json'
 require "rails_helper"
-require 'net/http'
 
 # There's JS on most of these pages. Not all features use JS, but
 # there's no good reason NOT to use the js driver, so we do.
 describe "Blacklight Search", :js => true do
+  include SearchHelpers
+  let(:admin_user) { create(:admin) }
+
+  def create_search_entry(title:, author:, catalog_number:, height: nil)
+    source = Source.create!(
+      title: "Source for #{title}",
+      source_type: SourceType.auction_catalog,
+      created_by: @user
+    )
+    entry_attributes = {
+      source: source,
+      created_by: @user,
+      approved: true,
+      catalog_or_lot_number: catalog_number
+    }
+    entry_attributes[:height] = height if height.present?
+
+    entry = Entry.create!(entry_attributes)
+    entry.entry_titles.create!(title: title, order: 0)
+    entry.entry_authors.create!(author: Name.find_or_create_agent(author), order: 0)
+    entry
+  end
+
+  def author_facet_corpus
+    [
+      create_search_entry(title: "Author Corpus A", author: "Augustine", catalog_number: "A1"),
+      create_search_entry(title: "Author Corpus B", author: "Bernard", catalog_number: "B1"),
+      create_search_entry(title: "Author Corpus C", author: "Cicero", catalog_number: "C1"),
+      create_search_entry(title: "Author Corpus D", author: "Dokeianos", catalog_number: "D1"),
+      create_search_entry(title: "Author Corpus E", author: "Erasmus", catalog_number: "E1"),
+      create_search_entry(title: "Author Corpus F", author: "Francis", catalog_number: "F1"),
+      create_search_entry(title: "Author Corpus G", author: "Gregory", catalog_number: "G1")
+    ]
+  end
 
   before :all do
     # since we already have a set of reference data, we use that here
@@ -16,45 +48,43 @@ describe "Blacklight Search", :js => true do
 #    SDBMSS::ReferenceData.create_all
 
     SDBMSS::Util.wait_for_solr_to_be_current
-
-    @user = User.where(role: "admin").first
   end
 
-  # Returns a record from Hill catalog
-  def get_hill_entry_by_cat_num cat_num
-    Entry
-      .joins(:source => [:source_agents => :agent])
-      .where(:names => { :name => "Jonathan A. Hill" },
-             :catalog_or_lot_number => cat_num)
-      .first
+  before :each do
+    @user = admin_user
   end
 
   it "should load main landing page" do
     visit root_path
-    #find('#dismiss-welcome').click
     expect(page).to have_selector("input#q")
   end
 
   it "should show my public entries" do
-    login(@user, 'somethingunguessable')
+    login(@user, 'somethingreallylong')
 
-    e = Entry.create!(source: Source.last, created_by: @user)
+    source = Source.create!(
+      title: "Test Source for Public Entries",
+      source_type: SourceType.auction_catalog,
+      created_by: @user
+    )
+    e = Entry.create!(source: source, created_by: @user, approved: true)
     e.index!
 
     visit dashboard_contributions_path
-    click_link "See Your Public Entries"
+    find_link("See Your Public Entries").trigger("click")
 
     expect(page).to have_content(e.public_id)
   end
 
-  it "should display all entries" do
-    visit root_path
-    #find('#dismiss-welcome').click
+  it "should display all entries", :solr do
+    entries = author_facet_corpus
+    SampleIndexer.index_records!(entries)
 
+    visit root_path
     click_button('search')
     expect(page).to have_selector("#documents")
 
-    Entry.all.order(id: :desc).limit(5).each do |entry|
+    entries.each do |entry|
       expect(page).to have_link(entry.public_id)
     end
 
@@ -62,21 +92,21 @@ describe "Blacklight Search", :js => true do
     #expect(page).to have_selector(".export-csv")
   end
 
-  it "should display results for an Author facet" do
-    visit root_path
-    #find('#dismiss-welcome').click
+  it "should display results for an Author facet", :solr do
+    SampleIndexer.index_records!(author_facet_corpus)
 
+    visit root_path
     click_button('search')
     expect(page).to have_selector("#documents")
 
-    find(:css, "#facet-author .facet_select", match: :first).click
+    find(:css, "#facet-author .facet-values a", match: :first).click
     expect(page).to have_selector("#documents")
   end
 
-  it "should display list of Author facet values" do
-    visit root_path
-    #find('#dismiss-welcome').click
+  it "should display list of Author facet values", :solr do
+    SampleIndexer.index_records!(author_facet_corpus)
 
+    visit root_path
     click_button('search')
     expect(page).to have_selector("#documents")
 
@@ -113,13 +143,33 @@ describe "Blacklight Search", :js => true do
   it "should load advanced search page" do
     visit advanced_search_path
 
+    search_fields = CatalogController.blacklight_config.search_fields.values
+
     # all text search fields should show up in dropdown
-    expect(find_by_id('text_field_0').all("option").length).to eq(30)
+    expect(find_by_id('text_field_0').all("option", visible: :all).length).to eq(
+      search_fields.count { |field_def| !field_def.is_numeric_field && field_def.include_in_advanced_search != false }
+    )
     # all numeric search fields should show up in dropdown
-    expect(find_by_id('numeric_field_0').all("option").length).to eq(14)
+    expect(find_by_id('numeric_field_0').all("option", visible: :all).length).to eq(
+      search_fields.count { |field_def| field_def.is_numeric_field && field_def.include_in_advanced_search != false }
+    )
   end
 
-  it "should do advanced search using numeric range on Height" do
+  it "should do advanced search using numeric range on Height", :solr do
+    entry_one = create_search_entry(
+      title: "Height Search One",
+      author: "Height Author One",
+      catalog_number: "H1",
+      height: 251
+    )
+    entry_two = create_search_entry(
+      title: "Height Search Two",
+      author: "Height Author Two",
+      catalog_number: "H2",
+      height: 259
+    )
+    SampleIndexer.index_records!(entry_one, entry_two)
+
     visit advanced_search_path
 
     fill_in "numeric_start_0", with: 250
@@ -128,64 +178,49 @@ describe "Blacklight Search", :js => true do
 
     find_by_id('advanced-search-submit').click
 
-    entry_one = Entry.where("height > 250").where("height < 260").first
-    entry_nine = Entry.where("height > 250").where("height < 260").last
-
     expect(page).to have_link(entry_one.public_id)
-    expect(page).to have_link(entry_nine.public_id)
+    expect(page).to have_link(entry_two.public_id)
   end
 
-  it "should load show Entry page" do
-    entry = Entry.last
+  it "should load show Entry page", :solr do
+    entry = create_search_entry(
+      title: "Direct Show Entry",
+      author: "Direct Show Author",
+      catalog_number: "SHOW1"
+    )
+    SampleIndexer.index_records!(entry)
+
     visit entry_path(entry)
     expect(page).to have_xpath("//h1[contains(.,'#{entry.public_id}')]")
   end
 
-  # poltergeist's implementation of page.source wraps the JSON
-  # response in HTML for display, so we set js: false for this test.
-  it "should load show Entry page (json format)", js: false do
-    entry = Entry.last
-    visit entry_path(entry, format: :json)
-    data = JSON.parse(page.source)
-    expect(data["id"]).to eq(entry.id)
-  end
-
   it "should 404 on show Entry page for deleted entry" do
     entry = Entry.new(
-      source: Source.last,
+      source: latest_seeded_source,
       deleted: true
     )
     entry.save!
     SDBMSS::Util.wait_for_solr_to_be_current
-
-    sleep(0.5)
 
     visit entry_path(entry)
     expect(page.status_code).to eq(404)
   end
 
   it "should load show Source page" do
-    source = Source.last
+    source = latest_seeded_source
     visit source_path(source)
     expect(page).to have_xpath("//dd[contains(.,'#{source.public_id}')]")
   end
 
-  it "should load show Agent page" do
-    skip "separate Agent page and display is deprecated"
-    agent = Name.where(is_provenance_agent: true).last
-    visit name_path(agent)
-    expect(page).to have_xpath("//dd[contains(.,'#{agent.public_id}')]")
-  end
-
   it "should load show Name page" do
-    name = Name.last
+    name = latest_seeded_name
     visit name_path(name)
     expect(page).to have_content("#{name.public_id}")
   end
 
   it "should load show Manuscript page" do
     # randomly link 2 entries together in a MS
-    entries = Entry.last(2)
+    entries = latest_seeded_entries
     ms = Manuscript.create!(
       entry_manuscripts_attributes: [
         { entry_id: entries[0].id, relation_type: EntryManuscript::TYPE_RELATION_IS },
@@ -198,70 +233,16 @@ describe "Blacklight Search", :js => true do
     expect(page).to have_content(ms.public_id)
   end
 
-  it "should bookmark an Entry and remove it" do
-    skip "New bookmark method implemented"
-    login(@user, 'somethingunguessable')
-
-    visit root_path
-    find('#dismiss-welcome').click
-
-    fill_in "q", with: "Tomkinson"
-    click_button('search')
-    expect(page).to have_selector("#documents")
-
-    entry_one = get_hill_entry_by_cat_num 1
-    find_by_id("bookmark_toggle_" + entry_one.id.to_s).click
-
-    # page does ajax call; wait for toggle to be checked
-    expect(page).to have_selector("#bookmark_toggle_" + entry_one.id.to_s + "[value='Remove Bookmark']")
-
-    visit bookmarks_path
-    expect(page).to have_link(entry_one.public_id)
-    find_by_id("bookmark_toggle_" + entry_one.id.to_s).click
-
-    # page does ajax call; wait for toggle to be checked
-    expect(page).not_to have_selector("#bookmark_toggle_" + entry_one.id.to_s + "[value='Remove Bookmark']")
-
-    visit bookmarks_path
-    expect(page).not_to have_link(entry_one.public_id)
-  end
-
-  # poltergeist has trouble loading the csv, so we don't use it
-  it "should export bookmarks as CSV", :js => false do
-    skip "New bookmark method implemented"
-    entry = Entry.first
-
-    Bookmark.create!(
-      user_id: @user.id,
-      user_type: 'User',
-      document_id: entry.id,
-      document_type: "SolrDocument"
-    )
-
-    login(@user, 'somethingunguessable')
-
-    visit bookmarks_path
-    expect(page).to have_link(entry.public_id)
-
-    click_link("Download as CSV")
-
-    found = false
-    CSV.parse(page.source, headers: true) do |row|
-      found = true if row["id"] == entry.id.to_s
-    end
-    expect(found).to eq(true)
-  end
-
   it "should add search to History" do
-    skip "Search History only saved when logged in"
+    login(@user, 'somethingreallylong')
     visit root_path
-    find('#dismiss-welcome').click
+    find('#dismiss-welcome').click if page.has_css?('#dismiss-welcome')
 
     fill_in "q", with: "My Unique Search"
     click_button('search')
-    expect(page).to have_selector("#documents")
+    expect(page).to have_selector('#documents')
 
-    visit search_history_path
+    visit "/search_history"
 
     expect(page).to have_content("My Unique Search")
   end

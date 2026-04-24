@@ -1,4 +1,4 @@
-class AddReviewedFieldsToUsers < ActiveRecord::Migration
+class AddReviewedFieldsToUsers < ActiveRecord::Migration[4.2]
   def change
     add_column :users, :reviewed, :boolean, :default => false
     add_reference :users, :reviewed_by, :index => true

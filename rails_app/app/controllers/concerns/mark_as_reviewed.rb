@@ -16,10 +16,9 @@ module MarkAsReviewed
     if ids.present?
       ids = ids.map(&:to_i)
       model_class.where('id IN (?)', ids).each do |model|
-        ActiveRecord::Base.transaction do  
+        ActiveRecord::Base.transaction do
           model.update(reviewed: true, reviewed_by_id: current_user.id, reviewed_at: DateTime.now)
           model.delay.index
-          @transaction_id = PaperTrail.transaction_id
           @model = model
           if defined? log_activity
             log_activity

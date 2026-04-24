@@ -8,7 +8,7 @@
 # Entry should have a FK to a Sale record. But it probably doesn't
 # really matter.
 
-class Sale < ActiveRecord::Base
+class Sale < ApplicationRecord
 
   CURRENCY_TYPES = [
     ["EUR", "EUR"],

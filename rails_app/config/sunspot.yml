@@ -23,3 +23,13 @@ staging:
 test:
   solr:
     log_level: WARNING
+    # auto_commit_after_request defaults to true — keep it that way so that
+    # records created/edited during a test are committed to Solr by WEBrick's
+    # after_filter, making them immediately searchable.
+    # Login is safe without disabling this: allow_any_instance_of(User).to
+    # receive(:perform_index_tasks) in before(:each) means login never marks
+    # the session dirty, so commit_if_dirty after login is always a no-op.
+    #
+    # 15-second timeout: generous enough for Solr's first response after
+    # startup, while still bounding failures on a stuck/unreachable Solr.
+    timeout: 15

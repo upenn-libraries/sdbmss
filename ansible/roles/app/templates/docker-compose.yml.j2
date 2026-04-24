@@ -44,6 +44,7 @@ services:
     environment:
       ADMIN_PASSWORD: "{{ app_versioned_secrets.admin_password.value }}"
       MYSQL_DATABASE: "{{ mysql_database }}"
+      MYSQL_TEST_DATABASE: "{{ mysql_database }}"
       MYSQL_HOST: "mysql"
       MYSQL_PASSWORD: "{{ mysql_versioned_secrets.password.value }}"
       MYSQL_USER: "{{ mysql_user }}"
@@ -99,7 +100,6 @@ services:
       {% if is_development == true %}
       - /sdbmss/ansible/roles/app/files/src/:/home/app/
       {% else %}
-      - sdbm_assets:/home/app/public/assets
       - sdbm_docs:/home/app/public/static
       {% endif %}
       - downloads:/home/app/tmp/downloads
@@ -119,7 +119,6 @@ secrets:
 
 volumes:
   {% if is_development != true %}
-  sdbm_assets:
   sdbm_docs:
   {% endif %}
   downloads:

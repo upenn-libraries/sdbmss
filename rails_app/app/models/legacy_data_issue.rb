@@ -1,2 +1,2 @@
-class LegacyDataIssue < ActiveRecord::Base
+class LegacyDataIssue < ApplicationRecord
 end

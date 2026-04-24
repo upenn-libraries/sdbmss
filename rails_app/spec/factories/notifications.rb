@@ -1,9 +1,8 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :notification do
-    message "MyString"
-type ""
-active false
-user_id 1
+    message { "MyString" }
+    type { "" }
+    active { false }
+    user_id { 1 }
   end
-
 end

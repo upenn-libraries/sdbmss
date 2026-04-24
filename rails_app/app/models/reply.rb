@@ -1,4 +1,4 @@
-class Reply < ActiveRecord::Base
+class Reply < ApplicationRecord
   belongs_to :comment
 
   include UserFields

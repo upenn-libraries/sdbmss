@@ -1,4 +1,4 @@
-class AddCertaintyFieldsToEverything < ActiveRecord::Migration
+class AddCertaintyFieldsToEverything < ActiveRecord::Migration[4.2]
   def change
     add_column :entry_titles, :uncertain_in_source, :boolean, :default => false
     add_column :entry_titles, :supplied_by_data_entry, :boolean, :default => false

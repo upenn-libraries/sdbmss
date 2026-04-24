@@ -505,18 +505,28 @@ module SDBMSS
 
       # wait for Solr to be 'current' (ie caught up with indexing). this
       # really can take 5 secs, if not more.
-      def wait_for_solr_to_be_current
+      def wait_for_solr_to_be_current(timeout_seconds: 5, poll_interval: 0.25)
         host = ENV['SOLR_URL'].present? ? URI(ENV['SOLR_URL']).host : 'localhost'
         uri = "http://#{host}:8983/solr/admin/cores?action=STATUS&core=test"
-        
+
         current = false
-        count = 0
-        while (!current && count < 5)
-          sleep(1)
+        deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + timeout_seconds
+
+        while !current
           result = Net::HTTP.get(URI(uri))
-          current_str = /<bool name="current">(.+?)<\/bool>/.match(result)[1]
-          current = current_str == 'true'
-          count += 1
+          begin
+            json = JSON.parse(result)
+            current = json.dig("status", "test", "index", "current") == true
+          rescue JSON::ParserError
+            # Fall back to XML parsing for older Solr versions
+            current_str = /<bool name="current">(.+?)<\/bool>/.match(result)
+            current = current_str && current_str[1] == 'true'
+          end
+
+          break if current
+          break if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
+
+          sleep(poll_interval)
         end
       end
 
@@ -525,4 +535,3 @@ module SDBMSS
   end
 
 end
-

@@ -1,4 +1,4 @@
-class AddJenaStatus < ActiveRecord::Migration
+class AddJenaStatus < ActiveRecord::Migration[4.2]
   def change
     create_table :jena_responses do |t|
       t.text :message

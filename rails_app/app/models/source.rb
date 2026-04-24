@@ -1,5 +1,5 @@
 
-class Source < ActiveRecord::Base
+class Source < ApplicationRecord
 
   TYPE_BLANK = nil
 
@@ -298,6 +298,8 @@ class Source < ActiveRecord::Base
   end
 
   def invalid_source_fields
+    return [] if source_type.nil?
+
     self.class.invalid_source_fields_for_source_type(source_type.name)
   end
 

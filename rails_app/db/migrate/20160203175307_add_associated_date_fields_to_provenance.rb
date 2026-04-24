@@ -1,4 +1,4 @@
-class AddAssociatedDateFieldsToProvenance < ActiveRecord::Migration
+class AddAssociatedDateFieldsToProvenance < ActiveRecord::Migration[4.2]
   def change
     add_column :provenance, :associated_date, :string
     add_column :provenance, :associated_date_start, :string

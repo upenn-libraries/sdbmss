@@ -1,8 +1,9 @@
 class ApplicationController < ActionController::Base
-  # Adds a few additional behaviors into the application controller 
+  # Adds a few additional behaviors into the application controller
   include Blacklight::Controller
-  # Please be sure to impelement current_user and user_session. Blacklight depends on 
-  # these methods in order to perform user specific actions. 
+  include PaperTrail::Rails::Controller
+  # Please be sure to impelement current_user and user_session. Blacklight depends on
+  # these methods in order to perform user specific actions.
 
   layout 'application'
 
@@ -19,7 +20,7 @@ class ApplicationController < ActionController::Base
   helper_method :sdbmss_search_action_path
 
   # register user activity
-  after_filter :user_activity
+  after_action :user_activity
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [:username, :email, :password, :password_confirmation, :remember_me, :bio])
@@ -86,6 +87,15 @@ class ApplicationController < ActionController::Base
 
   def user_activity
     current_user.try :touch
+  rescue ActiveRecord::ActiveRecordError, Mysql2::Error => e
+    Rails.logger.warn("Skipping user activity update: #{e.class}: #{e.message}")
+  end
+
+  protected
+
+  def info_for_paper_trail
+    @transaction_id ||= SecureRandom.random_number(2_147_483_647)
+    { transaction_id: @transaction_id }
   end
 
 end

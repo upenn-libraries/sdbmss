@@ -1,4 +1,4 @@
-class CreateEntryComments < ActiveRecord::Migration
+class CreateEntryComments < ActiveRecord::Migration[4.2]
   def change
     create_table :entry_comments do |t|
       t.references :entry, index: true

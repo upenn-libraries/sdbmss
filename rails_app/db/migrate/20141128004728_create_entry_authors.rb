@@ -1,4 +1,4 @@
-class CreateEntryAuthors < ActiveRecord::Migration
+class CreateEntryAuthors < ActiveRecord::Migration[4.2]
   def change
     create_table :entry_authors do |t|
       t.references :entry, index: true

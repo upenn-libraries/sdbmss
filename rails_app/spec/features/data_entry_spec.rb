@@ -2,6 +2,8 @@
 require "rails_helper"
 
 describe "Data entry", :js => true do
+  include DataEntryHelpers
+  let(:admin_user) { create(:admin) }
 
   # Fill an autocomplete field using value in :with option. If a
   # block is given, yields to it to allow for selection.
@@ -78,72 +80,98 @@ describe "Data entry", :js => true do
   #  sleep(2)
   #end
 
-  before :all do
-    #User.where(username: 'testuser').delete_all
-    @user = User.where(role: "admin").first
+  before :each do
+    @user = admin_user
 
-    @source = Source.find_or_create_by(
-      title: "A Sample Test Source With a Highly Unique Name",
-      date: "2013-11-12",
-      source_type: SourceType.auction_catalog,
-    )
-    source_agent = SourceAgent.create!(
-      source: @source,
-      role: SourceAgent::ROLE_SELLING_AGENT,
-      agent: Name.find_or_create_agent("Sotheby's")
-    )
-    Source.index
+    @source = create(:edit_test_source, created_by: @user)
+  end
+
+  def ensure_name_authority(name, attrs = {})
+    Name.find_by(name: name) || Name.create!({ name: name, created_by: @user }.merge(attrs))
+  end
+
+  def ensure_language_authority(name)
+    Language.find_by(name: name) || Language.create!(name: name, created_by: @user)
+  end
+
+  def ensure_place_authority(name)
+    Place.find_by(name: name) || Place.create!(name: name, created_by: @user)
+  end
+
+  def data_entry_authority_records
+    [
+      ensure_name_authority("Sotheby's", is_provenance_agent: true),
+      ensure_name_authority("Harvard", is_provenance_agent: true),
+      ensure_name_authority('Joe2', is_provenance_agent: true),
+      ensure_name_authority('Joe3', is_provenance_agent: true),
+      ensure_name_authority('Schmoe, Joe', is_author: true),
+      ensure_name_authority('Schultz, Charles', is_artist: true),
+      ensure_name_authority('Brother Francis', is_scribe: true),
+      ensure_name_authority('Somebody, Joseph', is_provenance_agent: true),
+      ensure_language_authority('Latin'),
+      ensure_place_authority('Italy'),
+    ]
+  end
+
+  def index_data_entry_authorities!
+    SampleIndexer.index_records!(data_entry_authority_records)
   end
 
   context "when user is logged in" do
 
     before :each do
-      login(@user, 'somethingunguessable')
+      login(@user, 'somethingreallylong')
     end
 
-    require "lib/data_entry_helpers"
-    include DataEntryHelpers    
+    it "should find source by date on Select Source page", :solr do
+      SampleIndexer.index_records!(@source)
 
-    it "should find source by date on Select Source page" do
       visit new_entry_path
-      find('#select_source').click
-      fill_in 'date', :with => '2013'
-      expect(page).to have_content @source.title
-      find("#create-entry-link-#{@source.id}").click
-      expect(page).to have_content "Add an Entry"
+      open_source_search_modal
+      expect(page).to have_field('date')
+      fill_in 'date', with: '2013'
+      expect(page).to have_selector("#create-entry-link-#{@source.id}")
+        find("#create-entry-link-#{@source.id}").click
+        expect(page).to have_content "Add an Entry"
     end
 
-    it "should find source by agent on Select Source page" do
+    it "should find source by agent on Select Source page", :solr do
+      SampleIndexer.index_records!(@source)
+
       visit new_entry_path
-      find('#select_source').click
-      fill_in 'agent', :with => 'Soth'
-      expect(page).to have_content @source.title
-      find("#create-entry-link-#{@source.id}").click
-      expect(page).to have_content "Add an Entry"
+      open_source_search_modal
+      expect(page).to have_field('agent')
+      fill_in 'agent', with: 'Soth'
+      expect(page).to have_selector("#create-entry-link-#{@source.id}")
+        find("#create-entry-link-#{@source.id}").click
+        expect(page).to have_content "Add an Entry"
     end
 
-    it "should NOT find source by agent on Select Source page" do
+    it "should NOT find source by agent on Select Source page", :solr do
       visit new_entry_path
-      find('#select_source').click
+      open_source_search_modal
+      expect(page).to have_field('agent')
       fill_in 'agent', :with => 'Nonexistent'
-      sleep 1.5
       expect(page).to have_content "No source found matching your criteria."
     end
 
-    it "should find source by title on Select Source page" do
+    it "should find source by title on Select Source page", :solr do
+      SampleIndexer.index_records!(@source)
+
       visit new_entry_path
-      find('#select_source').click
-      fill_in 'title', :with => 'uniq'
-      expect(page).to have_content @source.title
-      find("#create-entry-link-#{@source.id}").click
-      expect(page).to have_content "Add an Entry"
+      open_source_search_modal
+      expect(page).to have_field('title')
+      fill_in 'title', with: 'uniq'
+      expect(page).to have_selector("#create-entry-link-#{@source.id}")
+        find("#create-entry-link-#{@source.id}").click
+        expect(page).to have_content "Add an Entry"
     end
 
-    it "should NOT find source by title on Select Source page" do
+    it "should NOT find source by title on Select Source page", :solr do
       visit new_entry_path
-      find('#select_source').click
+      open_source_search_modal
+      expect(page).to have_field('title')
       fill_in 'title', :with => 'nonexistentjunk'
-      sleep 0.5
       expect(page).to have_content "No source found matching your criteria."
     end
 
@@ -203,8 +231,9 @@ describe "Data entry", :js => true do
       expect(page).to have_select('transaction_type', disabled: false)
     end
 
-    it "should save a new Source (auction catalog)" do
+    it "should save a new Source (auction catalog)", :solr do
       count = Source.count
+      index_data_entry_authorities!
 
       visit new_entry_path
 
@@ -321,7 +350,8 @@ describe "Data entry", :js => true do
       expect(source.author).to eq('Jeff')
     end
 
-    it "should save a new Source, filtering out invalid fields" do
+    it "should save a new Source, filtering out invalid fields", :solr do
+      index_data_entry_authorities!
 
       visit new_entry_path
       open_source_create_modal
@@ -361,7 +391,8 @@ describe "Data entry", :js => true do
       expect(source.source_agents.first.agent.name).to eq("Sotheby's")
     end
 
-    it "should warn about existing Source" do
+    it "should warn about existing Source", :solr do
+      index_data_entry_authorities!
       source = Source.create!(
         date: "19501205",
         title: "a very long title for an existent source",
@@ -566,8 +597,9 @@ describe "Data entry", :js => true do
       expect(comment.comment).to eq('This info is correct')
     end
 =end
-    it "should save an auction catalog Entry" do
+    it "should save an auction catalog Entry", :solr do
       # fill out all the fields and make sure they save to the database
+      index_data_entry_authorities!
 
       count = Entry.count
 
@@ -601,15 +633,15 @@ describe "Data entry", :js => true do
       expect(entry.get_sale).to be_nil
     end
 
-    it "should save an Entry and log it in Recent Activity" do
-      skip 'changed user permissions'
+    it "should save an Entry and log it in Recent Activity", :solr do
+      index_data_entry_authorities!
       create_entry
 
       entry = Entry.last
 
       visit activities_path
 
-      expect(page).to have_content "#{entry.created_by.username} added SDBM_#{entry.id}"
+      expect(page).to have_content("added #{entry.public_id}")
     end
 
     it "should update status field on Source when adding an Entry" do
@@ -690,51 +722,6 @@ describe "Data entry", :js => true do
       expect(page).to have_content(src.source_type.to_s)
     end
 
-    it "should let user create an Entry for an existing Manuscript" do
-      skip
-      entry1 = Entry.create!(
-        source: Source.first,
-        created_by_id: @user.id,
-        approved: true
-      )
-      entry2 = Entry.create!(
-        source: Source.first,
-        created_by_id: @user.id,
-        approved: true
-      )
-      manuscript = Manuscript.create!
-      manuscript_id = manuscript.id
-      EntryManuscript.create!(entry: entry1, manuscript: manuscript, relation_type: EntryManuscript::TYPE_RELATION_IS)
-      EntryManuscript.create!(entry: entry2, manuscript: manuscript, relation_type: EntryManuscript::TYPE_RELATION_IS)
-
-      visit manuscript_path(manuscript)
-
-      click_link "Create your own personal observation"
-
-      click_link "Click here to CREATE A NEW SOURCE"
-
-      select 'Auction/Dealer Catalog', from: 'source_type'
-      fill_in 'source_date', with: '2015-02-28'
-      find('#title').set 'Sample Catalog'
-      find('#savesource').click
-
-      expect(page).to have_content("SDBM_SOURCE")
-
-#      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
-
-      click_link "Add entries for this source"
-
-      fill_in 'cat_lot_no', with: '9090'
-
-      find(".save-button", match: :first).click
-
-      expect(page).to have_content("Warning: This entry has not been approved yet.")
-      expect(page).to have_content(Entry.last.public_id)
-
-      manuscript = Manuscript.find(manuscript_id)
-      expect(manuscript.entries.order(id: :desc).first.catalog_or_lot_number).to eq("9090")
-    end
-
     it "should pre-populate transaction_type on Entry page" do
       count = Entry.count
 
@@ -755,14 +742,20 @@ describe "Data entry", :js => true do
       expect(page).to have_select('transaction_type', selected: 'A Gift')
     end
 
-    it "should present the option to create a personal observation from the entry public view" do
-      visit entry_path(Entry.last)
+    it "should present the option to create a personal observation from the entry public view", :solr do
+      entry = Entry.create!(source: @source, created_by: @user, approved: true)
+      SampleIndexer.index_records!(entry)
+
+      visit entry_path(entry)
 
       expect(page).to have_content("Create A Personal Observation")
     end
 
-    it "should successfully create a manuscript record for an unlinked entry when creating a new personal observation" do
-      visit entry_path(Entry.last)
+    it "should successfully create a manuscript record for an unlinked entry when creating a new personal observation", :solr do
+      entry = Entry.create!(source: @source, created_by: @user, approved: true)
+      SampleIndexer.index_records!(entry)
+
+      visit entry_path(entry)
 
       expect(page).to have_content("Create A Personal Observation")
 

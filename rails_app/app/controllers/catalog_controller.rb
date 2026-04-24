@@ -1,3 +1,4 @@
+require 'zip'
 # -*- encoding : utf-8 -*-
 #
 # THIS HAS NOTHING TO DO WITH 'CATALOGS'!
@@ -5,8 +6,9 @@
 # This is called 'CatalogController' because that's what Blacklight
 # requires us to call its search controller; it's not customizable
 # (because the name is tied to the views directory).
-class CatalogController < ApplicationController  
+class CatalogController < ApplicationController
   include Blacklight::Catalog
+  include BlacklightAdvancedSearch::Controller
 
   include CatalogControllerConfiguration
 
@@ -26,9 +28,10 @@ class CatalogController < ApplicationController
 
       @linked = @entry.manuscript ? @entry.manuscript.entries.map(&:id) : []
       if can? :show, entry
-        
+
         @linked = @entry.manuscript ? @entry.manuscript.entries.map(&:id) : []
         s = Sunspot.more_like_this(@entry) do
+          request_handler :select
           fields :title_search, :place_search, :author_search, :language_search
           # without :id, [collect entry_ids from manuscript]
           #minimum_term_frequency 3
@@ -36,13 +39,10 @@ class CatalogController < ApplicationController
           order_by :score, :desc
         end
         @suggestions = []#s.results.last(10)
-    
+
         super
-        respond_to do |format|
-          format.html
-        end
       else
-        render_access_denied      
+        render_access_denied
       end
     else
       render "not_found.html", status: 404
@@ -50,21 +50,30 @@ class CatalogController < ApplicationController
   end
 
   def index
+    (@response, @document_list) = search_results(params)
+
     respond_to do |format|
-      #format.rss { redirect_to feed_path(format: :rss) }
-      #format.atom {redirect_to feed_path(format: :rss) }
-      format.html { super }
-      format.json { super }
-      format.csv { 
+      format.html { store_preferred_view }
+      format.rss  { render :layout => false }
+      format.atom { render :layout => false }
+      format.json do
+        @presenter = Blacklight::JsonPresenter.new(@response,
+                                                   @document_list,
+                                                   facets_from_request,
+                                                   blacklight_config)
+      end
+      format.csv {
         if current_user.downloads.count >= 5
           render json: {error: 'at limit'}
           return
         else
           @d = Download.create({filename: "entries.csv", user_id: current_user.id})
-          CatalogController.new.delay.do_csv_search(params, search_params_logic, @d)
-          render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count} 
+          CatalogController.new.delay.do_csv_search(search_state.to_h, @d)
+          render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count}
         end
       }
+      additional_response_formats(format)
+      document_export_formats(format)
     end
   end
 
@@ -86,7 +95,7 @@ class CatalogController < ApplicationController
     elsif host != forwarded_host
       announcement = %q(
         <p><b>Original query paremeters </b></p>)
-      params.except(:controller, :action, :format).each do |key, value|
+      request.query_parameters.each do |key, value|
         announcement += "<p><b>#{key}:</b> #{value}</p>"
       end
       flash.now[:announce] = announcement.html_safe
@@ -98,20 +107,20 @@ class CatalogController < ApplicationController
     end
   end
 
-  def do_csv_search(params, search_params_logic, download)
+  def do_csv_search(params, download)
     # merge per-page params
 
     page = 1
-    
+
     objects = []
     filename = download.filename
     user = download.user
     id = download.id
     path = "tmp/#{id}_#{user}_#{filename}"
     headers = nil
-    
+
     loop do
-      (@response, @document_list) = search_results(params.merge({:page => page, :per_page => 100}), search_params_logic)
+      (@response, @document_list) = search_results(params.merge({:page => page, :per_page => 100}))
       #s = do_search(params.merge({:limit => 300, :offset => offset}))
       page += 1
       ids = @response.response["docs"].map { |doc| doc["entry_id"] }
@@ -124,12 +133,12 @@ class CatalogController < ApplicationController
           csv << headers
         end
         objects.each do |r|
-          csv << r.values 
+          csv << r.values
         end
       end
     end
 
-    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+    ::Zip::File.open("#{path}.zip", ::Zip::File::CREATE) do |zipfile|
       zipfile.add(filename, path)
     end
 
@@ -160,7 +169,7 @@ class CatalogController < ApplicationController
   end
 
   # override blacklight method to require that user is logged in
-  # 
+  #
   # this is a workaround to prevent bots from exploding the database with too many (saved) searches
   def find_or_initialize_search_session_from_params params
     if !current_user
@@ -195,6 +204,21 @@ class CatalogController < ApplicationController
     end
   end
 
+  def current_search_is_saveable?
+    return false unless current_user
+    if params[:search_field] != "advanced"
+      params[:q].present? || params[:f].present?
+    else
+      empty = true
+      advanced_query.config.search_fields.select do |key, field_def|
+        if params[key].present?
+          empty = false
+        end
+      end
+      !empty
+    end
+  end
+
   # Blacklight::RequestBuilders#solr_facet_params uses this method, if
   # defined, when querying solr and displaying the list of facet values.
   def facet_list_limit
@@ -216,20 +240,43 @@ class CatalogController < ApplicationController
   # param to try to get more results, blacklight will complain, since
   # the max is specified in the BL config.
   def search_results_as_csv_path
-    p = params.dup
+    p = search_state.to_h.dup
     p.delete "page"
     p["per_page"] = search_results_max
     p["format"] = "csv"
     sdbmss_search_action_path(p)
   end
 
-  helper_method :search_results_as_csv_path
+  helper_method :search_results_as_csv_path, :current_search_is_saveable?
+
+  def show_linking_tool_by_entry?
+    user_signed_in? && @document.present? && (entry = @document.model_object).present? && !entry.manuscript.present? && can?(:link, entry) && !entry.deprecated
+  end
+
+  def show_linking_tool_by_manuscript?
+    user_signed_in? && @document.present? && (entry = @document.model_object).present? && entry.manuscript.present? && can?(:link, entry.manuscript)
+  end
+
+  def show_verify_entry?
+    user_signed_in? && @document.present? && (entry = @document.model_object).present? && can?(:verify, entry)
+  end
+
+  def show_deprecate_entry?
+    user_signed_in? && @document.present? && (entry = @document.model_object).present? && can?(:deprecate, entry)
+  end
+
+  def show_entry_history_link?
+    user_signed_in? && @document.present? && (entry = @document.model_object).present?
+  end
+
+  helper_method :show_linking_tool_by_entry?, :show_linking_tool_by_manuscript?,
+                :show_verify_entry?, :show_deprecate_entry?, :show_entry_history_link?
 
   def render_bad_search
     respond_to do |format|
       format.html {
         flash[:error] = "Sorry, I don't understand your search."
-        redirect_to root_path        
+        redirect_to root_path
       }
       format.json {
         render json: { error: "Sorry, I don't understand your search." }

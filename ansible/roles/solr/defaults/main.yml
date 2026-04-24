@@ -1,5 +1,6 @@
 ---
-
+solr_image_name: "gitlab.library.upenn.edu/sdbm/sdbmss-solr"
+solr_image_tag: "main"
 solr_debug: false
 
 solr_host: "sdbm-dev.library.upenn.int"

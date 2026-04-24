@@ -1,4 +1,4 @@
-class AddTimestamps < ActiveRecord::Migration
+class AddTimestamps < ActiveRecord::Migration[4.2]
   def change
 
     # use Rails timestamp fieldname conventions in all tables

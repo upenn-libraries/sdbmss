@@ -1,6 +1,6 @@
 # I dropped the old comment join tables manually, so if there's ever a problem with migrations and these new tables springing up, that would be why
 
-class Comment < ActiveRecord::Base
+class Comment < ApplicationRecord
 
   include Notified
 

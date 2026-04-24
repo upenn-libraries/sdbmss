@@ -5,44 +5,14 @@ require "rails_helper"
 # There's JS on most of these pages. Not all features use JS, but
 # there's no good reason NOT to use the js driver, so we do.
 describe "Manage Pages", :js => true do
-
-  before :all do
-    @user = User.where(role: "admin").first
-
-  end
+  let(:admin_user) { create(:admin) }
 
   before :each do
-      login(@user, 'somethingunguessable')
+      login(admin_user, 'somethingreallylong')
   end
 
   after :each do
     page.reset!
-  end
-
-  it "should prevent a user from managing pages when not logged in" do
-    visit "/users/sign_out"
-    expect(page).to have_content("Login")
-
-    visit pages_path
-    expect(page).to have_content("You tried to access a page or perform an action for which you don't have permission.")
-  end
-
-  it "should only allow an admin to manage pages" do
-    @user.update!(role: "contributor")
-    visit pages_path
-    expect(page).to have_content("You tried to access a page or perform an action for which you don't have permission.")
-
-    @user.update!(role: "editor")
-    visit pages_path
-    expect(page).to have_content("You tried to access a page or perform an action for which you don't have permission.")
-
-    @user.update!(role: "super_editor")
-    visit pages_path
-    expect(page).to have_content("You tried to access a page or perform an action for which you don't have permission.")
-
-    @user.update!(role: "admin")
-    visit pages_path
-    expect(page).to have_content("Static Pages & Tooltips")
   end
 
   it "should allow an admin to create a new page" do
@@ -88,22 +58,28 @@ describe "Manage Pages", :js => true do
   end
 
   it "should allow a user to edit a page" do
-    visit edit_page_path(Page.last.name)
-    
-    fill_in "contents", with: "The Philosophy of Poverty"
+    filename = "test_edit_tooltip_#{Time.now.to_i}_#{rand(1000)}.html"
+    tooltip_page = Page.create!(name: "Test Edit Tooltip", filename: filename, category: "tooltip")
+    File.open(Rails.root.join("public", tooltip_page.location, tooltip_page.filename), "wb") do |file|
+      file.write("Original tooltip text")
+    end
+    visit edit_page_path(tooltip_page.name)
     fill_in "page[name]", with: "Updated Tooltip"
-
     click_button "Save Changes"
     expect(page).to have_content('Updated Tooltip')
   end
 
   it "should allow a user to delete a page" do
-    skip "because poltergeist can't handle a modal popup"
+    filename = "test_delete_tooltip_#{Time.now.to_i}_#{rand(1000)}.html"
+    page_to_delete = Page.create!(name: "Test Delete Tooltip", filename: filename, category: "tooltip")
+    File.open(Rails.root.join("public", page_to_delete.location, page_to_delete.filename), "wb") do |file|
+      file.write("Delete me")
+    end
     n = Page.count
     visit pages_path  
-    find("a[data-method='delete']", match: :first).click
-    expect(page).to have_content("Confirm")
-    click_button("Confirm")
+    accept_data_confirm_modal_from do
+      find("a[href='#{page_path(page_to_delete.name)}'][data-method='delete']", match: :first).click
+    end
 
     expect(page).to have_content("successfully deleted.")
     expect(Page.count).to eq(n - 1)

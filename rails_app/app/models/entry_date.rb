@@ -13,7 +13,7 @@ require 'chronic'
 # One such discussion can be found here:
 # http://qedcode.com/content/exclusive-end-dates
 #
-class EntryDate < ActiveRecord::Base
+class EntryDate < ApplicationRecord
 
   include CertaintyFlags
   include HasPaperTrail

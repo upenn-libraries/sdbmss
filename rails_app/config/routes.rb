@@ -2,8 +2,13 @@ Rails.application.routes.draw do
 
   mount Thredded::Engine => '/forum'
 
+  # In-browser mail inbox for development. Visit /letter_opener.
+  if Rails.env.development?
+    mount LetterOpenerWeb::Engine, at: '/letter_opener'
+  end
+
   get "/sparql-space", :to => "sparql#index"
-  
+
   root :to => "catalog#index"
 
   resources :accounts, except: [:show] do
@@ -42,7 +47,7 @@ Rails.application.routes.draw do
     }
   end
   resources :group_users
-  
+
   resources :dericci_records
   resources :dericci_games do
     collection {
@@ -70,7 +75,7 @@ Rails.application.routes.draw do
   get '/dla/schoenberg', to: 'catalog#legacy'
   get '/dla/schoenberg/:path', to: 'catalog#legacy'
   get '/dla/schoenberg/feeds/search.rss', to: 'catalog#legacy'
-  
+
   get '/bookmarks/export', to: 'bookmarks#export', as: 'export_bookmarks'
   get '/bookmarks/reload', to: 'bookmarks#reload', as: 'reload_bookmarks'
   resources :bookmarks do
@@ -89,17 +94,29 @@ Rails.application.routes.draw do
       get 'index', as: "downloads"
     }
     member {
-      get 'show' 
+      get 'show'
       get 'delete', action: :destroy
     }
   end
 
-  # it would be cleaner to have :entries here and merge
-  # CatalogController into EntriesController, but that doesn't work,
-  # because Rails won't be able to find the catalog view files from
-  # the blacklight gem.
-  blacklight_for :catalog
-  get "/advanced/", to: 'advanced#index'
+  mount Blacklight::Engine => '/'
+  mount BlacklightAdvancedSearch::Engine => '/'
+
+  get  "catalog/facet/:id",  to: "catalog#facet",       as: "catalog_facet"
+  get  "catalog/opensearch", to: "catalog#opensearch",  as: "opensearch_catalog"
+  get  "catalog/email",      to: "catalog#email"
+  post "catalog/email",      to: "catalog#email"
+  get  "catalog/sms",        to: "catalog#sms"
+  post "catalog/sms",        to: "catalog#sms"
+  get  "catalog/citation",   to: "catalog#citation"
+  get  "catalog",            to: "catalog#index",       as: "search_catalog"
+
+  resources :solr_document, only: [:show], path: "catalog", controller: "catalog" do
+    member { post "track" }
+  end
+  resources :catalog, only: [:show]
+
+  get "/advanced/", to: 'advanced#index', as: 'advanced_search'
 
   resources :comments do
     collection {
@@ -120,6 +137,7 @@ Rails.application.routes.draw do
   get '/dashboard/contributions'
   get '/dashboard/activity'
   get '/dashboard/forum'
+  get '/dashboard', to: redirect('/dashboard/contributions')
 
 #  resources :delayed_jobs, only: [:index]
 
@@ -128,7 +146,7 @@ Rails.application.routes.draw do
   resources :private_messages do
   end
 
-  # Note here that we point #show to BL's CatalogController
+  # Note here that we point #show to BL's CatalogController.
   resources :entries, except: [:show] do
     collection {
       post 'calculate_bounds'
@@ -244,7 +262,7 @@ Rails.application.routes.draw do
   # use 'username' as identifier here for nicer URLs
   # 10-26-2017: have to specifically allow '.' character or else it gets used as the URL format
   get 'profiles/:username' => 'profiles#show', :constraints =>{:username =>/.*/}, :as => 'profile'
-  
+
   resources :provenance do
     collection {
       get 'parse_observed_date'
@@ -277,6 +295,6 @@ Rails.application.routes.draw do
   devise_for :users, :controllers => { :registrations => "registrations" }
 
   # matches unmatched path - needs to remain as LAST route
-  
+
   match "*path", to: "errors#render_404", via: :all
 end

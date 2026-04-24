@@ -35,7 +35,7 @@ class ManageModelsController < ApplicationController
     model_class_lstr.pluralize
   end
 
-  def index    
+  def index
     #if params[:widescreen] == 'true'
       render :layout => 'widescreen'
     #end
@@ -65,7 +65,6 @@ class ManageModelsController < ApplicationController
       else
         result = @model.save
       end
-      @transaction_id = PaperTrail.transaction_id
       if result
         respond_to do |format|
           format.html {
@@ -128,7 +127,6 @@ class ManageModelsController < ApplicationController
   def do_update
     ActiveRecord::Base.transaction do
       @model.update_by(current_user, model_params)
-      @transaction_id = PaperTrail.transaction_id
     end
   end
 
@@ -145,7 +143,6 @@ class ManageModelsController < ApplicationController
               redirect_to names_path
             }
           end
-          @transaction_id = PaperTrail.transaction_id
         else
           respond_to do |format|
             format.json {

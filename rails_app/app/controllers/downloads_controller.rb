@@ -22,7 +22,7 @@ class DownloadsController < ApplicationController
       flash[:error] = "You cannot access another user's downloads."
       redirect_to root_path
     elsif @download.status == 0
-      render text: "in progress"
+      render plain: "in progress"
       #flash[:error] = "Download is still in progress."
       #redirect_to downloads_path
     elsif @download.status >= 1 && !params[:ping]
@@ -32,7 +32,7 @@ class DownloadsController < ApplicationController
       # adjust timing of this as appropriate
       @download.delay(run_at: 1.minutes.from_now).destroy
     else
-      render text: "done"
+      render plain: "done"
     end
   end
 end

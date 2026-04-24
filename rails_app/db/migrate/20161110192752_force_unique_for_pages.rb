@@ -1,4 +1,4 @@
-class ForceUniqueForPages < ActiveRecord::Migration
+class ForceUniqueForPages < ActiveRecord::Migration[4.2]
   def change
     remove_index :pages, :name
     remove_index :pages, :filename
