@@ -1,8 +1,12 @@
 development:
+  adapter: solr
   url: <%= ENV['SOLR_URL'] %>
 test:
+  adapter: solr
   url: <%= ENV['SOLR_TEST_URL'] || ENV['SOLR_URL'] %>
 staging:
+  adapter: solr
   url: <%= ENV['SOLR_URL'] %>
 production:
+  adapter: solr
   url: <%= ENV['SOLR_URL'] %>
