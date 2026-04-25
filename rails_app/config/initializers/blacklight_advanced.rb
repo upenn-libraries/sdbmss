@@ -9,19 +9,15 @@
 # Without this, removing a date constraint leaves the raw param in the URL,
 # causing the RedirectLegacyParamsFilter to recreate the clause.
 Rails.application.config.to_prepare do
-  Blacklight::ClausePresenter.prepend(Module.new do
+  Blacklight::ClausePresenter.class_eval do
     def remove_href(path = search_state)
       new_state = path.reset_search(clause: path.clause_params.except(key))
 
-      field_name = user_parameters[:field] || user_parameters['field']
-      if SDBMSS::DATE_FIELDS.include?(field_name)
-        cleaned = new_state.to_h.except(field_name)
-        view_context.search_action_path(cleaned)
-      else
-        view_context.search_action_path(new_state)
-      end
+      cleaned = new_state.to_h
+      SDBMSS::DATE_FIELDS.each { |f| cleaned.delete(f) }
+      view_context.search_action_path(cleaned)
     end
-  end)
+  end
 end
 
 # Override BAS 8.0 QueryParser#process_query to handle custom operators
