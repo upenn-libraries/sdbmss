@@ -1,6 +1,5 @@
-<%# OVERRIDE Blacklight 9.0.0: skip facet_constraints in the top bar — they render
-     in the sidebar "Selected Filters" card instead (sidebar_component override).
-     Use SDBMSS::StartOverButtonComponent instead of default.
+<%# OVERRIDE Blacklight 9.0.0: conditional constraints_heading (hide when facet-only,
+     no query term); SDBMSS::StartOverButtonComponent instead of default.
 %>
 <%= content_tag @tag || :div, id: @id, class: @classes do %>
   <% has_query = @search_state.query_param.present? || @search_state.clause_params.any? %>
@@ -14,7 +13,11 @@
     <%= query_constraints %>
   <% end %>
 
-  <% unless @start_over_component %>
+  <% if facet_constraints_area.present? %>
+    <% facet_constraints_area.each do |constraint| %>
+      <%= constraint %>
+    <% end %>
+  <% else %>
     <%= facet_constraints %>
   <% end %>
 
