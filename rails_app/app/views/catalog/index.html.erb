@@ -1,18 +1,27 @@
 <%#
-  OVERRIDE Blacklight 7.11: main column before sidebar for responsive layout; omits BL sitelinks
-    shared/sitelinks_search_box on the home view. Stock uses content_for(:sidebar).
+  OVERRIDE Blacklight 9.0.0: renders sidebar inline instead of via content_for(:sidebar)
+    so the layout falls through to col-md-12 and this template owns the column structure.
+    Keeps content (left) before sidebar (right); stock uses order-first/order-last to put
+    sidebar on the left.
 %>
+<% content_for(:head) do %>
+  <meta name="blacklight-search-storage" content="<%= blacklight_config.track_search_session.storage %>">
+<% end %>
+
 <div class="row">
-  <div id="content" class="<%= main_content_classes %>">
+  <section id="content" class="<%= main_content_classes %>" aria-label="<%= t('blacklight.search.documents.aria.search_results') %>">
     <% unless has_search_parameters? %>
       <%# if there are no input/search related params, display the "home" partial -%>
       <%= render 'home' %>
     <% else %>
       <%= render 'search_results' %>
     <% end %>
-  </div>
+  </section>
 
-  <div id="sidebar" class="<%= sidebar_classes %>">
-    <%= render 'search_sidebar' %>
-  </div>
+  <section id="sidebar" class="<%= sidebar_classes %>" aria-label="<%= t('blacklight.search.documents.aria.limit_search') %>">
+    <% conf = blacklight_config.view_config(document_index_view_type) %>
+    <%= render conf.sidebar_component.new(blacklight_config: blacklight_config,
+                                          response: @response,
+                                          view_config: conf) %>
+  </section>
 </div>
