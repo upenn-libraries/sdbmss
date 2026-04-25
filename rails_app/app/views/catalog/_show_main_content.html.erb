@@ -1,11 +1,49 @@
 <%#
-  OVERRIDE Blacklight 9.0.0: renders the show page using the app's custom _show_header and _show
-    partials instead of BL9's DocumentComponent.
+  OVERRIDE Blacklight 9.0.0: Entry-specific heading, action buttons, and entries/show body
+    rendered through DocumentComponent header + body slots.
 %>
-<% presenter = document_presenter(@document) %>
-<%= render presenter.view_config.document_header_component.new(document: @document, search_context: @search_context, search_session: search_session) %>
-<%= render 'show_header', document: @document %>
-<% @page_title = t('blacklight.search.show.title', document_title: document_presenter(@document).html_title, application_name: application_name).html_safe %>
+<%# locals: (presenter: nil) %>
+<% presenter ||= document_presenter(@document) %>
+<% entry = @document.model_object %>
+
+<% @page_title = t('blacklight.search.show.title', document_title: presenter.html_title, application_name: application_name).html_safe %>
 <% content_for(:head) { render_link_rel_alternates } %>
 
-<%= render partial: 'show', locals: { document: @document } %>
+<%= render presenter.view_config.document_header_component.new(document: @document, search_context: @search_context, search_session: search_session) %>
+
+<% document_component = presenter.view_config.document_component -%>
+<%= render document_component.new(id: 'document', document: presenter, component: :div, show: true) do |component| %>
+  <% component.with_header do %>
+    <div class="row">
+      <div class="col-sm-6">
+        <h1 itemprop="name">
+          <%= entry.public_id %>
+        </h1>
+      </div>
+      <div class="col-sm-6 text-end">
+        <a class='btn btn-outline-secondary' id="emailLink" data-blacklight-modal="trigger" href="/catalog/email?id=Entry <%= entry.id %>">Email</a>
+        <a class='btn btn-outline-secondary' id="smsLink" data-blacklight-modal="trigger" href="/catalog/sms?id=Entry <%= entry.id %>">SMS</a>
+        <a class='btn btn-outline-secondary' id="citationLink" data-blacklight-modal="trigger" href="/catalog/citation?id=Entry <%= entry.id %>">Cite</a>
+      </div>
+    </div>
+  <% end %>
+
+  <% component.with_body do %>
+    <% content_for :head do %>
+      <% if user_signed_in? %>
+      <script type="text/javascript">
+       $(document).ready(function() {
+           $(document).on("click", ".entry-deprecate-link", function (event) {
+               SDBM.openDeprecateModal(<%= entry.id %>, <%= entry.superceded_by_id || 'null' %>, function() {
+                   window.location = "/entries/" + <%= entry.id %>;
+               });
+               return false;
+           });
+       });
+      </script>
+      <% end %>
+    <% end %>
+    <%= render partial: 'entries/show', locals: {entry: entry} %>
+    <%= render partial: 'shared/deprecate_entry_modal' %>
+  <% end %>
+<% end %>
