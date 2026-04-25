@@ -1,8 +1,9 @@
 <%#
-  OVERRIDE Blacklight 8: renders the show page using the app's custom _show_header and _show
-    partials instead of BL8's DocumentComponent. Stock BL8 renders DocumentComponent with
-    no partials configured.
+  OVERRIDE Blacklight 9.0.0: renders the show page using the app's custom _show_header and _show
+    partials instead of BL9's DocumentComponent.
 %>
+<% presenter = document_presenter(@document) %>
+<%= render presenter.view_config.document_header_component.new(document: @document, search_context: @search_context, search_session: search_session) %>
 <%= render 'show_header', document: @document %>
 <% @page_title = t('blacklight.search.show.title', document_title: document_presenter(@document).html_title, application_name: application_name).html_safe %>
 <% content_for(:head) { render_link_rel_alternates } %>

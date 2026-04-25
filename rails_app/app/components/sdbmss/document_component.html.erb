@@ -6,7 +6,7 @@
     <div class='row'>
       <div class="col-10">
           <span class='h4'>
-            <a href="<%= url_for entry %>" data-context-href="<%= session_tracking_path(@document, counter: @counter, search_id: current_search_session.try(:id)) %>"><%= entry.public_id %></a>
+            <a href="<%= url_for entry %>" data-context-href="<%= session_tracking_path(@document, counter: @counter, search_id: current_search_session.try(:id), document_id: @document.id, per_page: params[:per_page]) %>"><%= entry.public_id %></a>
             <% if !entry.approved %>
               <small class="text-muted document-disclaimer"><i class="fas fa-fw fa-exclamation-triangle"></i> Unapproved</small>
             <% end %>
