@@ -1,6 +1,31 @@
 <div id="search-navbar" class="navbar navbar-light navbar-expand-md" role="navigation">
   <div class="container w-100">
-    <%= render 'catalog/search_form' %>
+    <div class="navbar-header catalog-search-form w-100">
+      <div class="row w-100">
+        <div class="col-11 col-md-12">
+          <%= render SDBMSS::SearchBarComponent.new(
+                url: sdbmss_search_action_path,
+                params: search_state.params_for_search.except(:q, :search_field, :qt),
+                q: params[:q],
+                classes: %w[form-inline clearfix w-100],
+                form_options: { style: 'width: 100%;' }
+              ) do |component| %>
+            <% component.with_search_button do %>
+              <button type="submit" class="btn btn-primary search-btn align-items-center" id="search">
+                <span class="submit-search-text"><%= t('blacklight.search.form.submit') %></span>
+                <i class="fas fa-fw fa-search ms-1"></i>
+              </button>
+              <a href="<%= main_app.advanced_search_path(request.query_parameters) %>" class="btn btn-light advanced_search">Advanced</a>
+            <% end %>
+          <% end %>
+        </div>
+        <div class="col-1 text-center show-mobile" style="padding: 0px">
+          <a class='btn btn-blank navbar-toggler' data-bs-toggle="collapse" data-bs-target="#myNavbar">
+            <i class="fas fa-fw fa-ellipsis-h"></i>
+          </a>
+        </div>
+      </div>
+    </div>
     <div class="collapse navbar-collapse catalog-search-info" id="myNavbar">
       <ul class="nav navbar-nav ms-auto">
         <% if user_signed_in? %>

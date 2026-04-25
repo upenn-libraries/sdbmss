@@ -43,7 +43,21 @@
         </h3>
         <div class="card card-search">
             <div class="card-body">
-                <%= render partial: "search_form" %>
+                <%= render SDBMSS::SearchBarComponent.new(
+                      url: sdbmss_search_action_path,
+                      params: search_state.params_for_search.except(:q, :search_field, :qt),
+                      q: params[:q],
+                      classes: %w[form-inline clearfix w-100],
+                      form_options: { style: 'width: 100%;' }
+                    ) do |component| %>
+                  <% component.with_search_button do %>
+                    <button type="submit" class="btn btn-primary search-btn align-items-center" id="search">
+                      <span class="submit-search-text"><%= t('blacklight.search.form.submit') %></span>
+                      <i class="fas fa-fw fa-search ms-1"></i>
+                    </button>
+                    <a href="<%= main_app.advanced_search_path(request.query_parameters) %>" class="btn btn-light advanced_search">Advanced</a>
+                  <% end %>
+                <% end %>
             </div>
         </div>
     </div>

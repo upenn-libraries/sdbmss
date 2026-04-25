@@ -5,6 +5,8 @@ en:
       search_history: 'Search History'
     search:
       form:
+        search:
+          placeholder: "Search database..."
         search_field:
           label: "Search Database"
   blacklight_advanced_search:
