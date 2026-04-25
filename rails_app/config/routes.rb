@@ -100,7 +100,8 @@ Rails.application.routes.draw do
   mount Blacklight::Engine => '/'
   mount BlacklightAdvancedSearch::Engine => '/'
 
-  get  "catalog/facet/:id",  to: "catalog#facet",       as: "catalog_facet"
+  get  "catalog/facet/:id",          to: "catalog#facet",  as: "catalog_facet"
+  get  "catalog/facet_suggest/:id",  to: "catalog#facet",  as: "catalog_facet_suggest", defaults: { only_values: true }
   get  "catalog/opensearch", to: "catalog#opensearch",  as: "opensearch_catalog"
   get  "catalog/email",      to: "catalog#email"
   post "catalog/email",      to: "catalog#email"

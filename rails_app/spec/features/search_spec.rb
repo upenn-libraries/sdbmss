@@ -110,20 +110,17 @@ describe "Blacklight Search", :js => true do
     click_button('search')
     expect(page).to have_selector("#documents")
 
-    find(:css, ".more_facets_link a", match: :first).click
+    find(:css, ".more_facets a", match: :first).click
 
-    expect(page).to have_content "Browsing facet: Author"
+    expect(page).to have_selector(".modal-title")
+    expect(page).to have_content "Author"
+    expect(page).to have_content "Filter authors"
 
-    find(:css, ".az", match: :first).click
-
-    expect(page).to have_content "Browsing facet: Author"
-    expect(page).to have_content "Prefix"
-
-    click_link("D")
-
-    expect(page).to have_content "Browsing facet: Author"
-    expect(page).not_to have_content "Augustine"
-    expect(page).to have_content "Dokeianos"
+    fill_in "facet_suggest_author", with: "augustine"
+    within ".modal" do
+      expect(page).to have_selector("ul.facet-values li", count: 1)
+      expect(page).to have_selector("ul.facet-values li", text: /Augustine/)
+    end
   end
 
   # this test disabled because we removed the search field dropdown
