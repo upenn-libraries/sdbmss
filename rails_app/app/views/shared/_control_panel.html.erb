@@ -12,12 +12,12 @@
                   <%= current_user.to_s %>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a href="<%= main_app.profile_path(username: current_user.username) %>"><span class="fas fa-fw fa-user"></span> My Profile</a></li>
-                  <li><a href="<%= main_app.private_messages_path %>"><span class="fas fa-fw fa-envelope"></span> My Messages</a></li>
-                  <li><%= link_to main_app.edit_user_registration_path do %> <span class="fas fa-fw fa-cog"></span> My Settings <% end %></li>
+                  <li><a class="dropdown-item" href="<%= main_app.profile_path(username: current_user.username) %>"><span class="fas fa-fw fa-user"></span> My Profile</a></li>
+                  <li><a class="dropdown-item" href="<%= main_app.private_messages_path %>"><span class="fas fa-fw fa-envelope"></span> My Messages</a></li>
+                  <li><%= link_to main_app.edit_user_registration_path, class: "dropdown-item" do %> <span class="fas fa-fw fa-cog"></span> My Settings <% end %></li>
                   <% if current_user && !current_user.to_s.blank? %>
                     <li>
-                      <%= link_to(main_app.destroy_user_session_path, :onclick => "localStorage.clear();") do %>
+                      <%= link_to(main_app.destroy_user_session_path, class: "dropdown-item", onclick: "localStorage.clear();") do %>
                         <span class="fas fa-fw fa-sign-out-alt"></span> <%= t('blacklight.header_links.logout') %>
                       <% end %>
                     </li>
@@ -49,16 +49,16 @@
               <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown"><span class="fas fa-fw fa-inbox"></span> Projects</a>
               <ul class="dropdown-menu" role="menu">
                 <li>
-                  <a href="/dericci_games"><span class="fas fa-fw fa-chess-rook"></span> De Ricci Name Game</a>
+                  <a class="dropdown-item" href="/dericci_games"><span class="fas fa-fw fa-chess-rook"></span> De Ricci Name Game</a>
                 </li>
                 <li>
-                  <a href="/dericci_records"><span class="fas fa-fw fa-list"></span> De Ricci Archive</a>
+                  <a class="dropdown-item" href="/dericci_records"><span class="fas fa-fw fa-list"></span> De Ricci Archive</a>
                 </li>
                 <li>
-                  <a href="/names/problems"><span class="fas fa-fw fa-exclamation-triangle"></span> Problem Names</a>
+                  <a class="dropdown-item" href="/names/problems"><span class="fas fa-fw fa-exclamation-triangle"></span> Problem Names</a>
                 </li>
                 <li>
-                  <a href="/sparql-space"><span class="fas fa-fw fa-certificate"></span> <b>SPARQL</b> Endpoint</a>
+                  <a class="dropdown-item" href="/sparql-space"><span class="fas fa-fw fa-certificate"></span> <b>SPARQL</b> Endpoint</a>
                 </li>
               </ul>
             </li>
@@ -79,10 +79,10 @@
               <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown"><span class="fas fa-fw fa-plus"></span> Add New Entry</a>
               <ul class="dropdown-menu" role="menu">
                 <li>
-                  <a href="/entries/new">From a Source</a>
+                  <a class="dropdown-item" href="/entries/new">From a Source</a>
                 </li>
                 <li>
-                  <%= link_to "Based on Personal Observation", main_app.new_source_path({create_entry: 1, source_type: 4}) %>
+                  <%= link_to "Based on Personal Observation", main_app.new_source_path({create_entry: 1, source_type: 4}), class: "dropdown-item" %>
                 </li>
               </ul>
             </li>
@@ -132,13 +132,13 @@
             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown"><span class="fas fa-fw fa-inbox"></span> Projects</a>
             <ul class="dropdown-menu" role="menu">
               <li>
-                <a href="/dericci_games"><span class="fas fa-fw fa-chess-rook"></span> De Ricci Name Game</a>
+                <a class="dropdown-item" href="/dericci_games"><span class="fas fa-fw fa-chess-rook"></span> De Ricci Name Game</a>
               </li>
               <li>
-                <a href="/dericci_records"><span class="fas fa-fw fa-list"></span> De Ricci Archive</a>
+                <a class="dropdown-item" href="/dericci_records"><span class="fas fa-fw fa-list"></span> De Ricci Archive</a>
               </li>
               <li>
-                <a href="/names/problems"><span class="fas fa-fw fa-exclamation-triangle"></span> Problem Names</a>
+                <a class="dropdown-item" href="/names/problems"><span class="fas fa-fw fa-exclamation-triangle"></span> Problem Names</a>
               </li>
             </ul>
           </li>

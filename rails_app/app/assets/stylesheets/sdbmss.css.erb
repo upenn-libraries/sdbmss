@@ -2064,20 +2064,8 @@ so that gray backdrop shvows up correctly */
   z-index: 100;
   height: calc(100vh - 50px);
   white-space: normal;
-  height: calc(100vh - 50px);
   overflow-x: hidden;
-  -webkit-transition-property: width;
-  -moz-transition-property: width;
-  transition-property: width;
-  -webkit-transition-duration: 0.35s;
-  -moz-transition-duration: 0.35s;
-  transition-duration: 0.35s;
-  -webkit-transition-timing-function: linear;
-  -moz-transition-timing-function: linear;
-  transition-timing-function: linear;
-  -webkit-transition-delay: 0s;
-  -moz-transition-delay: 0s;
-  transition-delay: 0s;
+  transition: width 0.35s linear;
 }
 #control-panel .form-label {
   color: white;
@@ -2089,9 +2077,6 @@ so that gray backdrop shvows up correctly */
   overflow-y: auto;
   overflow-x: hidden;
   text-overflow: ellipsis;
-}
-#control-panel.collapsing {
-  /*height: auto;*/
 }
 #control-panel.collapse {
   width: 0px;
@@ -2145,12 +2130,6 @@ so that gray backdrop shvows up correctly */
   box-shadow: none;
   outline: none;
 }
-
-/*
-#control-panel .collapsing.width {
-  width: 0;
-  height: auto;
-}*/
 
 /* changes the direction of the chevron depending on collapsed[in/out] */
 #control-panel > .collapse + #control-panel-button .fa-chevron-left,
@@ -2493,6 +2472,9 @@ Private Message Styling
   background-color: #374f73;
   border-radius: 0px;
   border: none;
+}
+#control-panel .card-header .dropdown-menu {
+  background-color: #4d6b98;
 }
 #control-panel .nav .dropdown-menu {
   position: relative !important;
