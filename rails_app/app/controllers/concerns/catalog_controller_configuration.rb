@@ -21,6 +21,9 @@ module CatalogControllerConfiguration
 
       config.search_builder_class = SDBMSS::Blacklight::SearchBuilder
 
+      config.autocomplete_enabled = false
+      config.autocomplete_path = 'suggest'
+
       # BL7 collection tools (sort dropdown, per-page dropdown)
       config.add_results_collection_tool(:sort_widget)
       config.add_results_collection_tool(:per_page_widget)

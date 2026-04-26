@@ -47,6 +47,7 @@
                       url: sdbmss_search_action_path,
                       params: search_state.params_for_search.except(:q, :search_field, :qt),
                       q: params[:q],
+                      autocomplete_path: suggest_index_catalog_path,
                       classes: %w[form-inline clearfix w-100],
                       form_options: { style: 'width: 100%;' }
                     ) do |component| %>

@@ -21,6 +21,7 @@
 //
 // Required by Blacklight
 //= require blacklight
+//= require auto-complete-element
 
 //= require bootstrap-tour.min
 //= require sdbm

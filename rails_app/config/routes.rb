@@ -100,21 +100,16 @@ Rails.application.routes.draw do
   mount Blacklight::Engine => '/'
   mount BlacklightAdvancedSearch::Engine => '/'
 
-  get  "catalog/facet/:id",          to: "catalog#facet",  as: "catalog_facet"
-  get  "catalog/facet_suggest/:id",  to: "catalog#facet",  as: "catalog_facet_suggest", defaults: { only_values: true }
-  get  "catalog/opensearch", to: "catalog#opensearch",  as: "opensearch_catalog"
-  get  "catalog/email",      to: "catalog#email"
-  post "catalog/email",      to: "catalog#email"
-  get  "catalog/sms",        to: "catalog#sms"
-  post "catalog/sms",        to: "catalog#sms"
-  get  "catalog/citation",   to: "catalog#citation"
-  get  "catalog",            to: "catalog#index",       as: "search_catalog"
+  concern :searchable, Blacklight::Routes::Searchable.new
+  concern :exportable, Blacklight::Routes::Exportable.new
 
-  resources :solr_document, only: [:show], path: "catalog", controller: "catalog" do
-    member { post "track" }
+  resource :catalog, only: [], as: 'catalog', path: '/catalog', controller: 'catalog' do
+    concerns :searchable
+    concerns :exportable
   end
-  resources :catalog, only: [:show] do
-    member { post "track" }
+
+  resources :solr_document, only: [:show], path: '/catalog', controller: 'catalog' do
+    concerns :exportable
   end
 
   get "/advanced/", to: 'catalog#advanced_search', as: 'advanced_search'
