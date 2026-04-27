@@ -90,6 +90,10 @@ describe "Blacklight Advanced Search", :js => true do
 
 
   it "should display list of Entries created by a given user" do
+    matching_entry = create(:advanced_search_entry, title: "Advanced Added By Match", created_by: @user)
+    other_user_entry = create(:advanced_search_entry, title: "Advanced Added By Excluded")
+    SampleIndexer.index_records!(matching_entry, other_user_entry)
+
     visit advanced_search_path
 
     search_fields = page.all(".advanced-search-field input[type=text]")
@@ -98,7 +102,7 @@ describe "Blacklight Advanced Search", :js => true do
 
     find_by_id('advanced-search-submit').click
 
-    expect(page).to have_content(@user.entries.last.public_id)
+    expect_result_membership(included: matching_entry, excluded: other_user_entry)
   end
 
   it "should do an advanced search using Title + Author (ANY)" do

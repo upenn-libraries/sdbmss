@@ -233,8 +233,10 @@ module DataEntryHelpers
     first(".save-button").click
 
     expect(page).to have_content("Warning: This entry has not been approved yet.")
-    expect(page).to have_content(Entry.last.public_id)
+    entry = Entry.find_by!(source: @source, catalog_or_lot_number: '123')
+    expect(page).to have_content(entry.public_id)
     #expect(find(".modal-title", visible: true)).to have_content("Successfully saved")
+    entry
   end
 
   def verify_entry(entry)

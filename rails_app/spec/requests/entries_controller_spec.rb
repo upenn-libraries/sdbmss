@@ -250,8 +250,14 @@ RSpec.describe "EntriesController", type: :request do
     end
 
     it "redirects to edit page for HTML format" do
+      existing_entry_ids = Entry.pluck(:id)
+
       post entries_path, params: { source_id: source.id }
-      new_entry = Entry.last
+
+      created_entries = Entry.where(source: source).where.not(id: existing_entry_ids)
+      expect(created_entries.count).to eq(1)
+
+      new_entry = created_entries.first
       expect(response).to redirect_to(edit_entry_path(new_entry))
     end
   end

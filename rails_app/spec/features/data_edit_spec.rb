@@ -259,7 +259,7 @@ describe "Data entry", :js => true do
     end
 
     it "should disallow saving on Edit Page when another change was made" do
-      entry = Entry.last
+      entry = create(:edit_test_entry, :with_titles, source: @source, created_by: @user)
 
       visit edit_entry_path :id => entry.id
 
@@ -279,7 +279,7 @@ describe "Data entry", :js => true do
     end
 
     it "should disallow saving on Edit Page when another change was made (variation 1)" do
-      entry = Entry.last
+      entry = create(:edit_test_entry, source: @source, created_by: @user)
 
       visit edit_entry_path :id => entry.id
 
@@ -300,7 +300,7 @@ describe "Data entry", :js => true do
     end
 
     it "should disallow saving on Edit Page when another change was made (variation 2)" do
-      entry = Entry.last
+      entry = create(:edit_test_entry, source: @source, created_by: @user)
 
       visit edit_entry_path :id => entry.id
 
