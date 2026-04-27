@@ -147,7 +147,9 @@ class CatalogController < ApplicationController
     headers = nil
 
     loop do
-      svc = SDBMSS::Blacklight::SearchService.new(config: blacklight_config, user_params: params.merge({:page => page, :per_page => 100}))
+      search_params = params.merge(page: page, per_page: 100)
+      state = Blacklight::SearchState.new(search_params, blacklight_config)
+      svc = SDBMSS::Blacklight::SearchService.new(config: blacklight_config, search_state: state)
       @response = svc.search_results
       #s = do_search(params.merge({:limit => 300, :offset => offset}))
       page += 1
