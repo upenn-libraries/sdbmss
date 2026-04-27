@@ -93,14 +93,23 @@ describe "Blacklight Search", :js => true do
   end
 
   it "should display results for an Author facet", :solr do
-    SampleIndexer.index_records!(author_facet_corpus)
+    entries = author_facet_corpus
+    augustine_entry = entries.first
+    bernard_entry = entries.second
+    SampleIndexer.index_records!(entries)
 
     visit root_path
     click_button('search')
     expect(page).to have_selector("#documents")
 
-    find(:css, "#facet-author .facet-values a", match: :first).click
+    within("#facet-author") do
+      click_link("Augustine")
+    end
+
     expect(page).to have_selector("#documents")
+    expect(page).to have_content("Augustine")
+    expect(page).to have_link(augustine_entry.public_id)
+    expect(page).not_to have_link(bernard_entry.public_id)
   end
 
   it "should display list of Author facet values", :solr do
