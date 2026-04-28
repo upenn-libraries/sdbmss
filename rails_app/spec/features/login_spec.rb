@@ -52,7 +52,7 @@ describe "Login", :js => true do
       click_button "Log in"
 
       expect(page).to have_content("New SDBM accounts are inactive by default.")
-      expect(page).not_to have_content("Signed in successfully")
+      expect(current_path).not_to eq(dashboard_contributions_path)
     end
   end
 

@@ -6,7 +6,7 @@ describe "Manage Users", :js => true do
   let(:admin_user) { create(:admin) }
 
   before :each do
-    login(admin_user, 'somethingreallylong')
+    fast_login(admin_user)
   end
 
   after :each do

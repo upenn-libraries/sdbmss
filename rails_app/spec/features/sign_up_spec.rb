@@ -38,7 +38,7 @@ describe "Sign up / Edit Profile", :js => true do
       password: 'somethingunguessable'
     )
 
-    login(user, "somethingunguessable")
+    fast_login(user)
 
     visit edit_user_registration_path
     fill_in "user_email", with: "newemail@newemail.com"

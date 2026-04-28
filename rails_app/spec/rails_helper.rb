@@ -25,6 +25,7 @@ require 'factory_bot_rails'
 require 'warden/test/helpers'
 
 require 'capybara-screenshot/rspec'
+require 'test_prof/recipes/rspec/let_it_be'
 
 Dir[Rails.root.join('spec/support/**/*.rb')].sort.each { |f| require f }
 
@@ -156,6 +157,12 @@ RSpec.configure do |config|
 
   config.before(:each) do |example|
     SharedConnection.connection = ActiveRecord::Base.connection if example.metadata[:js]
+
+    # Clear the AR query cache between JS examples. SharedConnection reuses the
+    # same DB connection across tests, so rolled-back transactions can leave
+    # stale query-cache entries (e.g. SourceType.auction_catalog → nil) that
+    # cause seed-data lookups to return nil in subsequent tests.
+    ActiveRecord::Base.connection.clear_query_cache if example.metadata[:js]
 
     # Replace the Sunspot session with a fresh ThreadLocalSessionProxy so that
     # every thread (test thread AND Puma server thread) gets new RSolr

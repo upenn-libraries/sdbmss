@@ -28,7 +28,7 @@ describe "Date Entry Workflow", :js => true do
 
   before :each do
     @user = admin_user
-    login(@user, 'somethingreallylong')
+    fast_login(@user)
   end
 
   it "should update 'Date For Search' with parsed DATE information on change to 'Date As Recorded'" do

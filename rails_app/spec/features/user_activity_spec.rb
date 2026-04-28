@@ -5,7 +5,7 @@ describe "User Activity", :js => true do
   let(:entry_id) { 10 }
 
   before :each do
-    login(admin_user, 'somethingreallylong')
+    fast_login(admin_user)
   end
 
   def perform_activity(id)
