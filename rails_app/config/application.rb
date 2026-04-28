@@ -18,6 +18,7 @@ module SDBMSS
     config.active_record.yaml_column_permitted_classes = [
       ActionController::Parameters,
       ActiveSupport::HashWithIndifferentAccess,
+      Set,
       Symbol
     ]
 
