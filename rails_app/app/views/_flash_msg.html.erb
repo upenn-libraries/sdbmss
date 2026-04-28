@@ -10,7 +10,7 @@
       end
     -%>
     <% if flash[type] %>
-      <div class="alert <%=alert_class %>"><%= flash[type] %>
+      <div class="alert alert-dismissible <%=alert_class %>"><%= flash[type] %>
         <% if type != :announce %>
          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         <% end %>
