@@ -1,4 +1,9 @@
 en:
+  blacklight:
+    advanced_search:
+      page_title: "More Search Options - %{application_name}"
+      form:
+        title: More Search Options
   blacklight_advanced_search:
     all: all
     any: any

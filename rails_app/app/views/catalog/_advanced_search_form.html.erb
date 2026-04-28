@@ -1,34 +1,10 @@
 <%#
-  OVERRIDE Blacklight Advanced Search v6.4.1 to comment out the constraints display
-    and remove the limit-criteria section
+  OVERRIDE Blacklight 9.0.0 to render SDMBSS::AdvancedSearchFormComponent
 %>
 
-  <!-- search context display disabled -->
-
-<%= form_tag search_catalog_path, :class => 'advanced form-horizontal', :method => :get do  %>
-
-  <%= render Blacklight::HiddenSearchStateComponent.new(params: advanced_search_context) %>
-
-  <div class="input-criteria">
-
-      <div class="query-criteria">
-        <h3 class="query-criteria-heading">
-          <%= t('blacklight_advanced_search.form.query_criteria_heading_html', :select_menu =>  select_menu_for_field_operator ) %>
-        </h3>
-
-        <div id="advanced_search">
-          <%= render 'advanced_search_fields' %>
-        </div>
-      </div>
-
-      <!-- only difference from blacklight_advanced_search's stock template is that
-      we cut out the <div class="limit-criteria"> containing facets -->
-  </div>
-
-  <hr>
-
-  <div class="sort-submit-buttons clearfix">
-    <%= render 'advanced_search_submit_btns' %>
-  </div>
-
-<% end %>
+<%= render(SDBMSS::AdvancedSearchFormComponent.new(
+      url: search_catalog_path,
+      classes: ['advanced'],
+      params: search_state.params_for_search.except(:qt),
+      response: @response
+    )) %>

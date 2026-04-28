@@ -34,16 +34,24 @@ $(document).ready(function() {
 </script>
 <% end %>
 
-<div class="compress-whitespace">
+<%= form_tag @url, class: @classes.join(' '), method: @method do %>
 
-<!-- this is meant to handle populating the fields when there are multiple keywords for the same field.  LIMIT is used because there could be only one field, but many search terms -->
+  <%= render Blacklight::HiddenSearchStateComponent.new(params: hidden_search_state_params) %>
+
+  <div class="input-criteria">
+
+      <div class="query-criteria">
+        <h3 class="query-criteria-heading">
+          <%= t('blacklight_advanced_search.form.query_criteria_heading_html', select_menu: default_operator_menu) %>
+        </h3>
+
+        <div id="advanced_search">
+          <div class="compress-whitespace">
 
 <% limit = 0 %>
-<% prepopulated_search_fields_for_advanced_search(5, is_numeric: false).each do |fieldstruct| %>
-    <%
-    if fieldstruct.value.kind_of? Array
-        fieldstruct.value.each do |val|
-    %>
+<% text_field_rows.each do |fieldstruct| %>
+    <% if fieldstruct.value.kind_of? Array %>
+        <% fieldstruct.value.each do |val| %>
     <div class="form-group row advanced-search-field">
         <div class="col-sm-7">
             <input class="form-control" name="" type="text" value="<%= val %>"/>
@@ -76,7 +84,7 @@ $(document).ready(function() {
             </select>
         </div>
     </div>
-<%  
+<%
         limit += 1
         break if limit >= 5
     end
@@ -84,8 +92,8 @@ end
 %>
 
 <h3 class="query-criteria-heading">Numeric Fields:</h3>
-    
-<% prepopulated_search_fields_for_advanced_search(5, is_numeric: true).each do |fieldstruct| %>
+
+<% numeric_field_rows.each do |fieldstruct| %>
 <div class="form-group row advanced-search-field">
     <input type="hidden" name="" value=""/>
     <div class="col-sm-3">
@@ -107,4 +115,26 @@ end
 
 <%- end -%>
 
-</div>
+          </div>
+        </div>
+      </div>
+
+  </div>
+
+  <hr>
+
+  <div class="sort-submit-buttons clearfix">
+      <div class="sort-buttons float-start">
+        <%= label_tag(:sort, t('blacklight_advanced_search.form.sort_label'), class: "form-label") %>
+        <%= sort_fields_select %>
+        <%= hidden_field_tag(:search_field, blacklight_config.advanced_search[:url_key]) %>
+      </div>
+
+      <div class="submit-buttons float-end">
+        <%= link_to t('blacklight_advanced_search.form.start_over'), helpers.advanced_search_path, class: "btn btn-outline-secondary advanced-search-start-over" %>
+
+        <%= submit_tag t('blacklight_advanced_search.form.search_btn'), class: 'btn btn-primary advanced-search-submit', id: "advanced-search-submit", name: nil %>
+      </div>
+  </div>
+
+<% end %>
