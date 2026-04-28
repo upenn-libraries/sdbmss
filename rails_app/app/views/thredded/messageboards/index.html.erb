@@ -10,7 +10,8 @@
       <% if group.name.present? %>
         <h3><%= group.name %></h3>
       <% end %>
-      <%= render group.messageboards %>
+      <%= render partial: 'thredded/messageboards/messageboard',
+                 collection: group.messageboards %>
     <% end %>
 
     <div class="thredded--messageboards--actions">
