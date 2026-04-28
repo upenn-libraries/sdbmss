@@ -3,6 +3,8 @@ class DericciRecordsController < ApplicationController
   before_action :set_model, only: [:show, :edit, :update, :destroy]
   load_and_authorize_resource :only => [:edit, :update]
 
+  FIELD_ALLOWLIST = %w[name senate_house other_info place dates url].freeze
+
   def index
     #flash.now[:alert] = "<span class='lead'>Warning!</span> The server hosting the De Ricci Digitized Archive is not available.  Our records and workspace will not function correctly.".html_safe
     @count = params[:limit] ? params[:limit].to_i : 20
@@ -10,9 +12,9 @@ class DericciRecordsController < ApplicationController
     letter = params[:letter] || ""
     @offset = @page * @count
     term = params[:term] || ""
-    field = params[:field] || "name"
+    field = FIELD_ALLOWLIST.include?(params[:field]) ? params[:field] : "name"
     type = params[:type] || ''
-    @records = DericciRecord.where("#{field} LIKE '%#{term}%'").where("name LIKE '#{letter}%'").where("senate_house like ?", "%#{type}%")
+    @records = DericciRecord.where("#{field} LIKE ?", "%#{term}%").where("name LIKE ?", "#{letter}%").where("senate_house like ?", "%#{type}%")
     if params[:verified_id]
       @records = @records.includes(:dericci_links).where(:dericci_links => {:approved => [nil, false]})
     end

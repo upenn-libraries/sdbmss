@@ -91,7 +91,7 @@ class Name < ApplicationRecord
       if self.class.unscoped.exists?(viaf_id: name_obj.viaf_id, deleted: true)
         errors[:viaf_id] << " is already used by a record that has been deleted"
       elsif (existing_name = self.class.find_by(viaf_id: name_obj.viaf_id)).present? && name_obj.id != existing_name.id
-        errors[:viaf_id] << " is already used by record <a href='/names/#{existing_name.id}' target='_blank'>#{existing_name.name}</a>".html_safe
+        errors[:viaf_id] << " is already used by record <a href='/names/#{existing_name.id}' target='_blank'>#{ERB::Util.h(existing_name.name)}</a>".html_safe
       else
         name_obj.viaf_id = name_obj.viaf_id.strip unless name_obj.viaf_id.nil?
       end
