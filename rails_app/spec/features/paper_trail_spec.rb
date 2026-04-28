@@ -26,7 +26,16 @@ describe "Paper trail", :js => true do
 
   context "when user is logged in" do
 
-    let(:entry) { Entry.last }
+    let(:entry) do
+      create(
+        :edit_entry_with_titles,
+        source: @source,
+        created_by: @user,
+        titles: ['Opera minora'],
+        include_author: false,
+        folios: 212
+      )
+    end
 
     before :each do
       fast_login(@user)

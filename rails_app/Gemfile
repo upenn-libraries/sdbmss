@@ -144,6 +144,10 @@ group :development do
   # gem 'rails-erd', require: false, group: :development
 end
 
+group :development do
+  gem 'rubycritic', require: false
+end
+
 group :test, :development do
   gem 'rspec-rails', '~> 7.0'
   gem 'capybara', '~> 3.35', '< 3.40'

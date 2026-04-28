@@ -38,12 +38,14 @@ class NamesController < SearchableAuthorityController
     end
   end
 
+  COLUMN_ALLOWLIST = %w[id authors_count artists_count scribes_count source_agents_count sale_agents_count provenance_count].freeze
+
   def problems
-    type = params[:type] || "id"
-    letter = params[:letter] || ""
-    @total = Name.where("#{type} > 0").where("name LIKE '#{letter}%'").where(problem: true).count
+    type = COLUMN_ALLOWLIST.include?(params[:type]) ? params[:type] : "id"
+    letter = params[:letter].to_s.gsub(/[^A-Za-z]/, "")
+    @total = Name.where("#{type} > 0").where("name LIKE ?", "#{letter}%").where(problem: true).count
     @page = params[:page].to_i || 0
-    @problems = Name.where("#{type} > 0").where("name LIKE '#{letter}%'").where(problem: true).offset(@page * 50).order("name asc").limit(50)
+    @problems = Name.where("#{type} > 0").where("name LIKE ?", "#{letter}%").where(problem: true).offset(@page * 50).order("name asc").limit(50)
   end
 
   def suggest
