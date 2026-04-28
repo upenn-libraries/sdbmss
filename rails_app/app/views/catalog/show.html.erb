@@ -1,49 +1,41 @@
 <%#
-  OVERRIDE Blacklight 7.11: wraps BL document partials with content_for :breadcrumbs, :add_entry,
-    :control_tools for Entry-specific nav and toolbar; stock is content + sidebar columns only.
+  OVERRIDE Blacklight 9.0.0: populates content_for blocks used by the SDBMSS control panel
+    (:breadcrumbs, :add_entry, :control_tools) instead of BL9's content_for(:sidebar).
 %>
-<%= render 'show_main_content' %>
+<% presenter = document_presenter(@document) %>
+<%= render 'show_main_content', presenter: presenter %>
 
 <% content_for :breadcrumbs do %>
   <%= render partial: "breadcrumbs", locals: {edit: false} %>
 <% end %>
 
-
 <% if !@entry.deprecated %>
-
-    <% content_for :add_entry do %>
-      <!-- add linked personal observation -->
-        <% if @entry.manuscript %>
-          <li>
-            <%= link_to(new_source_path({create_entry: 1, manuscript_id: @entry.manuscript.id, source_type: 4})) do %>
-              <span class="fas fa-fw fa-plus"></span> Create Linked Personal Observation
-            <% end %>
-          </li>
-        <% else %>
-          <li>
-            <%= link_to(new_source_path({create_entry: 1, new_manuscript: true, original_entry: @entry.id, source_type: 4})) do %>
-              <span class="fas fa-fw fa-plus"></span> Create Linked Personal Observation
-            <% end %>
-          </li>
-          <li class='divider'></li>
+  <% content_for :add_entry do %>
+    <% if @entry.manuscript %>
+      <li>
+        <%= link_to(new_source_path({create_entry: 1, manuscript_id: @entry.manuscript.id, source_type: 4})) do %>
+          <span class="fas fa-fw fa-plus"></span> Create Linked Personal Observation
         <% end %>
-
-
+      </li>
+    <% else %>
+      <li>
+        <%= link_to(new_source_path({create_entry: 1, new_manuscript: true, original_entry: @entry.id, source_type: 4})) do %>
+          <span class="fas fa-fw fa-plus"></span> Create Linked Personal Observation
+        <% end %>
+      </li>
+      <li class='divider'></li>
+    <% end %>
+  <% end %>
 <% end %>
 
 <% content_for :control_tools do %>
-  <% presenter = document_presenter(@document) %>
   <%= render presenter.view_config.sidebar_component.new(presenter: presenter) %>
-  
-  <!-- Add another entry for this source -->
-    <% if @entry.source && (!["provenance_observation", "observation"].include?(@entry.source.source_type.name) || @entry.source.created_by == current_user) %>
-      <li class='divider'></li>
-      <li>
-        <%= link_to (new_entry_path(source_id: @entry.source)) do %>
-          <span class="fas fa-fw fa-plus"></span> Add Entry From <%= @entry.source.public_id %>
-        <% end %>
-      </li>
-    <% end %>
+  <% if @entry.source && (!["provenance_observation", "observation"].include?(@entry.source.source_type.name) || @entry.source.created_by == current_user) %>
+    <li class='divider'></li>
+    <li>
+      <%= link_to (new_entry_path(source_id: @entry.source)) do %>
+        <span class="fas fa-fw fa-plus"></span> Add Entry From <%= @entry.source.public_id %>
+      <% end %>
+    </li>
   <% end %>
-
 <% end %>
