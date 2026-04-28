@@ -233,15 +233,17 @@ module DataEntryHelpers
     first(".save-button").click
 
     expect(page).to have_content("Warning: This entry has not been approved yet.")
-    expect(page).to have_content(Entry.last.public_id)
+    entry = Entry.find_by!(source: @source, catalog_or_lot_number: '123')
+    expect(page).to have_content(entry.public_id)
     #expect(find(".modal-title", visible: true)).to have_content("Successfully saved")
+    entry
   end
 
   def verify_entry(entry)
     sale = entry.get_sale
 
     expect(entry.catalog_or_lot_number).to eq('123')
-    expect(sale.get_selling_agents_names).to have_content("Sotheby's")
+    expect(sale.get_selling_agents_names).to include("Sotheby's")
     expect(sale.get_sellers_or_holders.first.agent.name).to eq('Joe2')
     expect(sale.get_buyers.first.agent.name).to eq('Joe3')
     expect(sale.sold).to eq('Yes')

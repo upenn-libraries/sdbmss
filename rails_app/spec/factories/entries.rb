@@ -187,4 +187,44 @@ FactoryBot.define do
     end
   end
 
+  factory :advanced_search_entry, class: Entry do
+    transient do
+      title { "Advanced Search Entry" }
+      author { nil }
+      manuscript_date { nil }
+      source_date { nil }
+    end
+
+    source do
+      create(
+        :edit_test_source,
+        title: "Advanced Search Source for #{title}",
+        date: source_date,
+        created_by: created_by
+      )
+    end
+    created_by { create(:admin) }
+    approved { true }
+
+    after(:create) do |entry, evaluator|
+      entry.entry_titles.create!(title: evaluator.title, order: 0)
+
+      if evaluator.author
+        entry.entry_authors.create!(
+          author: Name.find_or_create_agent(evaluator.author),
+          order: 0
+        )
+      end
+
+      if evaluator.manuscript_date
+        entry.entry_dates.create!(
+          observed_date: evaluator.manuscript_date[:observed],
+          date_normalized_start: evaluator.manuscript_date[:start],
+          date_normalized_end: evaluator.manuscript_date[:end],
+          order: 0
+        )
+      end
+    end
+  end
+
 end

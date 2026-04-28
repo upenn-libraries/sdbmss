@@ -8,6 +8,8 @@ describe Entry do
     #SDBMSS::ReferenceData.create_all
   end
 
+  let(:source) { Source.create!(source_type: SourceType.auction_catalog) }
+
   describe "associations" do
 
     it "should use scope :with_associations" do
@@ -23,17 +25,17 @@ describe Entry do
   describe "access methods" do
 
     it "should get_entries_for_manuscript" do
-      entry = Entry.create!(source: Source.last)
+      entry = Entry.create!(source: source)
       expect(entry.get_entries_for_manuscript).to eq([])
     end
 
     it "should get as flat hash" do
-      entry = Entry.last
+      entry = Entry.create!(source: source)
       expect(entry.as_flat_hash).to be_a(Hash)
     end
 
     it "should get cumulative_updated_at" do
-      entry = Entry.last
+      entry = Entry.create!(source: source)
       expect(entry.cumulative_updated_at).to be_a(Fixnum)
     end
 
@@ -42,7 +44,9 @@ describe Entry do
   describe "CRUD operations" do
 
     it "should delete properly" do
-      Entry.last.destroy
+      entry = Entry.create!(source: source)
+
+      expect { entry.destroy }.to change(Entry, :count).by(-1)
       # this exercises cascading deletes and FK constraints
       #Entry.order("id ASC").all.each do |entry|
       #  entry.destroy!

@@ -603,11 +603,9 @@ describe "Data entry", :js => true do
 
       count = Entry.count
 
-      create_entry
+      entry = create_entry
 
       expect(Entry.count).to eq(count + 1)
-
-      entry = Entry.last
 
       verify_entry(entry)
     end
@@ -626,18 +624,16 @@ describe "Data entry", :js => true do
       find(".save-button", match: :first).click
 
       expect(page).to have_content("Warning: This entry has not been approved yet.")
-      expect(page).to have_content(Entry.last.public_id)
+      entry = Entry.find_by!(source: source, folios: 666)
 
-      entry = Entry.last
+      expect(page).to have_content(entry.public_id)
       expect(entry.folios).to eq(666)
       expect(entry.get_sale).to be_nil
     end
 
     it "should save an Entry and log it in Recent Activity", :solr do
       index_data_entry_authorities!
-      create_entry
-
-      entry = Entry.last
+      entry = create_entry
 
       visit activities_path
 
@@ -684,7 +680,7 @@ describe "Data entry", :js => true do
       expect(src.source_type.to_s).to eq('Personal Observation')
       entry = Entry.create!(source: src, created_by_id: @user.id, approved: true)
       expect(Entry.count).to eq(count + 1)
-      visit edit_entry_path(Entry.last)
+      visit edit_entry_path(entry)
       expect(page).to have_content(src.source_type.to_s)
     end
 
@@ -696,7 +692,7 @@ describe "Data entry", :js => true do
       )
       entry = Entry.create!(source: src, created_by_id: @user.id, approved: true)
       expect(Entry.count).to eq(count + 1)
-      visit edit_entry_path(Entry.last)
+      visit edit_entry_path(entry)
       expect(page).to have_content(src.source_type.to_s)
     end
 
@@ -755,7 +751,14 @@ describe "Data entry", :js => true do
       # note: this fails frequently, for some unknown reason -> no 'sleep duration' seems to affect this...
       expect(page).not_to have_content("Known errors in the Source should be preserved but can be noted")
 
-      expect(page).to have_content("This entry has been identified as belonging to manuscript record #{Entry.last.manuscripts.last.public_id}, which has #{Entry.last.manuscripts.last.entries.count} entries in the SDBM.")
+      personal_observation_source = Source.find_by!(author: "Totally Unique Personal Observation Source")
+      personal_observation_entry = Entry.find_by!(
+        source: personal_observation_source,
+        catalog_or_lot_number: "M. 1"
+      )
+      manuscript = personal_observation_entry.manuscripts.first
+
+      expect(page).to have_content("This entry has been identified as belonging to manuscript record #{manuscript.public_id}, which has #{manuscript.entries.count} entries in the SDBM.")
     end
   end
 

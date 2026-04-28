@@ -15,7 +15,7 @@ class WatchesController < ApplicationController
   end
 
   def destroy
-    watches = Watch.where(id: params[:ids])
+    watches = current_user.watches.where(id: Array(params[:ids]))
     watched = watches.map(&:watched)
     if watches.destroy_all
       results = watched.map { |w| ["Watch_#{w.class.name}_#{w.id}", {button_html: (render_to_string partial: "add", locals: {watchable: w }, layout: false)}]}.to_h

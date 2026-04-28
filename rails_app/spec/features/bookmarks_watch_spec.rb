@@ -90,7 +90,7 @@ describe "Bookmark", :js => true do
 
       visit entry_path(target)
       expect(page).not_to have_content('Bookmarked')
-      expect("#control-panel").not_to have_content('Watched')
+      expect_current_record_not_to_be_watched(target)
     end
 
     it "should bookmark/watch and remove for Names" do
@@ -105,7 +105,7 @@ describe "Bookmark", :js => true do
       find('.watch-delete', match: :first).click
 
       expect(page).not_to have_content('Bookmarked')
-      expect("#control-panel").not_to have_content('Watched')
+      expect_current_record_not_to_be_watched(target)
     end
 
     it "should bookmark/watch and remove for Sources" do
@@ -120,7 +120,7 @@ describe "Bookmark", :js => true do
       find('.watch-delete', match: :first).click
 
       expect(page).not_to have_content('Bookmarked')
-      expect("#control-panel").not_to have_content('Watched') 
+      expect_current_record_not_to_be_watched(target)
     end
 
     it "should bookmark/watch and remove for Manuscript Records" do
@@ -135,7 +135,7 @@ describe "Bookmark", :js => true do
       find('.watch-delete', match: :first).click
 
       expect(page).not_to have_content('Bookmarked')
-      expect("#control-panel").not_to have_content('Watched')
+      expect_current_record_not_to_be_watched(target)
     end
 
     it "should bookmark/watch and remove for Dericci Records" do
@@ -150,7 +150,7 @@ describe "Bookmark", :js => true do
       find('.watch-delete', match: :first).click
 
       expect(page).not_to have_content('Bookmarked')
-      expect("#control-panel").not_to have_content('Watched') 
+      expect_current_record_not_to_be_watched(target)
     end
 
     it "should display all watched records" do
@@ -186,6 +186,13 @@ describe "Bookmark", :js => true do
   def bookmark_and_watch_current_record
     find('.bookmark:not(.bookmark-delete)', match: :first).click
     find('.watch:not(.watch-delete)', match: :first).click
+  end
+
+  def expect_current_record_not_to_be_watched(record)
+    within("#control-panel") do
+      expect(page).not_to have_selector(".watch-delete.Watch_#{record.class}_#{record.id}")
+      expect(page).to have_selector(".watch.Watch_#{record.class}_#{record.id}")
+    end
   end
 
 end

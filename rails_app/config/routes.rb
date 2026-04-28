@@ -33,12 +33,8 @@ Rails.application.routes.draw do
     }
   end
 
-  resources :watches, only: [:create, :destroy, :update]
-  resources :watches do
-    collection {
-      delete 'delete_many'
-    }
-  end
+  delete "watches/delete", to: "watches#destroy", as: :delete_watches
+  resources :watches
   resources :ratings, only: [:create, :destroy, :update]
 
   resources :groups do
