@@ -432,7 +432,6 @@ module CatalogControllerConfiguration
       config.add_nav_action(:search_history, partial: 'blacklight/nav/search_history', if: :render_search_history_control?)
 
       config.add_results_collection_tool(:bookmark_all)
-#      config.add_results_collection_tool(:save_current_search)
 
       config.show.document_actions.delete(:email)
       config.show.document_actions.delete(:sms)
