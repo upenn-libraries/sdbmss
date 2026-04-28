@@ -1,11 +1,5 @@
 <%#
-  OVERRIDE Blacklight 7.11: bookmark toggle uses app Bookmark model and Entry model_object via
-    bookmarks/_add and bookmarks/_delete; stock partial uses BL guest bookmark forms on Solr id.
+  OVERRIDE Blacklight 9.0.0 to render SDBMSS::Document::BookmarkComponent
 %>
-<% if current_user %>
-  <% if (w = current_user.bookmarks.where(document: document.model_object).first) %>
-    <%= render partial: "bookmarks/delete", locals: {bookmark: w, no_name: true} %>
-  <% else %>
-    <%= render partial: "bookmarks/add", locals: {document: document.model_object, no_name: true}  %>
-  <% end %>
-<% end %>
+
+<%= render SDBMSS::Document::BookmarkComponent.new(document: document, action: document_action_config) %>

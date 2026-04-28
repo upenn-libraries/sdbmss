@@ -1,0 +1,5 @@
+<% if bookmark %>
+  <%= render partial: "bookmarks/delete", locals: {bookmark: bookmark, no_name: true} %>
+<% else %>
+  <%= render partial: "bookmarks/add", locals: {document: model_object, no_name: true} %>
+<% end %>

@@ -16,7 +16,7 @@
           </span>
       </div>
       <div class="col-2 text-end">
-          <span class="document-preview"><%= render partial: 'catalog/bookmark_control', locals: {document: @document} %></span>
+          <span class="document-preview"><%= render SDBMSS::Document::BookmarkComponent.new(document: @document) %></span>
       </div>
     </div>
   </div>
