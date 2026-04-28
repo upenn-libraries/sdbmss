@@ -126,6 +126,7 @@ group :doc do
 end
 
 group :development do
+  gem 'debug'
   # in-browser console
   gem 'web-console', '>= 4.1'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
