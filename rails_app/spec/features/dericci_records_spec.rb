@@ -42,7 +42,7 @@ describe "Browse Dericci Records", :js => true do
   end
 
   before :each do
-    login(admin_user, "somethingreallylong")
+    fast_login(admin_user)
   end
 
   after :each do

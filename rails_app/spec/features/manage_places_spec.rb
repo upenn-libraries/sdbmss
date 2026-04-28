@@ -15,7 +15,7 @@ describe "Manage places", :js => true do
         name: "Martian",
         created_by: @user,
       )
-      login(@user, 'somethingreallylong')
+      fast_login(@user)
     end
 
     it "should add a new Place" do
@@ -69,7 +69,7 @@ describe "Manage places", :js => true do
         name: "Pig Latin",
         created_by: @user,
       )
-      login(@admin, 'somethingreallylong')
+      fast_login(@admin)
     end
 
 #    it "should mark Places as reviewed" do

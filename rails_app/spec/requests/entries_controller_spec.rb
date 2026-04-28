@@ -250,8 +250,14 @@ RSpec.describe "EntriesController", type: :request do
     end
 
     it "redirects to edit page for HTML format" do
+      existing_entry_ids = Entry.pluck(:id)
+
       post entries_path, params: { source_id: source.id }
-      new_entry = Entry.last
+
+      created_entries = Entry.where(source: source).where.not(id: existing_entry_ids)
+      expect(created_entries.count).to eq(1)
+
+      new_entry = created_entries.first
       expect(response).to redirect_to(edit_entry_path(new_entry))
     end
   end
@@ -274,6 +280,25 @@ RSpec.describe "EntriesController", type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
       json = JSON.parse(response.body)
       expect(json["errors"]).to be_present
+    end
+  end
+
+  # ---------------------------------------------------------------------------
+  # Unauthenticated access
+  # ---------------------------------------------------------------------------
+  describe "when not logged in" do
+    before { Warden.test_reset! }
+
+    it "redirects GET /entries/new and sets sign-in flash" do
+      get new_entry_path
+      expect(response).to redirect_to(root_path)
+      expect(flash[:alert]).to match(/sign in/i)
+    end
+
+    it "redirects GET /entries/new with source_id and sets sign-in flash" do
+      get new_entry_path(source_id: source.id)
+      expect(response).to redirect_to(root_path)
+      expect(flash[:alert]).to match(/sign in/i)
     end
   end
 end

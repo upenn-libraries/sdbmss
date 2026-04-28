@@ -5,7 +5,7 @@ require "rails_helper"
 # There's JS on most of these pages. Not all features use JS, but
 # there's no good reason NOT to use the js driver, so we do.
 describe "Linking Tool", :js => true do
-  let(:admin_user) { create(:admin) }
+  let_it_be(:admin_user) { create(:admin) }
   let(:admin_password) { 'somethingreallylong' }
 
   def click_add_entry_link(entry_id)
@@ -299,11 +299,16 @@ describe "Linking Tool", :js => true do
 
     expect(page).to have_content(last_two_entries.first.public_id)
 
-    # it's crucial that we load a fresh object
+    # it's crucial that we load a fresh object.
+    # Use update_columns with an explicit future timestamp so that
+    # cumulative_updated_at (second-precision .to_i) is guaranteed to
+    # differ from the value the browser captured on page load.
     manuscript = Manuscript.find(manuscript_id)
     em = manuscript.entry_manuscripts[0]
-    em.relation_type = EntryManuscript::TYPE_RELATION_PARTIAL
-    em.save!
+    em.update_columns(
+      relation_type: EntryManuscript::TYPE_RELATION_PARTIAL,
+      updated_at: 1.minute.from_now
+    )
 
     # Datatable/fixed-column rendering can duplicate these inputs; select any
     # visible matching input rather than assuming a fixed index.
@@ -313,7 +318,7 @@ describe "Linking Tool", :js => true do
 
     persist_linking_changes
 
-    expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
+    expect(page).to have_content("Another change was made to the record while you were working")
   end
 
 end

@@ -36,7 +36,7 @@ describe Download do
     context "when the associated file exists" do
       it "deletes the file before destroying the record" do
         dl = create_download(filename: "to_delete.csv")
-        path = "tmp/#{dl.id}_#{user.username}_to_delete.csv"
+        path = "tmp/downloads/#{dl.id}_#{user.username}_to_delete.csv"
         allow(File).to receive(:exist?).with(path).and_return(true)
         expect(File).to receive(:delete).with(path)
         dl.destroy
@@ -47,7 +47,7 @@ describe Download do
     context "when the associated file does not exist" do
       it "destroys the record without attempting file deletion" do
         dl = create_download(filename: "missing.csv")
-        path = "tmp/#{dl.id}_#{user.username}_missing.csv"
+        path = "tmp/downloads/#{dl.id}_#{user.username}_missing.csv"
         allow(File).to receive(:exist?).with(path).and_return(false)
         expect(File).not_to receive(:delete)
         dl.destroy

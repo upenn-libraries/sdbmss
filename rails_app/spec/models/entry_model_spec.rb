@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Entry, type: :model do
-  let(:admin)  { create(:admin) }
-  let(:source) { Source.create!(source_type: SourceType.auction_catalog, created_by: admin) }
-  let(:entry)  { Entry.create!(source: source, created_by: admin) }
+  let_it_be(:admin)  { create(:admin) }
+  let_it_be(:source, reload: true) { Source.create!(source_type: SourceType.auction_catalog, created_by: admin) }
+  let_it_be(:entry,  reload: true) { Entry.create!(source: source, created_by: admin) }
 
   before do
     allow(Sunspot).to receive(:index)
@@ -168,8 +168,8 @@ RSpec.describe Entry, type: :model do
     end
 
     context "when a sale exists" do
-      let!(:sale) { Sale.create!(entry: entry, sold: "Yes", price: 100.0) }
-      let(:agent) { Name.create!(name: "Christie's", is_provenance_agent: true, created_by: admin, updated_by: admin) }
+      let_it_be(:sale)  { Sale.create!(entry: entry, sold: "Yes", price: 100.0) }
+      let_it_be(:agent) { Name.create!(name: "Christie's", is_provenance_agent: true, created_by: admin, updated_by: admin) }
 
       before do
         SaleAgent.create!(sale: sale, agent: agent, role: SaleAgent::ROLE_SELLING_AGENT)

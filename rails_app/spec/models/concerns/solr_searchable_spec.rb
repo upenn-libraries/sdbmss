@@ -336,14 +336,14 @@ describe SolrSearchable do
 
     it "writes a CSV file under tmp/ named with the download id, user, and filename" do
       expect(CSV).to receive(:open).with(
-        "tmp/99_tester_languages.csv", "wb"
+        "tmp/downloads/99_tester_languages.csv", "wb"
       ).and_yield([].tap { |a| allow(a).to receive(:<<) })
       host.do_csv_search(search_params, fake_download)
     end
 
     it "creates a zip archive at the expected path" do
       expect(Zip::File).to receive(:open).with(
-        "tmp/99_tester_languages.csv.zip", Zip::File::CREATE
+        "tmp/downloads/99_tester_languages.csv.zip", Zip::File::CREATE
       ).and_yield(double("zip_file", add: nil))
       host.do_csv_search(search_params, fake_download)
     end
@@ -356,8 +356,8 @@ describe SolrSearchable do
     end
 
     it "deletes the plain CSV file after zipping when it exists" do
-      allow(File).to receive(:exist?).with("tmp/99_tester_languages.csv").and_return(true)
-      expect(File).to receive(:delete).with("tmp/99_tester_languages.csv")
+      allow(File).to receive(:exist?).with("tmp/downloads/99_tester_languages.csv").and_return(true)
+      expect(File).to receive(:delete).with("tmp/downloads/99_tester_languages.csv")
       host.do_csv_search(search_params, fake_download)
     end
   end

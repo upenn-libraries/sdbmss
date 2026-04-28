@@ -50,7 +50,7 @@ describe "Manage entries", :js => true do
 
   before :each do
     @user = admin_user
-    login(@user, 'somethingreallylong')
+    fast_login(@user)
   end
 
   it "should show table of entries", :solr do

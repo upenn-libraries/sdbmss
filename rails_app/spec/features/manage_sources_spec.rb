@@ -28,7 +28,7 @@ describe "Manage sources", :js => true do
     source
     Source.index
     Sunspot.commit
-    login(admin_user, password)
+    fast_login(admin_user)
   end
 
   it "should perform a search with multiple values for the same field (AND)" do

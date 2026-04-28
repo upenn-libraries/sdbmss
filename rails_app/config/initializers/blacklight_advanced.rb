@@ -220,3 +220,20 @@ module BlacklightAdvancedSearch
 
   end
 end
+
+Blacklight::SearchParamsYamlCoder.class_eval do
+  class << self
+    # OVERRIDE Blacklight 6.25.0 to handle old searches serialized as ActionController::Parameters
+    def load(yaml)
+      return yaml unless yaml.is_a?(String) && yaml.start_with?("---")
+
+      params = yaml_load(yaml)
+
+      # to_unsafe_h bypasses strong params permit, safe here since these are
+      # saved search params read from DB for display, not user input
+      params = params.to_unsafe_h if params.is_a?(ActionController::Parameters)
+
+      params.with_indifferent_access
+    end
+  end
+end

@@ -17,7 +17,7 @@ describe "Manage languages", :js => true do
   context "when admin is logged in" do
 
     before :each do
-      login(@user, 'somethingreallylong')
+      fast_login(@user)
     end
 
     it "should add a new Language" do
@@ -74,7 +74,7 @@ describe "Manage languages", :js => true do
     end
 
     before :each do
-      login(@admin, 'somethingreallylong')
+      fast_login(@admin)
     end
 
 #    it "should mark Languages as reviewed" do
