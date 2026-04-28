@@ -21,6 +21,10 @@ class ApplicationController < ActionController::Base
 
   # register user activity
   after_action :user_activity
+  # Keep the legacy XHR flash-discard behavior, but define it locally so we don't
+  # invoke Blacklight's deprecated implementation.
+  skip_after_action :discard_flash_if_xhr
+  after_action :discard_flash_if_xhr
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [:username, :email, :password, :password_confirmation, :remember_me, :bio])
@@ -61,6 +65,12 @@ class ApplicationController < ActionController::Base
       format.json { render json: {error: 'access denied'}}
     end
     true
+  end
+
+  # Drop flash messages on XHR requests so async calls don't leak stale messages
+  # into later full-page navigation.
+  def discard_flash_if_xhr
+    flash.discard if request.xhr?
   end
 
   def default_url
