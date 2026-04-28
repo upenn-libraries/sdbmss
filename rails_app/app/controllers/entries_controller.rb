@@ -196,7 +196,7 @@ class EntriesController < SearchableAuthorityController
                       recordsFiltered: pinfo[:total_count],
                       data: data,
                     })
-    rescue Exception => e
+    rescue StandardError => e
       puts e.backtrace
       retval.merge!({
                       error: e.to_s
