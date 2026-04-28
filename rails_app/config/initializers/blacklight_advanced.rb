@@ -3,12 +3,12 @@
 # various overrides for blacklight here
 #
 
-# Override ClausePresenter#remove_href to also strip raw date params
-# when removing a date clause. Date fields exist as both clause params
-# (for constraint display) and raw params (for SearchBuilder date processors).
-# Without this, removing a date constraint leaves the raw param in the URL,
-# causing the RedirectLegacyParamsFilter to recreate the clause.
 Rails.application.config.to_prepare do
+  # Override ClausePresenter#remove_href to also strip raw date params
+  # when removing a date clause. Date fields exist as both clause params
+  # (for constraint display) and raw params (for SearchBuilder date processors).
+  # Without this, removing a date constraint leaves the raw param in the URL,
+  # causing the RedirectLegacyParamsFilter to recreate the clause.
   Blacklight::ClausePresenter.class_eval do
     def remove_href(path = search_state)
       new_state = path.reset_search(clause: path.clause_params.except(key))
@@ -16,6 +16,16 @@ Rails.application.config.to_prepare do
       cleaned = new_state.to_h
       SDBMSS::DATE_FIELDS.each { |f| cleaned.delete(f) }
       view_context.search_action_path(cleaned)
+    end
+  end
+
+  # OVERRIDE Blacklight 9.0.0: append ?search_field=all_fields to the
+  # Start Over URL so it doesn't return to the bare root page.
+  Blacklight::StartOverButtonComponent.class_eval do
+    def call
+      link_to t('blacklight.search.start_over'),
+              start_over_path + "?search_field=all_fields",
+              class: 'catalog_startOverLink btn btn-primary'
     end
   end
 end
