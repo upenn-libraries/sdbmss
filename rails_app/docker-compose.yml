@@ -114,8 +114,6 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-    volumes:
-    - .:/home/app/
     restart: on-failure
     volumes:
     - sdbmss_downloads:/home/app/tmp/downloads
@@ -372,5 +370,3 @@ volumes:
   sdbm_solr:
   certificates:
   sdbmss_downloads:
-    external: true
-    name: sdbmss_downloads
