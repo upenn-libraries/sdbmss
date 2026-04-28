@@ -2,7 +2,6 @@
   App catalog partial (no Blacklight default): bulk bookmark all results and clear bookmarks for
     current user using Entry model_object ids from @response.documents.
 %>
-<% if current_user %>
 <div class="btn-group">
   <% valid_docs = @response.documents.select { |d| d.model_object&.id.present? } %>
   <%= link_to(bookmarks_path(documents: valid_docs.map{ |d| {id: d.model_object.id, type: d.model_object.class.to_s}}), remote: true, id: "bookmark_all", method: :post, "data-type" => "json", class: "btn btn-outline-secondary") do %>
@@ -12,4 +11,3 @@
     <span class="bookmark-text">Clear</span>
   <% end %>
 </div>
-<% end %>

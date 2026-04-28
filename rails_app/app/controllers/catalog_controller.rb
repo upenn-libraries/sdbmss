@@ -304,7 +304,11 @@ class CatalogController < ApplicationController
     user_signed_in?
   end
 
-  helper_method :render_bookmarks_control?,
+  def render_results_bookmarks_control?
+    user_signed_in? && @response.documents.present?
+  end
+
+  helper_method :render_bookmarks_control?, :render_results_bookmarks_control?,
                 :show_linking_tool_by_entry?, :show_linking_tool_by_manuscript?,
                 :show_verify_entry?, :show_deprecate_entry?, :show_entry_history_link?
 
