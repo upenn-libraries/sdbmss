@@ -27,7 +27,9 @@ module SDBMSS
     # The ActiveRecord session store and Blacklight save Ruby objects (like
     # HashWithIndifferentAccess) into YAML-serialized session data.
     config.active_record.yaml_column_permitted_classes = [
+      ActionController::Parameters,
       ActiveSupport::HashWithIndifferentAccess,
+      Set,
       Symbol,
       Time
     ]

@@ -4,7 +4,7 @@ module SolrTools
   SOLR_TEST_MODELS = [Entry, Name, Source, Manuscript, Language, Place].freeze
 
   def solr_test_uri
-    @solr_test_uri ||= URI(ENV['SOLR_TEST_URL'] || 'http://localhost:8983/solr/test')
+    @solr_test_uri ||= URI(ENV['SOLR_TEST_URL'] || 'http://solr:8983/solr/test')
   end
 
   def solr_http
