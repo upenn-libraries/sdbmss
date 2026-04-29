@@ -226,6 +226,7 @@ describe "Blacklight Advanced Search", :js => true do
       title: "Advanced Date Range Excluded",
       manuscript_date: { observed: "ca. 1900", start: "1900", end: "1901" }
     )
+    SampleIndexer.clear!
     SampleIndexer.index_records!(matching_entry, outside_entry)
 
     visit advanced_search_path
@@ -256,6 +257,7 @@ describe "Blacklight Advanced Search", :js => true do
       title: "Advanced Overlap Second Range Only",
       manuscript_date: { observed: "ca. 1900", start: "1900", end: "1901" }
     )
+    SampleIndexer.clear!
     SampleIndexer.index_records!(matching_entry, first_range_only, second_range_only)
 
     visit advanced_search_path
