@@ -149,7 +149,7 @@ module SDBMSS
         setup_assets
         setup_db
         run_in_app!('bundle exec rake sdbmss:add_update_test_users')
-        run_in_app!('bundle exec rake sunspot:reindex >/dev/null 2>&1')
+        run_in_app!('bundle exec rake sunspot:reindex[500] >/dev/null 2>&1')
         setup_jena
       end
     end
