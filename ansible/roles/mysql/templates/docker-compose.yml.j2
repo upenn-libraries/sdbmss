@@ -15,6 +15,9 @@ services:
         order: "start-first"
         parallelism: 1
       replicas: 1
+      resources:
+        limits:
+          memory: 12G
     environment:
       MYSQL_DATABASE: "{{ mysql_database }}"
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
