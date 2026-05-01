@@ -1125,8 +1125,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_203527) do
   add_foreign_key "sources", "users", column: "created_by_id"
   add_foreign_key "sources", "users", column: "reviewed_by_id"
   add_foreign_key "sources", "users", column: "updated_by_id"
-  add_foreign_key "thredded_messageboard_users", "thredded_messageboards", on_delete: :cascade
-  add_foreign_key "thredded_messageboard_users", "thredded_user_details", on_delete: :cascade
+  add_foreign_key "thredded_messageboard_users", "thredded_messageboards"
+  add_foreign_key "thredded_messageboard_users", "thredded_user_details"
   add_foreign_key "users", "users", column: "created_by_id"
   add_foreign_key "users", "users", column: "reviewed_by_id"
   add_foreign_key "users", "users", column: "updated_by_id"

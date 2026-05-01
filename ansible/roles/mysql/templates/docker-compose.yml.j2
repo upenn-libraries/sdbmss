@@ -6,7 +6,6 @@ services:
     command:
       - --character-set-server=utf8
       - --collation-server=utf8_unicode_ci
-      - --init-connect=SET NAMES utf8
     deploy:
       placement:
         constraints:
@@ -15,18 +14,20 @@ services:
         order: "start-first"
         parallelism: 1
       replicas: 1
+      resources:
+        limits:
+          memory: 12G
     environment:
       MYSQL_DATABASE: "{{ mysql_database }}"
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
       MYSQL_USER: "{{ mysql_user }}"
       MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
-    #healthcheck:
-    #  test:
-    #    []
-    #  interval: 30s
-    #  retries: 3
-    #  start_period: 1m
-    #  timeout: 30s
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      retries: 3
+      start_period: 1m
+      timeout: 30s
     #logging:
     #  driver: json-file
     #  options:
@@ -37,6 +38,10 @@ services:
     secrets:
       - mysql_password
       - mysql_root_password
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
     volumes:
       - sdbm_data:/var/lib/mysql
 
