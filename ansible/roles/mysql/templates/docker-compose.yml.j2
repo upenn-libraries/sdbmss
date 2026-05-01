@@ -22,12 +22,12 @@ services:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
       MYSQL_USER: "{{ mysql_user }}"
       MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
-#    healthcheck:
-#      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-#      interval: 30s
-#      retries: 3
-#      start_period: 1m
-#      timeout: 30s
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      retries: 3
+      start_period: 1m
+      timeout: 30s
     #logging:
     #  driver: json-file
     #  options:
@@ -38,6 +38,10 @@ services:
     secrets:
       - mysql_password
       - mysql_root_password
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
     volumes:
       - sdbm_data:/var/lib/mysql
 
