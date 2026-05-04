@@ -228,11 +228,10 @@ module SDBMSS
       ])
 
       run_command!([
-        'docker', 'run', '--rm',
+        'docker', 'run', '--rm', '--entrypoint', 'sh',
         '--mount', "source=#{compose_volume_prefix}rdf_data,target=/fuseki",
-        '-v', "#{File.join(rails_root, 'dev', 'sdbm.ttl')}:/tmp/sdbm.ttl:ro",
-        'alpine', 'sh', '-c',
-        'mkdir -p /fuseki/configuration && cp /tmp/sdbm.ttl /fuseki/configuration/sdbm.ttl && chmod 0644 /fuseki/configuration/sdbm.ttl'
+        image,
+        '-c', 'mkdir -p /fuseki/configuration && cp /jena-fuseki/sdbm.ttl /fuseki/configuration/sdbm.ttl && chmod 0644 /fuseki/configuration/sdbm.ttl'
       ])
 
       run_compose!(%w[start jena])
