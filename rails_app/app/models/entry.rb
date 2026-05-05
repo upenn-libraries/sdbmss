@@ -607,6 +607,9 @@ class Entry < ApplicationRecord
     define_field(:text, :source_search, :stored => true) do
       source.display_value
     end
+    string :source_title do
+      source.title
+    end
     define_field(:text, :source_title, :stored => true) do
       source.title
     end
