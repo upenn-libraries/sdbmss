@@ -160,13 +160,11 @@ services:
         order: start-first
         parallelism: 1
       replicas: 1
+    restart: on-failure
     environment:
     - ADMIN_PASSWORD
     healthcheck:
-      test:
-      - CMD-SHELL
-      - curl -sf http://127.0.0.1:/$$/ping || curl -sf http://127.0.0.1:/ || exit
-        1
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:3030/ >/dev/null || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 10
@@ -182,24 +180,15 @@ services:
     volumes:
     - rdf_data:/fuseki
     labels:
-    - traefik.enable=true
-    - traefik.docker.network=traefik
-    - traefik.http.services.jena-svc.loadbalancer.server.port=
-    - traefik.http.middlewares.jena_stripprefix.stripprefix.prefixes=/sparql
-    - traefik.http.routers.jena.entrypoints=web
-    - traefik.http.routers.jena.rule=Host(`sdbmss.localhost`) && PathPrefix(`/sparql`)
-    - traefik.http.routers.jena.middlewares=jena_stripprefix
-    - traefik.http.routers.jena.service=jena-svc
-    - traefik.http.routers.jena.priority=100
-    - traefik.http.routers.jena_httpsredir.entrypoints=web
-    - traefik.http.routers.jena_httpsredir.rule=Host(`sdbmss.localhost`) && PathPrefix(`/sparql`)
-    - traefik.http.routers.jena_httpsredir.middlewares=jena_https
-    - traefik.http.routers.jena-secure.entrypoints=websecure
-    - traefik.http.routers.jena-secure.rule=Host(`sdbmss.localhost`) && PathPrefix(`/sparql`)
-    - traefik.http.routers.jena-secure.middlewares=jena_stripprefix
-    - traefik.http.routers.jena-secure.tls=true
-    - traefik.http.routers.jena-secure.service=jena-svc
-    - traefik.http.routers.jena-secure.priority=100
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.services.jena-svc.loadbalancer.server.port=3030"
+      - "traefik.http.middlewares.jena_stripprefix.stripprefix.prefixes=/sparql"
+      - "traefik.http.routers.jena.entrypoints=web"
+      - "traefik.http.routers.jena.rule=Host(`sdbmss.localhost`) && PathPrefix(`/sparql`)"
+      - "traefik.http.routers.jena.middlewares=jena_stripprefix"
+      - "traefik.http.routers.jena.service=jena-svc"
+      - "traefik.http.routers.jena.priority=100"
   mysql:
     image: ${MYSQL_IMAGE_NAME}:${MYSQL_IMAGE_TAG}
     command:

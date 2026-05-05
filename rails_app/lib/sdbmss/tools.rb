@@ -149,7 +149,7 @@ module SDBMSS
         setup_assets
         setup_db
         run_in_app!('bundle exec rake sdbmss:add_update_test_users')
-        run_in_app!('bundle exec rake sunspot:reindex >/dev/null 2>&1')
+        run_in_app!('bundle exec rake sunspot:reindex[500] >/dev/null 2>&1')
         setup_jena
       end
     end
@@ -228,11 +228,10 @@ module SDBMSS
       ])
 
       run_command!([
-        'docker', 'run', '--rm',
+        'docker', 'run', '--rm', '--entrypoint', 'sh',
         '--mount', "source=#{compose_volume_prefix}rdf_data,target=/fuseki",
-        '-v', "#{File.join(rails_root, 'dev', 'sdbm.ttl')}:/tmp/sdbm.ttl:ro",
-        'alpine', 'sh', '-c',
-        'mkdir -p /fuseki/configuration && cp /tmp/sdbm.ttl /fuseki/configuration/sdbm.ttl && chmod 0644 /fuseki/configuration/sdbm.ttl'
+        image,
+        '-c', 'mkdir -p /fuseki/configuration && cp /jena-fuseki/sdbm.ttl /fuseki/configuration/sdbm.ttl && chmod 0644 /fuseki/configuration/sdbm.ttl'
       ])
 
       run_compose!(%w[start jena])

@@ -73,6 +73,9 @@ class User < ApplicationRecord
     date :created_at
     date :updated_at
     date :last_sign_in_at
+    string :groups do
+      groups.map(&:name).join("; ")
+    end
   end
 
   # Connects this user object to Blacklights Bookmarks.

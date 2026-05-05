@@ -283,6 +283,101 @@ describe SolrSearchable do
   end
 
   # -----------------------------------------------------------------------
+  # .do_search  (requires real Solr; validates query construction)
+  # -----------------------------------------------------------------------
+
+  describe ".do_search" do
+    let(:base_params) do
+      ActionController::Parameters.new(offset: "0", limit: "10", op: "AND")
+    end
+
+    def search_with_sort(model, field, dir = "asc")
+      model.do_search(base_params.merge(order: "#{field} #{dir}"))
+    end
+
+    context "with default sort (score)", :solr do
+      it "returns a result object without raising" do
+        result = Source.do_search(base_params)
+        expect(result).to respond_to(:results)
+        expect(result.total).to be >= 0
+      end
+    end
+
+    context "Source: sort by single-valued string fields", :solr do
+      %w[title author date location_institution medium link date_accessed].each do |field|
+        it "does not raise when sorting by #{field}" do
+          expect { search_with_sort(Source, field) }.not_to raise_error
+        end
+      end
+    end
+
+    context "Source: sort by fields declared as both string and text", :solr do
+      # Both string :foo and text :foo are declared in the searchable block.
+      # In Sunspot, text fields have multiple: true, so if the text declaration
+      # overwrites the string one in the field registry, order_by raises
+      # ArgumentError: "X cannot be used for ordering because it is a multiple-value field".
+      # These tests currently FAIL and will pass once the collision is resolved.
+      %w[source_type created_by updated_by].each do |field|
+        it "does not raise when sorting by #{field}" do
+          expect { search_with_sort(Source, field) }.not_to raise_error
+        end
+      end
+    end
+
+    context "Source: sort by integer and date fields", :solr do
+      %w[id entries_count].each do |field|
+        it "does not raise when sorting by #{field}" do
+          expect { search_with_sort(Source, field) }.not_to raise_error
+        end
+      end
+
+      %w[created_at updated_at].each do |field|
+        it "does not raise when sorting by #{field}" do
+          expect { search_with_sort(Source, field) }.not_to raise_error
+        end
+      end
+    end
+
+    context "Source: expected Solr sort param", :solr do
+      # Sunspot translates each sort field to its Solr indexed name.
+      # Type suffixes: string → _s, integer → _i, date → _d.
+      # result.query.to_params[:sort] is what gets sent to Solr.
+
+      it "uses 'score desc' as default when no order param is given" do
+        result = Source.do_search(base_params)
+        expect(result.query.to_params[:sort]).to eq("score desc")
+      end
+
+      {
+        # Single-valued string fields
+        "title"                => "title_s",
+        "author"               => "author_s",
+        "date"                 => "date_s",
+        "location"             => "location_s",
+        "location_institution" => "location_institution_s",
+        "medium"               => "medium_s",
+        "link"                 => "link_s",
+        "date_accessed"        => "date_accessed_s",
+        # String fields that also have a text declaration (collision-prone)
+        "source_type"          => "source_type_s",
+        "created_by"           => "created_by_s",
+        "updated_by"           => "updated_by_s",
+        # Integer fields
+        "id"                   => "id_i",
+        "entries_count"        => "entries_count_i",
+        # Date fields
+        "created_at"           => "created_at_d",
+        "updated_at"           => "updated_at_d",
+      }.each do |sort_field, solr_field|
+        it "sends '#{solr_field} asc' to Solr when order='#{sort_field} asc'" do
+          result = search_with_sort(Source, sort_field)
+          expect(result.query.to_params[:sort]).to eq("#{solr_field} asc")
+        end
+      end
+    end
+  end
+
+  # -----------------------------------------------------------------------
   # .do_csv_search  (filesystem I/O is stubbed)
   # -----------------------------------------------------------------------
 
