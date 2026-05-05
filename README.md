@@ -61,13 +61,7 @@ if running with Parallels:
 vagrant up --provider=parallels --provision
 ```
 
-This will run the [vagrant/Vagrantfile](vagrant/Vagrantfile) which will bring
-up an Ubuntu VM and run the Ansible script which will provision a single node
-Docker Swarm behind nginx with a self-signed certificate to mimic a load
-balancer. Your hosts file will be modified; the domain
-`sdbm-dev.library.upenn.edu` will be added and mapped to the Ubuntu VM. Once the
-Ansible script has completed and the Docker Swarm is deployed you can access the
-application by navigating to [https://sdbm-dev.library.upenn.edu/][sdbm-dev].
+This will run the [vagrant/Vagrantfile](vagrant/Vagrantfile) which will bring up an Ubuntu VM and run the Ansible script which will provision a single node Docker Swarm behind nginx with a self-signed certificate to mimic a load balancer. Your hosts file will be modified; the domain `sdbm-dev.library.upenn.edu` will be added and mapped to the Ubuntu VM. Once the Ansible script has completed and the Docker Swarm is deployed you can access the application by navigating to [https://sdbm-dev.library.upenn.edu/][sdbm-dev].
 
 [sdbm-dev]: https://sdbm-dev.library.upenn.edu/ "SDBM Vagrant Instance"
 
@@ -117,9 +111,7 @@ exit
 
 #### First-time setup (Vagrant environment)
 
-There are number of initial setup steps required to run this SDBM that are handled by a bash
-script setup.sh stored in the rails_app/dev folder and run from the vagrant environment. The setup script
-does the following:
+There are number of initial setup steps required to run this SDBM that are handled by a bash script setup.sh stored in the rails_app/dev folder and run from the vagrant environment. The setup script does the following:
 
 1. Copies static assets into the Rails app
 2. Loads the database
@@ -140,15 +132,13 @@ Download the files and copy them to the `sdbmss/rails_app/dev` directory. Then r
 vagrant ssh
 ```
 
-The files that you put in the dev directory will be automatically copied over to a directory in the
-docker shell. Make sure you see the files there:
+The files that you put in the dev directory will be automatically copied over to a directory in the docker shell. Make sure you see the files there:
 
 ```
 ls /sdbmss/rails_app/dev/
 ```
 
-To perform these setup actions, first navigate to the dev folder within the vagrant environment,
-and then run the bash script. This should take about 5 minutes.
+To perform these setup actions, first navigate to the dev folder within the vagrant environment, and then run the bash script. This should take about 5 minutes.
 
 ```shell
 vagrant ssh # if needed
@@ -180,4 +170,143 @@ sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | Fuseki is available :-)
 ## Production and staging deployments
 
 The SDBM is currently structured to be deployed to production and staging docker swarm by Ansible. These deployments are managed by a GitLab CI/CD pipeline.
+
+### Staging deployment (MR into `main`)
+
+Merging an MR into `main` triggers the CI/CD pipeline to build and deploy to staging automatically.
+
+**1. Merge the MR** in GitLab.
+
+**2. Watch the pipeline** in GitLab CI until the deploy job completes.
+
+**3. Confirm startup** on the staging server.
+
+`docker service ls` shows replica counts but does not indicate when existing replicas have been *replaced* with the new image — use `docker ps` to see actual container start times:
+```bash
+watch 'docker ps --format "table {{.Names}}\t{{.Status}}\t{{.RunningFor}}" | grep sdbmss'
+```
+Wait until all `sdbmss_app` containers show a recent start time before continuing.
+
+**4. Reindex Solr** (required if the Solr volume is fresh or the schema changed):
+```bash
+docker exec -it $(docker ps -q -f name=sdbmss_app.1) bundle exec rake sunspot:reindex
+```
+
+**5. Regenerate Jena** if the triple-store data needs refreshing — see [Regenerating Jena](#regenerating-jenasfuseki-triple-store) below.
+
+---
+
+### Production deployment (version tag)
+
+**Pre-flight** — before creating the tag, SSH to the production server and remove any stale volumes. Confirm volume names first (Docker Swarm prefixes with the stack name `sdbmss_`):
+```bash
+docker volume ls | grep -E 'sdbm|downloads'
+docker service ls
+```
+
+If `sdbm_solr`/`sdbmss_sdbm_solr` needs to be replaced, scale Solr down first:
+```bash
+docker service scale sdbmss_solr=0
+watch docker service ls   # wait for replicas to reach 0
+docker volume rm sdbmss_sdbm_solr
+```
+
+If `sdbm_assets`/`sdbmss_sdbm_assets` needs to be removed:
+```bash
+docker volume rm sdbmss_sdbm_assets
+# If "volume is in use": docker service scale sdbmss_app=0 first
+```
+
+**Trigger deployment** by creating a version tag:
+```bash
+git tag v<X.Y.Z>
+git push origin v<X.Y.Z>
+```
+
+The pipeline will build and push the production Docker image, then run Ansible to redeploy all services.
+
+**Confirm startup** on the production server. `docker service ls` shows replica counts but does not indicate when replicas have been replaced — use `docker ps`:
+```bash
+watch 'docker ps --format "table {{.Names}}\t{{.Status}}\t{{.RunningFor}}" | grep sdbmss'
+```
+Production runs **3 `sdbmss_app` replicas**; allow approximately **10 minutes** for all three to come up. Proceed only once all containers show a recent start time.
+
+**Reindex Solr** once the Solr service is healthy:
+```bash
+docker exec -it $(docker ps -q -f name=sdbmss_app.1) bundle exec rake sunspot:reindex
+```
+
+---
+
+### Regenerating Jena/Fuseki triple store
+
+Use this procedure when the triple-store data needs to be rebuilt from the production database. The existing TDB database must be explicitly cleared before loading.
+
+**1. Create a scratch volume** for the TTL data:
+```bash
+docker volume create sdbm_ttl_tmp
+```
+
+**2. Generate fresh TTL data** from the app container and copy it into the scratch volume:
+```bash
+docker exec $(docker ps -q -f name=sdbmss_app.1) bundle exec rake sparql:test
+
+docker exec $(docker ps -q -f name=sdbmss_app.1) cat /home/app/test.ttl | \
+  docker run --rm -i \
+    --mount source=sdbm_ttl_tmp,target=/data \
+    alpine sh -c 'cat > /data/test.ttl'
+```
+
+**3. Get the Jena image reference**:
+```bash
+JENA_IMAGE=$(docker service inspect sdbmss_jena --format '{{.Spec.TaskTemplate.ContainerSpec.Image}}')
+```
+
+**4. Scale down Jena**:
+```bash
+docker service scale sdbmss_jena=0
+watch docker service ls   # wait for replicas to reach 0
+```
+
+**5. Clear the existing TDB database**:
+```bash
+docker run --rm \
+  --mount source=sdbmss_rdf_data,target=/fuseki \
+  alpine \
+  sh -c 'rm -rf /fuseki/databases/sdbm'
+```
+
+**6. Load the new TTL** via tdbloader:
+```bash
+docker run --rm \
+  --entrypoint /jena-fuseki/tdbloader \
+  --mount source=sdbmss_rdf_data,target=/fuseki \
+  --mount source=sdbm_ttl_tmp,target=/data,readonly \
+  "$JENA_IMAGE" \
+  --loc=/fuseki/databases/sdbm /data/test.ttl
+```
+
+**7. Install the Fuseki dataset config** from the Jena image:
+```bash
+docker run --rm \
+  --entrypoint sh \
+  --mount source=sdbmss_rdf_data,target=/fuseki \
+  "$JENA_IMAGE" \
+  -c 'mkdir -p /fuseki/configuration && cp /jena-fuseki/sdbm.ttl /fuseki/configuration/sdbm.ttl && chmod 0644 /fuseki/configuration/sdbm.ttl'
+```
+
+**8. Scale Jena back up and clean up**:
+```bash
+docker service scale sdbmss_jena=1
+docker volume rm sdbm_ttl_tmp
+```
+
+**9. Verify** Jena is healthy:
+```bash
+docker service logs sdbmss_jena --since 5m -f
+```
+
+The log should show `Fuseki is available :-)` once the service is ready.
+
+> **Note**: Confirm the `rdf_data` volume name on the target server with `docker volume ls | grep rdf_data` — it may carry the stack prefix `sdbmss_`. Also confirm `sdbm.ttl` is present in the Jena image: `docker run --rm --entrypoint sh "$JENA_IMAGE" -c 'ls /jena-fuseki/sdbm.ttl'`.
 
