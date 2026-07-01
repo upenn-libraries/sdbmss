@@ -9,4 +9,4 @@ roles:
   - name: traefik
     src: https://gitlab.library.upenn.edu/devops/ansible/roles/traefik.git
     scm: git
-    version: 2.1.0
+    version: main
