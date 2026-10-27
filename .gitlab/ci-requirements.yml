@@ -1,0 +1,17 @@
+---
+collections:
+  - name: "https://gitlab.library.upenn.edu/api/v4/projects/devops%2Fansible%2Fcollection\
+      /packages/generic/collections/stack-v2.2.0/library-stack-2.2.0.tar.gz"
+    type: url
+  - name: "https://gitlab.library.upenn.edu/api/v4/projects/devops%2Fansible%2Fcollection\
+      /packages/generic/collections/proxmox-v1.6.0/library-proxmox-1.6.0.tar.gz"
+    type: url
+  - name: "https://gitlab.library.upenn.edu/api/v4/projects/devops%2Fansible%2Fcollection\
+      /packages/generic/collections/services-v1.9.0/library-services-1.9.0.tar.gz"
+    type: url
+  - name: "https://gitlab.library.upenn.edu/api/v4/projects/devops%2Fansible%2Fcollection\
+      /packages/generic/collections/infra-v4.5.0/library-infra-4.5.0.tar.gz"
+    type: url
+  - name: "https://gitlab.library.upenn.edu/api/v4/projects/devops%2Fansible%2Fcollection\
+      /packages/generic/collections/ci-v0.6.0/library-ci-0.6.0.tar.gz"
+    type: url
