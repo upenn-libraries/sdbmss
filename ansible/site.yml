@@ -1,18 +1,20 @@
 ---
-- name: "Provision Docker Swarm Cluster"
+- name: "Set up Docker and Docker Swarm"
   hosts: all
   become: true
-  collections:
-    - ansible.utils
-    - ansible.netcommon
-  tasks:
-    - name: Provision docker swarm
-      ansible.builtin.import_tasks: "provision_docker.yml"
+  gather_facts: true
+  roles:
+    - docker-swarm
 
 - name: "Deploy application"
-  hosts: docker_swarm_manager
+  hosts: docker_swarm_managers
   become: true
   gather_facts: true
+  pre_tasks:
+    - name: Resolve Vault secrets once, before the roles downgrade requests
+      ansible.builtin.set_fact:
+        "{{ item }}": "{{ lookup('ansible.builtin.vars', item) }}"
+      loop: "{{ hostvars[inventory_hostname] | select('match', '.+_vault_values$') }}"
   tasks:
     - name: Link project source
       ansible.builtin.import_role:

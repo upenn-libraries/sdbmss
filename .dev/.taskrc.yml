@@ -1,0 +1,8 @@
+# Global settings
+concurrency: 2
+interactive: true
+verbose: true
+
+# Experimental settings
+experiments:
+  REMOTE_TASKFILES: 1

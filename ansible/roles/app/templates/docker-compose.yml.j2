@@ -98,7 +98,8 @@ services:
         mode: 0440
     volumes:
       {% if is_development == true %}
-      - /sdbmss/ansible/roles/app/files/src/:/home/app/
+      - /home/app/rails_app/:/home/app/
+      - bundle:/home/app/vendor/bundle
       {% else %}
       - sdbm_docs:/home/app/public/static
       {% endif %}
@@ -120,5 +121,6 @@ secrets:
 volumes:
   {% if is_development != true %}
   sdbm_docs:
+  bundle:
   {% endif %}
   downloads:

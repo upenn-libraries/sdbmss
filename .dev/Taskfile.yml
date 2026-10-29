@@ -1,0 +1,16 @@
+version: "3"
+
+includes:
+  app:
+    taskfile: https://gitlab.library.upenn.edu/devops/taskfile/-/raw/main/DevEnvTasks.yml?ref_type=heads
+    flatten: true
+    vars:
+      PROJECT_NAME: "sdbmss"
+      DOMAINS:
+        - sdbm-dev
+      DOCKER_NETWORK_SUBNET: 172.16.14.0/24
+      DOCKER_CONTAINER_IP: "172.16.14.10"
+      DOCKER_CONTAINER_NAME: "sdbmss"
+      DOCKER_API_TLS_PORT_EXT: 127.0.0.1:2398
+      DOCKER_CONTEXT_HOST: tcp://127.0.0.1:2398
+      ANSIBLE_REQUIREMENTS_FILE: "requirements.yml"

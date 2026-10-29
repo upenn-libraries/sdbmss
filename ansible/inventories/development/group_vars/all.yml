@@ -1,0 +1,10 @@
+---
+sdbmss_vault_values: "{{ lookup('community.hashi_vault.vault_kv2_get', 'sdbmss/vagrant', engine_mount_point='kv-applications') }}"
+
+skip_firewall: true
+skip_docker_group: true
+skip_docker_user: true
+skip_docker_install: true
+skip_docker_repo_setup: true
+skip_install_deps: true
+skip_docker_config: true

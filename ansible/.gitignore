@@ -1,4 +1,1 @@
-# Ignore ansible galaxy roles
 roles/app/files/src/*
-roles/atosatto.docker-swarm
-roles/traefik

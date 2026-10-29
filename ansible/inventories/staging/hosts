@@ -1,8 +1,5 @@
 [staging]
 swarm-01
 
-[docker_swarm_manager]
-swarm-01
-
-[docker_swarm_manager]
+[docker_swarm_managers]
 swarm-01 swarm_labels='["app", "interface", "jena", "mysql", "rabbitmq", "solr", "traefik"]'

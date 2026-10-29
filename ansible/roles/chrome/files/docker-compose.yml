@@ -17,7 +17,7 @@ services:
         published: ${CHROME_PORT}
         mode: host
     volumes:
-      - /sdbmss/ansible/roles/app/files/src/:/home/app
+      - /home/app/rails_app/:/home/app
     networks:
       - traefik
 
