@@ -28,7 +28,9 @@ include:
         - RUNNER: build
           DOCKER_BUILD_PLATFORM: "linux/amd64"
       needs_build:
-        - amend_manifest_base
+        - build_and_push_docker_images_base
+        - job: amend_manifest_base
+          optional: true
       platforms: '["linux/amd64"]'
       stage: "build_development"
   - component: $CI_SERVER_FQDN/devops/gitlab/components/docker/stage_build@~latest
@@ -43,7 +45,9 @@ include:
         - RUNNER: build
           DOCKER_BUILD_PLATFORM: "linux/amd64"
       needs_build:
-        - amend_manifest_development
+        - build_and_push_docker_images_development
+        - job: amend_manifest_development
+          optional: true
       platforms: '["linux/amd64"]'
       stage: "build_production"
   - component: $CI_SERVER_FQDN/devops/gitlab/components/sast/trivy@~latest
@@ -51,7 +55,9 @@ include:
       ci_requirements_file: ".gitlab/ci-requirements.yml"
       docker_tag_to_scan: "${CI_COMMIT_SHA}"
       needs:
-        - "amend_manifest_production"
+        - "build_and_push_docker_images_production"
+        - job: "amend_manifest_production"
+          optional: true
       stage: "test"
   - component: $CI_SERVER_FQDN/devops/gitlab/components/docker/stage_finalize@~latest
     inputs:
