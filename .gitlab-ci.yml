@@ -10,9 +10,6 @@ include:
       docker_build_context: "rails_app/"
       docker_target: "base"
       job_suffix: "_base"
-      matrix:
-        - RUNNER: build
-          DOCKER_BUILD_PLATFORM: "linux/amd64"
       needs_build:
         - secret_detection
       platforms: '["linux/amd64"]'
@@ -24,13 +21,8 @@ include:
       docker_build_context: "rails_app/"
       docker_target: "development"
       job_suffix: "_development"
-      matrix:
-        - RUNNER: build
-          DOCKER_BUILD_PLATFORM: "linux/amd64"
       needs_build:
         - build_and_push_docker_images_base
-        - job: amend_manifest_base
-          optional: true
       platforms: '["linux/amd64"]'
       stage: "build_development"
   - component: $CI_SERVER_FQDN/devops/gitlab/components/docker/stage_build@~latest
@@ -41,13 +33,8 @@ include:
       docker_build_context: "rails_app/"
       docker_target: "production"
       job_suffix: "_production"
-      matrix:
-        - RUNNER: build
-          DOCKER_BUILD_PLATFORM: "linux/amd64"
       needs_build:
         - build_and_push_docker_images_development
-        - job: amend_manifest_development
-          optional: true
       platforms: '["linux/amd64"]'
       stage: "build_production"
   - component: $CI_SERVER_FQDN/devops/gitlab/components/sast/trivy@~latest
@@ -56,8 +43,6 @@ include:
       docker_tag_to_scan: "${CI_COMMIT_SHA}"
       needs:
         - "build_and_push_docker_images_production"
-        - job: "amend_manifest_production"
-          optional: true
       stage: "test"
   - component: $CI_SERVER_FQDN/devops/gitlab/components/docker/stage_finalize@~latest
     inputs:
